@@ -1,0 +1,11 @@
+shad0w
+Copyright 2026 Gaurav Chauhan
+
+The hashed linear table follows the fastText design (Joulin et al., 2016). The certificate is an application of
+Learn-then-Test (Angelopoulos et al., 2021) in the spirit of Trust or Escalate (Jung et al., 2025) and BARGAIN
+(Zeighami et al., 2025). References: https://2796gaurav.github.io/shad0w/docs/certificate.html
+
+Optional compile-time encoders (downloaded by the user, never bundled) carry their own licences:
+BAAI/bge-small-en-v1.5 (MIT), sentence-transformers/all-MiniLM-L6-v2 (Apache-2.0),
+intfloat/multilingual-e5-* (MIT), google/embeddinggemma-300m (Gemma Terms of Use).
+Benchmark datasets are downloaded by the scripts and are not redistributed.

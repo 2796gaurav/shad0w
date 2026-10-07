@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shad0w"
+version = "0.1.0"
+description = "Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Gaurav Chauhan", email = "2796gaurav@gmail.com" }]
+requires-python = ">=3.10"
+keywords = [
+  "llm", "distillation", "classification", "intent-detection", "routing", "cascade", "conformal-prediction",
+  "learn-then-test", "edge-ai", "cpu-inference", "guardrails", "llm-cost", "latency",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: C",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Text Processing :: Linguistic",
+  "Typing :: Typed",
+]
+# Runtime: loading a bundle and deciding needs only numpy (the C core ships inside the wheel).
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+# Compiling bundles (shadow mode, human labels): sparse logistic fit + certificate.
+compile = ["scipy>=1.13", "scikit-learn>=1.5", "torch>=2.4"]
+# Label-free mode (option names + unlabelled logs): a frozen sentence encoder at compile time.
+logs = ["shad0w[compile]", "sentence-transformers>=3.0"]
+# The real-data demo and benchmark reproduction (downloads public datasets).
+demo = ["shad0w[logs]", "datasets>=3.0"]
+dev = ["shad0w[compile]", "pytest>=8", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://2796gaurav.github.io/shad0w"
+Documentation = "https://2796gaurav.github.io/shad0w/docs/"
+Demo = "https://2796gaurav.github.io/shad0w/demo/"
+Source = "https://github.com/2796gaurav/shad0w"
+Issues = "https://github.com/2796gaurav/shad0w/issues"
+Changelog = "https://github.com/2796gaurav/shad0w/blob/main/CHANGELOG.md"
+
+[project.scripts]
+shad0w = "shad0w.__main__:main"
+
+[tool.setuptools]
+packages = ["shad0w", "shad0w.compiler"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+shad0w = ["py.typed", "_native/reflex.c"]
+
+[tool.ruff]
+line-length = 145
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E702", "E731", "E741", "B007", "B008", "B905"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

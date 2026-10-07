@@ -1,0 +1,12 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "command or code, the output, and what you expected" }
+    validations: { required: true }
+  - type: input
+    id: env
+    attributes: { label: Environment, description: "shad0w --version, Python/Node version, OS" }
+    validations: { required: true }

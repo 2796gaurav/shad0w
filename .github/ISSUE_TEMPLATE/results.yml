@@ -1,0 +1,21 @@
+name: Share your numbers
+description: You ran shad0w on your own traffic. Successes and failures are both welcome.
+labels: [results]
+body:
+  - type: input
+    id: task
+    attributes: { label: Decision, description: "e.g. support intent, 64 options; spam yes/no" }
+    validations: { required: true }
+  - type: input
+    id: teacher
+    attributes: { label: Teacher, description: "the model whose answers you logged" }
+  - type: textarea
+    id: numbers
+    attributes:
+      label: Numbers
+      description: shadow log size, alpha, agreement with teacher, certified share, realised disagreement on fresh traffic
+      render: text
+    validations: { required: true }
+  - type: textarea
+    id: notes
+    attributes: { label: Anything surprising? }

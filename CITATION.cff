@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "shad0w: certified microsecond decisions compiled from the model you already run"
+authors:
+  - family-names: Chauhan
+    given-names: Gaurav
+version: 0.1.0
+date-released: 2026-10-07
+license: Apache-2.0
+repository-code: "https://github.com/2796gaurav/shad0w"
+url: "https://2796gaurav.github.io/shad0w"
+keywords: [llm, distillation, classification, learn-then-test, conformal-prediction, cascade, edge-ai]

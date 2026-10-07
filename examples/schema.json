@@ -1,0 +1,11 @@
+{
+  "intent": {
+    "type": "choice",
+    "criteria": {
+      "refund": "the customer wants money back for a purchase",
+      "lost_card": "the customer lost their card or it was stolen",
+      "balance": "the customer asks about their account balance",
+      "transfer": "the customer wants to move money to another account"
+    }
+  }
+}

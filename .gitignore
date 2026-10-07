@@ -1,0 +1,21 @@
+# build
+build/
+dist/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+shad0w/*.so
+shad0w/*.pyd
+shad0w/*.dylib
+wheelhouse/
+# environments and secrets
+.venv/
+.env
+*.key
+# local outputs
+bundles/
+examples/out/
+*.s0
+node_modules/
+*.tgz

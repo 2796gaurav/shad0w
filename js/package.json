@@ -1,0 +1,25 @@
+{
+  "name": "shad0w",
+  "version": "0.1.0",
+  "description": "Certified microsecond decisions in JavaScript: run shad0w tables (compiled from your LLM's answers) in Node, browsers and edge workers. Zero dependencies.",
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  },
+  "files": ["index.js", "index.mjs", "index.d.ts", "README.md", "LICENSE"],
+  "scripts": { "build": "node build.mjs", "prepack": "node build.mjs" },
+  "sideEffects": false,
+  "license": "Apache-2.0",
+  "author": "Gaurav Chauhan <2796gaurav@gmail.com>",
+  "homepage": "https://2796gaurav.github.io/shad0w",
+  "repository": { "type": "git", "url": "git+https://github.com/2796gaurav/shad0w.git", "directory": "js" },
+  "bugs": "https://github.com/2796gaurav/shad0w/issues",
+  "keywords": ["llm", "classification", "intent", "routing", "edge", "cloudflare-workers", "browser", "distillation", "guardrails", "cascade"],
+  "engines": { "node": ">=18" }
+}
