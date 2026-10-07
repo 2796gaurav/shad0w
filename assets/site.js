@@ -13,15 +13,45 @@
     const mb = document.querySelector("[data-menu]");
     if (mb) mb.addEventListener("click", () => document.querySelector(".nav .links").classList.toggle("open"));
 
+    // tiny syntax highlighter for code[data-lang] (py, js, sh, c): comments, strings, keywords, numbers, calls
+    const KW = { py: "import|from|def|return|async|await|for|in|if|else|elif|with|as|lambda|class|None|True|False|print|not|and|or",
+                 js: "import|from|const|let|await|async|return|export|default|function|new|if|else|for|of|typeof|null|true|false",
+                 c: "include|int|float|const|char|return|if|else|void|struct|double|unsigned",
+                 sh: "pip|npm|shad0w|curl|cp|cc|open|python|install|export" };
+    document.querySelectorAll("code[data-lang]").forEach((el) => {
+      const lang = el.dataset.lang, src = el.textContent;
+      const kw = new RegExp(`^(?:${KW[lang] || KW.py})\\b`);
+      let out = "", i = 0;
+      const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      while (i < src.length) {
+        const rest = src.slice(i);
+        let m;
+        if ((m = rest.match(lang === "js" || lang === "c" ? /^\/\/[^\n]*|^\/\*[\s\S]*?\*\// : /^#[^\n]*/))) out += `<span class="tok-c">${esc(m[0])}</span>`;
+        else if ((m = rest.match(/^("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`[^`]*`)/))) out += `<span class="tok-s">${esc(m[0])}</span>`;
+        else if (/[A-Za-z_]/.test(rest[0]) && !/[A-Za-z0-9_.]/.test(src[i - 1] || "") && (m = rest.match(kw))) out += `<span class="tok-k">${m[0]}</span>`;
+        else if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*(?=\()/))) out += `<span class="tok-f">${m[0]}</span>`;
+        else if ((m = rest.match(/^\d[\d_.,]*\b/)) && !/[A-Za-z_]/.test(src[i - 1] || "")) out += `<span class="tok-n">${m[0]}</span>`;
+        else if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) out += esc(m[0]);
+        else { out += esc(rest[0]); i += 1; continue; }
+        i += m[0].length;
+      }
+      el.innerHTML = out;
+    });
+
     // copy buttons: on .install and on every code block
     document.querySelectorAll(".prose pre, .tabs pre").forEach((pre) => {
-      if (pre.parentElement.querySelector(":scope > .copy")) return;
+      let box = pre.parentElement;
+      if (box.querySelector(":scope > .copy")) return;
+      if (!box.classList.contains("codehilite")) {
+        box = document.createElement("div");
+        pre.replaceWith(box);
+        box.appendChild(pre);
+      }
+      box.style.position = "relative";
       const b = document.createElement("button");
       b.className = "copy"; b.textContent = "copy"; b.type = "button";
-      b.style.cssText = "position:absolute;top:10px;right:10px";
-      pre.parentElement.style.position = "relative";
-      b.dataset.copyFrom = "pre";
-      pre.parentElement.appendChild(b);
+      b.style.cssText = "position:absolute;top:8px;right:8px";
+      box.appendChild(b);
     });
     document.addEventListener("click", async (e) => {
       const b = e.target.closest(".copy");

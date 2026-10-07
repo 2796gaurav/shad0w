@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training &amp; retraining · shad0w</title>
+<meta name="description" content="How shad0w learns from your LLM&#x27;s answers, when to train, and how to keep the table fresh.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/training.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Training &amp; retraining · shad0w">
+<meta property="og:description" content="How shad0w learns from your LLM&#x27;s answers, when to train, and how to keep the table fresh."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/training.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html" class=active>Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="training-retraining">Training &amp; retraining<a class="headerlink" href="#training-retraining" title="Permanent link">#</a></h1>
+<h2 id="the-log-is-the-training-data">The log is the training data<a class="headerlink" href="#the-log-is-the-training-data" title="Permanent link">#</a></h2>
+<p>Every time your LLM answers, shad0w appends one line to the question's log:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my card was stolen"</span><span class="p">,</span><span class="w"> </span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"> </span><span class="nt">"ts"</span><span class="p">:</span><span class="w"> </span><span class="mf">1791370000.1</span><span class="p">}</span>
+</code></pre></div>
+
+<p>That is all training needs: your LLM's own answers. You don't label anything. Answers that don't match an option are never logged, and neither are table answers, so the table never trains on itself.</p>
+<p>You can also bring your own logs. Any JSON Lines file with a <code>text</code> field and one field per question works:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"app crashes on login"</span><span class="p">,</span><span class="w"> </span><span class="nt">"team"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mobile"</span><span class="p">,</span><span class="w"> </span><span class="nt">"urgent"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="when-to-train">When to train<a class="headerlink" href="#when-to-train" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>shad0w/intent/log.jsonl: 1,204 answers logged (teacher 1,192, audit 12)
+
+intent: 1,204 answers, 6 different
+  lost_card              412  ########################################
+  refund                 301  #############################
+  ...
+  -&gt; ready to train
+</code></pre></div>
+
+<ul>
+<li><strong>~1,000 answers</strong> gets you started. 100 is the hard minimum.</li>
+<li><strong>10k–100k</strong> is where the share answered by the table climbs high. In our AG News run it went from 31% at 2k answers to 70% at 100k.</li>
+<li><strong>Rare options</strong> need examples too. An option with a handful of answers is rarely certified, which is safe: those inputs go to your LLM.</li>
+</ul>
+<h2 id="train">Train<a class="headerlink" href="#train" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>                          <span class="c1"># Python: compile + certify + hot-swap</span>
+<span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">min_rows</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>  <span class="c1"># a stricter bound; try with fewer rows</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w"> </span>--out<span class="w"> </span>shad0w/intent/bundle<span class="w">      </span><span class="c1"># finds questions and options in the log</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">                                </span><span class="c1"># the proxy / decision() folder layout</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>log.jsonl<span class="w"> </span>--out<span class="w"> </span>bundle<span class="w"> </span>--schema<span class="w"> </span>schema.json<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.05
+</code></pre></div>
+
+<p>A run of 1,000–10,000 answers takes seconds to a minute on a laptop CPU. Training uses torch when it is installed (part of <code>[compile]</code>); without torch it falls back to scipy, which solves the same objective more slowly.</p>
+<p>The training command:</p>
+<ol>
+<li>holds out up to 30% of the answers (at most 3,000) for calibration;</li>
+<li>trains the table on the rest;</li>
+<li>certifies on the held-out part;</li>
+<li>writes <code>manifest.json</code>, one <code>.s0</code> table per question, <code>certificate.json</code> and <code>schema.json</code>.</li>
+</ol>
+<h2 id="keep-it-fresh">Keep it fresh<a class="headerlink" href="#keep-it-fresh" title="Permanent link">#</a></h2>
+<p>Traffic changes. New products, new phrasings and new kinds of users all move the mix. Three ways to stay current:</p>
+<ul>
+<li><strong>Retrain on a schedule.</strong> The log keeps growing with every answer your LLM gives on deferred traffic, plus the spot checks. Retrain weekly: <code>shad0w train ...</code>. A running proxy or <code>decision()</code> picks up the new table automatically (or call <code>.reload()</code>).</li>
+<li><strong>Retrain automatically.</strong> <code>auto_train=2000</code> (Python) or <code>--auto-train 2000</code> (proxy) retrains in the background every 2,000 new answers.</li>
+<li><strong>Re-certify only.</strong> <code>shad0w certify --bundle B --data fresh.jsonl</code> keeps the table and refreshes its threshold on fresh traffic it never trained on.</li>
+</ul>
+<p>Signals that it is time:</p>
+<ul>
+<li>the dashboard's live bound creeps toward α;</li>
+<li><code>flag="drift"</code> shows up;</li>
+<li>the share answered by the table drops.</li>
+</ul>
+<h2 id="choosing">Choosing α<a class="headerlink" href="#choosing" title="Permanent link">#</a></h2>
+<p><code>alpha</code> is the most disagreement with your LLM you accept among table answers. The default is 5%. A smaller α means the table answers less, but agrees more.</p>
+<p>For example, on BANKING77 with a small open teacher model, the table answered 69.4% of test traffic at α = 5% and 49.7% at α = 2%. Realised disagreement was 4.6% and 1.4%.</p>
+<h2 id="human-labels-instead-of-an-llm">Human labels instead of an LLM<a class="headerlink" href="#human-labels-instead-of-an-llm" title="Permanent link">#</a></h2>
+<p>Have labelled data? Compile from it directly, and certify against the truth instead of your LLM:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>compile<span class="w">   </span>--schema<span class="w"> </span>schema.json<span class="w"> </span>--data<span class="w"> </span>labels.jsonl<span class="w"> </span>--out<span class="w"> </span>bundle/
+shad0w<span class="w"> </span>calibrate<span class="w"> </span>--bundle<span class="w"> </span>bundle/<span class="w"> </span>--data<span class="w"> </span>real_labels.jsonl<span class="w">          </span><span class="c1"># ~300 real labels per question</span>
+</code></pre></div>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="observability.html"><small>← previous</small>Monitoring</a><a class="next" href="cli.html"><small>next →</small>Command line</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#the-log-is-the-training-data">The log is the training data</a></li>
+<li><a href="#when-to-train">When to train</a></li>
+<li><a href="#train">Train</a></li>
+<li><a href="#keep-it-fresh">Keep it fresh</a></li>
+<li><a href="#choosing">Choosing α</a></li>
+<li><a href="#human-labels-instead-of-an-llm">Human labels instead of an LLM</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

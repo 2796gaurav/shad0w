@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript &amp; TypeScript · shad0w</title>
+<meta name="description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/javascript.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="JavaScript &amp; TypeScript · shad0w">
+<meta property="og:description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/javascript.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html" class=active>JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="javascript-typescript">JavaScript &amp; TypeScript<a class="headerlink" href="#javascript-typescript" title="Permanent link">#</a></h1>
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>i<span class="w"> </span>shad0wllm
+</code></pre></div>
+
+<p>Zero dependencies, ESM + CommonJS, TypeScript types included. It runs in Node 18+, browsers, Cloudflare Workers, Deno and Bun. Decisions are identical to Python and C on the same table.</p>
+<h2 id="1-put-it-in-front-of-your-llm">1. Put it in front of your LLM<a class="headerlink" href="#1-put-it-in-front-of-your-llm" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decision</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">refund</span><span class="o">:</span><span class="w"> </span><span class="s2">"wants money back"</span><span class="p">,</span><span class="w"> </span><span class="nx">lost_card</span><span class="o">:</span><span class="w"> </span><span class="s2">"card lost or stolen"</span><span class="p">,</span><span class="w"> </span><span class="nx">balance</span><span class="o">:</span><span class="w"> </span><span class="s2">"asks about balance"</span><span class="p">,</span><span class="w"> </span><span class="nx">other</span><span class="o">:</span><span class="w"> </span><span class="s2">"anything else"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span><span class="w">               </span><span class="c1">// reads OPENAI_API_KEY in Node; pass apiKey elsewhere</span>
+<span class="w">  </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/bundle"</span><span class="p">,</span><span class="w">          </span><span class="c1">// optional: a trained table (folder in Node, URL in browsers/workers)</span>
+<span class="w">  </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/log.jsonl"</span><span class="p">,</span><span class="w">          </span><span class="c1">// where LLM answers go: a file (Node), a function, or a stream</span>
+<span class="p">});</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">intent</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">);</span>
+<span class="c1">// { answer: "lost_card", source: "table", confidence: 0.99, certified: true, flag: null, latencyUs: 9.8 }</span>
+</code></pre></div>
+
+<p><code>llm</code> takes the same <code>"provider/model"</code> names as Python (<code>anthropic/…</code>, <code>groq/…</code>, <code>ollama/llama3.1</code>, …), or <code>baseURL</code> for any OpenAI-compatible server. You can also pass an async function <code>(text) =&gt; answer</code>.</p>
+<h2 id="2-train-python-once">2. Train (Python, once)<a class="headerlink" href="#2-train-python-once" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w"> </span>--out<span class="w"> </span>shad0w/intent/bundle
+</code></pre></div>
+
+<p>Ship the bundle folder (<code>manifest.json</code> plus one <code>.s0</code> file per question, about 2 MB) with your app, or put it on a CDN.</p>
+<h2 id="3-serve">3. Serve<a class="headerlink" href="#3-serve" title="Permanent link">#</a></h2>
+<p><strong>Cloudflare Worker</strong>: certified answers never leave the edge.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decision</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">intent</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">env</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">intent</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span><span class="w"> </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">OPENAI_API_KEY</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">BUNDLE_URL</span><span class="p">,</span><span class="w">                         </span><span class="c1">// e.g. a static-assets or R2 URL</span>
+<span class="w">      </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">row</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">LOG_QUEUE</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">row</span><span class="p">),</span><span class="w">           </span><span class="c1">// collect LLM answers for the next training run</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">Response</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">intent</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="nx">text</span><span class="p">));</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p><strong>Browser</strong>: decide as the user types, with no server.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"https://cdn.jsdelivr.net/npm/shad0wllm/index.mjs"</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">bundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Bundle</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">"/models/intent"</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bundle</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">value</span><span class="p">).</span><span class="nx">answers</span><span class="p">.</span><span class="nx">intent</span><span class="p">;</span><span class="w">   </span><span class="c1">// { choice, confidence, certified, flag, probabilities }</span>
+</code></pre></div>
+
+<h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
+<ul>
+<li><strong><code>decision(name, opts)</code> → <code>Promise&lt;Shadow&gt;</code>.</strong> <code>opts</code>: <code>options</code>, <code>llm</code>, <code>bundle</code>, <code>log</code>, <code>auditRate</code>, <code>onDecision</code>, <code>baseURL</code>, <code>apiKey</code>, <code>system</code>, <code>temperature</code>, <code>retries</code>, <code>headers</code>, <code>fetch</code>.</li>
+<li><strong><code>new Shadow(bundle | null, { teacher, question, log, auditRate, onDecision })</code>.</strong></li>
+<li><code>await shadow.decide(text, { teacher })</code> → <code>{ answer, source, confidence, certified, flag, latencyUs }</code>.</li>
+<li><code>shadow.stats()</code> → <code>{ table, teacher, offload, audits, auditDisagreements, auditDisagreement }</code>.</li>
+<li><strong><code>openaiTeacher({ options, model, baseURL, apiKey, fetch, system })</code> → <code>async (text) =&gt; option</code>.</strong> It uses structured output with a plain-text fallback, retries with backoff, and maps every reply to exactly one option (or throws).</li>
+<li><strong><code>Bundle.load(dirOrUrl)</code>; <code>bundle.decide(text, { questions })</code></strong> → <code>{ answers: { [name]: Answer } }</code>.</li>
+<li><strong><code>new Table(arrayBuffer, labels).decide(text)</code>.</strong> One <code>.s0</code> file; returns <code>{ index, choice, confidence, probabilities }</code>.</li>
+<li><strong><code>matchOption(reply, options)</code>.</strong> The same reply-to-option mapping the teachers use.</li>
+</ul>
+<p>The <code>log</code> row format matches Python's, so <code>shad0w train</code> reads logs written by either language.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="python.html"><small>← previous</small>Python</a><a class="next" href="http.html"><small>next →</small>HTTP</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-put-it-in-front-of-your-llm">1. Put it in front of your LLM</a></li>
+<li><a href="#2-train-python-once">2. Train (Python, once)</a></li>
+<li><a href="#3-serve">3. Serve</a></li>
+<li><a href="#api">API</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

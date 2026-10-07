@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The proxy (zero code changes) · shad0w</title>
+<meta name="description" content="An OpenAI-compatible gateway. Point base_url at it, mark which calls are decisions, and shad0w does the rest.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/proxy.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="The proxy (zero code changes) · shad0w">
+<meta property="og:description" content="An OpenAI-compatible gateway. Point base_url at it, mark which calls are decisions, and shad0w does the rest."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/proxy.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html" class=active>The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="the-proxy-zero-code-changes">The proxy: zero code changes<a class="headerlink" href="#the-proxy-zero-code-changes" title="Permanent link">#</a></h1>
+<p><code>shad0w proxy</code> sits between your app and any OpenAI-compatible API. Your code keeps using its OpenAI SDK. Only the <code>base_url</code> changes.</p>
+<h2 id="1-start-it">1. Start it<a class="headerlink" href="#1-start-it" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>shad0w proxy on http://127.0.0.1:8010/v1  -&gt;  https://api.openai.com/v1
+  dashboard http://127.0.0.1:8010/   metrics http://127.0.0.1:8010/metrics   data /home/you/app/shad0w
+</code></pre></div>
+
+<p>The upstream can be OpenAI, Groq, Together, OpenRouter, Mistral, a LiteLLM proxy, Ollama (<code>http://localhost:11434/v1</code>), vLLM or anything else that speaks the chat completions API.</p>
+<h2 id="2-point-your-client-at-it">2. Point your client at it<a class="headerlink" href="#2-point-your-client-at-it" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:8010/v1"</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">OpenAI</span><span class="p">({</span><span class="w"> </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="s2">"http://localhost:8010/v1"</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<p>Your API key is forwarded to the upstream as usual. To keep the key in the proxy instead, use <code>--api-key-env OPENAI_API_KEY</code>.</p>
+<h2 id="3-mark-which-calls-are-decisions">3. Mark which calls are decisions<a class="headerlink" href="#3-mark-which-calls-are-decisions" title="Permanent link">#</a></h2>
+<p>Pick whichever is easiest:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># a header</span>
+<span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4o-mini"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">msgs</span><span class="p">,</span> <span class="n">extra_headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-Shad0w-Question"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">})</span>
+
+<span class="c1"># a model name: "shad0w/&lt;question&gt;" (the upstream model comes from --model, or "shad0w/intent@gpt-4o-mini")</span>
+<span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"shad0w/intent@gpt-4o-mini"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">msgs</span><span class="p">)</span>
+
+<span class="c1"># a structured-output schema named after the question: nothing else to change</span>
+<span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4o-mini"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">msgs</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"json_schema"</span><span class="p">,</span>
+    <span class="s2">"json_schema"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">,</span> <span class="s2">"schema"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+        <span class="s2">"properties"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"intent"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span> <span class="s2">"enum"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">]}}}}})</span>
+</code></pre></div>
+
+<p>The text shad0w learns from is the <strong>last user message</strong>. Put the thing to classify there and keep instructions in the system message.</p>
+<p>Unmarked requests (chat, embeddings, image calls, streaming) are forwarded untouched.</p>
+<h2 id="what-happens-to-a-decision">What happens to a decision<a class="headerlink" href="#what-happens-to-a-decision" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>What the proxy does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No trained table yet</td>
+<td>Forwards to the upstream, returns its reply untouched, logs the answer to <code>shad0w/&lt;question&gt;/log.jsonl</code></td>
+</tr>
+<tr>
+<td>Table certified for this text</td>
+<td>Answers itself in microseconds with a normal <code>chat.completion</code></td>
+</tr>
+<tr>
+<td>Table not sure</td>
+<td>Forwards, returns the reply, logs the answer (training data for next time)</td>
+</tr>
+<tr>
+<td>Upstream error</td>
+<td>Returns the upstream's error as-is</td>
+</tr>
+</tbody>
+</table>
+<p>A table answer is shaped like the request asked:</p>
+<ul>
+<li>plain text: the option name;</li>
+<li>JSON object mode: <code>{"intent": "lost_card"}</code>;</li>
+<li>your JSON schema: your field name;</li>
+<li><code>stream: true</code>: server-sent events.</li>
+</ul>
+<p>It carries an extra <code>shad0w</code> field, plus the headers <code>x-shad0w-source: table</code>, <code>x-shad0w-confidence</code> and <code>x-shad0w-latency-us</code>.</p>
+<h2 id="4-train">4. Train<a class="headerlink" href="#4-train" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w">        </span><span class="c1"># ready yet?</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">       </span><span class="c1"># the running proxy picks the new table up within a second</span>
+</code></pre></div>
+
+<p>Or let the proxy do it: <code>shad0w proxy --upstream ... --auto-train 1000</code> retrains every 1,000 new answers. Training needs <code>pip install "shad0wllm[compile]"</code>.</p>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--upstream</code></td>
+<td><code>https://api.openai.com/v1</code></td>
+<td>the real API</td>
+</tr>
+<tr>
+<td><code>--dir</code></td>
+<td><code>shad0w</code></td>
+<td>logs and tables live in <code>&lt;dir&gt;/&lt;question&gt;/</code></td>
+</tr>
+<tr>
+<td><code>--model</code></td>
+<td></td>
+<td>upstream model for <code>model="shad0w/&lt;question&gt;"</code></td>
+</tr>
+<tr>
+<td><code>--api-key-env</code></td>
+<td></td>
+<td>send this env var as the upstream key instead of the client's</td>
+</tr>
+<tr>
+<td><code>--audit-rate</code></td>
+<td><code>0.01</code></td>
+<td>share of table answers re-asked upstream in the background, as live spot checks</td>
+</tr>
+<tr>
+<td><code>--auto-train</code></td>
+<td>off</td>
+<td>retrain every N new answers</td>
+</tr>
+<tr>
+<td><code>--alpha</code></td>
+<td><code>0.05</code></td>
+<td>certified disagreement bound for training</td>
+</tr>
+<tr>
+<td><code>--cost-per-call</code></td>
+<td></td>
+<td>your cost per LLM call, to show money saved on the dashboard</td>
+</tr>
+<tr>
+<td><code>--schema</code></td>
+<td></td>
+<td>a <code>schema.json</code> naming each question's options (otherwise taken from the request's enum or from the answers seen)</td>
+</tr>
+<tr>
+<td><code>--no-text</code></td>
+<td></td>
+<td>keep request text off the dashboard</td>
+</tr>
+<tr>
+<td><code>--host</code>, <code>--port</code></td>
+<td><code>127.0.0.1</code>, <code>8010</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The proxy has no authentication of its own. Keep it on localhost or inside your network.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="connect-your-llm.html"><small>← previous</small>Connect your LLM</a><a class="next" href="python.html"><small>next →</small>Python</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-start-it">1. Start it</a></li>
+<li><a href="#2-point-your-client-at-it">2. Point your client at it</a></li>
+<li><a href="#3-mark-which-calls-are-decisions">3. Mark which calls are decisions</a></li>
+<li><a href="#what-happens-to-a-decision">What happens to a decision</a></li>
+<li><a href="#4-train">4. Train</a></li>
+<li><a href="#options">Options</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limits · shad0w</title>
+<meta name="description" content="Where shad0w does not help, measured.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/limits.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Limits · shad0w">
+<meta property="og:description" content="Where shad0w does not help, measured."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/limits.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html" class=active>Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="limits">Limits<a class="headerlink" href="#limits" title="Permanent link">#</a></h1>
+<p>shad0w is careful engineering on well-known ideas: a fastText-shaped table and a Learn-then-Test certificate. Knowing where it stops is what makes the guarantee useful.</p>
+<h2 id="it-picks-it-doesnt-write">It picks; it doesn't write<a class="headerlink" href="#it-picks-it-doesnt-write" title="Permanent link">#</a></h2>
+<p>One answer from a fixed list per question. Chat, summaries, extraction and reasoning stay with your LLM.</p>
+<h2 id="surface-wording-not-meaning">Surface wording, not meaning<a class="headerlink" href="#surface-wording-not-meaning" title="Permanent link">#</a></h2>
+<p>The table learns from words and character patterns. It is excellent at intents, routes, topics and policies with distinctive wording. It is poor at:</p>
+<ul>
+<li><strong>sentiment, tone, sarcasm and emotion:</strong> about 79% on SST-2 even with perfect labels;</li>
+<li><strong>world knowledge and reasoning:</strong> "is this claim true?";</li>
+<li><strong>long documents where one clause decides:</strong> legal clause types reached only 13% offload in our tests.</li>
+</ul>
+<p>In these cases shad0w certifies little or nothing and passes the traffic to your LLM. That is safe, but it saves you nothing.</p>
+<h2 id="the-guarantee-is-against-your-llm">The guarantee is against your LLM<a class="headerlink" href="#the-guarantee-is-against-your-llm" title="Permanent link">#</a></h2>
+<p>A certified table in front of a wrong LLM is wrong the same way. For a bound against the truth, calibrate on ~300 human labels.</p>
+<h2 id="it-assumes-traffic-like-the-calibration-traffic">It assumes traffic like the calibration traffic<a class="headerlink" href="#it-assumes-traffic-like-the-calibration-traffic" title="Permanent link">#</a></h2>
+<p>A big change in what users send can break the bound. The drift guard catches shifts that lower confidence; the spot checks catch the rest, more slowly. Retrain regularly.</p>
+<h2 id="most-accurate-answer-every-time">Most accurate answer, every time?<a class="headerlink" href="#most-accurate-answer-every-time" title="Permanent link">#</a></h2>
+<p>Then call your best model. A 9B decision model scored 7 points higher on BANKING77 than the table, at about 70,000× the latency. shad0w belongs <strong>in front of</strong> that model, not instead of it.</p>
+<h2 id="no-built-in-auth">No built-in auth<a class="headerlink" href="#no-built-in-auth" title="Permanent link">#</a></h2>
+<p><code>shad0w serve</code> and <code>shad0w proxy</code> have no authentication. Run them on localhost or behind your own gateway.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="guarantee.html"><small>← previous</small>The guarantee</a><a class="next" href="faq.html"><small>next →</small>FAQ</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#it-picks-it-doesnt-write">It picks; it doesn't write</a></li>
+<li><a href="#surface-wording-not-meaning">Surface wording, not meaning</a></li>
+<li><a href="#the-guarantee-is-against-your-llm">The guarantee is against your LLM</a></li>
+<li><a href="#it-assumes-traffic-like-the-calibration-traffic">It assumes traffic like the calibration traffic</a></li>
+<li><a href="#most-accurate-answer-every-time">Most accurate answer, every time?</a></li>
+<li><a href="#no-built-in-auth">No built-in auth</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

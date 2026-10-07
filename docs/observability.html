@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring · shad0w</title>
+<meta name="description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/observability.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Monitoring · shad0w">
+<meta property="og:description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/observability.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html" class=active>Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">#</a></h1>
+<p>You should be able to see, at any moment, how much the table is answering, how fast, why it deferred, and whether it still agrees with your LLM. shad0w gives you that out of the box.</p>
+<h2 id="the-dashboard">The dashboard<a class="headerlink" href="#the-dashboard" title="Permanent link">#</a></h2>
+<p><code>shad0w proxy</code> and <code>shad0w serve</code> both serve a live page at <code>/</code>:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--cost-per-call<span class="w"> </span><span class="m">0</span>.0006
+open<span class="w"> </span>http://localhost:8010
+</code></pre></div>
+
+<p>It shows, updated every second:</p>
+<ul>
+<li><strong>share answered by the table</strong> (with a sparkline);</li>
+<li><strong>LLM calls saved</strong>, <strong>time saved</strong> (calls saved × your LLM's measured mean latency) and <strong>money saved</strong> (with <code>--cost-per-call</code>);</li>
+<li>per question: <strong>table vs LLM latency</strong> (p50), <strong>why the table deferred</strong> (not sure, drift, not trained), and the <strong>live safety bound</strong>;</li>
+<li>the latest decisions, with source, confidence and latency (<code>--no-text</code> hides the text).</li>
+</ul>
+<p>The <strong>live safety bound</strong> is the 90% upper confidence bound on disagreement among table answers, computed from background spot checks (<code>audit_rate</code>, default 1%). If it rises above α, the dashboard turns red. Re-train.</p>
+<p>In a terminal:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>watch<span class="w"> </span>--url<span class="w"> </span>http://localhost:8010
+</code></pre></div>
+
+<h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">#</a></h2>
+<p><code>GET /metrics</code>:</p>
+<div class="codehilite"><pre><span></span><code>shad0w_decisions_total{question="intent",source="table"} 8123
+shad0w_decisions_total{question="intent",source="teacher"} 3877
+shad0w_flags_total{question="intent",flag="low_confidence"} 3790
+shad0w_offload_ratio{question="intent"} 0.677
+shad0w_audit_disagreement_upper{question="intent"} 0.041
+shad0w_alpha{question="intent"} 0.05
+shad0w_llm_calls_saved_total 8123
+shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 8090
+...
+</code></pre></div>
+
+<p>Alert on <code>shad0w_audit_disagreement_upper &gt; shad0w_alpha</code>, and on a falling <code>shad0w_offload_ratio</code> (traffic changed).</p>
+<p>In your own app, share one <code>Metrics</code> object:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">metrics</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Metrics</span><span class="p">(</span><span class="n">cost_per_call</span><span class="o">=</span><span class="mf">0.0006</span><span class="p">)</span>
+<span class="n">intent</span>  <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+<span class="n">urgency</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"urgent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+<span class="n">metrics</span><span class="o">.</span><span class="n">prometheus</span><span class="p">()</span>      <span class="c1"># text for your /metrics route</span>
+<span class="n">metrics</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>        <span class="c1"># the same data as a dict</span>
+</code></pre></div>
+
+<h2 id="logs">Logs<a class="headerlink" href="#logs" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="nv">SHAD0W_LOG</span><span class="o">=</span>debug<span class="w"> </span>python<span class="w"> </span>app.py
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>14:02:11 shad0w DEBUG intent -&gt; 'lost_card' via table conf=0.993 flag=None 9.4us | my card was stolen
+14:02:11 shad0w DEBUG intent -&gt; 'other' via teacher conf=0.41 flag=low_confidence 612034.2us | explain interest
+14:05:40 shad0w INFO trained 'intent' on 1204 answers in 3.9s: certified share 68.2% at alpha=0.05
+</code></pre></div>
+
+<p><code>SHAD0W_LOG=info</code> shows only training, reloads and spot-check disagreements. Or attach your own handler to the <code>shad0w</code> logger.</p>
+<h2 id="hooks-and-traces">Hooks and traces<a class="headerlink" href="#hooks-and-traces" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>            <span class="c1"># Langfuse, Datadog, Sentry, your warehouse...</span>
+    <span class="n">analytics</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="s2">"shad0w"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
+                               <span class="s2">"us"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">latency_us</span><span class="p">,</span> <span class="s2">"flag"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">flag</span><span class="p">})</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">on_decision</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="s2">"decisions.jsonl"</span><span class="p">)</span>
+</code></pre></div>
+
+<p><code>trace=</code> writes <strong>every</strong> decision (table and LLM) as one JSON line. It is separate from the training log on purpose: table answers never become training data.</p>
+<h2 id="opentelemetry">OpenTelemetry<a class="headerlink" href="#opentelemetry" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>opentelemetry-api<span class="w"> </span>opentelemetry-sdk
+<span class="nv">SHAD0W_OTEL</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>python<span class="w"> </span>app.py
+</code></pre></div>
+
+<p>Each decision becomes a span named <code>shad0w.decide</code> with attributes:</p>
+<ul>
+<li><code>shad0w.question</code>, <code>shad0w.source</code>, <code>shad0w.answer</code>, <code>shad0w.confidence</code>, <code>shad0w.certified</code>, <code>shad0w.flag</code>;</li>
+<li><code>gen_ai.request.model</code>, the teacher.</li>
+</ul>
+<h2 id="explain-one-decision">Explain one decision<a class="headerlink" href="#explain-one-decision" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>try<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span><span class="s2">"the ATM ate my card"</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>the ATM ate my card
+  ✓ table  card_swallowed  (confidence 0.962, needs 0.911)  10.2 µs
+     certified: answered by the table
+     top: card_swallowed 0.96, lost_card 0.03, other 0.01
+</code></pre></div>
+
+<p>The same from Python: <code>intent.explain(text)</code>.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="frameworks.html"><small>← previous</small>LangChain, LiteLLM, AI SDK…</a><a class="next" href="training.html"><small>next →</small>Training & retraining</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#the-dashboard">The dashboard</a></li>
+<li><a href="#prometheus">Prometheus</a></li>
+<li><a href="#logs">Logs</a></li>
+<li><a href="#hooks-and-traces">Hooks and traces</a></li>
+<li><a href="#opentelemetry">OpenTelemetry</a></li>
+<li><a href="#explain-one-decision">Explain one decision</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

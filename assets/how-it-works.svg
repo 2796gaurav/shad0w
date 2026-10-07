@@ -1,45 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Four steps: shadow, compile, certify, serve">
-<defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06060b"/><stop offset="1" stop-color="#0e0b1f"/></linearGradient>
-<pattern id="grid2" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity="0.035"/></pattern></defs>
-<style>.t{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;fill:#ecebff}.m{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}</style>
-<rect width="1280" height="300" rx="22" fill="url(#bg2)"/><rect width="1280" height="300" rx="22" fill="url(#grid2)"/>
-<g transform="translate(40,50)">
-  <rect width="270" height="200" rx="18" fill="#11112a" stroke="#8b6cff" stroke-opacity="0.9" stroke-width="1.5">
-    <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.249;0.250;1.000" values="1;1;0.5;0.5"/></rect>
-  <g><animate attributeName="opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.249;0.250;1.000" values="1;1;0.5;0.5"/>
-  <text x="24" y="46" class="t m" font-size="15" style="fill:#8b6cff">01</text>
-  <text x="24" y="92" class="t" font-size="30" font-weight="700">Shadow</text>
-  <text x="24" y="132" class="t" font-size="16" style="fill:#8a8aa3">your model keeps serving;</text>
-  <text x="24" y="156" class="t" font-size="16" style="fill:#8a8aa3">its answers are logged</text></g>
-</g>
-<path d="M 316 150.0 h 28" stroke="#8b6cff" stroke-width="2" marker-end="none"/><path d="M 340 144.0 l 8 6 l -8 6" stroke="#8b6cff" stroke-width="2" fill="none"/>
-<g transform="translate(350,50)">
-  <rect width="270" height="200" rx="18" fill="#11112a" stroke="#a78bfa" stroke-opacity="0.9" stroke-width="1.5">
-    <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.249;0.250;0.499;0.500;1.000" values="0.5;0.5;1;1;0.5;0.5"/></rect>
-  <g><animate attributeName="opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.249;0.250;0.499;0.500;1.000" values="0.5;0.5;1;1;0.5;0.5"/>
-  <text x="24" y="46" class="t m" font-size="15" style="fill:#a78bfa">02</text>
-  <text x="24" y="92" class="t" font-size="30" font-weight="700">Compile</text>
-  <text x="24" y="132" class="t" font-size="16" style="fill:#8a8aa3">a 2 MB int8 table,</text>
-  <text x="24" y="156" class="t" font-size="16" style="fill:#8a8aa3">no tokenizer, any CPU</text></g>
-</g>
-<path d="M 626 150.0 h 28" stroke="#a78bfa" stroke-width="2" marker-end="none"/><path d="M 650 144.0 l 8 6 l -8 6" stroke="#a78bfa" stroke-width="2" fill="none"/>
-<g transform="translate(660,50)">
-  <rect width="270" height="200" rx="18" fill="#11112a" stroke="#22d3ee" stroke-opacity="0.9" stroke-width="1.5">
-    <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.499;0.500;0.749;0.750;1.000" values="0.5;0.5;1;1;0.5;0.5"/></rect>
-  <g><animate attributeName="opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.499;0.500;0.749;0.750;1.000" values="0.5;0.5;1;1;0.5;0.5"/>
-  <text x="24" y="46" class="t m" font-size="15" style="fill:#22d3ee">03</text>
-  <text x="24" y="92" class="t" font-size="30" font-weight="700">Certify</text>
-  <text x="24" y="132" class="t" font-size="16" style="fill:#8a8aa3">Learn-then-Test: disagreement</text>
-  <text x="24" y="156" class="t" font-size="16" style="fill:#8a8aa3">with your model ≤ α</text></g>
-</g>
-<path d="M 936 150.0 h 28" stroke="#22d3ee" stroke-width="2" marker-end="none"/><path d="M 960 144.0 l 8 6 l -8 6" stroke="#22d3ee" stroke-width="2" fill="none"/>
-<g transform="translate(970,50)">
-  <rect width="270" height="200" rx="18" fill="#11112a" stroke="#34d399" stroke-opacity="0.9" stroke-width="1.5">
-    <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.749;0.750;0.999;1.000" values="0.5;0.5;1;1;0.5"/></rect>
-  <g><animate attributeName="opacity" dur="8s" repeatCount="indefinite" keyTimes="0.000;0.749;0.750;0.999;1.000" values="0.5;0.5;1;1;0.5"/>
-  <text x="24" y="46" class="t m" font-size="15" style="fill:#34d399">04</text>
-  <text x="24" y="92" class="t" font-size="30" font-weight="700">Serve</text>
-  <text x="24" y="132" class="t" font-size="16" style="fill:#8a8aa3">certified → µs, in-process;</text>
-  <text x="24" y="156" class="t" font-size="16" style="fill:#8a8aa3">the rest → your model</text></g>
-</g>
-<text x="640.0" y="278" class="t" font-size="14" text-anchor="middle" style="fill:#8a8aa3">the deferred answers are logged too, so the share the table can certify grows with traffic: 31% → 70% on AG News</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Four steps: watch, train, certify, serve">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07070c"/><stop offset="1" stop-color="#11111e"/></linearGradient>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="1280" height="300" rx="26" fill="url(#bg)"/>
+<g transform="translate(52 42)">
+<rect width="272" height="216" rx="22" fill="#ffffff" fill-opacity=".03" stroke="#2a2a44"/>
+<rect width="272" height="216" rx="22" fill="none" stroke="#5cc8ff" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;.1;.25;1" dur="6s" begin="0.0s" repeatCount="indefinite"/></rect>
+<circle cx="40" cy="44" r="20" fill="#5cc8ff" fill-opacity=".15"/><text x="40" y="51" text-anchor="middle" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#5cc8ff">1</text>
+<text x="74" y="54" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="700" fill="#f3f2ff" letter-spacing="-.5">Watch</text>
+<text x="24" y="108" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">your LLM answers;</text>
+<text x="24" y="132" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">shad0w writes it down</text>
+<rect x="24" y="158" width="113" height="34" rx="10" fill="#5cc8ff" fill-opacity=".12"/>
+<text x="38" y="181" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#5cc8ff">log.jsonl</text></g>
+<path d="M 328 150 l 26 0" stroke="#6c6b88" stroke-width="2.5" marker-end=""/><path d="M 348 144 l 7 6 l -7 6" fill="none" stroke="#6c6b88" stroke-width="2.5"/>
+<circle r="4" fill="#3ef0b0" filter="url(#glow)"><animateMotion path="M 328 150 l 26 0" dur="1.5s" begin="1.0s" repeatCount="indefinite"/></circle>
+<g transform="translate(360 42)">
+<rect width="272" height="216" rx="22" fill="#ffffff" fill-opacity=".03" stroke="#2a2a44"/>
+<rect width="272" height="216" rx="22" fill="none" stroke="#8b7bff" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;.1;.25;1" dur="6s" begin="1.5s" repeatCount="indefinite"/></rect>
+<circle cx="40" cy="44" r="20" fill="#8b7bff" fill-opacity=".15"/><text x="40" y="51" text-anchor="middle" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#8b7bff">2</text>
+<text x="74" y="54" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="700" fill="#f3f2ff" letter-spacing="-.5">Train</text>
+<text x="24" y="108" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">~1,000 answers → a small</text>
+<text x="24" y="132" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">word table, in a minute</text>
+<rect x="24" y="158" width="113" height="34" rx="10" fill="#8b7bff" fill-opacity=".12"/>
+<text x="38" y="181" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8b7bff">intent.s0</text></g>
+<path d="M 636 150 l 26 0" stroke="#6c6b88" stroke-width="2.5" marker-end=""/><path d="M 656 144 l 7 6 l -7 6" fill="none" stroke="#6c6b88" stroke-width="2.5"/>
+<circle r="4" fill="#3ef0b0" filter="url(#glow)"><animateMotion path="M 636 150 l 26 0" dur="1.5s" begin="2.5s" repeatCount="indefinite"/></circle>
+<g transform="translate(668 42)">
+<rect width="272" height="216" rx="22" fill="#ffffff" fill-opacity=".03" stroke="#2a2a44"/>
+<rect width="272" height="216" rx="22" fill="none" stroke="#3ef0b0" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;.1;.25;1" dur="6s" begin="3.0s" repeatCount="indefinite"/></rect>
+<circle cx="40" cy="44" r="20" fill="#3ef0b0" fill-opacity=".15"/><text x="40" y="51" text-anchor="middle" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#3ef0b0">3</text>
+<text x="74" y="54" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="700" fill="#f3f2ff" letter-spacing="-.5">Certify</text>
+<text x="24" y="108" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">proves ≥ 95% agreement</text>
+<text x="24" y="132" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">on answers it never saw</text>
+<rect x="24" y="158" width="122" height="34" rx="10" fill="#3ef0b0" fill-opacity=".12"/>
+<text x="38" y="181" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#3ef0b0">≤ 5% · 90%</text></g>
+<path d="M 944 150 l 26 0" stroke="#6c6b88" stroke-width="2.5" marker-end=""/><path d="M 964 144 l 7 6 l -7 6" fill="none" stroke="#6c6b88" stroke-width="2.5"/>
+<circle r="4" fill="#3ef0b0" filter="url(#glow)"><animateMotion path="M 944 150 l 26 0" dur="1.5s" begin="4.0s" repeatCount="indefinite"/></circle>
+<g transform="translate(976 42)">
+<rect width="272" height="216" rx="22" fill="#ffffff" fill-opacity=".03" stroke="#2a2a44"/>
+<rect width="272" height="216" rx="22" fill="none" stroke="#3ef0b0" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;.1;.25;1" dur="6s" begin="4.5s" repeatCount="indefinite"/></rect>
+<circle cx="40" cy="44" r="20" fill="#3ef0b0" fill-opacity=".15"/><text x="40" y="51" text-anchor="middle" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#3ef0b0">4</text>
+<text x="74" y="54" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="700" fill="#f3f2ff" letter-spacing="-.5">Serve</text>
+<text x="24" y="108" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">certified: ~10 µs locally</text>
+<text x="24" y="132" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#a09fbd">unsure: your LLM, logged</text>
+<rect x="24" y="158" width="141" height="34" rx="10" fill="#3ef0b0" fill-opacity=".12"/>
+<text x="38" y="181" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#3ef0b0">source=table</text></g>
+</svg>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frameworks · shad0w</title>
+<meta name="description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, FastAPI, Django and Cloudflare Workers.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/frameworks.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Frameworks · shad0w">
+<meta property="og:description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, FastAPI, Django and Cloudflare Workers."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/frameworks.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html" class=active>LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <article class="prose"><h1 id="frameworks">Frameworks<a class="headerlink" href="#frameworks" title="Permanent link">#</a></h1>
+<p>shad0w needs one thing from a framework: a way to ask the LLM for an answer. Every recipe below is that, plus one line.</p>
+<h2 id="langchain-langgraph">LangChain / LangGraph<a class="headerlink" href="#langchain-langgraph" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableLambda</span>
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4o-mini"</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">teacher</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">llm_teacher</span><span class="p">([</span><span class="s2">"billing"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">question</span><span class="o">=</span><span class="s2">"team"</span><span class="p">,</span>
+                             <span class="n">complete</span><span class="o">=</span><span class="k">lambda</span> <span class="n">messages</span><span class="p">:</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="n">team</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"team"</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">teacher</span><span class="p">)</span>
+
+<span class="n">route</span> <span class="o">=</span> <span class="n">RunnableLambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">team</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span><span class="o">.</span><span class="n">answer</span><span class="p">)</span>        <span class="c1"># use it in a chain…</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_next</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>                                           <span class="c1"># …or as a LangGraph conditional edge</span>
+    <span class="k">return</span> <span class="n">team</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">answer</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">"triage"</span><span class="p">,</span> <span class="n">pick_next</span><span class="p">,</span> <span class="p">{</span><span class="s2">"billing"</span><span class="p">:</span> <span class="s2">"billing_agent"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">:</span> <span class="s2">"tech_agent"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">:</span> <span class="s2">"sales_agent"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"human"</span><span class="p">})</span>
+</code></pre></div>
+
+<h2 id="litellm">LiteLLM<a class="headerlink" href="#litellm" title="Permanent link">#</a></h2>
+<p>In-process, using any of LiteLLM's providers as the teacher:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">litellm</span><span class="o">,</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">complete</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">messages</span><span class="p">:</span> <span class="n">litellm</span><span class="o">.</span><span class="n">completion</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"anthropic/claude-haiku-4-5"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+                                               <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">shad0w</span><span class="o">.</span><span class="n">llm_teacher</span><span class="p">([</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">question</span><span class="o">=</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="n">complete</span><span class="p">))</span>
+</code></pre></div>
+
+<p>Or put the shad0w proxy in front of a LiteLLM proxy. It speaks OpenAI, so nothing else changes:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>http://localhost:4000<span class="w"> </span>--port<span class="w"> </span><span class="m">8010</span>
+</code></pre></div>
+
+<h2 id="vercel-ai-sdk">Vercel AI SDK<a class="headerlink" href="#vercel-ai-sdk" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">generateObject</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"ai"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">openai</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@ai-sdk/openai"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decision</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="s2">"balance"</span><span class="p">,</span><span class="w"> </span><span class="s2">"other"</span><span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">teacher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">  </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">generateObject</span><span class="p">({</span><span class="w"> </span><span class="nx">model</span><span class="o">:</span><span class="w"> </span><span class="kt">openai</span><span class="p">(</span><span class="s2">"gpt-4o-mini"</span><span class="p">),</span><span class="w"> </span><span class="nx">output</span><span class="o">:</span><span class="w"> </span><span class="s2">"enum"</span><span class="p">,</span><span class="w"> </span><span class="kd">enum</span><span class="o">:</span><span class="w"> </span><span class="nx">options</span><span class="p">,</span><span class="w"> </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="kt">text</span><span class="w"> </span><span class="p">})).</span><span class="nx">object</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="kt">teacher</span><span class="p">,</span><span class="w"> </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/bundle"</span><span class="p">,</span><span class="w"> </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/log.jsonl"</span><span class="w"> </span><span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">POST</span><span class="p">(</span><span class="nx">req</span><span class="o">:</span><span class="w"> </span><span class="kt">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">answer</span><span class="p">,</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">intent</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">Response</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">intent</span><span class="o">:</span><span class="w"> </span><span class="kt">answer</span><span class="p">,</span><span class="w"> </span><span class="nx">servedBy</span><span class="o">:</span><span class="w"> </span><span class="kt">source</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="fastapi">FastAPI<a class="headerlink" href="#fastapi" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span>
+                         <span class="n">auto_train</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/route"</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="k">await</span> <span class="n">intent</span><span class="o">.</span><span class="n">adecide</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"intent"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">latency_us</span><span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/shad0w"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">intent</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+</code></pre></div>
+
+<p>For Prometheus, share a <code>shad0w.Metrics()</code> across your deciders and expose <code>metrics.prometheus()</code> on <code>/metrics</code>.</p>
+<h2 id="django-flask">Django / Flask<a class="headerlink" href="#django-flask" title="Permanent link">#</a></h2>
+<p>Create the decider once at import time (module level). It is thread-safe. Call <code>intent(text)</code> in your views.</p>
+<h2 id="cloudflare-workers-deno-bun">Cloudflare Workers, Deno, Bun<a class="headerlink" href="#cloudflare-workers-deno-bun" title="Permanent link">#</a></h2>
+<p>See <a href="javascript.html">JavaScript</a>. The same <code>decision()</code> works everywhere <code>fetch</code> does.</p>
+<h2 id="anything-with-an-openai-client">Anything with an OpenAI client<a class="headerlink" href="#anything-with-an-openai-client" title="Permanent link">#</a></h2>
+<p>Run the <a href="proxy.html">proxy</a> and set <code>base_url</code>. That covers Ruby, Go, Java, .NET, PHP and every other language with an OpenAI SDK.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="c.html"><small>← previous</small>C & other languages</a><a class="next" href="observability.html"><small>next →</small>Monitoring</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#langchain-langgraph">LangChain / LangGraph</a></li>
+<li><a href="#litellm">LiteLLM</a></li>
+<li><a href="#vercel-ai-sdk">Vercel AI SDK</a></li>
+<li><a href="#fastapi">FastAPI</a></li>
+<li><a href="#django-flask">Django / Flask</a></li>
+<li><a href="#cloudflare-workers-deno-bun">Cloudflare Workers, Deno, Bun</a></li>
+<li><a href="#anything-with-an-openai-client">Anything with an OpenAI client</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

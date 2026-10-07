@@ -4,228 +4,779 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shad0w</title>
-<meta name="description" content="Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU. No labels, no GPU.">
+<meta name="description" content="shad0w learns the answers your LLM gives to fixed-choice questions (intents, routing, moderation, agent tool choice) and serves the ones it is certified on in microseconds. One line of code, or none with the OpenAI-compatible proxy.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:title" content="shad0w">
-<meta property="og:description" content="Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU. No labels, no GPU."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/">
+<meta property="og:description" content="shad0w learns the answers your LLM gives to fixed-choice questions (intents, routing, moderation, agent tool choice) and serves the ones it is certified on in microseconds. One line of code, or none with the OpenAI-compatible proxy."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#06060b">
+<meta name="theme-color" content="#07070c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/site.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
 </head>
-<body>
+<body class="landing">
 <nav class="nav"><div class="wrap">
-  <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <a class="brand wordmark" href="./" aria-label="shad0w home">shad<span class="o"></span>w</a>
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
+    <a href="./#how">How it works</a>
+    <a href="./#integrate">Integrate</a>
     <a href="docs/">Docs</a>
     <a href="demo/">Live demo</a>
-    <a href="docs/benchmarks.html">Benchmarks</a>
-    <a href="#video">Video</a>
-    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
     <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
-<main>
-  <header class="hero">
-    <div class="wrap">
-      <span class="eyebrow"><span class="dot"></span> v0.1.0 · open source · Apache-2.0</span>
-      <h1>Your LLM's decisions,<br><span class="grad-text">compiled to microseconds.</span></h1>
-      <p class="lead">shad0w watches the answers your model already gives, compiles them into a 2&nbsp;MB table, and <b>certifies</b> how often that table will disagree. It then serves the answers it can certify on your CPU in microseconds and hands the rest back to your model.</p>
+<style>
+/* ---------- landing-only ---------- */
+.landing .nav { background: transparent; border-color: transparent; }
+.landing .nav.scrolled { background: color-mix(in srgb, var(--bg) 80%, transparent); border-color: color-mix(in srgb, var(--line) 70%, transparent); }
+.aurora { position: absolute; inset: -20% -10% auto; height: 120vh; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .5; }
+.aurora i { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: drift 18s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { width: 46vw; height: 46vw; left: 48%; top: 4%; background: radial-gradient(circle, color-mix(in srgb, var(--mint) 45%, transparent), transparent 65%); }
+.aurora i:nth-child(2) { width: 40vw; height: 40vw; left: 62%; top: 30%; background: radial-gradient(circle, color-mix(in srgb, var(--violet) 50%, transparent), transparent 65%); animation-delay: -6s; }
+.aurora i:nth-child(3) { width: 34vw; height: 34vw; left: -6%; top: 22%; background: radial-gradient(circle, color-mix(in srgb, var(--sky) 30%, transparent), transparent 65%); animation-delay: -11s; }
+@keyframes drift { to { transform: translate(-6vw, 5vh) scale(1.15); } }
+:root[data-theme="light"] .aurora, :root:not([data-theme="dark"]) .aurora { opacity: .35; }
+.grid-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 75%); opacity: .45; }
+
+.hero { position: relative; min-height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: center; padding: 26px 0 30px; overflow: hidden; }
+.hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.02fr 1fr; gap: 40px; align-items: center; }
+.hero-grid > *, .change > *, .observe > *, .calc > *, .charts > *, .steps > *, .uses > * { min-width: 0; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 600 13px var(--mono); color: var(--dim); border: 1px solid var(--line2); background: color-mix(in srgb, var(--card) 70%, transparent); padding: 7px 14px; border-radius: 99px; }
+.eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); animation: blink 1.6s infinite; }
+@keyframes blink { 50% { opacity: .3; } }
+.hero h1 { font: 700 clamp(42px, 6.1vw, 82px)/.98 var(--display); letter-spacing: -2.8px; margin: 22px 0 20px; }
+.hero h1 .speed { position: relative; white-space: nowrap; color: var(--mint); text-shadow: 0 0 40px color-mix(in srgb, var(--mint) 45%, transparent); }
+.hero h1 .speed::after { content: ""; position: absolute; left: 0; right: 0; bottom: .02em; height: .08em; background: var(--mint); border-radius: 9px; transform-origin: left; animation: under 1.2s .4s cubic-bezier(.2, .9, .2, 1) both; }
+@keyframes under { from { transform: scaleX(0); } }
+.lede { font-size: clamp(17px, 1.5vw, 19.5px); color: var(--dim); max-width: 590px; margin: 0 0 22px; }
+.lede b { color: var(--ink); font-weight: 600; }
+.facts { display: grid; gap: 8px; margin: 0 0 22px; max-width: 590px; }
+.facts div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; font-size: 15px; align-items: baseline; }
+.facts b { font: 600 12px var(--mono); color: var(--mint); text-transform: uppercase; letter-spacing: .1em; }
+.install { display: flex; align-items: center; gap: 0; border: 1px solid var(--line2); background: var(--card); border-radius: 14px; max-width: 590px; overflow: hidden; box-shadow: var(--shadow); }
+.install .sw { display: flex; border-right: 1px solid var(--line2); }
+.install .sw button { background: none; border: 0; color: var(--faint); font: 600 13px var(--mono); padding: 14px 12px; cursor: pointer; }
+.install .sw button.on { color: var(--ink); background: var(--card2); }
+.install code { flex: 1; padding: 0 14px; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none; border: 0; }
+.install code::before { content: "$ "; color: var(--mint); }
+.install .copy { margin-right: 8px; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+
+/* the race */
+.race-card { position: relative; border: 1px solid var(--line2); border-radius: 26px; background: linear-gradient(160deg, color-mix(in srgb, var(--card) 92%, transparent), color-mix(in srgb, var(--bg2) 92%, transparent)); box-shadow: var(--shadow); padding: 14px 14px 10px; }
+.race-card .bar { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font: 600 12px var(--mono); color: var(--faint); }
+.race-card .bar .live { color: var(--mint); } .race-card .bar .live::before { content: "● "; animation: blink 1.4s infinite; }
+#race { width: 100%; height: auto; display: block; }
+#race text { font-family: var(--mono); }
+.race-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 6px 4px 4px; }
+.race-stats div { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; min-width: 0; }
+.race-stats b { display: block; font: 700 20px/1.1 var(--display); letter-spacing: -.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.race-stats span { font-size: 11px; color: var(--dim); line-height: 1.2; display: block; margin-top: 2px; }
+.race-note { font-size: 11px; color: var(--faint); text-align: center; margin-top: 6px; }
+
+.proof { position: relative; z-index: 1; margin-top: 34px; display: flex; gap: 10px 34px; flex-wrap: wrap; justify-content: center; color: var(--dim); font-size: 14px; }
+.proof b { color: var(--ink); font: 700 15px var(--display); }
+
+.marquee { border-block: 1px solid var(--line); background: var(--bg2); overflow: hidden; padding: 16px 0; position: relative; z-index: 1; }
+.marquee .track { display: flex; gap: 14px; width: max-content; animation: scroll 46s linear infinite; }
+.marquee .q { flex: none; font: 600 14px var(--mono); padding: 8px 14px; border-radius: 99px; border: 1px solid var(--line2); background: var(--card); color: var(--dim); }
+.marquee .q b { color: var(--mint); font-weight: 600; }
+@keyframes scroll { to { transform: translateX(-50%); } }
+
+/* what changes */
+.change { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; align-items: center; }
+.diff { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg2); overflow: hidden; box-shadow: var(--shadow); }
+.diff .head { display: flex; gap: 7px; padding: 12px 16px; border-bottom: 1px solid var(--line); align-items: center; font: 12px var(--mono); color: var(--faint); }
+.diff .head i { width: 11px; height: 11px; border-radius: 50%; background: var(--line2); }
+.diff pre { border: 0; border-radius: 0; background: none; font-size: 14.5px; padding: 18px 0; }
+.diff .ln { display: block; padding: 0 20px; white-space: pre; min-height: 1.6em; }
+.diff .del { background: color-mix(in srgb, var(--pink) 12%, transparent); box-shadow: inset 3px 0 var(--pink); }
+.diff .add { background: color-mix(in srgb, var(--mint) 11%, transparent); box-shadow: inset 3px 0 var(--mint); }
+.diff .del::before { content: "- "; color: var(--pink); } .diff .add::before { content: "+ "; color: var(--mint); } .diff .ctx::before { content: "  "; }
+.diff .ln.hide { opacity: 0; transform: translateX(-10px); } .diff .ln { transition: opacity .5s, transform .5s; }
+.ba { display: grid; gap: 12px; }
+.ba .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ba .cell { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--card); }
+.ba .cell.after { border-color: color-mix(in srgb, var(--mint) 45%, var(--line)); box-shadow: var(--glow); }
+.ba .cell small { display: block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--faint); margin-bottom: 4px; }
+.ba .cell b { font: 700 26px/1.15 var(--display); letter-spacing: -.6px; }
+.ba .cell.before b { color: var(--amber); } .ba .cell.after b { color: var(--mint); }
+.ba .cell p { margin: 4px 0 0; font-size: 13px; color: var(--dim); }
+.ba .lbl { font-weight: 600; font-size: 14px; margin: 6px 0 -4px; color: var(--dim); }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.step { position: relative; border: 1px solid var(--line); border-radius: 22px; background: var(--card); padding: 22px; overflow: hidden; }
+.step .n { font: 700 13px var(--mono); color: var(--mint); letter-spacing: .1em; }
+.step h3 { font: 700 26px var(--display); letter-spacing: -.6px; margin: 6px 0 6px; }
+.step p { color: var(--dim); font-size: 15px; margin: 0 0 16px; }
+.stage { height: 210px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.logs { font: 12px/1.75 var(--mono); padding: 12px 14px; color: var(--dim); }
+.logs div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: fade .4s; }
+.logs .k { color: var(--sky); } .logs .v { color: var(--mint); }
+.cells { position: absolute; inset: 14px 14px 52px; display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+.cells i { border-radius: 3px; background: var(--line); transition: background .4s, transform .4s; }
+.trainbar { position: absolute; left: 14px; right: 14px; bottom: 14px; }
+.trainbar .t { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--dim); margin-bottom: 6px; }
+.trainbar .p { height: 7px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.trainbar .p i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--violet), var(--mint)); border-radius: 99px; }
+.cert { position: absolute; inset: 0; padding: 16px; }
+.cert .meter { position: relative; height: 12px; border-radius: 99px; background: var(--line); margin: 34px 0 12px; }
+.cert .meter .f { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; background: var(--mint); width: 0; transition: width .6s cubic-bezier(.2, .9, .2, 1), background .3s; }
+.cert .meter .th { position: absolute; top: -9px; bottom: -9px; left: 72%; width: 2px; background: var(--ink); }
+.cert .meter .th::after { content: "certified threshold"; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font: 10px var(--mono); color: var(--dim); white-space: nowrap; margin-bottom: 3px; }
+.cert .q { font: 13px var(--mono); color: var(--ink); min-height: 20px; }
+.cert .r { font: 600 13px var(--mono); margin-top: 8px; min-height: 20px; }
+.stamp { position: absolute; right: 14px; bottom: 14px; border: 3px solid var(--mint); color: var(--mint); border-radius: 12px; padding: 6px 12px; font: 800 13px/1.25 var(--mono); text-align: center; transform: rotate(-8deg) scale(2.2); opacity: 0; transition: transform .35s cubic-bezier(.3, 1.6, .5, 1), opacity .2s; letter-spacing: .06em; }
+.stamp.on { transform: rotate(-8deg) scale(1); opacity: 1; }
+.example { margin-top: 14px; font-size: 13.5px; color: var(--dim); border-top: 1px dashed var(--line2); padding-top: 12px; }
+.example code { font-size: 12.5px; }
+
+/* use cases */
+.uses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.use { border: 1px solid var(--line); border-radius: 20px; background: var(--card); padding: 22px; transition: transform .25s, border-color .25s, box-shadow .25s; position: relative; overflow: hidden; }
+.use:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--mint) 50%, var(--line)); box-shadow: var(--glow); }
+.use svg.ic { width: 38px; height: 38px; color: var(--mint); }
+.use h3 { font: 700 20px var(--display); margin: 12px 0 6px; letter-spacing: -.3px; }
+.use p { color: var(--dim); font-size: 14.5px; margin: 0 0 14px; }
+.io { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 12.5px var(--mono); }
+.io .in { background: var(--bg2); border: 1px solid var(--line); padding: 5px 10px; border-radius: 9px; color: var(--ink); }
+.io .arrow { color: var(--faint); }
+.io .out { background: color-mix(in srgb, var(--mint) 14%, transparent); color: var(--mint); padding: 5px 10px; border-radius: 9px; font-weight: 700; }
+.io .us { color: var(--faint); font-size: 11px; }
+
+/* numbers */
+.charts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.chart { border: 1px solid var(--line); border-radius: 22px; background: var(--card); padding: 22px 22px 16px; }
+.chart h3 { font: 700 21px var(--display); margin: 0 0 4px; letter-spacing: -.3px; }
+.chart .sub { color: var(--dim); font-size: 14px; margin: 0 0 14px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart svg text { font-family: var(--mono); fill: var(--dim); }
+.chart .say { margin: 10px 0 0; padding-top: 12px; border-top: 1px dashed var(--line2); font-size: 14.5px; }
+.calc { grid-column: span 2; display: grid; grid-template-columns: 1fr 1.1fr; gap: 26px; align-items: center; }
+.calc label { display: grid; gap: 4px; margin-bottom: 14px; font-size: 14px; color: var(--dim); }
+.calc label span b { color: var(--ink); font-family: var(--mono); }
+.calc input[type=range] { width: 100%; accent-color: var(--mint); }
+.calc .out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.calc .out div { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+.calc .out b { display: block; font: 700 clamp(22px, 2.6vw, 32px)/1.1 var(--display); color: var(--mint); letter-spacing: -.8px; font-variant-numeric: tabular-nums; }
+.calc .out span { font-size: 13px; color: var(--dim); }
+
+/* integrate */
+.int-steps { display: grid; gap: 16px; }
+.int-step { display: grid; grid-template-columns: 34px 1fr; gap: 14px; }
+.int-step .num { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--mint) 16%, transparent); color: var(--mint); font: 700 15px var(--display); }
+.int-step h4 { margin: 4px 0 8px; font: 600 16px var(--font); }
+.int-step pre { font-size: 13.5px; }
+.int-note { margin-top: 14px; font-size: 14px; color: var(--dim); }
+.providers { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 22px; }
+.providers span { font: 600 13px var(--mono); padding: 7px 12px; border-radius: 99px; border: 1px solid var(--line2); color: var(--dim); background: var(--card); }
+
+/* observe */
+.observe { display: grid; grid-template-columns: 1.35fr 1fr; gap: 26px; align-items: center; }
+.dash { border: 1px solid var(--line2); border-radius: 20px; background: var(--bg2); padding: 16px; box-shadow: var(--shadow); }
+.dash .top { display: flex; align-items: center; gap: 10px; font: 600 12px var(--mono); color: var(--dim); margin-bottom: 12px; }
+.dash .k4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.dash .k4 div { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.dash .k4 small { display: block; font-size: 10px; color: var(--faint); text-transform: uppercase; letter-spacing: .08em; }
+.dash .k4 b { font: 700 20px var(--display); font-variant-numeric: tabular-nums; }
+.dash .rows { margin-top: 10px; font: 12px/1.9 var(--mono); }
+.dash .rows div { display: grid; grid-template-columns: 56px 1fr 110px 70px; gap: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; overflow: hidden; animation: fade .35s; }
+.dash .rows .t { color: var(--mint); font-weight: 700; } .dash .rows .l { color: var(--amber); font-weight: 700; }
+.dash svg { width: 100%; height: 60px; display: block; margin-top: 10px; }
+.olist { display: grid; gap: 14px; }
+.olist div { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
+.olist svg { width: 24px; height: 24px; color: var(--mint); margin-top: 3px; }
+.olist b { display: block; font-size: 16px; } .olist span { color: var(--dim); font-size: 14.5px; }
+
+/* limits, faq, film */
+.limits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.limits div { border: 1px solid var(--line); border-radius: 18px; padding: 20px; background: var(--card); }
+.limits b { display: block; font: 700 17px var(--display); margin-bottom: 6px; }
+.limits span { color: var(--dim); font-size: 14.5px; }
+.film { border-radius: 24px; overflow: hidden; border: 1px solid var(--line2); box-shadow: var(--shadow); background: #000; aspect-ratio: 16 / 9; }
+.film video { width: 100%; height: 100%; display: block; }
+.faq { max-width: 860px; margin: 0 auto; }
+.faq details { border-bottom: 1px solid var(--line); padding: 18px 4px; }
+.faq summary { cursor: pointer; font: 600 18px var(--display); list-style: none; display: flex; justify-content: space-between; gap: 20px; }
+.faq summary::after { content: "+"; color: var(--mint); font-size: 24px; line-height: 1; transition: transform .25s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--dim); margin: 12px 0 0; }
+.closing { text-align: center; padding: 130px 0 120px; position: relative; overflow: hidden; }
+.closing h2 { font: 700 clamp(40px, 6vw, 80px)/1 var(--display); letter-spacing: -2.4px; margin: 0 0 22px; }
+.closing .install { margin: 0 auto 22px; }
+.closing .cta { justify-content: center; }
+
+@media (max-width: 1020px) {
+  .hero-grid, .change, .observe, .calc { grid-template-columns: 1fr; }
+  .calc { grid-column: auto; }
+  .steps, .uses { grid-template-columns: 1fr 1fr; }
+  .limits { grid-template-columns: 1fr 1fr; }
+  .charts { grid-template-columns: 1fr; }
+  .hero { min-height: auto; padding-top: 30px; }
+}
+@media (max-width: 640px) {
+  .steps, .uses, .limits { grid-template-columns: 1fr; }
+  .race-stats { grid-template-columns: repeat(2, 1fr); }
+  .ba .row { grid-template-columns: 1fr; }
+  .calc .out { grid-template-columns: 1fr; }
+  .dash .k4 { grid-template-columns: repeat(2, 1fr); }
+  .dash .rows div { grid-template-columns: 48px 1fr 96px; } .dash .rows div span:nth-child(4) { display: none; }
+  .facts div { grid-template-columns: 1fr; gap: 0; }
+  .section { padding: 80px 0; }
+  .install .sw button { padding: 14px 9px; }
+}
+</style>
+
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>for apps that ask an LLM to pick from a list</span>
+      <h1>Your LLM's answers,<br>served in <span class="speed">10&nbsp;µs</span>.</h1>
+      <p class="lede">shad0w watches the small decisions your app sends to an LLM (<i>which intent? which team? spam or not?</i>), learns them, and answers the ones it is <b>certified</b> on from a 2&nbsp;MB table on your CPU. Everything else still goes to your LLM.</p>
+      <div class="facts">
+        <div><b>What</b><span>a self-training shortcut in front of your LLM, with a written guarantee</span></div>
+        <div><b>Shines at</b><span>intents · ticket routing · moderation · agent tool choice · tagging</span></div>
+        <div><b>Effort</b><span>one line of code, or zero with the OpenAI-compatible proxy</span></div>
+      </div>
+      <div class="install" data-install>
+        <div class="sw"><button class="on" data-cmd='pip install "shad0wllm[compile]"'>pip</button><button data-cmd="npm i shad0wllm">npm</button><button data-cmd="shad0w proxy --upstream https://api.openai.com/v1">proxy</button></div>
+        <code>pip install "shad0wllm[compile]"</code>
+        <button class="copy" type="button">copy</button>
+      </div>
       <div class="cta">
-        <a class="btn primary" href="demo/">Try the live demo →</a>
-        <a class="btn" href="docs/">Read the docs</a>
-        <a class="btn" href="https://github.com/2796gaurav/shad0w"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a>
-      </div>
-      <div class="install"><span><span class="p">$</span> pip install shad0wllm</span><button class="copy" data-copy="pip install shad0wllm" type="button">copy</button></div>
-      <div class="hero-art reveal"><img src="assets/hero.svg" alt="Requests flow into a shad0w table: certified answers return in about a microsecond, uncertain ones go to your LLM" width="1280" height="440"></div>
-    </div>
-  </header>
-
-  <section>
-    <div class="wrap">
-      <div class="stats">
-        <div class="stat reveal"><div class="num grad-text" data-count="1" data-prefix="~" data-suffix=" µs">~1 µs</div><div class="lbl">per decision in C · 7–11 µs in JavaScript · 15 µs in Python</div></div>
-        <div class="stat reveal"><div class="num grad-text">45–71%</div><div class="lbl">of intent &amp; topic traffic answered locally at a certified 5% bound</div></div>
-        <div class="stat reveal"><div class="num grad-text" data-count="0" data-suffix=" labels">0 labels</div><div class="lbl">it learns from your model's own answers and certifies against them</div></div>
-        <div class="stat reveal"><div class="num grad-text" data-count="2" data-suffix=" MB">2 MB</div><div class="lbl">one file, no GPU, no network; 256 KB still keeps 88.5% accuracy</div></div>
+        <a class="btn primary" href="docs/">Start in 5 minutes →</a>
+        <a class="btn" href="demo/">Try it in your browser</a>
+        <a class="btn" href="https://github.com/2796gaurav/shad0w"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.2-.3-.6-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>GitHub</a>
       </div>
     </div>
-  </section>
 
-  <section class="alt">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">the problem</div>
-        <h2>Millions of tiny decisions,<br>each one a round trip to a GPU.</h2>
-        <p>Which intent is this? Which queue gets this ticket? Is this a scam? Should this agent step run? You already ask a big model, and every answer costs 20–1,500&nbsp;ms.</p>
+    <div class="race-card" aria-label="Animation: incoming requests reach shad0w; most are answered by the table in microseconds, the uncertain ones go to the LLM.">
+      <div class="bar"><span class="live">live simulation</span><span>your traffic, with and without shad0w</span></div>
+      <svg id="race" viewBox="0 0 560 400" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="gm" x1="0" x2="1"><stop offset="0" stop-color="var(--violet)"/><stop offset="1" stop-color="var(--mint)"/></linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <path id="pIn" d="M 6 200 C 90 200, 140 200, 214 200" fill="none" stroke="var(--line2)" stroke-width="2" stroke-dasharray="4 6"/>
+        <path id="pT" d="M 256 200 C 320 200, 330 120, 420 120 L 500 120" fill="none" stroke="var(--mint)" stroke-opacity=".55" stroke-width="2.5"/>
+        <path id="pL" d="M 256 200 C 320 200, 320 300, 372 300" fill="none" stroke="var(--amber)" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="6 6"/>
+        <path id="pL2" d="M 470 300 L 548 300" fill="none" stroke="var(--amber)" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="6 6"/>
+        <text x="262" y="96" font-size="12" fill="var(--mint)" font-weight="700">certified → table · ~10 µs</text>
+        <text x="282" y="352" font-size="12" fill="var(--amber)" font-weight="700">not sure → your LLM · ~600 ms</text>
+        <!-- node -->
+        <g transform="translate(235 200)">
+          <circle r="40" fill="var(--card)" stroke="var(--line2)"/>
+          <circle id="ring" r="26" fill="none" stroke="var(--mint)" stroke-width="7" filter="url(#glow)"/>
+          <circle r="5" fill="var(--mint)"/>
+          <text y="62" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">shad0w</text>
+        </g>
+        <!-- answered bin -->
+        <g transform="translate(466 20)">
+          <rect width="88" height="64" rx="14" fill="color-mix(in srgb, var(--mint) 12%, transparent)" stroke="var(--mint)" stroke-opacity=".6"/>
+          <text x="44" y="26" text-anchor="middle" font-size="11" fill="var(--mint)" font-weight="700">ANSWERED</text>
+          <text id="binT" x="44" y="48" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">0</text>
+        </g>
+        <!-- LLM box -->
+        <g transform="translate(372 260)">
+          <rect width="98" height="80" rx="16" fill="color-mix(in srgb, var(--amber) 10%, var(--card))" stroke="var(--amber)" stroke-opacity=".7"/>
+          <text x="49" y="24" text-anchor="middle" font-size="12" fill="var(--amber)" font-weight="700">YOUR LLM</text>
+          <circle cx="49" cy="50" r="15" fill="none" stroke="var(--line2)" stroke-width="4"/>
+          <circle id="spin" cx="49" cy="50" r="15" fill="none" stroke="var(--amber)" stroke-width="4" stroke-dasharray="30 70" stroke-linecap="round" transform="rotate(0 49 50)"/>
+          <text id="queue" x="49" y="74" text-anchor="middle" font-size="10" fill="var(--dim)">queue 0</text>
+        </g>
+        <g id="pills"></g>
+      </svg>
+      <div class="race-stats">
+        <div><b id="sT" class="mint">0%</b><span>answered by the table</span></div>
+        <div><b id="sC">0</b><span>LLM calls saved</span></div>
+        <div><b id="sW">0 s</b><span>waiting saved</span></div>
+        <div><b id="sM">$0</b><span>spend saved*</span></div>
       </div>
-      <div class="grid3">
-        <div class="card reveal"><div class="ico">ms</div><h3>Latency you can't put in a hot path</h3><p>A 150 ms decision cannot sit inside a payments path, a message filter that sees billions of events, or an agent loop that makes dozens of decisions per task.</p></div>
-        <div class="card reveal"><div class="ico">⇄</div><h3>Someone else's model, someone else's mood</h3><p>The decision lives on a vendor's GPU. It changes when they change it, and identical inputs can get different answers.</p></div>
-        <div class="card reveal"><div class="ico">?</div><h3>No evidence for the cheaper path</h3><p>When someone proposes a faster path, nobody can say how often it disagrees with the model that was approved. Reviewers and auditors ask exactly that.</p></div>
+      <div class="race-note">simulated at the 68% we measured on BANKING77 · *at $0.75 per 1,000 LLM calls</div>
+    </div>
+  </div>
+  <div class="wrap proof">
+    <span><b>45–71%</b> of LLM traffic answered locally</span>
+    <span><b>≤ 5%</b> certified disagreement</span>
+    <span><b>0</b> human labels</span>
+    <span><b>2 MB</b> · CPU · no GPU</span>
+    <span><b>Python · JS · C</b> · same answers</span>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="marq"></div></div>
+
+<section class="section" id="change">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">what changes</span>
+      <h2>Same answers.<br><span class="grad-text">A fraction of the calls.</span></h2>
+      <p>You keep calling your LLM exactly as you do today. shad0w sits in front of it, takes the questions it has learned, and passes the rest through.</p>
+    </div>
+    <div class="change">
+      <div class="diff reveal" id="diff">
+        <div class="head"><i></i><i></i><i></i><span style="margin-left:8px">support_router.py</span></div>
+<pre><span class="ln ctx">import shad0w</span><span class="ln ctx"></span><span class="ln del">def route(text):</span><span class="ln del">    return ask_llm(text)            # ~600 ms, every single time</span><span class="ln add hide">route = shad0w.decision("intent",</span><span class="ln add hide">    options=["refund", "lost_card", "balance", "other"],</span><span class="ln add hide">    llm="openai/gpt-4o-mini")       # your LLM, unchanged</span><span class="ln ctx"></span><span class="ln ctx">answer = route("my card was stolen")</span><span class="ln add hide"># week 1: your LLM answers, shad0w takes notes</span><span class="ln add hide"># then:   route.train()  →  table answers in 10 µs</span></pre>
+      </div>
+      <div class="ba reveal">
+        <div class="lbl">Before → after, on a certified question</div>
+        <div class="row"><div class="cell before"><small>latency</small><b>~600 ms</b><p>an API round trip</p></div><div class="cell after"><small>latency</small><b>~10 µs</b><p>in your process</p></div></div>
+        <div class="row"><div class="cell before"><small>LLM calls</small><b>100%</b><p>every decision</p></div><div class="cell after"><small>LLM calls</small><b>30–55%</b><p>only what the table isn't sure of</p></div></div>
+        <div class="row"><div class="cell before"><small>agreement</small><b>—</b><p>your LLM is the reference</p></div><div class="cell after"><small>agreement</small><b>≥ 95%</b><p>certified before it serves anything</p></div></div>
+        <div class="row"><div class="cell before"><small>works offline</small><b>no</b><p>needs the network</p></div><div class="cell after"><small>works offline</small><b>yes</b><p>CPU, browser, edge</p></div></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="how">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">how it works</div>
-        <h2>Learn from your model. Prove it. Serve it.</h2>
-        <p>Four steps, one line of code, and your model stays in charge of everything the table can't certify.</p>
+<section class="section" id="how" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">how it works</span>
+      <h2>Watch. Train. Certify.<br><span class="grad-text">Then get out of the way.</span></h2>
+      <p>No labelling, no GPU, no new model to babysit. Your LLM is the teacher; shad0w is the student that only answers when it can prove it will agree.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="n">STEP 1</span><h3>Watch</h3>
+        <p>Your LLM keeps answering. shad0w writes each question and answer down.</p>
+        <div class="stage"><div class="logs" id="logs"></div></div>
+        <div class="example">Example: <code>{"text": "block my card", "intent": "lost_card"}</code>: one line per decision, in a plain file you own.</div>
       </div>
-      <div class="reveal" style="margin-bottom:48px"><img class="chart" src="assets/how-it-works.svg" alt="Shadow, compile, certify, serve" width="1280" height="300"></div>
-      <div class="split">
-        <ol class="steps reveal">
-          <li><h4>Shadow</h4><p>Wrap the call you already make. Your model keeps answering, and every answer is logged as <code>(text, answer)</code>.</p></li>
-          <li><h4>Compile</h4><p>The log trains a hashed n-gram table with int8 weights. There is no tokenizer and no GPU, and it takes minutes on a laptop.</p></li>
-          <li><h4>Certify</h4><p>On held-out answers, Learn-then-Test picks the confidence threshold at which disagreement with your model is <b>provably ≤ α</b>.</p></li>
-          <li><h4>Serve</h4><p>Certified answers come back in microseconds, in-process. The rest go to your model and are logged, so offload grows with traffic.</p></li>
-        </ol>
-        <div class="tabs reveal">
-          <div class="tabbar" role="tablist">
-            <button role="tab" aria-selected="true">Python</button><button role="tab" aria-selected="false">CLI</button><button role="tab" aria-selected="false">JavaScript</button><button role="tab" aria-selected="false">HTTP</button>
-          </div>
-          <div class="tabpanel on"><pre><span style="color:#c4a7ff">import</span> shad0w
+      <div class="step reveal">
+        <span class="n">STEP 2</span><h3>Train</h3>
+        <p>About 1,000 answers become a hashed word table with 8-bit weights, in seconds to a minute on a laptop.</p>
+        <div class="stage"><div class="cells" id="cells"></div><div class="trainbar"><div class="t"><span id="tlab">1,000 answers</span><span id="tpct">0%</span></div><div class="p"><i id="tbar"></i></div></div></div>
+        <div class="example">Example: <code>intent.train()</code> or <code>shad0w train --log log.jsonl</code> → a 2 MB file.</div>
+      </div>
+      <div class="step reveal">
+        <span class="n">STEP 3</span><h3>Certify &amp; serve</h3>
+        <p>On answers it never saw, shad0w finds the confidence above which it agrees with your LLM ≥ 95% of the time, and proves it.</p>
+        <div class="stage"><div class="cert"><div class="q" id="cq"></div><div class="meter"><div class="f" id="cf"></div><div class="th"></div></div><div class="r" id="cr"></div><div class="stamp" id="stamp">CERTIFIED<br>≤ 5% · 90%</div></div></div>
+        <div class="example">Above the line: the table answers in µs. Below it: your LLM answers, and the answer is logged so the table learns.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<span style="color:#6f6f92"># day 1: no bundle yet; your model answers, calls are logged</span>
-sh = shad0w.Shadow(<span style="color:#fbbf24">None</span>, teacher=ask_my_llm, question=<span style="color:#8ee6b6">"intent"</span>,
-                   log=<span style="color:#8ee6b6">"teacher_log.jsonl"</span>)
+<section class="section" id="uses" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">where it shines</span>
+      <h2>If your LLM picks from a list,<br><span class="grad-text">shad0w can learn it.</span></h2>
+      <p>The sweet spot is high-volume decisions with recognisable wording. They make up a surprising share of what production apps send to LLMs.</p>
+    </div>
+    <div class="uses">
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 5h16v10H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg><h3>Support intent routing</h3><p>Send each message to the right flow before a human or an agent sees it.</p><div class="io"><span class="in">"where's my refund??"</span><span class="out">→ refund_status</span><span class="us">9 µs</span></div></div>
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h10"/><circle cx="18" cy="17" r="3"/></svg><h3>Ticket triage</h3><p>Pick the team, the priority, the product area. Several questions per ticket, one table each.</p><div class="io"><span class="in">"app crashes on login"</span><span class="out">→ team: mobile</span><span class="us">11 µs</span></div></div>
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>Moderation pre-filter</h3><p>Answer the obvious spam / not-spam calls instantly; send only the borderline ones to the big model.</p><div class="io"><span class="in">"buy 10k followers cheap"</span><span class="out">→ spam: yes</span><span class="us">8 µs</span></div></div>
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg><h3>Agent tool routing</h3><p>Choose the next tool or sub-agent in microseconds instead of an extra LLM hop per step.</p><div class="io"><span class="in">"what's 17% of 2,340?"</span><span class="out">→ tool: calculator</span><span class="us">10 µs</span></div></div>
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><h3>Tagging &amp; topics</h3><p>Label articles, products, emails or logs at ingest speed, millions per minute on one core.</p><div class="io"><span class="in">"Fed raises rates again"</span><span class="out">→ topic: business</span><span class="us">7 µs</span></div></div>
+      <div class="use reveal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><h3>In the browser &amp; at the edge</h3><p>The same 2 MB table runs in a tab, a Cloudflare Worker or a phone, with no network and no API key.</p><div class="io"><span class="in">offline</span><span class="out">→ same answers as Python</span></div></div>
+    </div>
+  </div>
+</section>
 
-<span style="color:#6f6f92"># after `shad0w shadow`: the table answers what it can certify</span>
-sh = shad0w.Shadow(<span style="color:#8ee6b6">"bundle/"</span>, teacher=ask_my_llm,
-                   log=<span style="color:#8ee6b6">"teacher_log.jsonl"</span>)
-d = sh.decide(<span style="color:#8ee6b6">"my card was stolen yesterday"</span>)
-d.answer, d.source, d.latency_us
-<span style="color:#6f6f92"># ('lost_card', 'table', 14.2)</span></pre></div>
-          <div class="tabpanel"><pre><span style="color:#6f6f92"># compile + certify from your model's logged answers</span>
-shad0w shadow --schema schema.json --data teacher_log.jsonl \
-              --teacher my-llm-v3 --alpha 0.05 --out bundle/
-<span style="color:#8ee6b6">compiled and certified ['intent'] -> bundle/
-  intent: agreement with teacher 85.3%; certified share 71.2% at alpha=0.05</span>
-
-shad0w report  --bundle bundle/                    <span style="color:#6f6f92"># the certificate</span>
-shad0w certify --bundle bundle/ --data week42.jsonl <span style="color:#6f6f92"># re-certify on fresh traffic</span></pre></div>
-          <div class="tabpanel"><pre><span style="color:#c4a7ff">import</span> { Bundle } <span style="color:#c4a7ff">from</span> <span style="color:#8ee6b6">"shad0wllm"</span>;   <span style="color:#6f6f92">// npm i shad0wllm · zero dependencies</span>
-
-<span style="color:#c4a7ff">const</span> bundle = <span style="color:#c4a7ff">await</span> Bundle.load(<span style="color:#8ee6b6">"bundle/"</span>);   <span style="color:#6f6f92">// Node, browser, Workers</span>
-<span style="color:#c4a7ff">const</span> a = bundle.decide(text).answers.intent;
-
-<span style="color:#c4a7ff">const</span> intent = a.certified ? a.choice : <span style="color:#c4a7ff">await</span> askMyLLM(text);</pre></div>
-          <div class="tabpanel"><pre>shad0w serve --bundle bundle/ --port 8010
-
-curl localhost:8010/v1/decide -d <span style="color:#8ee6b6">'{"state": "my card was stolen"}'</span>
-<span style="color:#8ee6b6">{"answers": {"intent": {"choice": "lost_card", "confidence": 0.97,
-   "certified": true, "flag": null, "radius": 6}}, "latency_us": 21.4}</span></pre></div>
+<section class="section" id="numbers" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">the numbers</span>
+      <h2>Measured, not promised.</h2>
+      <p>Public datasets, real teacher models, certificate at α = 5%. Every answer the table serves has been checked against what your LLM would have said.</p>
+    </div>
+    <div class="charts">
+      <div class="chart reveal"><h3>Thousands of times faster</h3><p class="sub">time per decision, log scale</p><svg id="chSpeed" viewBox="0 0 520 300"></svg><p class="say">A decision costs <b class="mint">about a microsecond</b> in C and about 10 µs in Python or JavaScript. Even a small local LLM takes tens of milliseconds.</p></div>
+      <div class="chart reveal"><h3>Most traffic never needs the LLM</h3><p class="sub">share of traffic answered by the table, by task</p><svg id="chTasks" viewBox="0 0 520 300"></svg><p class="say">On seven intent and topic tasks the table took <b class="mint">45–71%</b> of the traffic, and end-to-end accuracy stayed within 1 point of the LLM alone.</p></div>
+      <div class="chart reveal"><h3>It gets better as you use it</h3><p class="sub">share answered vs. LLM answers logged (AG News)</p><svg id="chGrow" viewBox="0 0 520 300"></svg><p class="say">Every answer your LLM gives is new training data. The table's share grew from <b class="mint">31% to 70%</b> as logged traffic went from 2k to 100k.</p></div>
+      <div class="chart reveal"><h3>Your whole app gets faster</h3><p class="sub">mean latency per decision, LLM alone vs. LLM + shad0w in front (BANKING77, 0.8B teacher)</p><svg id="chMean" viewBox="0 0 520 300"></svg><p class="say">The table answers the easy majority instantly and the LLM handles the rest, so the <b class="mint">average drops from 75 ms to 22 ms</b>, while end-to-end accuracy went <i>up</i> 0.7 points.</p></div>
+      <div class="chart calc reveal">
+        <div>
+          <h3>What would it save you?</h3><p class="sub">your numbers; an estimate, not a promise</p>
+          <label><span>decisions per day: <b id="vN"></b></span><input type="range" id="iN" min="3" max="7" step="0.1" value="5"></label>
+          <label><span>LLM cost per 1,000 calls: <b id="vC"></b></span><input type="range" id="iC" min="0.05" max="10" step="0.05" value="0.75"></label>
+          <label><span>LLM latency: <b id="vL"></b></span><input type="range" id="iL" min="100" max="3000" step="50" value="600"></label>
+          <label><span>share answered by the table: <b id="vS"></b></span><input type="range" id="iS" min="20" max="80" step="1" value="55"></label>
         </div>
+        <div class="out"><div><b id="oC">–</b><span>LLM calls saved / month</span></div><div><b id="oM">–</b><span>spend saved / month</span></div><div><b id="oH">–</b><span>user waiting saved / month</span></div></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="alt" id="results">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">measured, not claimed</div>
-        <h2>The numbers, with their receipts.</h2>
-        <p>Public datasets, three seeds, and a raw result file behind every number. <a href="docs/benchmarks.html">See all benchmarks →</a></p>
-      </div>
-      <div class="charts">
-        <div class="chart reveal"><img src="assets/chart-offload.svg" alt="Certified offload at alpha 5% per task" width="1000" height="534" loading="lazy"></div>
-        <div class="row2">
-          <div class="chart reveal"><img src="assets/chart-growth.svg" alt="Offload grows from 31% to 70% as shadow traffic grows from 2k to 100k" width="1000" height="460" loading="lazy"></div>
-          <div class="chart reveal"><img src="assets/chart-speed.svg" alt="shad0w at 0.018 ms vs GPU decision models" width="1000" height="480" loading="lazy"></div>
-        </div>
-      </div>
-      <p class="chart-note reveal">Cascade accuracy (table + your model) stayed within 1 point of the model alone on every task. With Kev-0.8B as the teacher, mean latency fell from 75&nbsp;ms to 22&nbsp;ms.</p>
+<section class="section" id="integrate" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">integrate</span>
+      <h2>Pick your stack.<br><span class="grad-text">It's 1, 2, 3 in all of them.</span></h2>
+      <p>Python, JavaScript and C give the same answers on the same table. The proxy needs no code at all.</p>
     </div>
-  </section>
+    <div class="tabs reveal" id="tabsInt">
+      <div class="tabbar" role="tablist">
+        <button aria-selected="true">Python</button><button aria-selected="false">OpenAI proxy · zero code</button><button aria-selected="false">JavaScript / TS</button><button aria-selected="false">HTTP</button><button aria-selected="false">C / C++</button><button aria-selected="false">LangChain</button><button aria-selected="false">LiteLLM</button><button aria-selected="false">Vercel AI SDK</button>
+      </div>
+      <div class="tabpanel on"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Install</h4><pre><code data-lang="sh">pip install "shad0wllm[compile]"</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Wrap the question you already ask your LLM</h4><pre><code data-lang="py">import shad0w
 
-  <section id="compare">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">compared with</div>
-        <h2>What you'd otherwise do.</h2>
-        <p>Caches and routers make it faster. Small classifiers make it local. shad0w is local <i>and</i> tells you how often it disagrees.</p>
-      </div>
-      <div class="table-wrap reveal">
-        <table>
-          <thead><tr><th></th><th>Per decision</th><th>Runs on</th><th>Needs</th><th>Bound on what it serves</th></tr></thead>
-          <tbody>
-            <tr><td>Keep calling the LLM / decision API</td><td>20–1,500 ms</td><td>GPU or vendor API</td><td>—</td><td class="no">it is the reference</td></tr>
-            <tr><td>Semantic cache</td><td>ms</td><td>embedding model + vector store</td><td>nothing</td><td class="no">similarity threshold</td></tr>
-            <tr><td>Embedding router</td><td>ms</td><td>embedding model</td><td>example utterances</td><td class="no">threshold</td></tr>
-            <tr><td>Distil into a smaller LLM</td><td>10–100 ms</td><td>GPU</td><td>teacher outputs</td><td class="no">none</td></tr>
-            <tr><td>fastText / SetFit / Model2Vec</td><td>µs–ms</td><td>CPU</td><td>human labels</td><td class="no">none</td></tr>
-            <tr class="me"><td>shad0w</td><td>1–15 µs</td><td>CPU, in-process, browser, edge</td><td>your model's logged answers</td><td class="yes">finite-sample, vs your model</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="chart-note reveal">Not new science: the certificate is <a href="https://arxiv.org/abs/2110.01052">Learn-then-Test</a>, and the table is fastText-shaped on purpose. The new part is the packaging: one workflow from shadow logs to a certified KB-to-MB artifact, with identical decisions in C, Python and JavaScript.</p>
-    </div>
-  </section>
+intent = shad0w.decision("intent", llm="openai/gpt-4o-mini",
+                         options={"refund": "wants money back", "lost_card": "card lost or stolen", "other": "anything else"})
+answer = intent("my card was stolen").answer        # your LLM answers, shad0w logs it</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Train when ~1,000 answers are logged</h4><pre><code data-lang="py">intent.train()                                        # or auto_train=1000, or `shad0w train`
+intent("my card was stolen")    # Decision(answer='lost_card', source='table', latency_us=9.6, ...)</code></pre></div></div>
+      </div><p class="int-note">Already have your own LLM function? <code>shad0w.Shadow("bundle/", teacher=my_fn, log="log.jsonl")</code>. Async code: <code>await intent.adecide(text)</code>.</p></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Start the proxy in front of any OpenAI-compatible API</h4><pre><code data-lang="sh">pip install shad0wllm
+shad0w proxy --upstream https://api.openai.com/v1 --auto-train 1000     # dashboard: http://localhost:8010</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Point your client at it and mark which calls are decisions</h4><pre><code data-lang="py">client = OpenAI(base_url="http://localhost:8010/v1")
+client.chat.completions.create(model="gpt-4o-mini", messages=msgs,
+                               extra_headers={"X-Shad0w-Question": "intent"})</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>That's it</h4><pre><code data-lang="sh"># answered by the table → normal chat.completion + header x-shad0w-source: table
+# not sure / not trained → forwarded to OpenAI, reply untouched, answer logged
+# everything else (chat, embeddings, streaming) → passed straight through</code></pre></div></div>
+      </div><p class="int-note">Works from any language with an OpenAI SDK, and with Groq, Together, OpenRouter, Ollama, vLLM, LiteLLM proxy and others as the upstream. With structured outputs, the reply matches your JSON schema.</p></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Install (zero dependencies)</h4><pre><code data-lang="sh">npm i shad0wllm</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Put it in front of your LLM</h4><pre><code data-lang="js">import { decision } from "shad0wllm";
 
-  <section class="alt" id="video">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">two minutes</div>
-        <h2>See it explain itself.</h2>
-      </div>
-      <div class="video-frame reveal">
-        <video src="video/shad0w-explainer.mp4" poster="video/poster.jpg" controls muted playsinline preload="none"></video>
-      </div>
+const intent = await decision("intent", {
+  options: ["refund", "lost_card", "balance", "other"],
+  llm: "openai/gpt-4o-mini", bundle: "shad0w/intent/bundle", log: "shad0w/intent/log.jsonl" });</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Decide, in Node, a browser, a Worker, Deno or Bun</h4><pre><code data-lang="js">const d = await intent.decide("my card was stolen");
+// { answer: "lost_card", source: "table", certified: true, latencyUs: 9.8 }</code></pre></div></div>
+      </div><p class="int-note">Train the bundle with Python (<code>shad0w train</code>), then ship the 2 MB folder with your app or serve it from a CDN.</p></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Serve a trained bundle</h4><pre><code data-lang="sh">shad0w serve --bundle shad0w/intent/bundle --port 8010</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Ask from any language</h4><pre><code data-lang="sh">curl -s localhost:8010/v1/decide -d '{"state": "my card was stolen"}'</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Use it when certified, else ask your LLM</h4><pre><code data-lang="js">{"answers": {"intent": {"choice": "lost_card", "confidence": 0.99, "certified": true, "flag": null}}, "latency_us": 11.2}</code></pre></div></div>
+      </div><p class="int-note">Also serves <code>/metrics</code> (Prometheus), <code>/v1/stats</code> and a live dashboard at <code>/</code>.</p></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Copy two files</h4><pre><code data-lang="sh">cp $(python -c "import shad0w,os;print(os.path.dirname(shad0w.__file__))")/_native/{shad0w.h,reflex.c} .</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Load and decide</h4><pre><code data-lang="c">#include "shad0w.h"
+S0Reflex *m = s0_load("bundle/intent.s0");
+float p[S0_MAX_CLASSES], r;
+int k = s0_decide(m, text, strlen(text), p, &amp;r);   /* certified if p[k] &gt;= threshold */</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Build</h4><pre><code data-lang="sh">cc -O2 app.c reflex.c -lm -o app       # ~1 µs per decision, libc only</code></pre></div></div>
+      </div><p class="int-note">Thread-safe for reads. Options and threshold come from <code>manifest.json</code>. Works from Go, Rust, Swift and others through FFI.</p></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Keep your LangChain model</h4><pre><code data-lang="py">from langchain_openai import ChatOpenAI
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Hand it to shad0w as the teacher</h4><pre><code data-lang="py">teacher = shad0w.llm_teacher(["refund", "lost_card", "other"], complete=lambda msgs: llm.invoke(msgs).content)
+intent = shad0w.decision("intent", llm=teacher)</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Use it as a step in your chain or graph</h4><pre><code data-lang="py">route = RunnableLambda(lambda x: intent(x["text"]).answer)   # a LangGraph conditional edge, too</code></pre></div></div>
+      </div></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Any of LiteLLM's 100+ providers as the teacher</h4><pre><code data-lang="py">import litellm, shad0w
+complete = lambda msgs: litellm.completion(model="anthropic/claude-haiku-4-5", messages=msgs).choices[0].message.content</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Wrap it</h4><pre><code data-lang="py">intent = shad0w.decision("intent", llm=shad0w.llm_teacher(["refund", "lost_card", "other"], complete=complete))</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Or put shad0w in front of the LiteLLM proxy</h4><pre><code data-lang="sh">shad0w proxy --upstream http://localhost:4000      # LiteLLM proxy speaks OpenAI</code></pre></div></div>
+      </div></div>
+      <div class="tabpanel"><div class="int-steps">
+        <div class="int-step"><span class="num">1</span><div><h4>Your AI SDK call becomes the teacher</h4><pre><code data-lang="js">import { generateObject } from "ai";
+import { openai } from "@ai-sdk/openai";
+const options = ["refund", "lost_card", "other"];
+const teacher = async (text) =&gt; (await generateObject({ model: openai("gpt-4o-mini"), output: "enum", enum: options, prompt: text })).object;</code></pre></div></div>
+        <div class="int-step"><span class="num">2</span><div><h4>Wrap it</h4><pre><code data-lang="js">import { decision } from "shad0wllm";
+const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/bundle", log: "shad0w/intent/log.jsonl" });</code></pre></div></div>
+        <div class="int-step"><span class="num">3</span><div><h4>Call it in your route handler</h4><pre><code data-lang="js">const { answer, source } = await intent.decide(message);   // source: "table" or "teacher"</code></pre></div></div>
+      </div></div>
     </div>
-  </section>
+    <div class="providers reveal"><span>OpenAI</span><span>Anthropic</span><span>Gemini</span><span>Groq</span><span>Together</span><span>OpenRouter</span><span>Mistral</span><span>DeepSeek</span><span>Fireworks</span><span>xAI</span><span>Azure</span><span>Ollama</span><span>vLLM</span><span>LM Studio</span><span>any OpenAI-compatible URL</span></div>
+  </div>
+</section>
 
-  <section id="fit">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">where it shines</div>
-        <h2>Decisions where the words carry the answer.</h2>
-      </div>
-      <div class="grid3">
-        <div class="card reveal"><div class="ico">→</div><h3>Intent &amp; routing</h3><p>Support and banking intents, ticket queues, email triage, with 20–150 options. This is where shad0w is strongest: 45–71% served locally.</p></div>
-        <div class="card reveal"><div class="ico">!</div><h3>Screening &amp; guards</h3><p>Spam, scam and prompt-injection screens, and allow / block / escalate gates on agent steps, run before the expensive call.</p></div>
-        <div class="card reveal"><div class="ico">◎</div><h3>Edge, browser, offline</h3><p>A 2 MB table and a zero-dependency JS runtime: decide on the device, in a Worker, or with no network at all.</p></div>
+<section class="section" id="observe" style="padding-top:30px">
+  <div class="wrap observe">
+    <div class="dash reveal" aria-label="A live shad0w dashboard">
+      <div class="top"><span class="wordmark" style="font:700 16px var(--display);color:var(--ink)">shad<span class="o"></span>w</span><span style="color:var(--mint)">● proxy → api.openai.com</span></div>
+      <div class="k4"><div><small>by table</small><b id="dT" class="mint">0%</b></div><div><small>decisions</small><b id="dN">0</b></div><div><small>calls saved</small><b id="dS">0</b></div><div><small>live bound</small><b id="dB">–</b></div></div>
+      <svg id="dSpark" viewBox="0 0 300 60" preserveAspectRatio="none"></svg>
+      <div class="rows" id="dRows"></div>
+    </div>
+    <div class="reveal">
+      <span class="kicker">observability</span>
+      <h2 class="big">See every decision.<br><span class="grad-text">Trust, but verify.</span></h2>
+      <div class="olist">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 15l3-4 3 2 4-6"/></svg><span><b>Live dashboard, built in</b>Open <code>http://localhost:8010</code>: share answered, calls and money saved, latency, and why the table deferred.</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span><b>Live spot checks</b>1% of table answers are re-asked to your LLM in the background. The dashboard shows the live disagreement bound next to α.</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 15v-4M12 15V8M16 15v-6"/></svg><span><b>Prometheus &amp; OpenTelemetry</b><code>/metrics</code> for Grafana, <code>SHAD0W_OTEL=1</code> for spans, <code>/v1/stats</code> for JSON.</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h14M5 12h14M5 17h9"/></svg><span><b>Logs and hooks</b><code>SHAD0W_LOG=debug</code> for one line per decision, <code>on_decision=</code> for Langfuse or Datadog, <code>shad0w try</code> to see why.</span></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="alt" id="limits">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="kicker">honest limits</div>
-        <h2>When not to use it.</h2>
-        <p>These are measured. They are what make the certificate worth trusting.</p>
-      </div>
-      <div class="limits">
-        <div class="limit reveal"><div><b>Sentiment, tone, emotion</b><span>A hashed table tops out near 79% on SST-2 even with perfect labels. shad0w certifies almost nothing there and defers it all, which is correct.</span></div></div>
-        <div class="limit reveal"><div><b>When you need the best possible answer</b><span>A 9B decision model is 7 points better on BANKING77, at about 70,000× the latency. Put shad0w in front of it, not instead of it.</span></div></div>
-        <div class="limit reveal"><div><b>The bound is against your model</b><span>If your model is wrong, the table is certified to be wrong in the same way. Use ~300 real labels for a bound against the truth.</span></div></div>
-        <div class="limit reveal"><div><b>Traffic shifts</b><span>The bound holds for traffic like the calibration slice. The drift guard, live audits and <code>shad0w certify</code> exist for when it moves.</span></div></div>
-      </div>
-    </div>
-  </section>
+<section class="section" id="film" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head center reveal" style="text-align:center"><span class="kicker">90 seconds</span><h2>The whole idea, as a cartoon.</h2></div>
+    <div class="film reveal"><video controls playsinline preload="none" poster="assets/film-poster.jpg" src="assets/shad0w-film.mp4"></video></div>
+  </div>
+</section>
 
-  <section class="final">
-    <div class="wrap">
-      <h2>Put a shadow in front of your model.</h2>
-      <p class="muted" style="font-size:18px;max-width:640px;margin:0 auto 28px">Start logging today. Compile when you have a thousand answers. Serve what you can prove.</p>
-      <div class="cta" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a class="btn primary" href="docs/">Get started →</a>
-        <a class="btn" href="demo/">Live demo</a>
-        <a class="btn" href="https://github.com/2796gaurav/shad0w">Star on GitHub</a>
-      </div>
+<section class="section" id="limits" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">honest limits</span><h2>What it won't do.</h2><p>shad0w is strong engineering on well-known ideas, not magic. Here is where it stops.</p></div>
+    <div class="limits">
+      <div class="reveal"><b>Generate text</b><span>It picks one answer from your list. Open-ended chat, summaries and reasoning stay with your LLM.</span></div>
+      <div class="reveal"><b>Read between the lines</b><span>Sarcasm, tone and sentiment top out near 79%. shad0w then certifies almost nothing and defers everything, as it should.</span></div>
+      <div class="reveal"><b>Beat your LLM</b><span>The guarantee is agreement with your LLM, not the truth. A wrong LLM makes a wrong table. Calibrate on ~300 human labels for a bound against the truth.</span></div>
+      <div class="reveal"><b>Ignore change</b><span>The bound holds for traffic like the traffic it was certified on. The drift guard and spot checks tell you when to retrain.</span></div>
     </div>
-  </section>
-</main>
+  </div>
+</section>
+
+<section class="section" id="faq" style="padding-top:30px">
+  <div class="wrap">
+    <div class="section-head center reveal" style="text-align:center"><span class="kicker">faq</span><h2>Questions people ask</h2></div>
+    <div class="faq reveal">
+      <details><summary>Is this just a cache?</summary><p>No. A cache only answers texts it has seen before. shad0w generalises: it answers new wordings of a question it has learned, and its guarantee covers new texts drawn like your traffic. Exact repeats are free on top.</p></details>
+      <details><summary>What does "certified" actually mean?</summary><p>On answers it never trained on, shad0w picks the lowest confidence threshold for which it can prove, using Learn-then-Test with Clopper–Pearson bounds, that among the answers it serves, disagreement with your LLM is at most α (default 5%) with 90% confidence. Below the threshold it doesn't answer. Your LLM does.</p></details>
+      <details><summary>How many examples does it need?</summary><p>Around 1,000 logged answers per question for a useful start (100 is the hard minimum). The share it can take keeps growing with more traffic: 31% at 2k answers and 70% at 100k in our AG News run.</p></details>
+      <details><summary>Does my data leave my machine?</summary><p>No. Logs, training and the table are all local files. The only network calls are the LLM calls you already make.</p></details>
+      <details><summary>What does it cost?</summary><p>Nothing. It is Apache-2.0 open source. The runtime needs only numpy (Python) or nothing at all (JavaScript, C).</p></details>
+      <details><summary>Which LLMs work as the teacher?</summary><p>Any of them. Built-in presets cover OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Azure, Ollama, vLLM and LM Studio, and any other OpenAI-compatible URL. You can also pass a plain function, or LiteLLM, LangChain or the Vercel AI SDK.</p></details>
+      <details><summary>How is it different from fine-tuning a small model?</summary><p>No GPU, no labelling, no training pipeline, microseconds instead of milliseconds, and a guarantee instead of a hope. Fine-tuning wins on tasks that need real language understanding; shad0w wins on the high-volume, recognisable ones and defers the rest.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="aurora" aria-hidden="true" style="top:10%"><i></i><i></i><i></i></div>
+  <div class="wrap" style="position:relative;z-index:1">
+    <h2>Give your LLM<br><span class="grad-text">a shad0w.</span></h2>
+    <div class="install" data-install>
+      <div class="sw"><button class="on" data-cmd='pip install "shad0wllm[compile]"'>pip</button><button data-cmd="npm i shad0wllm">npm</button><button data-cmd="shad0w proxy --upstream https://api.openai.com/v1">proxy</button></div>
+      <code>pip install "shad0wllm[compile]"</code><button class="copy" type="button">copy</button>
+    </div>
+    <div class="cta"><a class="btn primary" href="docs/">Read the 5-minute guide →</a><a class="btn" href="demo/">Try the live demo</a></div>
+  </div>
+</section>
+
 <footer><div class="wrap">
-  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
   <span><a href="docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e4 ? (n / 1e3).toFixed(0) + "k" : Math.round(n).toLocaleString();
+  const dur = (s) => s < 60 ? s.toFixed(0) + " s" : s < 3600 ? (s / 60).toFixed(1) + " min" : s < 86400 ? (s / 3600).toFixed(1) + " h" : (s / 86400).toFixed(1) + " days";
+  const onView = (el, fn, th = 0.3) => { if (!el) return; if (!("IntersectionObserver" in window)) return fn(); const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), { threshold: th }); io.observe(el); };
+  const visible = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && !document.hidden; };
+
+  // nav background on scroll
+  const nav = document.querySelector(".nav");
+  addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 20), { passive: true });
+
+  // install switchers
+  document.querySelectorAll("[data-install]").forEach((box) => {
+    const code = box.querySelector("code"), copy = box.querySelector(".copy");
+    box.querySelectorAll(".sw button").forEach((b) => b.addEventListener("click", () => {
+      box.querySelectorAll(".sw button").forEach((x) => x.classList.remove("on")); b.classList.add("on"); code.textContent = b.dataset.cmd; copy.dataset.copy = b.dataset.cmd;
+    }));
+    copy.dataset.copy = code.textContent;
+  });
+
+  // marquee of decisions
+  const qs = [["which intent?", "lost_card"], ["which team?", "billing"], ["spam?", "yes"], ["which tool?", "search"], ["topic?", "sports"], ["urgent?", "no"], ["language?", "de"], ["refund eligible?", "yes"], ["sentiment of a review?", "→ LLM"], ["route to?", "agent_b"], ["product area?", "payments"], ["toxic?", "no"]];
+  const row = qs.map(([q, a]) => `<span class="q">${q} <b>${a}</b></span>`).join("");
+  $("marq").innerHTML = row + row;
+
+  // ---------- the race ----------
+  const svg = $("race"), pills = $("pills");
+  const P = { in: $("pIn"), t: $("pT"), l: $("pL"), l2: $("pL2") };
+  const len = Object.fromEntries(Object.entries(P).map(([k, p]) => [k, p.getTotalLength()]));
+  const msgs = [["block my card", "lost_card"], ["refund pls", "refund"], ["where's my money", "transfer"], ["pin locked", "pin_blocked"], ["card stolen!!", "lost_card"],
+    ["fee on atm?", "atm_fee"], ["is it raining?", null], ["exchange rate eur", "fx_rate"], ["top up failed", "top_up"], ["new card when?", "card_arrival"],
+    ["i want money back", "refund"], ["umm my thing broke", null], ["send 50 to mom", "transfer"], ["card missing", "lost_card"], ["charged twice", "refund"]];
+  let n = 0, nt = 0, inQueue = 0, k = 0;
+  const NS = "http://www.w3.org/2000/svg";
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  function pill(label, color) {
+    const g = document.createElementNS(NS, "g");
+    const w = Math.max(70, label.length * 7.2 + 18);
+    g.innerHTML = `<rect x="${-w / 2}" y="-13" width="${w}" height="26" rx="13" fill="var(--card)" stroke="${color}" stroke-width="1.5"/><text text-anchor="middle" y="4" font-size="11" fill="var(--ink)">${label}</text>`;
+    g.setAttribute("transform", "translate(-300 -300)");
+    pills.appendChild(g);
+    return g;
+  }
+  function along(g, path, L, ms, done, from = 0, to = 1) {
+    const t0 = performance.now();
+    const step = (t) => {
+      const x = Math.min(1, (t - t0) / ms), p = path.getPointAtLength(L * (from + (to - from) * ease(x)));
+      g.setAttribute("transform", `translate(${p.x} ${p.y})`);
+      if (x < 1) requestAnimationFrame(step); else done && done();
+    };
+    requestAnimationFrame(step);
+  }
+  function flash(x, y, color) {
+    const c = document.createElementNS(NS, "circle");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 6); c.setAttribute("fill", "none"); c.setAttribute("stroke", color); c.setAttribute("stroke-width", 3);
+    pills.appendChild(c);
+    c.animate([{ r: 6, opacity: 1 }, { r: 34, opacity: 0 }], { duration: 600, easing: "ease-out" }).onfinish = () => c.remove();
+  }
+  function stats() {
+    $("sT").textContent = n ? Math.round(100 * nt / n) + "%" : "0%";
+    $("sC").textContent = fmt(nt * 1000);
+    $("sW").textContent = dur(nt * 1000 * 0.6);
+    $("sM").textContent = "$" + fmt(nt * 1000 * 0.00075);
+    $("binT").textContent = fmt(nt * 1000);
+    $("queue").textContent = "queue " + inQueue;
+  }
+  function spawn() {
+    const [text, ans] = msgs[k++ % msgs.length];
+    const sure = ans !== null && (Math.random() < 0.8);  // ≈ 68% overall with the two hard messages
+    const g = pill(text, "var(--line2)");
+    along(g, P.in, len.in, 900, () => {
+      $("ring").animate([{ strokeWidth: 7 }, { strokeWidth: 12 }, { strokeWidth: 7 }], { duration: 300 });
+      g.remove();
+      n++;
+      if (sure) {
+        const a = pill("→ " + ans + " · 9µs", "var(--mint)");
+        along(a, P.t, len.t, 420, () => {
+          flash(510, 52, "var(--mint)"); nt++; stats();
+          a.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).onfinish = () => a.remove();
+        });
+      } else {
+        const a = pill(text, "var(--amber)");
+        inQueue++; stats();
+        along(a, P.l, len.l, 650, () => {
+          a.style.opacity = 0;
+          setTimeout(() => { inQueue--; a.style.opacity = 1; along(a, P.l2, len.l2, 500, () => { a.remove(); stats(); }); }, 1500 + Math.random() * 900);
+        });
+      }
+    });
+  }
+  let spinA = 0;
+  function spin() { spinA = (spinA + 3) % 360; $("spin").setAttribute("transform", `rotate(${spinA} 49 50)`); requestAnimationFrame(spin); }
+  if (!reduce) { spin(); setInterval(() => { if (visible(svg)) spawn(); }, 520); } else { n = 100; nt = 68; stats(); }
+
+  // ---------- diff reveal ----------
+  onView($("diff"), () => {
+    const dels = $("diff").querySelectorAll(".del"), adds = $("diff").querySelectorAll(".add");
+    setTimeout(() => dels.forEach((d) => { d.style.opacity = .35; d.style.textDecoration = "line-through"; }), 700);
+    adds.forEach((a, i) => setTimeout(() => a.classList.remove("hide"), 1200 + i * 420));
+  });
+
+  // ---------- step 1: logs ----------
+  const logRows = [["block my card", "lost_card"], ["refund for order 1182", "refund"], ["how much money do i have", "balance"], ["send money to alex", "transfer"], ["my card is missing", "lost_card"], ["charged twice?!", "refund"], ["what is in my account", "balance"], ["card got stolen at the gym", "lost_card"]];
+  let li = 0;
+  const logs = $("logs");
+  const addLog = () => { const [t, a] = logRows[li++ % logRows.length]; const d = document.createElement("div"); d.innerHTML = `{<span class="k">"text"</span>: "${t}", <span class="k">"intent"</span>: <span class="v">"${a}"</span>}`; logs.prepend(d); if (logs.childElementCount > 9) logs.lastChild.remove(); };
+  for (let i = 0; i < 6; i++) addLog();
+  if (!reduce) setInterval(() => { if (visible(logs)) addLog(); }, 900);
+
+  // ---------- step 2: training ----------
+  const cells = $("cells"); cells.innerHTML = "<i></i>".repeat(16 * 7);
+  const cs = cells.querySelectorAll("i"), cols = ["var(--mint)", "var(--violet)", "var(--sky)", "var(--pink)", "var(--amber)"];
+  function train() {
+    let p = 0;
+    cs.forEach((c) => (c.style.background = "var(--line)"));
+    $("tbar").style.width = "0";
+    const iv = setInterval(() => {
+      p += 4;
+      for (let j = 0; j < 5; j++) { const c = cs[(Math.random() * cs.length) | 0]; c.style.background = cols[(Math.random() * cols.length) | 0]; c.style.opacity = 0.35 + Math.random() * 0.65; }
+      $("tbar").style.width = Math.min(100, p) + "%"; $("tpct").textContent = Math.min(100, p) + "%";
+      $("tlab").textContent = p >= 100 ? "done · table built · 7 s" : "1,000 answers → table";
+      if (p >= 100) { clearInterval(iv); setTimeout(train, 2600); }
+    }, 90);
+  }
+  onView(cells, train);
+
+  // ---------- step 3: certify ----------
+  const certQs = [["\"card stolen at the airport\"", 0.97, "lost_card"], ["\"is it going to rain?\"", 0.41, null], ["\"refund for my order\"", 0.93, "refund"], ["\"umm the thing\"", 0.55, null]];
+  let ci = 0;
+  function certify() {
+    const [q, c, a] = certQs[ci++ % certQs.length];
+    $("cq").textContent = q; $("cr").textContent = ""; $("cf").style.width = "0"; $("stamp").classList.remove("on");
+    setTimeout(() => { $("cf").style.width = c * 100 + "%"; $("cf").style.background = c >= 0.72 ? "var(--mint)" : "var(--amber)"; }, 300);
+    setTimeout(() => {
+      $("cr").innerHTML = c >= 0.72 ? `<span class="mint">✓ table answers: ${a} · 9 µs</span>` : `<span class="amber">→ your LLM answers (and shad0w learns)</span>`;
+      if (c >= 0.72) $("stamp").classList.add("on");
+    }, 1000);
+  }
+  onView($("cq"), () => { certify(); if (!reduce) setInterval(() => { if (visible($("cq"))) certify(); }, 3000); });
+
+  // ---------- charts ----------
+  const svgEl = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+  function bars(id, rows, { log = false, max = 100, unit = "", color = "url(#gm)" } = {}) {
+    const s = $(id), W = 520, x0 = 170, bw = W - x0 - 70, rh = 38;
+    s.setAttribute("viewBox", `0 0 520 ${rows.length * rh + 24}`);
+    s.innerHTML = `<defs><linearGradient id="gm${id}" x1="0" x2="1"><stop offset="0" stop-color="var(--violet)"/><stop offset="1" stop-color="var(--mint)"/></linearGradient></defs>`;
+    const scale = (v) => log ? (Math.log10(v) - Math.log10(rows.reduce((a, r) => Math.min(a, r[1]), Infinity)) + 0.4) / (Math.log10(max) - Math.log10(rows.reduce((a, r) => Math.min(a, r[1]), Infinity)) + 0.4) : v / max;
+    rows.forEach(([name, v, label, hl], i) => {
+      const y = 14 + i * rh;
+      s.appendChild(svgEl("text", { x: x0 - 10, y: y + rh / 2 + 4, "text-anchor": "end", "font-size": 12, fill: hl ? "var(--ink)" : "var(--dim)", "font-weight": hl ? 700 : 400 }, name));
+      s.appendChild(svgEl("rect", { x: x0, y: y + 5, width: bw, height: rh - 12, rx: 6, fill: "var(--line)", opacity: .5 }));
+      const r = svgEl("rect", { x: x0, y: y + 5, width: 0, height: rh - 12, rx: 6, fill: hl ? `url(#gm${id})` : "var(--amber)" });
+      s.appendChild(r);
+      const t = svgEl("text", { x: x0 + 8, y: y + rh / 2 + 4, "font-size": 12, fill: "var(--ink)", "font-weight": 700, opacity: 0 }, label || v + unit);
+      s.appendChild(t);
+      onView(s, () => setTimeout(() => {
+        const w = Math.max(4, bw * scale(v));
+        r.animate([{ width: "0px" }, { width: w + "px" }], { duration: reduce ? 1 : 1100, easing: "cubic-bezier(.2,.9,.2,1)", fill: "forwards" });
+        r.setAttribute("width", w); t.setAttribute("x", x0 + w + 8); t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: reduce ? 0 : 900, fill: "forwards" });
+      }, i * 90), 0.4);
+    });
+  }
+  bars("chSpeed", [["shad0w · C", 1, "~1 µs", 1], ["shad0w · JavaScript", 9, "~9 µs", 1], ["shad0w · Python", 12, "~12 µs", 1], ["0.8B LLM, local", 57600, "57.6 ms"], ["9B LLM", 1274000, "1.27 s"]], { log: true, max: 1274000 });
+  bars("chMean", [["LLM alone", 75, "75 ms"], ["LLM + shad0w", 22, "22 ms", 1]], { max: 80 });
+  bars("chTasks", [["BANKING77 · 0.8B", 71, "71%", 1], ["BANKING77", 71, "71%", 1], ["HWU64", 69, "69%", 1], ["CLINC150", 65, "65%", 1], ["MASSIVE", 64, "64%", 1], ["DBpedia", 54, "54%", 1], ["AG News", 45, "45%", 1]], { max: 100 });
+
+  (function grow() {
+    const s = $("chGrow"), N = [2000, 5000, 10000, 30000, 100000], V = [31, 42, 50, 62, 70], L = 50, R = 20, T = 20, B = 40, W = 520, H = 300;
+    const X = (n) => L + (Math.log10(n) - Math.log10(2000)) / (Math.log10(100000) - Math.log10(2000)) * (W - L - R), Y = (v) => H - B - v / 80 * (H - T - B);
+    s.innerHTML = `<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--mint)" stop-opacity=".35"/><stop offset="1" stop-color="var(--mint)" stop-opacity="0"/></linearGradient></defs>`;
+    [0, 20, 40, 60, 80].forEach((v) => { s.appendChild(svgEl("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "var(--line)" })); s.appendChild(svgEl("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 11 }, v + "%")); });
+    ["2k", "5k", "10k", "30k", "100k"].forEach((l, i) => s.appendChild(svgEl("text", { x: X(N[i]), y: H - B + 20, "text-anchor": "middle", "font-size": 11 }, l)));
+    const pts = N.map((n, i) => `${X(n)},${Y(V[i])}`).join(" L ");
+    const area = svgEl("path", { d: `M ${X(N[0])},${Y(0)} L ${pts} L ${X(N[4])},${Y(0)} Z`, fill: "url(#ga)", opacity: 0 });
+    const line = svgEl("path", { d: `M ${pts}`, fill: "none", stroke: "var(--mint)", "stroke-width": 3.5, "stroke-linejoin": "round", "stroke-linecap": "round" });
+    s.appendChild(area); s.appendChild(line);
+    const Lp = 900; line.setAttribute("stroke-dasharray", Lp); line.setAttribute("stroke-dashoffset", Lp);
+    const dots = N.map((n, i) => { const g = svgEl("g", { opacity: 0 }); g.appendChild(svgEl("circle", { cx: X(n), cy: Y(V[i]), r: 6, fill: "var(--bg)", stroke: "var(--mint)", "stroke-width": 3 })); g.appendChild(svgEl("text", { x: X(n) + (i === 0 ? 10 : 0), y: Y(V[i]) - 14, "text-anchor": i === 0 ? "start" : "middle", "font-size": 13, fill: "var(--ink)", "font-weight": 700 }, V[i] + "%")); s.appendChild(g); return g; });
+    onView(s, () => {
+      line.animate([{ strokeDashoffset: Lp }, { strokeDashoffset: 0 }], { duration: reduce ? 1 : 1800, easing: "ease-out", fill: "forwards" });
+      area.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: reduce ? 0 : 900, fill: "forwards" });
+      dots.forEach((d, i) => d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: reduce ? 0 : 300 + i * 330, fill: "forwards" }));
+    }, 0.4);
+  })();
+
+  // ---------- calculator ----------
+  const calc = () => {
+    const N = Math.pow(10, +$("iN").value), C = +$("iC").value, L = +$("iL").value, S = +$("iS").value / 100;
+    $("vN").textContent = fmt(N); $("vC").textContent = "$" + C.toFixed(2); $("vL").textContent = L + " ms"; $("vS").textContent = Math.round(S * 100) + "%";
+    const saved = N * 30 * S;
+    $("oC").textContent = fmt(saved); $("oM").textContent = "$" + fmt(saved * C / 1000); $("oH").textContent = dur(saved * L / 1000);
+  };
+  ["iN", "iC", "iL", "iS"].forEach((id) => $(id).addEventListener("input", calc)); calc();
+
+  // ---------- dashboard mock ----------
+  let dn = 0, dt = 0; const hist = [];
+  const dRows = $("dRows"), dash = [["block my card", "lost_card"], ["refund?", "refund"], ["is it raining", null], ["send money", "transfer"], ["pin locked", "pin_blocked"], ["weird charge", null], ["new card?", "card_arrival"]];
+  function dtick() {
+    for (let i = 0; i < 37; i++) { dn++; if (Math.random() < 0.66) dt++; }
+    const [t, a] = dash[(Math.random() * dash.length) | 0], tb = a && Math.random() < 0.85;
+    $("dT").textContent = (100 * dt / dn).toFixed(1) + "%"; $("dN").textContent = fmt(dn); $("dS").textContent = fmt(dt);
+    $("dB").textContent = (3.1 + Math.random() * 0.4).toFixed(1) + "% ≤ 5%";
+    const r = document.createElement("div");
+    r.innerHTML = `<span class="${tb ? "t" : "l"}">${tb ? "table" : "LLM"}</span><span>${t}</span><span>${tb ? a : "(asked)"}</span><span>${tb ? (7 + Math.random() * 6).toFixed(1) + " µs" : (420 + Math.random() * 400 | 0) + " ms"}</span>`;
+    dRows.prepend(r); if (dRows.childElementCount > 6) dRows.lastChild.remove();
+    hist.push(dt / dn); if (hist.length > 60) hist.shift();
+    if (hist.length > 1) { const p = hist.map((v, i) => `${i * 300 / (hist.length - 1)},${56 - (v - 0.5) * 220}`).join(" L "); $("dSpark").innerHTML = `<path d="M${p}" fill="none" stroke="var(--mint)" stroke-width="2"/>`; }
+  }
+  for (let i = 0; i < 6; i++) dtick();
+  if (!reduce) setInterval(() => { if (visible($("dRows"))) dtick(); }, 700);
+})();
+</script>
 </body>
 </html>
