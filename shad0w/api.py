@@ -224,12 +224,12 @@ class Model:
             manifest["questions"][n] = {"type": q.qtype, "options": q.options, "threshold": q.threshold,
                                         "alpha": q.alpha, "r_min": q.r_min, "guard": q.guard.state(),
                                         "calibrated": q.calibrated}
-        with open(os.path.join(path, "manifest.json"), "w") as f:
+        with open(os.path.join(path, "manifest.json"), "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)
 
 
 def load(path: str, native: bool = True) -> Model:
-    with open(os.path.join(path, "manifest.json")) as f:
+    with open(os.path.join(path, "manifest.json"), encoding="utf-8") as f:
         man = json.load(f)
     if man.get("format", 1) != FORMAT_VERSION:
         raise ValueError(f"{path}: bundle format {man.get('format')} is not supported by this shad0w")

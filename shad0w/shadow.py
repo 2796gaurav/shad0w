@@ -126,15 +126,15 @@ def certify_bundle(bundle: str, records: list[dict], alpha: float | None = None,
 
 def write_certificate(bundle: str, cert: dict):
     os.makedirs(bundle, exist_ok=True)
-    with open(os.path.join(bundle, CERT_FILE), "w") as f:
+    with open(os.path.join(bundle, CERT_FILE), "w", encoding="utf-8") as f:
         json.dump(cert, f, indent=2)
 
 
 def read_certificate(bundle: str):
     p = os.path.join(bundle, CERT_FILE)
-    return json.load(open(p)) if os.path.exists(p) else None
+    return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else None
 
 
 def read_jsonl(path: str) -> list[dict]:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]

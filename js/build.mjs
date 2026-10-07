@@ -6,5 +6,5 @@ const marker = "module.exports = ";
 const i = src.lastIndexOf(marker);
 if (i < 0) throw new Error("index.js must end with module.exports = {...}");
 const names = src.slice(i + marker.length).trim().replace(/;$/, "");
-const body = src.slice(0, i).replace('"use strict";\n', "");
+const body = src.slice(0, i).replace(/\r\n/g, "\n").replace(/"use strict";\n/, "");
 writeFileSync(new URL("index.mjs", here), `${body}export ${names};\nexport default ${names};\n`);

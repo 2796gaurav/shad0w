@@ -28,9 +28,9 @@ def test_js_matches_python(tmp_path):
     table = tmp_path / "t.s0"
     comp.rx.save(str(table))
     probe = texts[:200] + ["", "UPPER case & punctuation!!", "ünïcödé text", "a" * 400]
-    (tmp_path / "texts.txt").write_text("\n".join(t if t else " " for t in probe))
+    (tmp_path / "texts.txt").write_text("\n".join(t if t else " " for t in probe), encoding="utf-8")
     preds = [int(np.argmax(comp.rx.logits(items(t if t else " ")))) for t in probe]
-    (tmp_path / "preds.txt").write_text("\n".join(map(str, preds)))
+    (tmp_path / "preds.txt").write_text("\n".join(map(str, preds)), encoding="utf-8")
     r = subprocess.run(["node", os.path.join(ROOT, "js", "bench.js"), str(table), str(tmp_path / "texts.txt"),
                         str(tmp_path / "preds.txt")], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
@@ -48,7 +48,7 @@ def test_js_bundle_matches_python_certified_flags(tmp_path):
     m, _ = shadow_compile(SCHEMA, rows, alpha=0.05)
     m.save(str(tmp_path / "b"))
     probe = [r["text"] for r in synth(150, 22)[0]] + ["", "weather in paris", "ünïcode café"]
-    (tmp_path / "probe.json").write_text(json.dumps(probe))
+    (tmp_path / "probe.json").write_text(json.dumps(probe), encoding="utf-8")
     script = ("const {Bundle}=require(process.argv[1]);const fs=require('fs');(async()=>{const b=await Bundle.load(process.argv[2]);"
               "const p=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));"
               "console.log(JSON.stringify(p.map(t=>{const a=b.decide(t).answers.intent;return [a.choice,a.certified]})))})()")
@@ -75,7 +75,7 @@ def test_js_esm_entry_point():
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_esm_build_is_in_sync():
     mjs = pathlib.Path(ROOT, "js", "index.mjs")
-    before = mjs.read_text()
+    before = mjs.read_text(encoding="utf-8")
     r = subprocess.run(["node", os.path.join(ROOT, "js", "build.mjs")], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert mjs.read_text() == before, "js/index.mjs was stale: run `node js/build.mjs` and commit it"
+    assert mjs.read_text(encoding="utf-8") == before, "js/index.mjs was stale: run `node js/build.mjs` and commit it"

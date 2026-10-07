@@ -34,7 +34,7 @@ def test_log_only_mode_writes_teacher_log(tmp_path):
     sh = shad0w.Shadow(None, teacher=teacher, question="intent", log=str(log))
     d = sh.decide("hi block my card thanks")
     assert d.answer == "lost_card" and d.source == "teacher" and d.flag == "no_bundle"
-    row = json.loads(log.read_text().splitlines()[0])
+    row = json.loads(log.read_text(encoding="utf-8").splitlines()[0])
     assert row["text"] == "hi block my card thanks" and row["intent"] == "lost_card" and row["source"] == "teacher"
 
 
@@ -50,7 +50,7 @@ def test_cascade_serves_certified_and_defers_the_rest(bundle, tmp_path):
         assert d.answer in VOCAB
     s = sh.stats()
     assert s["table"] + s["teacher"] == len(texts) and 0 < s["offload"] <= 1
-    logged = log.read_text().splitlines() if log.exists() else []
+    logged = log.read_text(encoding="utf-8").splitlines() if log.exists() else []
     assert len(logged) == s["teacher"]  # every deferred answer is logged for the next compile
 
 

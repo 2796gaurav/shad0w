@@ -31,7 +31,7 @@ import time
 
 
 def _rows_by_question(path, schema_questions):
-    rows = [json.loads(l) for l in open(path) if l.strip()]
+    rows = [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
     out = {}
     for q in schema_questions:
         rs = [r for r in rows if q in r]
@@ -58,7 +58,7 @@ def _init(d):
         if os.path.exists(p):
             print(f"kept existing {p}")
             continue
-        with open(p, "w") as f:
+        with open(p, "w", encoding="utf-8") as f:
             f.write(body)
         wrote.append(p)
     print("wrote " + ", ".join(wrote) if wrote else "nothing to write")
@@ -129,7 +129,7 @@ def main(argv=None):
         return _init(a.dir)
     if a.cmd == "shadow":
         from .shadow import read_jsonl, shadow_compile, write_certificate
-        schema = json.load(open(a.schema))
+        schema = json.load(open(a.schema, encoding="utf-8"))
         t = time.time()
         m, cert = shadow_compile(schema, read_jsonl(a.data), alpha=a.alpha, delta=a.delta, teacher=a.teacher)
         m.save(a.out)
@@ -147,9 +147,9 @@ def main(argv=None):
         cert = read_certificate(a.bundle)
         print(json.dumps(cert, indent=2) if cert else "no certificate in this bundle (run shad0w shadow, shad0w certify or shad0w calibrate)")
     elif a.cmd == "compile":
-        schema = json.load(open(a.schema))
+        schema = json.load(open(a.schema, encoding="utf-8"))
         labeled = _rows_by_question(a.data, schema)[1] if a.data else {}
-        unl = [l.strip() for l in open(a.unlabeled) if l.strip()] if a.unlabeled else None
+        unl = [l.strip() for l in open(a.unlabeled, encoding="utf-8") if l.strip()] if a.unlabeled else None
         t = time.time()
         m = api.compile(schema, labeled=labeled or None, unlabeled=unl, alpha=a.alpha, encoder=a.encoder)
         m.save(a.out)
@@ -167,7 +167,7 @@ def main(argv=None):
         serve(a.bundle, host=a.host, port=a.port)
     elif a.cmd == "bench":
         m = api.load(a.bundle)
-        texts = [l.strip() for l in open(a.texts) if l.strip()]
+        texts = [l.strip() for l in open(a.texts, encoding="utf-8") if l.strip()]
         for t in texts[:50]:
             m.decide(t)
         ts = []

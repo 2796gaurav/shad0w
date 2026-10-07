@@ -14,7 +14,7 @@ import shad0w
 from shad0w.shadow import shadow_compile, write_certificate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-schema = json.load(open(os.path.join(HERE, "schema.json")))
+schema = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
 
 phrases = {
     "refund": ["i want a refund", "money back please", "charged twice, reimburse me", "return my payment"],
