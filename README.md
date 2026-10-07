@@ -38,7 +38,8 @@ import shad0w
 
 intent = shad0w.decision(
     "intent",
-    options={"refund": "wants money back", "lost_card": "card lost or stolen", "balance": "asks about balance"},
+    options={"refund": "wants money back", "lost_card": "card lost or stolen", "balance": "asks about balance",
+             "other": "anything else"},   # always give it an "other": off-topic messages land there, not in a real intent
     llm="openai/gpt-4o-mini",   # or anthropic/…, gemini/…, groq/…, ollama/llama3.1, any OpenAI-compatible server
 )
 
