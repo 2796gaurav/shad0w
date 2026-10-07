@@ -48,18 +48,16 @@
 </ul>
 <h2 id="formally">Formally<a class="headerlink" href="#formally" title="Permanent link">#</a></h2>
 <p><strong>Setting.</strong> The calibration slice has n texts that were never used for fitting, with your model's answers tᵢ. The table outputs a prediction ŷᵢ and a confidence cᵢ. Disagreement is eᵢ = 1[ŷᵢ ≠ tᵢ].</p>
-<p><strong>Procedure</strong> (<code>shad0w.reliability.SelectiveRiskController</code>):</p>
+<p><strong>Procedure</strong> (<code>shad0w.reliability.SelectiveRiskController</code>, default <code>procedure="auto"</code>). Sort the calibration points by confidence, descending. Then run two valid tests, each at level δ/2, and keep the <strong>more lenient</strong> certified threshold. By the union bound, the result is valid at δ.</p>
 <ol>
-<li>Sort calibration points by confidence, descending.</li>
-<li>Fix a grid of 50 accepted-set sizes k, linearly spaced from k₀ to n. The start k₀ depends <strong>only on (n, α, δ)</strong>, never on the data:
-   k₀ = max( ⌈log δ / log(1 − α)⌉, ⌈0.05 n⌉, min(50, n), k_tol ).
-   Here k_tol is the smallest k at which ⌊αk/2⌋ disagreements still certify. Starting there means one unlucky disagreement among the very top answers cannot end the test.</li>
-<li>For each k, from strict to lenient, compute the Clopper–Pearson upper bound on the disagreement rate among the top-k:
-   U_k = BetaInv(1 − δ; E_k + 1, k − E_k), where E_k counts disagreements in the top k.
-   Stop at the first k with U_k &gt; α.</li>
-<li>The certified threshold τ<em> is the confidence of the last accepted k. If none was accepted, τ</em> = ∞ and nothing is served.</li>
+<li><strong>Fixed-sequence.</strong> Take a grid of 50 accepted-set sizes k from k₀ to n, tested strict → lenient. Stop at the first k where the Clopper–Pearson upper bound U_k = BetaInv(1 − δ/2; E_k + 1, k − E_k) exceeds α. Here E_k counts disagreements among the top k.
+   - The start k₀ depends only on (n, α, δ): k₀ = max(⌈log δ / log(1 − α)⌉, ⌈0.05 n⌉, min(50, n), k_tol). k_tol is the smallest k at which ⌊αk/2⌋ disagreements still certify.
+   - Fixed-sequence pays no multiplicity penalty, so it is the tightest test when disagreement rises as confidence falls.</li>
+<li><strong>Bonferroni.</strong> Test 12 coverage levels fixed in advance (5%, 10%, 15%, 20%, 30%, …, 100%) independently, each at δ/24, and keep the most lenient that passes.
+   - It cannot be stopped early by a chance disagreement near the top. That matters for LLM teachers, which are wrong a few percent of the time regardless of the input.</li>
 </ol>
-<p><strong>Guarantee.</strong> Fixed-sequence testing of a pre-ordered family of hypotheses controls the family-wise error at δ, with no multiplicity penalty (Learn-then-Test, Angelopoulos et al. 2021). With probability ≥ 1 − δ over the calibration sample:</p>
+<p>The certified threshold τ* is the confidence at the chosen k. If neither test certifies anything, τ* = ∞ and nothing is served. <code>certificate.json</code> records which procedure produced τ*. You can force one with <code>procedure="fixed-sequence"</code> or <code>"bonferroni"</code>.</p>
+<p><strong>Guarantee.</strong> Each family controls its error at δ/2 (fixed-sequence testing of a pre-ordered family; Bonferroni over a fixed family), so the combination holds at δ (Learn-then-Test, Angelopoulos et al. 2021). With probability ≥ 1 − δ over the calibration sample:</p>
 <p>P( ŷ(x) ≠ teacher(x) | c(x) ≥ τ*, x ~ D_cal ) ≤ α</p>
 <p><strong>Assumptions.</strong> Calibration and future inputs are exchangeable, meaning drawn from the same distribution D_cal. The bound is marginal over D_cal: it is not conditional on class, and a shift in the class mix can break it.</p>
 <p><strong>Against the truth.</strong> If your model is right with probability q on the served inputs, the served error against the truth is at most α + (1 − q), by a union bound. In tests, cascade accuracy tracked the teacher's to within a point.</p>
@@ -71,42 +69,34 @@
 <li>It measures the <strong>true</strong> disagreement rate at each certified threshold, using a 1,000,000-sample population.</li>
 <li>It asserts that the fraction of draws where the truth exceeds α is at most δ.</li>
 </ul>
-<p>The same check with 400 draws per setting, during development (population A of the test: disagreement likelier at low confidence):</p>
+<p>The same check during development, 300 draws per setting, calibration size 3,000, α = 5%. "Bound failed" is the share of draws where the truth exceeded α (promise: ≤ δ = 10%). "Offload" is the mean share served.</p>
 <table>
 <thead>
 <tr>
-<th>α</th>
-<th>Calibration size</th>
-<th>Draws where the bound failed</th>
-<th>Promise (δ)</th>
-<th>Mean offload</th>
+<th>Teacher behaviour</th>
+<th>Fixed-sequence only: bound failed / offload</th>
+<th><strong>auto (default): bound failed / offload</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>2%</td>
-<td>3,000</td>
-<td>5.0%</td>
-<td>≤ 10%</td>
-<td>32%</td>
+<td>Disagreement rises as confidence falls</td>
+<td>6.0% / 73.1%</td>
+<td><strong>3.3% / 71.6%</strong></td>
 </tr>
 <tr>
-<td>5%</td>
-<td>900</td>
-<td>7.2%</td>
-<td>≤ 10%</td>
-<td>65%</td>
+<td>LLM-like: ~2.5% wrong regardless of input</td>
+<td>0% / 38.9% (57% of runs certified nothing)</td>
+<td><strong>0% / 99.9%</strong> (no run certified nothing)</td>
 </tr>
 <tr>
-<td>5%</td>
-<td>3,000</td>
-<td>5.0%</td>
-<td>≤ 10%</td>
-<td>73%</td>
+<td>Hard task, little is certifiable</td>
+<td>1.3% / 0.8%</td>
+<td><strong>1.3% / 0.8%</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Changing where the sequence starts (k_tol above) cut the share of runs that certified nothing from 15% to 3% (α = 2%, n = 3,000). The failure rate stayed within δ.</p>
+<p>The flat-noise row is why 0.1.1 made <code>auto</code> the default. In an end-to-end test, a stand-in LLM that agreed with the table 97.6% of the time got 0% certified under fixed-sequence alone. With <code>auto</code> it got 100%, and realised disagreement on fresh traffic was 2.3% against the 5% bound.</p>
 <p>On real data, realised disagreement on held-out test sets at α = 5% was 3.9–5.7% (mean of three seeds) across seven intent and topic tasks. The worst single seed reached 6.5% on a 600-item test set, which is within what δ = 0.1 and test-set noise allow. On a test slice dominated by one class, it reached 6–7%. That is the class-mix shift the assumptions warn about. Every run is in the <a href="benchmarks.html">benchmarks</a>.</p>
 <h2 id="drift-guard-and-audits">Drift guard and audits<a class="headerlink" href="#drift-guard-and-audits" title="Permanent link">#</a></h2>
 <ul>

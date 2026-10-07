@@ -6,7 +6,7 @@
   "alpha": 0.05,
   "delta": 0.1,
   "statement": "On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. The bound is against the teacher, not the truth, and does not survive a shift in the traffic mix without re-certification.",
-  "created_utc": "2026-10-07T02:22:34+00:00",
+  "created_utc": "2026-10-07T06:58:24+00:00",
   "questions": {
     "intent": {
       "type": "choice",
@@ -94,9 +94,10 @@
       "data_sha256": "0410b5fb1ac5101ac33c8bc47786a7250216c2ae6820acaa03fe2d539043e0ba",
       "n_calibration": 2997,
       "agreement_with_teacher": 0.8208208208208209,
-      "threshold": 0.8288981318473816,
-      "certified_share_on_calibration": 0.6509843176509843,
-      "disagreement_on_certified_calibration": 0.03997949769349052
+      "threshold": 0.8274253010749817,
+      "certified_share_on_calibration": 0.651317984651318,
+      "disagreement_on_certified_calibration": 0.04047131147540984,
+      "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
     }
   }
 }

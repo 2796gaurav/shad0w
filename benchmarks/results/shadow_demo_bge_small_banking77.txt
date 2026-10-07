@@ -1,4 +1,4 @@
-# python examples/shadow_demo.py --teacher bge-small --dataset banking77   (shad0w 0.1.0, tolerant-start certificate)
-teacher (bge-small) zero-shot accuracy on test: 68.0%  [177s]
-alpha=2%: answered locally 49.6%, realised disagreement 1.4%, cascade accuracy 68.2% (teacher alone 68.0%)  [compile+certify 522s]
-alpha=5%: answered locally 69.4%, realised disagreement 4.6%, cascade accuracy 67.8% (teacher alone 68.0%)  [compile+certify 664s]
+# python examples/shadow_demo.py --teacher bge-small --dataset banking77   (shad0w 0.1.1, certificate procedure: auto)
+teacher (bge-small) zero-shot accuracy on test: 68.0%  [84s]
+alpha=2%: answered locally 49.7%, realised disagreement 1.4%, cascade accuracy 68.2% (teacher alone 68.0%)  [compile+certify 224s]
+alpha=5%: answered locally 69.4%, realised disagreement 4.6%, cascade accuracy 67.8% (teacher alone 68.0%)  [compile+certify 227s]

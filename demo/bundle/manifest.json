@@ -88,7 +88,7 @@
         "wrong_amount_of_cash_received",
         "wrong_exchange_rate_for_cash_withdrawal"
       ],
-      "threshold": 0.8288981318473816,
+      "threshold": 0.8274253010749817,
       "alpha": 0.05,
       "r_min": 8.0,
       "guard": {
