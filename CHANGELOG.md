@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- **Certificate holds up under LLM-like teachers.** Teachers that are wrong a few percent of the time regardless of the input (sampling noise) could make the strict-to-lenient fixed-sequence test stop early. A 97.6%-agreeing teacher then certified 0%. The default procedure (`auto`) now runs fixed-sequence and a Bonferroni test over 12 pre-registered coverage levels, each at δ/2, and keeps the more lenient threshold. That is still valid at δ by the union bound. In simulation, offload under flat teacher noise rose from 39% to ~100%; where disagreement rises as confidence falls, ~98% of the fixed-sequence offload was kept. The violation rate stayed within δ for every procedure. The end-to-end case above now certifies 100% with 2.3% realised disagreement on fresh traffic (bound 5%).
+- `SelectiveRiskController(alpha, delta, procedure="auto" | "fixed-sequence" | "bonferroni")`. The certificate records which procedure produced the threshold.
+- Release pipeline: PyPI and npm both publish through Trusted Publishing (OIDC). No tokens are stored.
+
 ## 0.1.0
 
 First public release.

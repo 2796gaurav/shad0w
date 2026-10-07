@@ -1,6 +1,6 @@
 {
   "name": "shad0wllm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Certified microsecond decisions in JavaScript: run shad0w tables (compiled from your LLM's answers) in Node, browsers and edge workers. Zero dependencies.",
   "main": "./index.js",
   "module": "./index.mjs",

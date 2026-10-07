@@ -4,8 +4,8 @@ selective-risk control with a finite-sample guarantee.
 Guarantee (under exchangeability of calibration and test data):
   * conformal_sets: P(y in C(x)) >= 1 - alpha
   * SelectiveRiskController: with prob >= 1 - delta over the calibration draw,
-    error among *accepted* predictions <= alpha (Learn-then-Test, binomial tail,
-    fixed-sequence testing from the most to least confident threshold).
+    error among *accepted* predictions <= alpha (Learn-then-Test, Clopper-Pearson,
+    fixed-sequence and Bonferroni families combined by a union bound).
 """
 
 from __future__ import annotations
@@ -113,34 +113,69 @@ def _tolerant_start(alpha: float, delta: float, n: int) -> int:
     return n
 
 
+BONFERRONI_LEVELS = (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)  # coverage levels, fixed in advance
+PROCEDURES = ("auto", "fixed-sequence", "bonferroni")
+
+
 class SelectiveRiskController:
-    """Pick the lowest confidence threshold whose certified selective error <= alpha.
+    """Pick the lowest confidence threshold whose certified selective error <= alpha, with probability >= 1 - delta.
 
-    Fixed-sequence testing over thresholds sorted from strict to lenient controls
-    the family-wise error at delta without a multiplicity penalty."""
+    Two valid procedures over pre-registered coverage levels:
+      fixed-sequence  tests levels strict -> lenient and stops at the first failure. No multiplicity penalty, so it
+                      is the tightest when disagreement rises as confidence falls; but chance disagreements among the
+                      top answers can end it early, which happens when a teacher makes errors regardless of input.
+      bonferroni      tests 12 levels independently at delta / 12 and keeps the most lenient that passes. Robust to
+                      flat, input-independent teacher noise, at the price of a multiplicity penalty.
+    auto (default) runs both at delta / 2 each and keeps the more lenient threshold. By the union bound the result
+    is valid at delta. In simulation it kept ~98% of fixed-sequence's offload where that is strong and raised
+    offload from 39% to ~100% under LLM-like flat noise (tests/test_certificate_validity.py)."""
 
-    def __init__(self, alpha: float = 0.05, delta: float = 0.1):
-        self.alpha, self.delta = alpha, delta
+    def __init__(self, alpha: float = 0.05, delta: float = 0.1, procedure: str = "auto"):
+        if procedure not in PROCEDURES:
+            raise ValueError(f"procedure must be one of {PROCEDURES}")
+        self.alpha, self.delta, self.procedure = alpha, delta, procedure
         self.threshold = np.inf
+        self.chosen = None  # which procedure produced the threshold
 
     def fit(self, conf: np.ndarray, correct: np.ndarray, grid: int = 50) -> SelectiveRiskController:
-        order = np.argsort(-conf)
-        c_sorted, ok = conf[order], correct[order].astype(bool)
+        order = np.argsort(-np.asarray(conf))
+        c_sorted, ok = np.asarray(conf)[order], np.asarray(correct)[order].astype(bool)
         errs = np.cumsum(~ok)
-        n = len(c_sorted)
-        # Where the strict -> lenient sequence starts. It depends only on (n, alpha, delta), never on the data,
-        # so fixed-sequence testing keeps its guarantee. It starts late enough that a run with disagreement at
-        # half of alpha can still certify: a single unlucky disagreement among the very top answers must not end
-        # the test (with a start at 50 answers, one such disagreement certified nothing at 99% agreement).
-        n_min = math.ceil(math.log(self.delta) / math.log(1 - self.alpha))  # zero-error run that certifies alpha
-        n_min = max(n_min, math.ceil(0.05 * n), min(50, n), min(_tolerant_start(self.alpha, self.delta, n), n))
-        self.threshold = np.inf
-        # pre-registered grid of coverage levels, tested strict -> lenient; stop at first failure
-        for k in np.unique(np.linspace(min(n_min, n), n, grid).astype(int)):
-            if binom_ucb(int(errs[k - 1]), int(k), self.delta) > self.alpha:
-                break
-            self.threshold = c_sorted[k - 1]
+        if self.procedure == "fixed-sequence":
+            self.threshold, self.chosen = self._fixed_sequence(c_sorted, errs, self.delta, grid), "fixed-sequence"
+        elif self.procedure == "bonferroni":
+            self.threshold, self.chosen = self._bonferroni(c_sorted, errs, self.delta), "bonferroni"
+        else:
+            t1 = self._fixed_sequence(c_sorted, errs, self.delta / 2, grid)
+            t2 = self._bonferroni(c_sorted, errs, self.delta / 2)
+            self.threshold = min(t1, t2)
+            self.chosen = None if not np.isfinite(self.threshold) else ("fixed-sequence" if t1 <= t2 else "bonferroni")
         return self
+
+    def _fixed_sequence(self, c_sorted, errs, delta, grid):
+        n = len(c_sorted)
+        if n == 0:
+            return np.inf
+        # Where the strict -> lenient sequence starts depends only on (n, alpha, delta), never on the data, so
+        # fixed-sequence testing keeps its guarantee. It starts late enough that a run with disagreement at half of
+        # alpha can still certify, so one unlucky disagreement among the very top answers does not end the test.
+        n_min = math.ceil(math.log(delta) / math.log(1 - self.alpha))  # zero-error run that certifies alpha
+        n_min = max(n_min, math.ceil(0.05 * n), min(50, n), min(_tolerant_start(self.alpha, delta, n), n))
+        thr = np.inf
+        for k in np.unique(np.linspace(min(n_min, n), n, grid).astype(int)):  # strict -> lenient, stop at failure
+            if binom_ucb(int(errs[k - 1]), int(k), delta) > self.alpha:
+                break
+            thr = c_sorted[k - 1]
+        return thr
+
+    def _bonferroni(self, c_sorted, errs, delta):
+        n = len(c_sorted)
+        ks = sorted({max(1, int(round(level * n))) for level in BONFERRONI_LEVELS}) if n else []
+        thr = np.inf
+        for k in ks:
+            if binom_ucb(int(errs[k - 1]), k, delta / len(ks)) <= self.alpha:
+                thr = min(thr, c_sorted[k - 1])  # the most lenient level that passes
+        return thr
 
     def accept(self, conf: np.ndarray) -> np.ndarray:
         return conf >= self.threshold

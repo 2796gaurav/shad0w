@@ -49,7 +49,8 @@ def _certify(q: Question, texts, y, alpha: float, delta: float):
     from .reliability import SelectiveRiskController
     P = np.stack([softmax(q.rx.logits(items(t))) for t in texts])
     conf, agree = P.max(1), P.argmax(1) == y
-    thr = float(SelectiveRiskController(alpha, delta).fit(conf, agree).threshold)
+    ctl = SelectiveRiskController(alpha, delta).fit(conf, agree)
+    thr = float(ctl.threshold)
     served = conf >= thr
     q.threshold, q.alpha, q.calibrated = thr, alpha, True
     q.guard = DriftGuard(conf, agree)
@@ -59,6 +60,7 @@ def _certify(q: Question, texts, y, alpha: float, delta: float):
         "threshold": thr if np.isfinite(thr) else None,
         "certified_share_on_calibration": float(served.mean()),
         "disagreement_on_certified_calibration": float((~agree[served]).mean()) if served.any() else None,
+        "procedure": f"learn-then-test/clopper-pearson/{ctl.procedure}" + (f" ({ctl.chosen})" if ctl.chosen else ""),
     }
 
 
