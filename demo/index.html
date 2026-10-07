@@ -77,7 +77,7 @@
     <div class="replay-grid">
       <div><b id="r-served">0%</b><span>answered locally</span></div>
       <div><b id="r-dis">–</b><span>disagreement with the teacher on served answers</span></div>
-      <div><b id="r-us">–</b><span>total table time for all messages</span></div>
+      <div><b id="r-us">–</b><span>table time for all 800 messages</span></div>
     </div>
     <button class="btn primary" id="replay" type="button">▶ Replay 800 messages</button>
     <div class="feed" id="feed" style="margin-top:16px"></div>
@@ -135,13 +135,16 @@ $("replay").addEventListener("click", async () => {
   if (!replay) return;
   const btn = $("replay"); btn.disabled = true;
   const feed = $("feed"); feed.innerHTML = "";
-  let served = 0, dis = 0, total = 0, n = 0;
+  let served = 0, dis = 0, n = 0;
   const msgs = replay.messages;
+  // browser timers are coarse, so time all decisions in one tight block first, then animate the stream
+  const t0 = performance.now();
+  for (const [text] of msgs) bundle.decide(text);
+  const total = performance.now() - t0;
   for (let i = 0; i < msgs.length; i++) {
     const [text, teacher] = msgs[i];
-    const t0 = performance.now();
     const a = bundle.decide(text).answers.intent;
-    total += performance.now() - t0; n++;
+    n++;
     if (a.certified) { served++; if (a.choice !== teacher) dis++; }
     if (i % 4 === 0 || i === msgs.length - 1) {
       const line = document.createElement("div");
@@ -151,7 +154,7 @@ $("replay").addEventListener("click", async () => {
       if (feed.childElementCount > 14) feed.lastChild.remove();
       $("r-served").textContent = (100 * served / n).toFixed(1) + "%";
       $("r-dis").textContent = served ? (100 * dis / served).toFixed(1) + "%" : "–";
-      $("r-us").textContent = total < 1 ? `${(total * 1000).toFixed(0)} µs` : `${total.toFixed(1)} ms`;
+      $("r-us").textContent = `${total.toFixed(1)} ms · ${(total * 1000 / msgs.length).toFixed(0)} µs each`;
       await new Promise((r) => setTimeout(r, 18));
     }
   }
