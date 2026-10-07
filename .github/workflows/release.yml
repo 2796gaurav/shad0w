@@ -1,5 +1,5 @@
 # Publishes a tagged release: wheels with the C core for every major platform, the sdist, the npm package and a
-# GitHub Release. PyPI uses Trusted Publishing (no stored token). npm uses the NPM_TOKEN secret with provenance.
+# GitHub Release. PyPI and npm both use Trusted Publishing (OIDC), so no publishing token is stored anywhere.
 name: release
 on:
   push:
@@ -61,6 +61,8 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
 
   npm:
+    # npm Trusted Publishing (OIDC): no token is stored. Configure it once on npmjs.com:
+    # package shad0wllm -> Settings -> Trusted Publisher -> GitHub Actions, repo 2796gaurav/shad0w, workflow release.yml
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -70,11 +72,10 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
-      - run: cd js && npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm install -g npm@latest   # trusted publishing needs npm >= 11.5.1
+      - run: cd js && npm publish --access public   # provenance is attached automatically with trusted publishing
 
   github-release:
     needs: [pypi]
