@@ -1,0 +1,87 @@
+{
+ "ag_news": {
+  "teacher_gold_acc": 0.6042,
+  "curve": [
+   {
+    "N": 2000,
+    "agreement": 0.7648,
+    "table_gold_acc": 0.5882,
+    "alpha=0.01": {
+     "offload": 0.0,
+     "disagreement_on_offloaded": 0.0,
+     "cascade_gold_acc": 0.6042
+    },
+    "alpha=0.02": {
+     "offload": 0.0518,
+     "disagreement_on_offloaded": 0.019305019305019305,
+     "cascade_gold_acc": 0.6052
+    },
+    "alpha=0.05": {
+     "offload": 0.2972,
+     "disagreement_on_offloaded": 0.04912516823687752,
+     "cascade_gold_acc": 0.6092
+    }
+   },
+   {
+    "N": 5000,
+    "agreement": 0.7946,
+    "table_gold_acc": 0.5984,
+    "alpha=0.01": {
+     "offload": 0.0,
+     "disagreement_on_offloaded": 0.0,
+     "cascade_gold_acc": 0.6042
+    },
+    "alpha=0.02": {
+     "offload": 0.0,
+     "disagreement_on_offloaded": 0.0,
+     "cascade_gold_acc": 0.6042
+    },
+    "alpha=0.05": {
+     "offload": 0.418,
+     "disagreement_on_offloaded": 0.0430622009569378,
+     "cascade_gold_acc": 0.6098
+    }
+   },
+   {
+    "N": 10000,
+    "agreement": 0.818,
+    "table_gold_acc": 0.6054,
+    "alpha=0.01": {
+     "offload": 0.0484,
+     "disagreement_on_offloaded": 0.004132231404958678,
+     "cascade_gold_acc": 0.6044
+    },
+    "alpha=0.02": {
+     "offload": 0.2238,
+     "disagreement_on_offloaded": 0.009830205540661306,
+     "cascade_gold_acc": 0.6052
+    },
+    "alpha=0.05": {
+     "offload": 0.5014,
+     "disagreement_on_offloaded": 0.0362983645791783,
+     "cascade_gold_acc": 0.6086
+    }
+   },
+   {
+    "N": 30000,
+    "agreement": 0.8422,
+    "table_gold_acc": 0.6032,
+    "alpha=0.01": {
+     "offload": 0.2874,
+     "disagreement_on_offloaded": 0.008350730688935281,
+     "cascade_gold_acc": 0.6054
+    },
+    "alpha=0.02": {
+     "offload": 0.4338,
+     "disagreement_on_offloaded": 0.015675426463808206,
+     "cascade_gold_acc": 0.6054
+    },
+    "alpha=0.05": {
+     "offload": 0.6222,
+     "disagreement_on_offloaded": 0.03567984570877531,
+     "cascade_gold_acc": 0.6078
+    }
+   }
+  ]
+ }
+}

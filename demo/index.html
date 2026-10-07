@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live demo · shad0w</title>
+<meta name="description" content="A real 77-intent BANKING77 shad0w table, certified at alpha 5%, deciding in your browser.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/demo/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Live demo · shad0w">
+<meta property="og:description" content="A real 77-intent BANKING77 shad0w table, certified at alpha 5%, deciding in your browser."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/demo/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../docs/">Docs</a>
+    <a href="../demo/" class=active>Live demo</a>
+    <a href="../docs/benchmarks.html">Benchmarks</a>
+    <a href="../#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<main class="wrap" style="padding-top:44px;padding-bottom:90px">
+  <div class="section-head" style="margin-bottom:34px">
+    <div class="kicker">live demo · runs in your browser</div>
+    <h2 style="margin-top:8px">A real 77-intent banking table,<br><span class="grad-text">deciding as you type.</span></h2>
+    <p>This table was compiled in shadow mode from the answers of an open model (bge-small, zero-shot) on the public BANKING77 dataset, then certified at α = 5%. The decision runs locally in this tab, with no server and no network after load.</p>
+  </div>
+
+  <div class="demo-shell">
+    <div class="panel">
+      <h3>Type a customer message</h3>
+      <textarea id="q" class="demo-input" spellcheck="false" placeholder="e.g. my card got stolen at the airport">my card got stolen at the airport, please block it</textarea>
+      <div class="chips" id="chips"></div>
+      <div class="verdict">
+        <span id="badge" class="badge ok">loading table…</span>
+        <span class="answer" id="answer">—</span>
+      </div>
+      <div class="gauge" id="gauge"><div class="fill" id="gfill"></div><div class="thr" id="gthr"><span>certified threshold</span></div></div>
+      <div class="muted" style="font-size:14px" id="explain">&nbsp;</div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div style="display:grid;gap:22px;align-content:start">
+      <div class="panel">
+        <h3>This decision</h3>
+        <div class="big-us grad-text" id="us">–</div>
+        <div class="muted" style="font-size:14px;margin:6px 0 16px">per decision in JavaScript, on this device</div>
+        <dl class="kv">
+          <dt>confidence</dt><dd id="conf">–</dd>
+          <dt>certified threshold</dt><dd id="thr">–</dd>
+          <dt>options</dt><dd id="k">–</dd>
+          <dt>table size</dt><dd id="size">–</dd>
+        </dl>
+      </div>
+      <div class="panel">
+        <h3>The certificate</h3>
+        <dl class="kv" id="cert"><dt>loading…</dt><dd></dd></dl>
+        <p class="muted" style="font-size:13px;margin:14px 0 0">The bound is against the teacher (a 68%-accurate open model), not against the truth. In production, your own LLM is the teacher.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:22px">
+    <h3>Replay real traffic</h3>
+    <p class="muted" style="margin:0 0 6px">Stream 800 held-out BANKING77 test messages through the table. Certified answers are served locally. The rest would go to the teacher.</p>
+    <div class="replay-grid">
+      <div><b id="r-served">0%</b><span>answered locally</span></div>
+      <div><b id="r-dis">–</b><span>disagreement with the teacher on served answers</span></div>
+      <div><b id="r-us">–</b><span>total table time for all messages</span></div>
+    </div>
+    <button class="btn primary" id="replay" type="button">▶ Replay 800 messages</button>
+    <div class="feed" id="feed" style="margin-top:16px"></div>
+  </div>
+
+  <p class="muted" style="text-align:center;margin-top:36px">Build your own: <a href="../docs/">Getting started</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></p>
+</main>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+<script type="module">
+import { Bundle } from "../assets/shad0w.mjs";
+
+const $ = (id) => document.getElementById(id);
+const examples = ["my card got stolen at the airport, please block it", "I was charged twice for the same coffee", "why is my top up still pending?",
+  "how do I change my PIN", "the ATM swallowed my card", "can I get a refund for this", "what's the exchange rate for euros", "is it going to rain tomorrow?"];
+$("chips").innerHTML = examples.map((e) => `<button class="chip" type="button">${e}</button>`).join("");
+
+let bundle, spec, replay;
+const fmtUs = (us) => us < 1000 ? `${us.toFixed(us < 10 ? 1 : 0)} µs` : `${(us / 1000).toFixed(1)} ms`;
+
+function timeIt(text) {
+  // timers are coarse in browsers (often 5-100 µs), so time batches of 200 decisions and take the median batch
+  const t = bundle.questions.intent.table, ts = [];
+  for (let b = 0; b < 7; b++) { const a = performance.now(); for (let i = 0; i < 200; i++) t.decide(text); ts.push((performance.now() - a) / 200); }
+  ts.sort((a, b) => a - b);
+  return ts[3] * 1000;
+}
+
+function render() {
+  if (!bundle) return;
+  const text = $("q").value;
+  const a = bundle.decide(text).answers.intent;
+  const thr = spec.threshold ?? 1;
+  $("answer").textContent = a.choice.replaceAll("_", " ");
+  $("badge").className = "badge " + (a.certified ? "ok" : "defer");
+  $("badge").textContent = a.certified ? "✓ certified · served locally" : "↗ not certified · defer to your model";
+  $("gfill").style.width = (a.confidence * 100).toFixed(1) + "%";
+  $("gfill").style.background = a.certified ? "var(--green)" : "var(--amber)";
+  $("gthr").style.left = (thr * 100).toFixed(1) + "%";
+  $("explain").textContent = a.certified
+    ? `Confidence ${(a.confidence * 100).toFixed(1)}% clears the certified threshold of ${(thr * 100).toFixed(1)}%. The table answers.`
+    : `Confidence ${(a.confidence * 100).toFixed(1)}% is below the certified threshold of ${(thr * 100).toFixed(1)}%. The table's guess is shown, but the request would go to your model.`;
+  const top = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]).slice(0, 5);
+  $("bars").innerHTML = top.map(([k, v]) => `<div class="bar"><span class="name" title="${k}">${k}</span><span class="track"><span class="fill" style="width:${(v * 100).toFixed(1)}%"></span></span><span class="val">${(v * 100).toFixed(1)}%</span></div>`).join("");
+  $("conf").textContent = (a.confidence * 100).toFixed(2) + "%";
+  $("us").textContent = fmtUs(timeIt(text));
+}
+
+$("q").addEventListener("input", render);
+$("chips").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (c) { $("q").value = c.textContent; render(); } });
+
+$("replay").addEventListener("click", async () => {
+  if (!replay) return;
+  const btn = $("replay"); btn.disabled = true;
+  const feed = $("feed"); feed.innerHTML = "";
+  let served = 0, dis = 0, total = 0, n = 0;
+  const msgs = replay.messages;
+  for (let i = 0; i < msgs.length; i++) {
+    const [text, teacher] = msgs[i];
+    const t0 = performance.now();
+    const a = bundle.decide(text).answers.intent;
+    total += performance.now() - t0; n++;
+    if (a.certified) { served++; if (a.choice !== teacher) dis++; }
+    if (i % 4 === 0 || i === msgs.length - 1) {
+      const line = document.createElement("div");
+      line.innerHTML = a.certified ? `<span class="s">✓ table </span> ${a.choice.padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${text.replace(/</g, "&lt;")}`
+                                   : `<span class="d">↗ model </span> ${"(deferred)".padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${text.replace(/</g, "&lt;")}`;
+      feed.prepend(line);
+      if (feed.childElementCount > 14) feed.lastChild.remove();
+      $("r-served").textContent = (100 * served / n).toFixed(1) + "%";
+      $("r-dis").textContent = served ? (100 * dis / served).toFixed(1) + "%" : "–";
+      $("r-us").textContent = total < 1 ? `${(total * 1000).toFixed(0)} µs` : `${total.toFixed(1)} ms`;
+      await new Promise((r) => setTimeout(r, 18));
+    }
+  }
+  btn.disabled = false; btn.textContent = "▶ Replay again";
+});
+
+(async () => {
+  try {
+    bundle = await Bundle.load(new URL("bundle", location.href).href);
+    spec = bundle.manifest.questions.intent;
+    const cert = await (await fetch("bundle/certificate.json")).json();
+    replay = await (await fetch("replay.json")).json();
+    const q = cert.questions.intent, s = replay.stats;
+    $("thr").textContent = (spec.threshold * 100).toFixed(1) + "%";
+    $("k").textContent = spec.options.length;
+    $("size").textContent = (s.table_bytes / 1048576).toFixed(1) + " MB";
+    $("cert").innerHTML = [
+      ["certified bound α", (cert.alpha * 100) + "%"], ["confidence level 1 − δ", (1 - cert.delta) * 100 + "%"],
+      ["teacher answers used", q.n_records.toLocaleString()], ["agreement with teacher", (q.agreement_with_teacher * 100).toFixed(1) + "%"],
+      ["served on calibration", (q.certified_share_on_calibration * 100).toFixed(1) + "%"],
+      ["served on the test set", (s.offload * 100).toFixed(1) + "%"], ["realised disagreement (test)", (s.disagreement * 100).toFixed(1) + "%"],
+    ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+    render();
+  } catch (e) {
+    $("badge").className = "badge defer"; $("badge").textContent = "could not load the table: " + e.message;
+  }
+})();
+</script>
+</body>
+</html>

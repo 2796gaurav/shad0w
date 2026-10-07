@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 534" width="1000" height="534" role="img" aria-label="Certified offload at alpha 5% per task">
+<defs><linearGradient id="bgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06060b"/><stop offset="1" stop-color="#0e0b1f"/></linearGradient>
+<linearGradient id="bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8b6cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+<style>.t{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;fill:#ecebff} .m{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace} .mu{fill:#8a8aa3}
+.grow{transform-origin:left;animation:g 1.4s cubic-bezier(.2,.9,.2,1) both} @keyframes g{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.draw{stroke-dasharray:2000;stroke-dashoffset:2000;animation:d 2.2s ease-out forwards} @keyframes d{to{stroke-dashoffset:0}}
+.pop{animation:p .5s ease-out both} @keyframes p{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}</style>
+<rect width="1000" height="534" rx="20" fill="url(#bgc)"/>
+<text x="36" y="48" class="t" font-size="22" font-weight="700">Traffic answered locally at a certified 5% bound</text>
+<text x="36" y="76" class="t mu" font-size="14">share of test traffic served by the table · realised disagreement with the teacher in grey (mean of 3 seeds)</text>
+<text x="36" y="132" class="t" font-size="15">Kev-0.8B → BANKING77</text><text x="316" y="132" class="t mu m" font-size="12" text-anchor="end">77 opts</text>
+<rect x="330" y="116" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.00s" x="330" y="116" width="398" height="24" rx="6" fill="url(#bar)"/>
+<text x="738" y="133" class="t m" font-size="14" font-weight="700">71%</text>
+<text x="964" y="133" class="t mu m" font-size="12" text-anchor="end">5.7%</text>
+<text x="36" y="178" class="t" font-size="15">Gemma → BANKING77</text><text x="316" y="178" class="t mu m" font-size="12" text-anchor="end">77 opts</text>
+<rect x="330" y="162" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.08s" x="330" y="162" width="398" height="24" rx="6" fill="url(#bar)"/>
+<text x="738" y="179" class="t m" font-size="14" font-weight="700">71%</text>
+<text x="964" y="179" class="t mu m" font-size="12" text-anchor="end">4.1%</text>
+<text x="36" y="224" class="t" font-size="15">Gemma → HWU64</text><text x="316" y="224" class="t mu m" font-size="12" text-anchor="end">64 opts</text>
+<rect x="330" y="208" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.16s" x="330" y="208" width="386" height="24" rx="6" fill="url(#bar)"/>
+<text x="726" y="225" class="t m" font-size="14" font-weight="700">69%</text>
+<text x="964" y="225" class="t mu m" font-size="12" text-anchor="end">5.4%</text>
+<text x="36" y="270" class="t" font-size="15">Gemma → CLINC150</text><text x="316" y="270" class="t mu m" font-size="12" text-anchor="end">150 opts</text>
+<rect x="330" y="254" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.24s" x="330" y="254" width="364" height="24" rx="6" fill="url(#bar)"/>
+<text x="704" y="271" class="t m" font-size="14" font-weight="700">65%</text>
+<text x="964" y="271" class="t mu m" font-size="12" text-anchor="end">4.9%</text>
+<text x="36" y="316" class="t" font-size="15">Gemma → MASSIVE</text><text x="316" y="316" class="t mu m" font-size="12" text-anchor="end">60 opts</text>
+<rect x="330" y="300" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.32s" x="330" y="300" width="358" height="24" rx="6" fill="url(#bar)"/>
+<text x="698" y="317" class="t m" font-size="14" font-weight="700">64%</text>
+<text x="964" y="317" class="t mu m" font-size="12" text-anchor="end">4.9%</text>
+<text x="36" y="362" class="t" font-size="15">Gemma → DBpedia</text><text x="316" y="362" class="t mu m" font-size="12" text-anchor="end">14 opts</text>
+<rect x="330" y="346" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.40s" x="330" y="346" width="302" height="24" rx="6" fill="url(#bar)"/>
+<text x="642" y="363" class="t m" font-size="14" font-weight="700">54%</text>
+<text x="964" y="363" class="t mu m" font-size="12" text-anchor="end">4.0%</text>
+<text x="36" y="408" class="t" font-size="15">Gemma → AG News</text><text x="316" y="408" class="t mu m" font-size="12" text-anchor="end">4 opts</text>
+<rect x="330" y="392" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.48s" x="330" y="392" width="252" height="24" rx="6" fill="url(#bar)"/>
+<text x="592" y="409" class="t m" font-size="14" font-weight="700">45%</text>
+<text x="964" y="409" class="t mu m" font-size="12" text-anchor="end">3.9%</text>
+<text x="36" y="454" class="t" font-size="15">Gemma → LEDGAR (legal)</text><text x="316" y="454" class="t mu m" font-size="12" text-anchor="end">100 opts</text>
+<rect x="330" y="438" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<rect class="grow" style="animation-delay:0.56s" x="330" y="438" width="73" height="24" rx="6" fill="#fbbf24"/>
+<text x="413" y="455" class="t m" font-size="14" font-weight="700">13%</text>
+<text x="964" y="455" class="t mu m" font-size="12" text-anchor="end">4.3%</text>
+<text x="36" y="500" class="t" font-size="15">Gemma → sentiment / emotion</text><text x="316" y="500" class="t mu m" font-size="12" text-anchor="end">6 opts</text>
+<rect x="330" y="484" width="560" height="24" rx="6" fill="#ffffff" fill-opacity="0.04"/>
+<text x="340" y="501" class="t m" font-size="14" font-weight="700">0%</text>
+<text x="964" y="501" class="t m" font-size="12" text-anchor="end" style="fill:#fbbf24">defers all</text>
+</svg>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://2796gaurav.github.io/shad0w/sitemap.xml

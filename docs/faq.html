@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ · shad0w</title>
+<meta name="description" content="Common questions about shad0w.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/faq.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="FAQ · shad0w">
+<meta property="og:description" content="Common questions about shad0w."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/faq.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a href="../docs/benchmarks.html">Benchmarks</a>
+    <a href="../#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Getting started</a><a href="shadow-mode.html">Shadow mode, step by step</a><a href="integrations.html">Integrations</a><h5>Understand</h5><a href="certificate.html">The certificate, explained</a><a href="architecture.html">Architecture & file format</a><a href="benchmarks.html">Benchmarks</a><a href="limitations.html">Limitations</a><h5>Reference</h5><a href="reference.html">API & CLI reference</a><a href="faq.html" class=active>FAQ</a><a href="roadmap.html">Roadmap</a></aside>
+  <article class="prose"><h1 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h1>
+<h3 id="is-this-just-fasttext">Is this just fastText?<a class="headerlink" href="#is-this-just-fasttext" title="Permanent link">#</a></h3>
+<p>The table is fastText-shaped on purpose: hashed n-grams and a linear layer are the fastest thing that works. What shad0w adds is everything around the table:</p>
+<ul>
+<li>learning from your existing model's answers instead of labels;</li>
+<li>a finite-sample certificate of agreement with that model;</li>
+<li>a one-line cascade wrapper with live audits;</li>
+<li>drift guard and re-certification;</li>
+<li>one artifact with identical C, Python and JavaScript runtimes.</li>
+</ul>
+<h3 id="why-not-just-call-the-model">Why not just call the model?<a class="headerlink" href="#why-not-just-call-the-model" title="Permanent link">#</a></h3>
+<p>If 20–1,500 ms, a network hop and a vendor dependency are fine for this decision, keep calling the model. shad0w is for decisions that have to be in-process, offline, deterministic, very high-volume, or backed by evidence.</p>
+<h3 id="does-it-save-money">Does it save money?<a class="headerlink" href="#does-it-save-money" title="Permanent link">#</a></h3>
+<p>Usually, because every certified answer is a model call you don't make. But hosted decision calls are cheap now, so the stronger reasons are latency, local and private operation, determinism, and a bound you can show someone.</p>
+<h3 id="do-i-need-labels">Do I need labels?<a class="headerlink" href="#do-i-need-labels" title="Permanent link">#</a></h3>
+<p>No. The certificate is computed against your model's own answers. Human labels are only needed for a bound against the truth (<code>shad0w calibrate</code>, ~300 per question).</p>
+<h3 id="how-many-teacher-answers-do-i-need">How many teacher answers do I need?<a class="headerlink" href="#how-many-teacher-answers-do-i-need" title="Permanent link">#</a></h3>
+<p>At least 100 to run, about 1,000 for a useful certificate, and 10k–100k for high offload at tight α.</p>
+<h3 id="what-should-i-use">What α should I use?<a class="headerlink" href="#what-should-i-use" title="Permanent link">#</a></h3>
+<p>5% is a good default for routing and triage. Use 1–2% where a disagreement is costly. Lower α means less traffic served locally.</p>
+<h3 id="what-does-certified-share-0-mean">What does "certified share = 0%" mean?<a class="headerlink" href="#what-does-certified-share-0-mean" title="Permanent link">#</a></h3>
+<p>The bound is out of reach for this decision at this α with this data. Common causes: a sentiment-like question, a teacher that is inconsistent on similar inputs, or too little data. Nothing is served that cannot be backed. That is the intended behaviour.</p>
+<h3 id="what-if-my-model-changes">What if my model changes?<a class="headerlink" href="#what-if-my-model-changes" title="Permanent link">#</a></h3>
+<p>Start a fresh log for the new model and recompile. The certificate names the teacher it was computed against.</p>
+<h3 id="is-the-decision-deterministic">Is the decision deterministic?<a class="headerlink" href="#is-the-decision-deterministic" title="Permanent link">#</a></h3>
+<p>Yes. The same text and the same bundle give the same answer in every runtime, on every machine. Option order never matters.</p>
+<h3 id="does-it-send-data-anywhere">Does it send data anywhere?<a class="headerlink" href="#does-it-send-data-anywhere" title="Permanent link">#</a></h3>
+<p>No. There is no network access at runtime and no telemetry. Label-free mode downloads a sentence encoder from the Hugging Face Hub once, at compile time, if you use it.</p>
+<h3 id="which-runtime-should-i-use">Which runtime should I use?<a class="headerlink" href="#which-runtime-should-i-use" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Python:</strong> the full API.</li>
+<li><strong>JavaScript:</strong> browsers and edge workers.</li>
+<li><strong>C:</strong> other languages, or maximum speed.</li>
+<li><strong>HTTP:</strong> quick integration.</li>
+</ul>
+<p>All of them make the same decisions.</p>
+<h3 id="is-it-production-ready">Is it production-ready?<a class="headerlink" href="#is-it-production-ready" title="Permanent link">#</a></h3>
+<p>The runtime and the certificate code are tested on Linux, macOS and Windows: C/Python/JS parity, the exact radius, certificate validity by simulation, shadow mode, CLI, server, and strict file validation. The operational practice is yours: start in shadow, compare, serve, re-certify, audit.</p>
+<h3 id="license">License?<a class="headerlink" href="#license" title="Permanent link">#</a></h3>
+<p>Apache-2.0. The optional compile-time encoders have their own licences (see <code>NOTICE</code>).</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="reference.html"><small>← previous</small>API & CLI reference</a><a class="next" href="roadmap.html"><small>next →</small>Roadmap</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#is-this-just-fasttext">Is this just fastText?</a></li>
+<li><a href="#why-not-just-call-the-model">Why not just call the model?</a></li>
+<li><a href="#does-it-save-money">Does it save money?</a></li>
+<li><a href="#do-i-need-labels">Do I need labels?</a></li>
+<li><a href="#how-many-teacher-answers-do-i-need">How many teacher answers do I need?</a></li>
+<li><a href="#what-should-i-use">What α should I use?</a></li>
+<li><a href="#what-does-certified-share-0-mean">What does "certified share = 0%" mean?</a></li>
+<li><a href="#what-if-my-model-changes">What if my model changes?</a></li>
+<li><a href="#is-the-decision-deterministic">Is the decision deterministic?</a></li>
+<li><a href="#does-it-send-data-anywhere">Does it send data anywhere?</a></li>
+<li><a href="#which-runtime-should-i-use">Which runtime should I use?</a></li>
+<li><a href="#is-it-production-ready">Is it production-ready?</a></li>
+<li><a href="#license">License?</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

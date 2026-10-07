@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limitations · shad0w</title>
+<meta name="description" content="Where shad0w fails, measured, and what to do about each limit.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/limitations.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Limitations · shad0w">
+<meta property="og:description" content="Where shad0w fails, measured, and what to do about each limit."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/limitations.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a href="../docs/benchmarks.html">Benchmarks</a>
+    <a href="../#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Getting started</a><a href="shadow-mode.html">Shadow mode, step by step</a><a href="integrations.html">Integrations</a><h5>Understand</h5><a href="certificate.html">The certificate, explained</a><a href="architecture.html">Architecture & file format</a><a href="benchmarks.html">Benchmarks</a><a href="limitations.html" class=active>Limitations</a><h5>Reference</h5><a href="reference.html">API & CLI reference</a><a href="faq.html">FAQ</a><a href="roadmap.html">Roadmap</a></aside>
+  <article class="prose"><h1 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h1>
+<p>Every item here is measured, with what happens and what to do about it. Knowing the limits is what makes the certificate useful.</p>
+<h2 id="1-the-certificate-is-about-agreement-with-your-model-not-the-truth">1. The certificate is about agreement with your model, not the truth<a class="headerlink" href="#1-the-certificate-is-about-agreement-with-your-model-not-the-truth" title="Permanent link">#</a></h2>
+<p>The bound says how often the table disagrees with your model on the answers it serves. If your model is wrong, the table is certified to be wrong in the same way. In tests, cascade accuracy tracked the teacher's closely, from 29% to 86% depending on the task.</p>
+<p><strong>Do:</strong> pick a teacher you trust for this decision. For a bound against the truth, calibrate with ~300 real labels per question (<code>shad0w calibrate</code>).</p>
+<h2 id="2-the-bound-holds-on-traffic-like-the-calibration-slice">2. The bound holds on traffic like the calibration slice<a class="headerlink" href="#2-the-bound-holds-on-traffic-like-the-calibration-slice" title="Permanent link">#</a></h2>
+<p>Learn-then-Test bounds are marginal over the calibration distribution. On full test sets at α = 5%, realised disagreement was 3.9–5.7% (mean of three seeds), and the worst single seed reached 6.5% on a 600-item test set. On a test slice dominated by one class, it ran 6–7% against 5%.</p>
+<p><strong>Do:</strong></p>
+<ul>
+<li>Calibrate on representative traffic.</li>
+<li>Re-certify on a schedule and whenever <code>drift</code> fires.</li>
+<li>Keep the <code>Shadow</code> wrapper's audits on (1% default).</li>
+<li>Never describe the bound as a guarantee of correctness.</li>
+</ul>
+<h2 id="3-sentiment-tone-and-emotion-are-out-of-scope">3. Sentiment, tone and emotion are out of scope<a class="headerlink" href="#3-sentiment-tone-and-emotion-are-out-of-scope" title="Permanent link">#</a></h2>
+<p>With perfect labels, the hashed table reaches ~79% on SST‑2, against 90.5% for a 300M encoder. In shadow mode it certifies 0–5% of such traffic and defers the rest.</p>
+<p><strong>Do:</strong> keep those questions on your model.</p>
+<h2 id="4-not-the-most-accurate-engine">4. Not the most accurate engine<a class="headerlink" href="#4-not-the-most-accurate-engine" title="Permanent link">#</a></h2>
+<p>On the public local-jev-bench BANKING77 file, a 9B decision model scores 97% against the table's 89.7%.</p>
+<p><strong>Do:</strong> put the table <em>in front of</em> the accurate model, not instead of it.</p>
+<h2 id="5-it-needs-shadow-data">5. It needs shadow data<a class="headerlink" href="#5-it-needs-shadow-data" title="Permanent link">#</a></h2>
+<p>A useful certificate needs about 1,000 teacher answers per question. High offload at tight α needs tens of thousands: 52% at α = 2% on AG News took 100k.</p>
+<p><strong>Do:</strong> start logging on day one with <code>Shadow(None, ...)</code>. Offload grows without code changes.</p>
+<h2 id="6-out-of-scope-and-adversarial-input">6. Out-of-scope and adversarial input<a class="headerlink" href="#6-out-of-scope-and-adversarial-input" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Out-of-scope:</strong> confidence separates it well (AUROC 0.94 on CLINC150), but not perfectly. At a 0.8 threshold, 8.5% of out-of-scope queries were still answered. Add an explicit <code>other</code> option if your model has one.</li>
+<li><strong>Insertion attacks:</strong> short texts can be flipped by inserting a few words. The exact radius and <code>exposed=True</code> identify fragile answers and defer them; they cannot make them robust.</li>
+</ul>
+<h2 id="7-small-size-budgets-need-few-options">7. Small size budgets need few options<a class="headerlink" href="#7-small-size-budgets-need-few-options" title="Permanent link">#</a></h2>
+<p>256 KB keeps 88.5% for 77 options but falls to 85.1% for 150 options, and 128 KB collapses for 150 options. The K × K radius matrix alone takes 4K² bytes.</p>
+<h2 id="8-languages">8. Languages<a class="headerlink" href="#8-languages" title="Permanent link">#</a></h2>
+<p>Hashing is byte-level and works in any script. Quality depends on your teacher in shadow mode. Romanised Hindi–English worked with human labels (84.7%, 2.7 points below English).</p>
+<p><strong>Do:</strong> test on your own traffic first.</p>
+<h2 id="9-the-reference-http-server">9. The reference HTTP server<a class="headerlink" href="#9-the-reference-http-server" title="Permanent link">#</a></h2>
+<p><code>shad0w serve</code> is a threaded standard-library server. Its p99 rises to 139 ms at 128 concurrent clients, and it has no authentication.</p>
+<p><strong>Do:</strong> run in-process, or put it behind your own front end.</p>
+<h2 id="10-not-new-science">10. Not new science<a class="headerlink" href="#10-not-new-science" title="Permanent link">#</a></h2>
+<p>The certificate is Learn-then-Test, in the spirit of Trust or Escalate and BARGAIN. The table is fastText-shaped. The contribution is the measured, packaged combination: a teacher-agreement certificate delivered as a small CPU artifact, with identical runtimes in three languages and a one-line integration.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="benchmarks.html"><small>← previous</small>Benchmarks</a><a class="next" href="reference.html"><small>next →</small>API & CLI reference</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-the-certificate-is-about-agreement-with-your-model-not-the-truth">1. The certificate is about agreement with your model, not the truth</a></li>
+<li><a href="#2-the-bound-holds-on-traffic-like-the-calibration-slice">2. The bound holds on traffic like the calibration slice</a></li>
+<li><a href="#3-sentiment-tone-and-emotion-are-out-of-scope">3. Sentiment, tone and emotion are out of scope</a></li>
+<li><a href="#4-not-the-most-accurate-engine">4. Not the most accurate engine</a></li>
+<li><a href="#5-it-needs-shadow-data">5. It needs shadow data</a></li>
+<li><a href="#6-out-of-scope-and-adversarial-input">6. Out-of-scope and adversarial input</a></li>
+<li><a href="#7-small-size-budgets-need-few-options">7. Small size budgets need few options</a></li>
+<li><a href="#8-languages">8. Languages</a></li>
+<li><a href="#9-the-reference-http-server">9. The reference HTTP server</a></li>
+<li><a href="#10-not-new-science">10. Not new science</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

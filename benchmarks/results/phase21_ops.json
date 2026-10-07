@@ -1,0 +1,47 @@
+{
+ "bundle": "runs/bundles/banking77_gemma_llmfree",
+ "cold_start_s": 0.273,
+ "server_ready_s": 0.268,
+ "first_answer_ms": 1.047,
+ "rss_mb_after_start": 39.2,
+ "single_client": {
+  "p50_ms": 0.18850000014936086,
+  "p99_ms": 0.44484225960331963
+ },
+ "concurrency": [
+  {
+   "clients": 1,
+   "requests": 4000,
+   "p50_ms": 0.1905410008475883,
+   "p99_ms": 0.2170410007238388,
+   "rps": 5182.9
+  },
+  {
+   "clients": 8,
+   "requests": 4000,
+   "p50_ms": 0.6553749999511638,
+   "p99_ms": 1.3985715809576498,
+   "rps": 11356.1
+  },
+  {
+   "clients": 32,
+   "requests": 4000,
+   "p50_ms": 2.4606255001344834,
+   "p99_ms": 6.842985089606369,
+   "rps": 11508.1
+  },
+  {
+   "clients": 128,
+   "requests": 6400,
+   "p50_ms": 4.019520999463566,
+   "p99_ms": 138.85844257965908,
+   "rps": 10948.2
+  }
+ ],
+ "rss_mb_after_load": 41.2,
+ "in_process_us": {
+  "p50": 14.999999621068127,
+  "p99": 28.010500500386115,
+  "native": true
+ }
+}

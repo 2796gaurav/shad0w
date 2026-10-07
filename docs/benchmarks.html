@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmarks · shad0w</title>
+<meta name="description" content="Every published shad0w number, with its raw result file, protocol and how to reproduce it.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/benchmarks.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Benchmarks · shad0w">
+<meta property="og:description" content="Every published shad0w number, with its raw result file, protocol and how to reproduce it."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/benchmarks.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../docs/">Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a href="../docs/benchmarks.html" class=active>Benchmarks</a>
+    <a href="../#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Getting started</a><a href="shadow-mode.html">Shadow mode, step by step</a><a href="integrations.html">Integrations</a><h5>Understand</h5><a href="certificate.html">The certificate, explained</a><a href="architecture.html">Architecture & file format</a><a href="benchmarks.html" class=active>Benchmarks</a><a href="limitations.html">Limitations</a><h5>Reference</h5><a href="reference.html">API & CLI reference</a><a href="faq.html">FAQ</a><a href="roadmap.html">Roadmap</a></aside>
+  <article class="prose"><h1 id="benchmarks">Benchmarks<a class="headerlink" href="#benchmarks" title="Permanent link">#</a></h1>
+<p>Every number here was measured during development on an Apple M5 Pro laptop (single CPU thread unless stated). Each table names its raw result file, which you can open from this page. Charts are rendered from those files. Teachers used: <strong>EmbeddingGemma-300m</strong> zero-shot (option-name similarity) and <strong>Kev-0.8B</strong> (an open decision model, run locally on the GPU). Datasets are public and downloaded by the scripts, never redistributed.</p>
+<h2 id="1-shadow-mode-certified-offload-phase31_fidelityjson">1. Shadow mode: certified offload (<a href="../benchmarks/results/phase31_fidelity.json"><code>phase31_fidelity.json</code></a>)<a class="headerlink" href="#1-shadow-mode-certified-offload-phase31_fidelityjson" title="Permanent link">#</a></h2>
+<p>Protocol:</p>
+<ul>
+<li>The teacher labels the train split, which serves as the shadow log.</li>
+<li>3,000 records (or a third of the log, if smaller) are held out for the certificate; the table is fitted on the rest.</li>
+<li>Results are measured on the official test split against both the teacher and gold labels.</li>
+<li>Three seeds.</li>
+<li>Kev is evaluated on the 600 test items it labelled.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Teacher → task</th>
+<th>Options</th>
+<th>Teacher accuracy</th>
+<th>Table–teacher agreement</th>
+<th>Offload at α = 2% (realised disagreement)</th>
+<th><strong>Offload at α = 5%</strong> (realised; worst seed)</th>
+<th>Cascade accuracy at α = 5%</th>
+<th>Teacher latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kev-0.8B → BANKING77</td>
+<td>77</td>
+<td>83.7%</td>
+<td>83.5%</td>
+<td>53% (2.8%)</td>
+<td><strong>71%</strong> (5.7%; 6.5%)</td>
+<td><strong>84.4%</strong></td>
+<td>75 ms (GPU)</td>
+</tr>
+<tr>
+<td>Gemma → BANKING77</td>
+<td>77</td>
+<td>78.0%</td>
+<td>85.3%</td>
+<td>50% (1.4%)</td>
+<td><strong>71%</strong> (4.1%; 4.7%)</td>
+<td>78.2%</td>
+<td>20 ms</td>
+</tr>
+<tr>
+<td>Gemma → HWU64</td>
+<td>64</td>
+<td>85.5%</td>
+<td>82.0%</td>
+<td>14% (0.4%)</td>
+<td><strong>69%</strong> (5.4%; 5.8%)</td>
+<td>84.7%</td>
+<td>75 ms</td>
+</tr>
+<tr>
+<td>Gemma → CLINC150</td>
+<td>150</td>
+<td>75.6%</td>
+<td>82.5%</td>
+<td>10% (0.5%)</td>
+<td><strong>65%</strong> (4.9%; 5.1%)</td>
+<td>75.8%</td>
+<td>20 ms</td>
+</tr>
+<tr>
+<td>Gemma → MASSIVE</td>
+<td>60</td>
+<td>86.1%</td>
+<td>80.2%</td>
+<td>0%</td>
+<td><strong>64%</strong> (4.9%; 5.7%)</td>
+<td>85.4%</td>
+<td>27 ms</td>
+</tr>
+<tr>
+<td>Gemma → DBpedia</td>
+<td>14</td>
+<td>71.0%</td>
+<td>79.9%</td>
+<td>38% (2.1%)</td>
+<td><strong>54%</strong> (4.0%; 4.3%)</td>
+<td>71.4%</td>
+<td>69 ms</td>
+</tr>
+<tr>
+<td>Gemma → AG News</td>
+<td>4</td>
+<td>61.7%</td>
+<td>80.6%</td>
+<td>7% (0.5%)</td>
+<td><strong>45%</strong> (3.9%; 4.1%)</td>
+<td>62.1%</td>
+<td>54 ms</td>
+</tr>
+<tr>
+<td>Gemma → LEDGAR</td>
+<td>100</td>
+<td>29.2%</td>
+<td>68.2%</td>
+<td>0%</td>
+<td>13% (4.3%)</td>
+<td>29.2%</td>
+<td>55 ms</td>
+</tr>
+<tr>
+<td>Gemma → SST-2 / toxic / emotion</td>
+<td>2–6</td>
+<td>59–86%</td>
+<td>64–81%</td>
+<td>0%</td>
+<td><strong>0%</strong></td>
+<td>= teacher</td>
+<td>22–45 ms</td>
+</tr>
+<tr>
+<td>Gemma → CR / tweet sentiment</td>
+<td>2–3</td>
+<td>66–90%</td>
+<td>60–75%</td>
+<td>0%</td>
+<td>2–5%</td>
+<td>= teacher</td>
+<td>23–24 ms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Re-validation</strong> (<a href="../benchmarks/results/phase31_revalidate_kev_seeds345.json"><code>phase31_revalidate_kev_seeds345.json</code></a>, fresh seeds 3/4/5), Kev → BANKING77:</p>
+<table>
+<thead>
+<tr>
+<th>α</th>
+<th>Offload</th>
+<th>Realised disagreement</th>
+<th>Cascade accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5%</td>
+<td>70.8%</td>
+<td>5.1%</td>
+<td>84.4%</td>
+</tr>
+<tr>
+<td>2%</td>
+<td>49.1%</td>
+<td>2.0%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Mean latency in the cascade at α = 5%:</p>
+<table>
+<thead>
+<tr>
+<th>Teacher → task</th>
+<th>Teacher alone</th>
+<th>Cascade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kev-0.8B → BANKING77</td>
+<td>75 ms</td>
+<td>22 ms</td>
+</tr>
+<tr>
+<td>Gemma → BANKING77</td>
+<td>20 ms</td>
+<td>5.7 ms</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Offload versus shadow-log size" src="../benchmarks/charts/v7_shadow_curve.png" /></p>
+<h2 id="2-offload-grows-with-shadow-traffic-phase35_shadow_curvejson-re-run-on-a-random-test-sample-phase35_shadow_curve_v2json">2. Offload grows with shadow traffic (<a href="../benchmarks/results/phase35_shadow_curve.json"><code>phase35_shadow_curve.json</code></a>; re-run on a random test sample: <a href="../benchmarks/results/phase35_shadow_curve_v2.json"><code>phase35_shadow_curve_v2.json</code></a>)<a class="headerlink" href="#2-offload-grows-with-shadow-traffic-phase35_shadow_curvejson-re-run-on-a-random-test-sample-phase35_shadow_curve_v2json" title="Permanent link">#</a></h2>
+<p>AG News, Gemma teacher, fixed 5,000-record calibration slice:</p>
+<table>
+<thead>
+<tr>
+<th>Shadow records</th>
+<th>Agreement</th>
+<th>Offload α = 1%</th>
+<th>Offload α = 2%</th>
+<th>Offload α = 5% (realised)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2,000</td>
+<td>76.7%</td>
+<td>0%</td>
+<td>5%</td>
+<td>31% (4.8%)</td>
+</tr>
+<tr>
+<td>5,000</td>
+<td>80.0%</td>
+<td>0%</td>
+<td>0%</td>
+<td>42% (4.1%)</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>81.9%</td>
+<td>5%</td>
+<td>23%</td>
+<td>50% (4.2%)</td>
+</tr>
+<tr>
+<td>30,000</td>
+<td>84.0%</td>
+<td>29%</td>
+<td>43%</td>
+<td>62% (3.8%)</td>
+</tr>
+<tr>
+<td>100,000</td>
+<td>86.1%</td>
+<td>38%</td>
+<td>52%</td>
+<td>70% (4.1%)</td>
+</tr>
+</tbody>
+</table>
+<p>On a random 5,000-item test sample (<code>_v2</code>, up to 30k records) the realised disagreement stayed at or under α at every point.</p>
+<p><strong>A shift example.</strong> In the first DBpedia run, the test slice was the first 5,000 rows of a file sorted by class, so it was dominated by one class. Realised disagreement there was 6–7% against a 5% target. A marginal certificate does not survive a large class-mix shift; this is why re-certification and audits exist.</p>
+<h2 id="3-runtime-phase21_opsjson">3. Runtime (<a href="../benchmarks/results/phase21_ops.json"><code>phase21_ops.json</code></a>)<a class="headerlink" href="#3-runtime-phase21_opsjson" title="Permanent link">#</a></h2>
+<p>One process; Python API with the C core; BANKING77 bundle (77 options).</p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cold start to first answer</td>
+<td>0.27 s</td>
+</tr>
+<tr>
+<td>Resident memory after 20k requests</td>
+<td>41 MB</td>
+</tr>
+<tr>
+<td>In-process decision</td>
+<td>15.0 µs p50 / 28.0 µs p99</td>
+</tr>
+<tr>
+<td>HTTP, 1 client</td>
+<td>0.19 ms p50 / 0.22 ms p99 · 5,183 req/s</td>
+</tr>
+<tr>
+<td>HTTP, 8 clients</td>
+<td>0.66 ms p50 / 1.40 ms p99 · 11,356 req/s</td>
+</tr>
+<tr>
+<td>HTTP, 32 clients</td>
+<td>2.46 ms p50 / 6.84 ms p99 · 11,508 req/s</td>
+</tr>
+<tr>
+<td>HTTP, 128 clients</td>
+<td>4.02 ms p50 / 139 ms p99 · 10,948 req/s</td>
+</tr>
+<tr>
+<td>C core, per decision</td>
+<td>~1 µs</td>
+</tr>
+<tr>
+<td>JavaScript (Node), per decision</td>
+<td>6.9–11.1 µs p50; 100% identical decisions to Python on 3,076 inputs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-size-versus-accuracy-phase34_prunejson">4. Size versus accuracy (<a href="../benchmarks/results/phase34_prune.json"><code>phase34_prune.json</code></a>)<a class="headerlink" href="#4-size-versus-accuracy-phase34_prunejson" title="Permanent link">#</a></h2>
+<p>Tables compiled from unlabelled logs, then pruned by row importance.</p>
+<table>
+<thead>
+<tr>
+<th>Budget</th>
+<th>BANKING77 (77 options)</th>
+<th>CLINC150 (150 options)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>full</td>
+<td>88.8% · 2.0 MB (405 KB gzipped)</td>
+<td>88.7% · 4.4 MB (609 KB gzipped)</td>
+</tr>
+<tr>
+<td>1 MB</td>
+<td>88.7%</td>
+<td>88.6%</td>
+</tr>
+<tr>
+<td>512 KB</td>
+<td>88.5%</td>
+<td>88.4%</td>
+</tr>
+<tr>
+<td>256 KB</td>
+<td><strong>88.5%</strong></td>
+<td>85.1%</td>
+</tr>
+<tr>
+<td>128 KB</td>
+<td>87.4%</td>
+<td>42.7%</td>
+</tr>
+</tbody>
+</table>
+<p>For 150 options below 512 KB, the 150 × 150 radius matrix (90 KB) dominates; omit it in such builds.</p>
+<h2 id="5-public-decision-model-benchmark-phase22_jevbenchjson">5. Public decision-model benchmark (<a href="../benchmarks/results/phase22_jevbench.json"><code>phase22_jevbench.json</code></a>)<a class="headerlink" href="#5-public-decision-model-benchmark-phase22_jevbenchjson" title="Permanent link">#</a></h2>
+<p><a href="https://github.com/tak-bro/local-jev-bench">local-jev-bench</a> committed file <code>questions_banking77.jsonl</code>: 300 items, 20 options each. The shad0w table here was compiled from BANKING77's unlabelled train logs; the other engines use no in-domain data.</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Accuracy</th>
+<th>Per item</th>
+<th>Hardware</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cloudflare Clef-flash (9B)</td>
+<td>97%</td>
+<td>1,274 ms</td>
+<td>M3 Max GPU (published)</td>
+</tr>
+<tr>
+<td>Cloudflare Clef (27B)</td>
+<td>96%</td>
+<td>4,525 ms</td>
+<td>M3 Max GPU (published)</td>
+</tr>
+<tr>
+<td><strong>shad0w table</strong></td>
+<td><strong>89.7%</strong></td>
+<td><strong>0.018 ms</strong></td>
+<td>1 CPU thread</td>
+</tr>
+<tr>
+<td>Kev-9B / Kev-4B</td>
+<td>89% / 89%</td>
+<td>546 / 290 ms</td>
+<td>M3 Max GPU (published)</td>
+</tr>
+<tr>
+<td>Kev-0.8B</td>
+<td>88%</td>
+<td>57.6 ms</td>
+<td>M3 Max GPU (published)</td>
+</tr>
+<tr>
+<td>Winnow-E4B</td>
+<td>81%</td>
+<td>—</td>
+<td>published</td>
+</tr>
+<tr>
+<td>Von (395M)</td>
+<td>80%</td>
+<td>38 ms</td>
+<td>published</td>
+</tr>
+<tr>
+<td>Ollaya / Laya</td>
+<td>60%</td>
+<td>28 ms</td>
+<td>published</td>
+</tr>
+</tbody>
+</table>
+<p>Published rows are from the benchmark's README and its pull request #6 (5 October 2026). shad0w is not the most accurate engine here. It is the only one on a CPU and the only one below a millisecond.</p>
+<h2 id="6-head-to-head-on-identical-inputs-compare_head_to_headjson">6. Head-to-head on identical inputs (<a href="../benchmarks/results/compare_head_to_head.json"><code>compare_head_to_head.json</code></a>)<a class="headerlink" href="#6-head-to-head-on-identical-inputs-compare_head_to_headjson" title="Permanent link">#</a></h2>
+<p>600 test messages per dataset, 20 options each. Order flip is the share of decisions that change when the options are reversed.</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>BANKING77</th>
+<th>CLINC150</th>
+<th>Order flip</th>
+<th>p50</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kev-0.8B (GPU)</td>
+<td>90.5%</td>
+<td>83.3%</td>
+<td>5.5–9.5%</td>
+<td>25–27 ms</td>
+</tr>
+<tr>
+<td>Laya 421M (GPU)</td>
+<td>75.7%</td>
+<td>96.2%</td>
+<td>6.5–17%</td>
+<td>27–28 ms</td>
+</tr>
+<tr>
+<td>shad0w table, from unlabelled logs</td>
+<td><strong>94.3%</strong></td>
+<td><strong>96.7%</strong></td>
+<td><strong>0%</strong></td>
+<td><strong>0.028 ms</strong></td>
+</tr>
+<tr>
+<td>shad0w table, supervised</td>
+<td>96.0%</td>
+<td>—</td>
+<td>0%</td>
+<td>0.027 ms</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-label-free-mode-no-teacher-no-labels-phase20_sweepjson-phase25_ablationjson-phase26_overlapjson">7. Label-free mode: no teacher, no labels (<a href="../benchmarks/results/phase20_sweep.json"><code>phase20_sweep.json</code></a>, <a href="../benchmarks/results/phase25_ablation.json"><code>phase25_ablation.json</code></a>, <a href="../benchmarks/results/phase26_overlap.json"><code>phase26_overlap.json</code></a>)<a class="headerlink" href="#7-label-free-mode-no-teacher-no-labels-phase20_sweepjson-phase25_ablationjson-phase26_overlapjson" title="Permanent link">#</a></h2>
+<p>Option names plus unlabelled train logs; EmbeddingGemma-300m at compile time; full option sets; official test splits.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Options</th>
+<th>Encoder zero-shot</th>
+<th><strong>Table, no labels</strong></th>
+<th>Table, all labels</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BANKING77</td>
+<td>77</td>
+<td>78.0%</td>
+<td><strong>88.5–88.8%</strong></td>
+<td>90.5%</td>
+</tr>
+<tr>
+<td>CLINC150</td>
+<td>150</td>
+<td>75.6%</td>
+<td><strong>88.6%</strong></td>
+<td>91.4%</td>
+</tr>
+<tr>
+<td>DBpedia</td>
+<td>14</td>
+<td>71.0%</td>
+<td><strong>92.2%</strong></td>
+<td>96.5%</td>
+</tr>
+<tr>
+<td>AG News</td>
+<td>4</td>
+<td>61.7%</td>
+<td><strong>85.9%</strong></td>
+<td>88.1%</td>
+</tr>
+<tr>
+<td>SNIPS</td>
+<td>7</td>
+<td>90.1%</td>
+<td><strong>98.0%</strong></td>
+<td>98.8%</td>
+</tr>
+<tr>
+<td>jailbreak</td>
+<td>2</td>
+<td>67.6%</td>
+<td><strong>93.1%</strong></td>
+<td>98.5%</td>
+</tr>
+<tr>
+<td>HWU64</td>
+<td>64</td>
+<td>85.5%</td>
+<td>81.4%</td>
+<td>86.2%</td>
+</tr>
+</tbody>
+</table>
+<p>Checks:</p>
+<ul>
+<li><strong>Overlap:</strong> 0–0.2% between the unlabelled pool and the test set on the headline tasks.</li>
+<li><strong>Seed stability:</strong> standard deviation ≤ 0.16 points across seeds.</li>
+<li><strong>Scope:</strong> across 30 public tasks the label-free table beat the encoder's own zero-shot on 15, the many-option ones, and lost on most binary and sentiment tasks.</li>
+</ul>
+<h2 id="8-out-of-scope-input-phase23_oos_clinc150json">8. Out-of-scope input (<a href="../benchmarks/results/phase23_oos_clinc150.json"><code>phase23_oos_clinc150.json</code></a>)<a class="headerlink" href="#8-out-of-scope-input-phase23_oos_clinc150json" title="Permanent link">#</a></h2>
+<p>CLINC150 includes 1,000 out-of-scope test queries. These are scored against the label-free table, which knows only the 150 in-scope intents.</p>
+<table>
+<thead>
+<tr>
+<th>Confidence threshold</th>
+<th>In-scope answered</th>
+<th>Error among answered</th>
+<th>Out-of-scope silently answered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.5</td>
+<td>92.9%</td>
+<td>7.6%</td>
+<td>22.0%</td>
+</tr>
+<tr>
+<td>0.8</td>
+<td>81.7%</td>
+<td>4.2%</td>
+<td>8.5%</td>
+</tr>
+<tr>
+<td>0.95</td>
+<td>67.5%</td>
+<td>2.7%</td>
+<td>3.3%</td>
+</tr>
+</tbody>
+</table>
+<p>AUROC for separating in-scope from out-of-scope by confidence: 0.94.</p>
+<h2 id="9-the-representation-ceiling-phase29_hybridjson">9. The representation ceiling (<a href="../benchmarks/results/phase29_hybrid.json"><code>phase29_hybrid.json</code></a>)<a class="headerlink" href="#9-the-representation-ceiling-phase29_hybridjson" title="Permanent link">#</a></h2>
+<p>Even with gold labels, the student size limits sentiment:</p>
+<table>
+<thead>
+<tr>
+<th>Student</th>
+<th>SST-2</th>
+<th>CR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hashed table</td>
+<td>78.6%</td>
+<td>79.8%</td>
+</tr>
+<tr>
+<td>MiniLM-L6 (22M)</td>
+<td>79.8%</td>
+<td>82.2%</td>
+</tr>
+<tr>
+<td>Gemma-300m probe</td>
+<td>90.5%</td>
+<td>94.1%</td>
+</tr>
+</tbody>
+</table>
+<p>This is why the table defers sentiment and tone instead of answering it.</p>
+<h2 id="10-reproduce">10. Reproduce<a class="headerlink" href="#10-reproduce" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[demo]"</span>
+python<span class="w"> </span>examples/quickstart.py<span class="w">                                   </span><span class="c1"># 20 s, synthetic</span>
+python<span class="w"> </span>examples/shadow_demo.py<span class="w"> </span>--teacher<span class="w"> </span>bge-small<span class="w"> </span>--dataset<span class="w"> </span>banking77
+python<span class="w"> </span>examples/shadow_demo.py<span class="w"> </span>--teacher<span class="w"> </span>gemma-300m<span class="w"> </span>--dataset<span class="w"> </span>clinc150<span class="w">   </span><span class="c1"># Gemma terms apply; accept them on the Hub</span>
+pytest<span class="w"> </span>-q
+</code></pre></div>
+
+<p>The demo uses an open sentence encoder as a stand-in teacher, so its numbers differ from the table in §1, which used EmbeddingGemma and Kev. The shape of the result is what to check: offload at α = 5%, realised disagreement at or near α, and cascade accuracy at the teacher's.</p>
+<p><strong>Reference run</strong> of <code>python examples/shadow_demo.py --teacher bge-small --dataset banking77</code>: an MIT-licensed teacher on public data, reproducible by anyone. The output is saved in <a href="../benchmarks/results/shadow_demo_bge_small_banking77.txt"><code>shadow_demo_bge_small_banking77.txt</code></a>. The teacher alone scores 68.0% zero-shot on the test set.</p>
+<table>
+<thead>
+<tr>
+<th>α</th>
+<th>Answered locally</th>
+<th>Realised disagreement</th>
+<th>Cascade accuracy</th>
+<th>Compile + certify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2%</td>
+<td>49.6%</td>
+<td>1.4%</td>
+<td>68.2%</td>
+<td>a few minutes on a laptop CPU</td>
+</tr>
+<tr>
+<td>5%</td>
+<td>69.4%</td>
+<td>4.6%</td>
+<td>67.8%</td>
+<td>a few minutes on a laptop CPU</td>
+</tr>
+</tbody>
+</table>
+<p>The run was repeated with the 0.1.0 certificate, which starts the test sequence where a single early disagreement cannot end it. The earlier development run gave 50.7% / 69.5%. The results in §1 used the development procedure, and the shape of the result is unchanged.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="architecture.html"><small>← previous</small>Architecture & file format</a><a class="next" href="limitations.html"><small>next →</small>Limitations</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-shadow-mode-certified-offload-phase31_fidelityjson">1. Shadow mode: certified offload (phase31_fidelity.json)</a></li>
+<li><a href="#2-offload-grows-with-shadow-traffic-phase35_shadow_curvejson-re-run-on-a-random-test-sample-phase35_shadow_curve_v2json">2. Offload grows with shadow traffic (phase35_shadow_curve.json; re-run on a random test sample: phase35_shadow_curve_v2.json)</a></li>
+<li><a href="#3-runtime-phase21_opsjson">3. Runtime (phase21_ops.json)</a></li>
+<li><a href="#4-size-versus-accuracy-phase34_prunejson">4. Size versus accuracy (phase34_prune.json)</a></li>
+<li><a href="#5-public-decision-model-benchmark-phase22_jevbenchjson">5. Public decision-model benchmark (phase22_jevbench.json)</a></li>
+<li><a href="#6-head-to-head-on-identical-inputs-compare_head_to_headjson">6. Head-to-head on identical inputs (compare_head_to_head.json)</a></li>
+<li><a href="#7-label-free-mode-no-teacher-no-labels-phase20_sweepjson-phase25_ablationjson-phase26_overlapjson">7. Label-free mode: no teacher, no labels (phase20_sweep.json, phase25_ablation.json, phase26_overlap.json)</a></li>
+<li><a href="#8-out-of-scope-input-phase23_oos_clinc150json">8. Out-of-scope input (phase23_oos_clinc150.json)</a></li>
+<li><a href="#9-the-representation-ceiling-phase29_hybridjson">9. The representation ceiling (phase29_hybrid.json)</a></li>
+<li><a href="#10-reproduce">10. Reproduce</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+ "n_in": 4500,
+ "n_oos": 1000,
+ "in_scope_acc": 0.8866666666666667,
+ "conf_in_median": 0.9897364675998688,
+ "conf_oos_median": 0.24675849825143814,
+ "auroc_in_vs_oos_by_confidence": 0.9383464444444445,
+ "thresholds": {
+  "0.5": {
+   "in_scope_answered": 0.9286666666666666,
+   "in_scope_error_on_answered": 0.07585546781526681,
+   "oos_silently_answered": 0.22
+  },
+  "0.7": {
+   "in_scope_answered": 0.86,
+   "in_scope_error_on_answered": 0.05142118863049096,
+   "oos_silently_answered": 0.126
+  },
+  "0.8": {
+   "in_scope_answered": 0.8173333333333334,
+   "in_scope_error_on_answered": 0.04214246873300707,
+   "oos_silently_answered": 0.085
+  },
+  "0.9": {
+   "in_scope_answered": 0.7437777777777778,
+   "in_scope_error_on_answered": 0.033761577532118316,
+   "oos_silently_answered": 0.057
+  },
+  "0.95": {
+   "in_scope_answered": 0.6746666666666666,
+   "in_scope_error_on_answered": 0.0266798418972332,
+   "oos_silently_answered": 0.033
+  }
+ }
+}

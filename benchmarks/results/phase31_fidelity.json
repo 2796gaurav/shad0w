@@ -1,0 +1,1991 @@
+{
+ "kev/banking77": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 123.4,
+    "table_teacher_agreement": 0.84,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9880471229553223,
+      "offload": 0.39166666666666666,
+      "disagreement_on_offloaded": 0.00851063829787234,
+      "cascade_gold_acc": 0.8366666666666667,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.795,
+      "mean_latency_ms": 45.80751145790984
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9524686932563782,
+      "offload": 0.5466666666666666,
+      "disagreement_on_offloaded": 0.03048780487804878,
+      "cascade_gold_acc": 0.8433333333333334,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.795,
+      "mean_latency_ms": 34.13626333301774
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.7940952777862549,
+      "offload": 0.74,
+      "disagreement_on_offloaded": 0.06531531531531531,
+      "cascade_gold_acc": 0.8416666666666667,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.795,
+      "mean_latency_ms": 19.578577499818998
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 116.0,
+    "table_teacher_agreement": 0.8366666666666667,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9995926022529602,
+      "offload": 0.105,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8366666666666667,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.79,
+      "mean_latency_ms": 67.39304562437694
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9769893288612366,
+      "offload": 0.49,
+      "disagreement_on_offloaded": 0.02040816326530612,
+      "cascade_gold_acc": 0.8416666666666667,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.79,
+      "mean_latency_ms": 38.403171249644956
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8686550855636597,
+      "offload": 0.6916666666666667,
+      "disagreement_on_offloaded": 0.05060240963855422,
+      "cascade_gold_acc": 0.8416666666666667,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.79,
+      "mean_latency_ms": 23.217998958118685
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 117.0,
+    "table_teacher_agreement": 0.8283333333333334,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9920567870140076,
+      "offload": 0.37,
+      "disagreement_on_offloaded": 0.009009009009009009,
+      "cascade_gold_acc": 0.835,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.7983333333333333,
+      "mean_latency_ms": 47.438976249561414
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.96923828125,
+      "offload": 0.5433333333333333,
+      "disagreement_on_offloaded": 0.03374233128834356,
+      "cascade_gold_acc": 0.8483333333333334,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.7983333333333333,
+      "mean_latency_ms": 34.38725791634875
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8701694011688232,
+      "offload": 0.685,
+      "disagreement_on_offloaded": 0.05596107055961071,
+      "cascade_gold_acc": 0.85,
+      "teacher_gold_acc": 0.8366666666666667,
+      "table_gold_acc": 0.7983333333333333,
+      "mean_latency_ms": 23.719988124780706
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 75.29937499930384,
+   "table_teacher_agreement_mean": 0.835,
+   "alpha=0.01": {
+    "offload": 0.2888888888888889,
+    "disagreement_on_offloaded": 0.005839882435627116,
+    "cascade_gold_acc": 0.8361111111111111,
+    "teacher_gold_acc": 0.8366666666666666,
+    "table_gold_acc": 0.7944444444444444,
+    "mean_latency_ms": 53.54651111061606,
+    "disagreement_max_over_seeds": 0.009009009009009009
+   },
+   "alpha=0.02": {
+    "offload": 0.5266666666666667,
+    "disagreement_on_offloaded": 0.02821276647723282,
+    "cascade_gold_acc": 0.8444444444444444,
+    "teacher_gold_acc": 0.8366666666666666,
+    "table_gold_acc": 0.7944444444444444,
+    "mean_latency_ms": 35.642230833003815,
+    "disagreement_max_over_seeds": 0.03374233128834356
+   },
+   "alpha=0.05": {
+    "offload": 0.7055555555555556,
+    "disagreement_on_offloaded": 0.057292931837826744,
+    "cascade_gold_acc": 0.8444444444444444,
+    "teacher_gold_acc": 0.8366666666666666,
+    "table_gold_acc": 0.7944444444444444,
+    "mean_latency_ms": 22.172188194239464,
+    "disagreement_max_over_seeds": 0.06531531531531531
+   }
+  },
+  "teacher": "Kev-0.8B (local GPU, 77 options)"
+ },
+ "gemma/banking77": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 70.9,
+    "table_teacher_agreement": 0.8546814044213265,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9997290968894958,
+      "offload": 0.10208062418725618,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7802340702210663,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7545513654096229,
+      "mean_latency_ms": 17.798023772280096
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9663877487182617,
+      "offload": 0.533485045513654,
+      "disagreement_on_offloaded": 0.017672151127361365,
+      "cascade_gold_acc": 0.7828348504551366,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7545513654096229,
+      "mean_latency_ms": 9.247462387118732
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8632565140724182,
+      "offload": 0.7113133940182055,
+      "disagreement_on_offloaded": 0.04021937842778794,
+      "cascade_gold_acc": 0.7831599479843954,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7545513654096229,
+      "mean_latency_ms": 5.72285268276058
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 73.1,
+    "table_teacher_agreement": 0.8550065019505851,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9939512014389038,
+      "offload": 0.35533159947984394,
+      "disagreement_on_offloaded": 0.007319304666056725,
+      "cascade_gold_acc": 0.7818595578673602,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7464239271781534,
+      "mean_latency_ms": 12.778515619272783
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9620201587677002,
+      "offload": 0.5562418725617685,
+      "disagreement_on_offloaded": 0.015780245470485097,
+      "cascade_gold_acc": 0.7825097529258778,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7464239271781534,
+      "mean_latency_ms": 8.796415441405625
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8210086822509766,
+      "offload": 0.7467490247074122,
+      "disagreement_on_offloaded": 0.047017849368741836,
+      "cascade_gold_acc": 0.7808842652795839,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7464239271781534,
+      "mean_latency_ms": 5.020508153007311
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6993,
+    "cal_n": 3000,
+    "compile_s": 72.6,
+    "table_teacher_agreement": 0.8501300390117035,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9998568296432495,
+      "offload": 0.08712613784135241,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7802340702210663,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7467490247074122,
+      "mean_latency_ms": 18.094426050891567
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9903334975242615,
+      "offload": 0.4154746423927178,
+      "disagreement_on_offloaded": 0.00782472613458529,
+      "cascade_gold_acc": 0.7815344603381015,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7467490247074122,
+      "mean_latency_ms": 11.586462977030997
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9070397019386292,
+      "offload": 0.6719765929778934,
+      "disagreement_on_offloaded": 0.03531688437348815,
+      "cascade_gold_acc": 0.7815344603381015,
+      "teacher_gold_acc": 0.7802340702210663,
+      "table_gold_acc": 0.7467490247074122,
+      "mean_latency_ms": 6.5025195460646685
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 19.821291500193183,
+   "table_teacher_agreement_mean": 0.8532726484612049,
+   "alpha=0.01": {
+    "offload": 0.18151278716948416,
+    "disagreement_on_offloaded": 0.002439768222018908,
+    "cascade_gold_acc": 0.7807758994364976,
+    "teacher_gold_acc": 0.7802340702210663,
+    "table_gold_acc": 0.749241439098396,
+    "mean_latency_ms": 16.22365514748148,
+    "disagreement_max_over_seeds": 0.007319304666056725
+   },
+   "alpha=0.02": {
+    "offload": 0.5017338534893802,
+    "disagreement_on_offloaded": 0.013759040910810585,
+    "cascade_gold_acc": 0.7822930212397052,
+    "teacher_gold_acc": 0.7802340702210663,
+    "table_gold_acc": 0.749241439098396,
+    "mean_latency_ms": 9.876780268518452,
+    "disagreement_max_over_seeds": 0.017672151127361365
+   },
+   "alpha=0.05": {
+    "offload": 0.7100130039011704,
+    "disagreement_on_offloaded": 0.04085137072333931,
+    "cascade_gold_acc": 0.7818595578673603,
+    "teacher_gold_acc": 0.7802340702210663,
+    "table_gold_acc": 0.749241439098396,
+    "mean_latency_ms": 5.748626793944187,
+    "disagreement_max_over_seeds": 0.047017849368741836
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/clinc150": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6900,
+    "cal_n": 3000,
+    "compile_s": 85.9,
+    "table_teacher_agreement": 0.8268888888888889,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9997654557228088,
+      "offload": 0.082,
+      "disagreement_on_offloaded": 0.008130081300813009,
+      "cascade_gold_acc": 0.7566666666666667,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7142222222222222,
+      "mean_latency_ms": 18.767750194235738
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9938125610351562,
+      "offload": 0.304,
+      "disagreement_on_offloaded": 0.013888888888888888,
+      "cascade_gold_acc": 0.7566666666666667,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7142222222222222,
+      "mean_latency_ms": 14.229385768178728
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.892048180103302,
+      "offload": 0.6497777777777778,
+      "disagreement_on_offloaded": 0.0506155950752394,
+      "cascade_gold_acc": 0.7557777777777778,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7142222222222222,
+      "mean_latency_ms": 7.160621957423269
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6900,
+    "cal_n": 3000,
+    "compile_s": 87.2,
+    "table_teacher_agreement": 0.8228888888888889,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7564444444444445,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7177777777777777,
+      "mean_latency_ms": 20.444083000256796
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7564444444444445,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7177777777777777,
+      "mean_latency_ms": 20.444083000256796
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9107068181037903,
+      "offload": 0.6402222222222222,
+      "disagreement_on_offloaded": 0.048941339812565085,
+      "cascade_gold_acc": 0.7564444444444445,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7177777777777777,
+      "mean_latency_ms": 7.355966972759056
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6900,
+    "cal_n": 3000,
+    "compile_s": 89.9,
+    "table_teacher_agreement": 0.8242222222222222,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7564444444444445,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7217777777777777,
+      "mean_latency_ms": 20.444083000256796
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.7564444444444445,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7217777777777777,
+      "mean_latency_ms": 20.444083000256796
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.891250491142273,
+      "offload": 0.6633333333333333,
+      "disagreement_on_offloaded": 0.04824120603015075,
+      "cascade_gold_acc": 0.7628888888888888,
+      "teacher_gold_acc": 0.7564444444444445,
+      "table_gold_acc": 0.7217777777777777,
+      "mean_latency_ms": 6.883504610086455
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 20.444083000256796,
+   "table_teacher_agreement_mean": 0.8246666666666668,
+   "alpha=0.01": {
+    "offload": 0.027333333333333334,
+    "disagreement_on_offloaded": 0.002710027100271003,
+    "cascade_gold_acc": 0.7565185185185186,
+    "teacher_gold_acc": 0.7564444444444445,
+    "table_gold_acc": 0.7179259259259259,
+    "mean_latency_ms": 19.885305398249777,
+    "disagreement_max_over_seeds": 0.008130081300813009
+   },
+   "alpha=0.02": {
+    "offload": 0.10133333333333333,
+    "disagreement_on_offloaded": 0.004629629629629629,
+    "cascade_gold_acc": 0.7565185185185186,
+    "teacher_gold_acc": 0.7564444444444445,
+    "table_gold_acc": 0.7179259259259259,
+    "mean_latency_ms": 18.372517256230775,
+    "disagreement_max_over_seeds": 0.013888888888888888
+   },
+   "alpha=0.05": {
+    "offload": 0.6511111111111111,
+    "disagreement_on_offloaded": 0.049266046972651745,
+    "cascade_gold_acc": 0.7583703703703705,
+    "teacher_gold_acc": 0.7564444444444445,
+    "table_gold_acc": 0.7179259259259259,
+    "mean_latency_ms": 7.133364513422927,
+    "disagreement_max_over_seeds": 0.0506155950752394
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/hwu64": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 5970,
+    "cal_n": 2984,
+    "compile_s": 51.0,
+    "table_teacher_agreement": 0.820631970260223,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8550185873605948,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7704460966542751,
+      "mean_latency_ms": 74.55827100011447
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9846919178962708,
+      "offload": 0.4284386617100372,
+      "disagreement_on_offloaded": 0.013015184381778741,
+      "cascade_gold_acc": 0.8568773234200744,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7704460966542751,
+      "mean_latency_ms": 42.61505359207286
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8682581186294556,
+      "offload": 0.6644981412639405,
+      "disagreement_on_offloaded": 0.05034965034965035,
+      "cascade_gold_acc": 0.8494423791821561,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7704460966542751,
+      "mean_latency_ms": 25.015103002826514
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 5970,
+    "cal_n": 2984,
+    "compile_s": 48.7,
+    "table_teacher_agreement": 0.8262081784386617,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8550185873605948,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7695167286245354,
+      "mean_latency_ms": 74.55827100011447
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8550185873605948,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7695167286245354,
+      "mean_latency_ms": 74.55827100011447
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8443898558616638,
+      "offload": 0.7044609665427509,
+      "disagreement_on_offloaded": 0.05804749340369393,
+      "cascade_gold_acc": 0.8420074349442379,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7695167286245354,
+      "mean_latency_ms": 22.03558380858402
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 5970,
+    "cal_n": 2984,
+    "compile_s": 49.3,
+    "table_teacher_agreement": 0.8122676579925651,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8550185873605948,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7630111524163569,
+      "mean_latency_ms": 74.55827100011447
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8550185873605948,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7630111524163569,
+      "mean_latency_ms": 74.55827100011447
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.845147967338562,
+      "offload": 0.6868029739776952,
+      "disagreement_on_offloaded": 0.05412719891745602,
+      "cascade_gold_acc": 0.8494423791821561,
+      "teacher_gold_acc": 0.8550185873605948,
+      "table_gold_acc": 0.7630111524163569,
+      "mean_latency_ms": 23.352115545574883
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 74.55827100011447,
+   "table_teacher_agreement_mean": 0.8197026022304833,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8550185873605948,
+    "teacher_gold_acc": 0.8550185873605948,
+    "table_gold_acc": 0.7676579925650557,
+    "mean_latency_ms": 74.55827100011447,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.14281288723667906,
+    "disagreement_on_offloaded": 0.004338394793926247,
+    "cascade_gold_acc": 0.855638166047088,
+    "teacher_gold_acc": 0.8550185873605948,
+    "table_gold_acc": 0.7676579925650557,
+    "mean_latency_ms": 63.9105318641006,
+    "disagreement_max_over_seeds": 0.013015184381778741
+   },
+   "alpha=0.05": {
+    "offload": 0.6852540272614621,
+    "disagreement_on_offloaded": 0.05417478089026676,
+    "cascade_gold_acc": 0.8469640644361833,
+    "teacher_gold_acc": 0.8550185873605948,
+    "table_gold_acc": 0.7676579925650557,
+    "mean_latency_ms": 23.4676007856618,
+    "disagreement_max_over_seeds": 0.05804749340369393
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/massive_intent": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 4775,
+    "cal_n": 2387,
+    "compile_s": 60.2,
+    "table_teacher_agreement": 0.8036314727639543,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7750504371217216,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7750504371217216,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8492675423622131,
+      "offload": 0.6193678547410895,
+      "disagreement_on_offloaded": 0.04723127035830619,
+      "cascade_gold_acc": 0.855413584398117,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7750504371217216,
+      "mean_latency_ms": 10.288646450661998
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 4775,
+    "cal_n": 2387,
+    "compile_s": 56.7,
+    "table_teacher_agreement": 0.8002689979825152,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7713517148621385,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7713517148621385,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8213496804237366,
+      "offload": 0.6338264963012777,
+      "disagreement_on_offloaded": 0.04350132625994695,
+      "cascade_gold_acc": 0.8533960995292535,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7713517148621385,
+      "mean_latency_ms": 9.897861293967242
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 4775,
+    "cal_n": 2387,
+    "compile_s": 54.5,
+    "table_teacher_agreement": 0.800941492938803,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7794216543375925,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8607935440484197,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7794216543375925,
+      "mean_latency_ms": 27.028792000237445
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8012252449989319,
+      "offload": 0.6613987895090787,
+      "disagreement_on_offloaded": 0.05693950177935943,
+      "cascade_gold_acc": 0.851714862138534,
+      "teacher_gold_acc": 0.8607935440484197,
+      "table_gold_acc": 0.7794216543375925,
+      "mean_latency_ms": 9.152643088177237
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 27.028792000237445,
+   "table_teacher_agreement_mean": 0.8016139878950908,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8607935440484197,
+    "teacher_gold_acc": 0.8607935440484197,
+    "table_gold_acc": 0.7752746021071509,
+    "mean_latency_ms": 27.028792000237445,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8607935440484197,
+    "teacher_gold_acc": 0.8607935440484197,
+    "table_gold_acc": 0.7752746021071509,
+    "mean_latency_ms": 27.028792000237445,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.6381977135171487,
+    "disagreement_on_offloaded": 0.0492240327992042,
+    "cascade_gold_acc": 0.8535081820219682,
+    "teacher_gold_acc": 0.8607935440484197,
+    "table_gold_acc": 0.7752746021071509,
+    "mean_latency_ms": 9.779716944268825,
+    "disagreement_max_over_seeds": 0.05693950177935943
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/ag_news": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 222.8,
+    "table_teacher_agreement": 0.8074,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9812730550765991,
+      "offload": 0.1622,
+      "disagreement_on_offloaded": 0.008631319358816275,
+      "cascade_gold_acc": 0.617,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6108,
+      "mean_latency_ms": 45.44437203142645
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9708376526832581,
+      "offload": 0.2166,
+      "disagreement_on_offloaded": 0.01569713758079409,
+      "cascade_gold_acc": 0.618,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6108,
+      "mean_latency_ms": 42.493644604224734
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8941166996955872,
+      "offload": 0.4454,
+      "disagreement_on_offloaded": 0.03592276605298608,
+      "cascade_gold_acc": 0.622,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6108,
+      "mean_latency_ms": 30.083232189817508
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 235.1,
+    "table_teacher_agreement": 0.8062,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6166,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6058,
+      "mean_latency_ms": 54.24231300003157
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6166,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6058,
+      "mean_latency_ms": 54.24231300003157
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.8839870095252991,
+      "offload": 0.4726,
+      "disagreement_on_offloaded": 0.0414727041895895,
+      "cascade_gold_acc": 0.6194,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.6058,
+      "mean_latency_ms": 28.607868476216648
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 245.4,
+    "table_teacher_agreement": 0.8052,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6166,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.607,
+      "mean_latency_ms": 54.24231300003157
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6166,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.607,
+      "mean_latency_ms": 54.24231300003157
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9140470027923584,
+      "offload": 0.428,
+      "disagreement_on_offloaded": 0.038317757009345796,
+      "cascade_gold_acc": 0.6214,
+      "teacher_gold_acc": 0.6166,
+      "table_gold_acc": 0.607,
+      "mean_latency_ms": 31.027031036018062
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 54.24231300003157,
+   "table_teacher_agreement_mean": 0.8062666666666667,
+   "alpha=0.01": {
+    "offload": 0.05406666666666667,
+    "disagreement_on_offloaded": 0.0028771064529387585,
+    "cascade_gold_acc": 0.6167333333333334,
+    "teacher_gold_acc": 0.6166,
+    "table_gold_acc": 0.6078666666666667,
+    "mean_latency_ms": 51.30966601049653,
+    "disagreement_max_over_seeds": 0.008631319358816275
+   },
+   "alpha=0.02": {
+    "offload": 0.0722,
+    "disagreement_on_offloaded": 0.00523237919359803,
+    "cascade_gold_acc": 0.6170666666666667,
+    "teacher_gold_acc": 0.6166,
+    "table_gold_acc": 0.6078666666666667,
+    "mean_latency_ms": 50.32609020142929,
+    "disagreement_max_over_seeds": 0.01569713758079409
+   },
+   "alpha=0.05": {
+    "offload": 0.4486666666666667,
+    "disagreement_on_offloaded": 0.03857107575064046,
+    "cascade_gold_acc": 0.6209333333333333,
+    "teacher_gold_acc": 0.6166,
+    "table_gold_acc": 0.6078666666666667,
+    "mean_latency_ms": 29.90604390068407,
+    "disagreement_max_over_seeds": 0.0414727041895895
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/dbpedia": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6996,
+    "cal_n": 3000,
+    "compile_s": 276.2,
+    "table_teacher_agreement": 0.799,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9999140501022339,
+      "offload": 0.145,
+      "disagreement_on_offloaded": 0.004137931034482759,
+      "cascade_gold_acc": 0.7104,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.707,
+      "mean_latency_ms": 59.268887357407976
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9874866008758545,
+      "offload": 0.3798,
+      "disagreement_on_offloaded": 0.02317008952080042,
+      "cascade_gold_acc": 0.7124,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.707,
+      "mean_latency_ms": 42.99274706323324
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9311858415603638,
+      "offload": 0.5276,
+      "disagreement_on_offloaded": 0.04056103108415466,
+      "cascade_gold_acc": 0.715,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.707,
+      "mean_latency_ms": 32.74737425454916
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6996,
+    "cal_n": 3000,
+    "compile_s": 277.6,
+    "table_teacher_agreement": 0.7978,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.71,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.7072,
+      "mean_latency_ms": 69.32016649989237
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.9891752600669861,
+      "offload": 0.3394,
+      "disagreement_on_offloaded": 0.01708898055391868,
+      "cascade_gold_acc": 0.7118,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.7072,
+      "mean_latency_ms": 45.79324138982891
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9236563444137573,
+      "offload": 0.5276,
+      "disagreement_on_offloaded": 0.037149355572403335,
+      "cascade_gold_acc": 0.7142,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.7072,
+      "mean_latency_ms": 32.74737425454916
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6996,
+    "cal_n": 3000,
+    "compile_s": 306.0,
+    "table_teacher_agreement": 0.8006,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": 0.9983721375465393,
+      "offload": 0.1932,
+      "disagreement_on_offloaded": 0.008281573498964804,
+      "cascade_gold_acc": 0.7114,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.6962,
+      "mean_latency_ms": 55.927703532113156
+     },
+     {
+      "alpha": 0.02,
+      "threshold": 0.976891815662384,
+      "offload": 0.4128,
+      "disagreement_on_offloaded": 0.023255813953488372,
+      "cascade_gold_acc": 0.7116,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.6962,
+      "mean_latency_ms": 40.70521456873679
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9045419692993164,
+      "offload": 0.5528,
+      "disagreement_on_offloaded": 0.04305354558610709,
+      "cascade_gold_acc": 0.7128,
+      "teacher_gold_acc": 0.71,
+      "table_gold_acc": 0.6962,
+      "mean_latency_ms": 31.00053125875187
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 69.32016649989237,
+   "table_teacher_agreement_mean": 0.7991333333333334,
+   "alpha=0.01": {
+    "offload": 0.11273333333333334,
+    "disagreement_on_offloaded": 0.004139834844482521,
+    "cascade_gold_acc": 0.7106,
+    "teacher_gold_acc": 0.71,
+    "table_gold_acc": 0.7034666666666668,
+    "mean_latency_ms": 61.505585796471166,
+    "disagreement_max_over_seeds": 0.008281573498964804
+   },
+   "alpha=0.02": {
+    "offload": 0.37733333333333335,
+    "disagreement_on_offloaded": 0.02117162800940249,
+    "cascade_gold_acc": 0.7119333333333332,
+    "teacher_gold_acc": 0.71,
+    "table_gold_acc": 0.7034666666666668,
+    "mean_latency_ms": 43.16373434059964,
+    "disagreement_max_over_seeds": 0.023255813953488372
+   },
+   "alpha=0.05": {
+    "offload": 0.5359999999999999,
+    "disagreement_on_offloaded": 0.040254644080888365,
+    "cascade_gold_acc": 0.714,
+    "teacher_gold_acc": 0.71,
+    "table_gold_acc": 0.7034666666666668,
+    "mean_latency_ms": 32.16509325595006,
+    "disagreement_max_over_seeds": 0.04305354558610709
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/ledgar": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6801,
+    "cal_n": 3000,
+    "compile_s": 487.4,
+    "table_teacher_agreement": 0.6718,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2654,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2654,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9954357743263245,
+      "offload": 0.1254,
+      "disagreement_on_offloaded": 0.03827751196172249,
+      "cascade_gold_acc": 0.2918,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2654,
+      "mean_latency_ms": 48.374852687074714
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6801,
+    "cal_n": 3000,
+    "compile_s": 530.6,
+    "table_teacher_agreement": 0.6842,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.265,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.265,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9900851249694824,
+      "offload": 0.1364,
+      "disagreement_on_offloaded": 0.04398826979472141,
+      "cascade_gold_acc": 0.2924,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.265,
+      "mean_latency_ms": 47.766446124580064
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6801,
+    "cal_n": 3000,
+    "compile_s": 395.9,
+    "table_teacher_agreement": 0.6894,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2804,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.292,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2804,
+      "mean_latency_ms": 55.31068749951373
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9976067543029785,
+      "offload": 0.1276,
+      "disagreement_on_offloaded": 0.045454545454545456,
+      "cascade_gold_acc": 0.2924,
+      "teacher_gold_acc": 0.292,
+      "table_gold_acc": 0.2804,
+      "mean_latency_ms": 48.253171374575786
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 55.31068749951373,
+   "table_teacher_agreement_mean": 0.6818,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.292,
+    "teacher_gold_acc": 0.292,
+    "table_gold_acc": 0.27026666666666666,
+    "mean_latency_ms": 55.31068749951373,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.292,
+    "teacher_gold_acc": 0.292,
+    "table_gold_acc": 0.27026666666666666,
+    "mean_latency_ms": 55.31068749951373,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.1298,
+    "disagreement_on_offloaded": 0.04257344240366312,
+    "cascade_gold_acc": 0.2922,
+    "teacher_gold_acc": 0.292,
+    "table_gold_acc": 0.27026666666666666,
+    "mean_latency_ms": 48.13149006207686,
+    "disagreement_max_over_seeds": 0.045454545454545456
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/sst2": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 50.9,
+    "table_teacher_agreement": 0.7763761467889908,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7305045871559633,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7305045871559633,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7305045871559633,
+      "mean_latency_ms": 44.62175050048245
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 61.9,
+    "table_teacher_agreement": 0.7614678899082569,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7201834862385321,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7201834862385321,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7201834862385321,
+      "mean_latency_ms": 44.62175050048245
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 7000,
+    "cal_n": 3000,
+    "compile_s": 55.8,
+    "table_teacher_agreement": 0.7809633027522935,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7327981651376146,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7327981651376146,
+      "mean_latency_ms": 44.62175050048245
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8463302752293578,
+      "teacher_gold_acc": 0.8463302752293578,
+      "table_gold_acc": 0.7327981651376146,
+      "mean_latency_ms": 44.62175050048245
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 44.62175050048245,
+   "table_teacher_agreement_mean": 0.7729357798165136,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8463302752293579,
+    "teacher_gold_acc": 0.8463302752293579,
+    "table_gold_acc": 0.7278287461773699,
+    "mean_latency_ms": 44.62175050048245,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8463302752293579,
+    "teacher_gold_acc": 0.8463302752293579,
+    "table_gold_acc": 0.7278287461773699,
+    "mean_latency_ms": 44.62175050048245,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8463302752293579,
+    "teacher_gold_acc": 0.8463302752293579,
+    "table_gold_acc": 0.7278287461773699,
+    "mean_latency_ms": 44.62175050048245,
+    "disagreement_max_over_seeds": 0.0
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/cr": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 2263,
+    "cal_n": 1131,
+    "compile_s": 22.8,
+    "table_teacher_agreement": 0.7526595744680851,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7579787234042553,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7579787234042553,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7579787234042553,
+      "mean_latency_ms": 23.021812500701344
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 2263,
+    "cal_n": 1131,
+    "compile_s": 21.0,
+    "table_teacher_agreement": 0.7473404255319149,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7473404255319149,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7473404255319149,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.977205753326416,
+      "offload": 0.07180851063829788,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7473404255319149,
+      "mean_latency_ms": 21.36872224134247
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 2263,
+    "cal_n": 1131,
+    "compile_s": 21.6,
+    "table_teacher_agreement": 0.7420212765957447,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7526595744680851,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.9042553191489362,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7526595744680851,
+      "mean_latency_ms": 23.021812500701344
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9688619375228882,
+      "offload": 0.0851063829787234,
+      "disagreement_on_offloaded": 0.03125,
+      "cascade_gold_acc": 0.901595744680851,
+      "teacher_gold_acc": 0.9042553191489362,
+      "table_gold_acc": 0.7526595744680851,
+      "mean_latency_ms": 21.062594415535273
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 23.021812500701344,
+   "table_teacher_agreement_mean": 0.7473404255319149,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.9042553191489362,
+    "teacher_gold_acc": 0.9042553191489362,
+    "table_gold_acc": 0.7526595744680851,
+    "mean_latency_ms": 23.021812500701344,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.9042553191489362,
+    "teacher_gold_acc": 0.9042553191489362,
+    "table_gold_acc": 0.7526595744680851,
+    "mean_latency_ms": 23.021812500701344,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.05230496453900709,
+    "disagreement_on_offloaded": 0.010416666666666666,
+    "cascade_gold_acc": 0.9033687943262412,
+    "teacher_gold_acc": 0.9042553191489362,
+    "table_gold_acc": 0.7526595744680851,
+    "mean_latency_ms": 21.81770971919303,
+    "disagreement_max_over_seeds": 0.03125
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/toxic": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 5977,
+    "cal_n": 2988,
+    "compile_s": 221.9,
+    "table_teacher_agreement": 0.8062,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.815,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.815,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.815,
+      "mean_latency_ms": 33.61520799990103
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 5977,
+    "cal_n": 2988,
+    "compile_s": 203.6,
+    "table_teacher_agreement": 0.8062,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8134,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8134,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8134,
+      "mean_latency_ms": 33.61520799990103
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 5977,
+    "cal_n": 2988,
+    "compile_s": 198.5,
+    "table_teacher_agreement": 0.8058,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8182,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8182,
+      "mean_latency_ms": 33.61520799990103
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.8552,
+      "teacher_gold_acc": 0.8552,
+      "table_gold_acc": 0.8182,
+      "mean_latency_ms": 33.61520799990103
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 33.61520799990103,
+   "table_teacher_agreement_mean": 0.8060666666666667,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8552,
+    "teacher_gold_acc": 0.8552,
+    "table_gold_acc": 0.8155333333333333,
+    "mean_latency_ms": 33.61520799990103,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8552,
+    "teacher_gold_acc": 0.8552,
+    "table_gold_acc": 0.8155333333333333,
+    "mean_latency_ms": 33.61520799990103,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.8552,
+    "teacher_gold_acc": 0.8552,
+    "table_gold_acc": 0.8155333333333333,
+    "mean_latency_ms": 33.61520799990103,
+    "disagreement_max_over_seeds": 0.0
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/tweet_sentiment": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 6999,
+    "cal_n": 3000,
+    "compile_s": 113.1,
+    "table_teacher_agreement": 0.6014,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5444,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5444,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.05,
+      "threshold": 0.9555214643478394,
+      "offload": 0.0476,
+      "disagreement_on_offloaded": 0.18907563025210083,
+      "cascade_gold_acc": 0.6516,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5444,
+      "mean_latency_ms": 22.500676175313384
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 6999,
+    "cal_n": 3000,
+    "compile_s": 113.4,
+    "table_teacher_agreement": 0.6054,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5438,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5438,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5438,
+      "mean_latency_ms": 23.625187500329048
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 6999,
+    "cal_n": 3000,
+    "compile_s": 113.7,
+    "table_teacher_agreement": 0.6078,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5486,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5486,
+      "mean_latency_ms": 23.625187500329048
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.6554,
+      "teacher_gold_acc": 0.6554,
+      "table_gold_acc": 0.5486,
+      "mean_latency_ms": 23.625187500329048
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 23.625187500329048,
+   "table_teacher_agreement_mean": 0.6048666666666667,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.6554,
+    "teacher_gold_acc": 0.6554,
+    "table_gold_acc": 0.5456,
+    "mean_latency_ms": 23.625187500329048,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.6554,
+    "teacher_gold_acc": 0.6554,
+    "table_gold_acc": 0.5456,
+    "mean_latency_ms": 23.625187500329048,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.015866666666666668,
+    "disagreement_on_offloaded": 0.06302521008403361,
+    "cascade_gold_acc": 0.6541333333333333,
+    "teacher_gold_acc": 0.6554,
+    "table_gold_acc": 0.5456,
+    "mean_latency_ms": 23.250350391990494,
+    "disagreement_max_over_seeds": 0.18907563025210083
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ },
+ "gemma/emotion": {
+  "seeds": [
+   {
+    "seed": 0,
+    "fit_n": 5694,
+    "cal_n": 2846,
+    "compile_s": 83.8,
+    "table_teacher_agreement": 0.6335,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5355,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5355,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5355,
+      "mean_latency_ms": 21.91824999954406
+     }
+    ]
+   },
+   {
+    "seed": 1,
+    "fit_n": 5694,
+    "cal_n": 2846,
+    "compile_s": 83.4,
+    "table_teacher_agreement": 0.631,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5365,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5365,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.5365,
+      "mean_latency_ms": 21.91824999954406
+     }
+    ]
+   },
+   {
+    "seed": 2,
+    "fit_n": 5694,
+    "cal_n": 2846,
+    "compile_s": 83.4,
+    "table_teacher_agreement": 0.6475,
+    "certs": [
+     {
+      "alpha": 0.01,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.545,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.02,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.545,
+      "mean_latency_ms": 21.91824999954406
+     },
+     {
+      "alpha": 0.05,
+      "threshold": Infinity,
+      "offload": 0.0,
+      "disagreement_on_offloaded": 0.0,
+      "cascade_gold_acc": 0.589,
+      "teacher_gold_acc": 0.589,
+      "table_gold_acc": 0.545,
+      "mean_latency_ms": 21.91824999954406
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "teacher_median_ms": 21.91824999954406,
+   "table_teacher_agreement_mean": 0.6373333333333333,
+   "alpha=0.01": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.589,
+    "teacher_gold_acc": 0.589,
+    "table_gold_acc": 0.539,
+    "mean_latency_ms": 21.91824999954406,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.02": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.589,
+    "teacher_gold_acc": 0.589,
+    "table_gold_acc": 0.539,
+    "mean_latency_ms": 21.91824999954406,
+    "disagreement_max_over_seeds": 0.0
+   },
+   "alpha=0.05": {
+    "offload": 0.0,
+    "disagreement_on_offloaded": 0.0,
+    "cascade_gold_acc": 0.589,
+    "teacher_gold_acc": 0.589,
+    "table_gold_acc": 0.539,
+    "mean_latency_ms": 21.91824999954406,
+    "disagreement_max_over_seeds": 0.0
+   }
+  },
+  "teacher": "EmbeddingGemma-300m zero-shot"
+ }
+}

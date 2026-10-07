@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shad0w</title>
+<meta name="description" content="Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU. No labels, no GPU.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="shad0w">
+<meta property="og:description" content="Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU. No labels, no GPU."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="docs/">Docs</a>
+    <a href="demo/">Live demo</a>
+    <a href="docs/benchmarks.html">Benchmarks</a>
+    <a href="#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<main>
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span> v0.1.0 · open source · Apache-2.0</span>
+      <h1>Your LLM's decisions,<br><span class="grad-text">compiled to microseconds.</span></h1>
+      <p class="lead">shad0w watches the answers your model already gives, compiles them into a 2&nbsp;MB table, and <b>certifies</b> how often that table will disagree. It then serves the answers it can certify on your CPU in microseconds and hands the rest back to your model.</p>
+      <div class="cta">
+        <a class="btn primary" href="demo/">Try the live demo →</a>
+        <a class="btn" href="docs/">Read the docs</a>
+        <a class="btn" href="https://github.com/2796gaurav/shad0w"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a>
+      </div>
+      <div class="install"><span><span class="p">$</span> pip install shad0w</span><button class="copy" data-copy="pip install shad0w" type="button">copy</button></div>
+      <div class="hero-art reveal"><img src="assets/hero.svg" alt="Requests flow into a shad0w table: certified answers return in about a microsecond, uncertain ones go to your LLM" width="1280" height="440"></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat reveal"><div class="num grad-text" data-count="1" data-prefix="~" data-suffix=" µs">~1 µs</div><div class="lbl">per decision in C · 7–11 µs in JavaScript · 15 µs in Python</div></div>
+        <div class="stat reveal"><div class="num grad-text">45–71%</div><div class="lbl">of intent &amp; topic traffic answered locally at a certified 5% bound</div></div>
+        <div class="stat reveal"><div class="num grad-text" data-count="0" data-suffix=" labels">0 labels</div><div class="lbl">it learns from your model's own answers and certifies against them</div></div>
+        <div class="stat reveal"><div class="num grad-text" data-count="2" data-suffix=" MB">2 MB</div><div class="lbl">one file, no GPU, no network; 256 KB still keeps 88.5% accuracy</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">the problem</div>
+        <h2>Millions of tiny decisions,<br>each one a round trip to a GPU.</h2>
+        <p>Which intent is this? Which queue gets this ticket? Is this a scam? Should this agent step run? You already ask a big model, and every answer costs 20–1,500&nbsp;ms.</p>
+      </div>
+      <div class="grid3">
+        <div class="card reveal"><div class="ico">ms</div><h3>Latency you can't put in a hot path</h3><p>A 150 ms decision cannot sit inside a payments path, a message filter that sees billions of events, or an agent loop that makes dozens of decisions per task.</p></div>
+        <div class="card reveal"><div class="ico">⇄</div><h3>Someone else's model, someone else's mood</h3><p>The decision lives on a vendor's GPU. It changes when they change it, and identical inputs can get different answers.</p></div>
+        <div class="card reveal"><div class="ico">?</div><h3>No evidence for the cheaper path</h3><p>When someone proposes a faster path, nobody can say how often it disagrees with the model that was approved. Reviewers and auditors ask exactly that.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">how it works</div>
+        <h2>Learn from your model. Prove it. Serve it.</h2>
+        <p>Four steps, one line of code, and your model stays in charge of everything the table can't certify.</p>
+      </div>
+      <div class="reveal" style="margin-bottom:48px"><img class="chart" src="assets/how-it-works.svg" alt="Shadow, compile, certify, serve" width="1280" height="300"></div>
+      <div class="split">
+        <ol class="steps reveal">
+          <li><h4>Shadow</h4><p>Wrap the call you already make. Your model keeps answering, and every answer is logged as <code>(text, answer)</code>.</p></li>
+          <li><h4>Compile</h4><p>The log trains a hashed n-gram table with int8 weights. There is no tokenizer and no GPU, and it takes minutes on a laptop.</p></li>
+          <li><h4>Certify</h4><p>On held-out answers, Learn-then-Test picks the confidence threshold at which disagreement with your model is <b>provably ≤ α</b>.</p></li>
+          <li><h4>Serve</h4><p>Certified answers come back in microseconds, in-process. The rest go to your model and are logged, so offload grows with traffic.</p></li>
+        </ol>
+        <div class="tabs reveal">
+          <div class="tabbar" role="tablist">
+            <button role="tab" aria-selected="true">Python</button><button role="tab" aria-selected="false">CLI</button><button role="tab" aria-selected="false">JavaScript</button><button role="tab" aria-selected="false">HTTP</button>
+          </div>
+          <div class="tabpanel on"><pre><span style="color:#c4a7ff">import</span> shad0w
+
+<span style="color:#6f6f92"># day 1: no bundle yet; your model answers, calls are logged</span>
+sh = shad0w.Shadow(<span style="color:#fbbf24">None</span>, teacher=ask_my_llm, question=<span style="color:#8ee6b6">"intent"</span>,
+                   log=<span style="color:#8ee6b6">"teacher_log.jsonl"</span>)
+
+<span style="color:#6f6f92"># after `shad0w shadow`: the table answers what it can certify</span>
+sh = shad0w.Shadow(<span style="color:#8ee6b6">"bundle/"</span>, teacher=ask_my_llm,
+                   log=<span style="color:#8ee6b6">"teacher_log.jsonl"</span>)
+d = sh.decide(<span style="color:#8ee6b6">"my card was stolen yesterday"</span>)
+d.answer, d.source, d.latency_us
+<span style="color:#6f6f92"># ('lost_card', 'table', 14.2)</span></pre></div>
+          <div class="tabpanel"><pre><span style="color:#6f6f92"># compile + certify from your model's logged answers</span>
+shad0w shadow --schema schema.json --data teacher_log.jsonl \
+              --teacher my-llm-v3 --alpha 0.05 --out bundle/
+<span style="color:#8ee6b6">compiled and certified ['intent'] -> bundle/
+  intent: agreement with teacher 85.3%; certified share 71.2% at alpha=0.05</span>
+
+shad0w report  --bundle bundle/                    <span style="color:#6f6f92"># the certificate</span>
+shad0w certify --bundle bundle/ --data week42.jsonl <span style="color:#6f6f92"># re-certify on fresh traffic</span></pre></div>
+          <div class="tabpanel"><pre><span style="color:#c4a7ff">import</span> { Bundle } <span style="color:#c4a7ff">from</span> <span style="color:#8ee6b6">"shad0w"</span>;   <span style="color:#6f6f92">// npm i shad0w · zero dependencies</span>
+
+<span style="color:#c4a7ff">const</span> bundle = <span style="color:#c4a7ff">await</span> Bundle.load(<span style="color:#8ee6b6">"bundle/"</span>);   <span style="color:#6f6f92">// Node, browser, Workers</span>
+<span style="color:#c4a7ff">const</span> a = bundle.decide(text).answers.intent;
+
+<span style="color:#c4a7ff">const</span> intent = a.certified ? a.choice : <span style="color:#c4a7ff">await</span> askMyLLM(text);</pre></div>
+          <div class="tabpanel"><pre>shad0w serve --bundle bundle/ --port 8010
+
+curl localhost:8010/v1/decide -d <span style="color:#8ee6b6">'{"state": "my card was stolen"}'</span>
+<span style="color:#8ee6b6">{"answers": {"intent": {"choice": "lost_card", "confidence": 0.97,
+   "certified": true, "flag": null, "radius": 6}}, "latency_us": 21.4}</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="results">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">measured, not claimed</div>
+        <h2>The numbers, with their receipts.</h2>
+        <p>Public datasets, three seeds, and a raw result file behind every number. <a href="docs/benchmarks.html">See all benchmarks →</a></p>
+      </div>
+      <div class="charts">
+        <div class="chart reveal"><img src="assets/chart-offload.svg" alt="Certified offload at alpha 5% per task" width="1000" height="534" loading="lazy"></div>
+        <div class="row2">
+          <div class="chart reveal"><img src="assets/chart-growth.svg" alt="Offload grows from 31% to 70% as shadow traffic grows from 2k to 100k" width="1000" height="460" loading="lazy"></div>
+          <div class="chart reveal"><img src="assets/chart-speed.svg" alt="shad0w at 0.018 ms vs GPU decision models" width="1000" height="480" loading="lazy"></div>
+        </div>
+      </div>
+      <p class="chart-note reveal">Cascade accuracy (table + your model) stayed within 1 point of the model alone on every task. With Kev-0.8B as the teacher, mean latency fell from 75&nbsp;ms to 22&nbsp;ms.</p>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">compared with</div>
+        <h2>What you'd otherwise do.</h2>
+        <p>Caches and routers make it faster. Small classifiers make it local. shad0w is local <i>and</i> tells you how often it disagrees.</p>
+      </div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead><tr><th></th><th>Per decision</th><th>Runs on</th><th>Needs</th><th>Bound on what it serves</th></tr></thead>
+          <tbody>
+            <tr><td>Keep calling the LLM / decision API</td><td>20–1,500 ms</td><td>GPU or vendor API</td><td>—</td><td class="no">it is the reference</td></tr>
+            <tr><td>Semantic cache</td><td>ms</td><td>embedding model + vector store</td><td>nothing</td><td class="no">similarity threshold</td></tr>
+            <tr><td>Embedding router</td><td>ms</td><td>embedding model</td><td>example utterances</td><td class="no">threshold</td></tr>
+            <tr><td>Distil into a smaller LLM</td><td>10–100 ms</td><td>GPU</td><td>teacher outputs</td><td class="no">none</td></tr>
+            <tr><td>fastText / SetFit / Model2Vec</td><td>µs–ms</td><td>CPU</td><td>human labels</td><td class="no">none</td></tr>
+            <tr class="me"><td>shad0w</td><td>1–15 µs</td><td>CPU, in-process, browser, edge</td><td>your model's logged answers</td><td class="yes">finite-sample, vs your model</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-note reveal">Not new science: the certificate is <a href="https://arxiv.org/abs/2110.01052">Learn-then-Test</a>, and the table is fastText-shaped on purpose. The new part is the packaging: one workflow from shadow logs to a certified KB-to-MB artifact, with identical decisions in C, Python and JavaScript.</p>
+    </div>
+  </section>
+
+  <section class="alt" id="video">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">two minutes</div>
+        <h2>See it explain itself.</h2>
+      </div>
+      <div class="video-frame reveal">
+        <video src="video/shad0w-explainer.mp4" poster="video/poster.jpg" controls muted playsinline preload="none"></video>
+      </div>
+    </div>
+  </section>
+
+  <section id="fit">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">where it shines</div>
+        <h2>Decisions where the words carry the answer.</h2>
+      </div>
+      <div class="grid3">
+        <div class="card reveal"><div class="ico">→</div><h3>Intent &amp; routing</h3><p>Support and banking intents, ticket queues, email triage, with 20–150 options. This is where shad0w is strongest: 45–71% served locally.</p></div>
+        <div class="card reveal"><div class="ico">!</div><h3>Screening &amp; guards</h3><p>Spam, scam and prompt-injection screens, and allow / block / escalate gates on agent steps, run before the expensive call.</p></div>
+        <div class="card reveal"><div class="ico">◎</div><h3>Edge, browser, offline</h3><p>A 2 MB table and a zero-dependency JS runtime: decide on the device, in a Worker, or with no network at all.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="limits">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">honest limits</div>
+        <h2>When not to use it.</h2>
+        <p>These are measured. They are what make the certificate worth trusting.</p>
+      </div>
+      <div class="limits">
+        <div class="limit reveal"><div><b>Sentiment, tone, emotion</b><span>A hashed table tops out near 79% on SST-2 even with perfect labels. shad0w certifies almost nothing there and defers it all, which is correct.</span></div></div>
+        <div class="limit reveal"><div><b>When you need the best possible answer</b><span>A 9B decision model is 7 points better on BANKING77, at about 70,000× the latency. Put shad0w in front of it, not instead of it.</span></div></div>
+        <div class="limit reveal"><div><b>The bound is against your model</b><span>If your model is wrong, the table is certified to be wrong in the same way. Use ~300 real labels for a bound against the truth.</span></div></div>
+        <div class="limit reveal"><div><b>Traffic shifts</b><span>The bound holds for traffic like the calibration slice. The drift guard, live audits and <code>shad0w certify</code> exist for when it moves.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2>Put a shadow in front of your model.</h2>
+      <p class="muted" style="font-size:18px;max-width:640px;margin:0 auto 28px">Start logging today. Compile when you have a thousand answers. Serve what you can prove.</p>
+      <div class="cta" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn primary" href="docs/">Get started →</a>
+        <a class="btn" href="demo/">Live demo</a>
+        <a class="btn" href="https://github.com/2796gaurav/shad0w">Star on GitHub</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shadow mode, step by step · shad0w</title>
+<meta name="description" content="Log your model&#x27;s answers, compile and certify a table, serve it safely, and keep the certificate honest over time.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/shadow-mode.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Shadow mode, step by step · shad0w">
+<meta property="og:description" content="Log your model&#x27;s answers, compile and certify a table, serve it safely, and keep the certificate honest over time."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/shadow-mode.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06060b">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/favicon.svg" alt="" width="28" height="28">shad0w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a href="../docs/benchmarks.html">Benchmarks</a>
+    <a href="../#video">Video</a>
+    <a href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><h5>Start</h5><a href="./">Getting started</a><a href="shadow-mode.html" class=active>Shadow mode, step by step</a><a href="integrations.html">Integrations</a><h5>Understand</h5><a href="certificate.html">The certificate, explained</a><a href="architecture.html">Architecture & file format</a><a href="benchmarks.html">Benchmarks</a><a href="limitations.html">Limitations</a><h5>Reference</h5><a href="reference.html">API & CLI reference</a><a href="faq.html">FAQ</a><a href="roadmap.html">Roadmap</a></aside>
+  <article class="prose"><h1 id="shadow-mode-step-by-step">Shadow mode, step by step<a class="headerlink" href="#shadow-mode-step-by-step" title="Permanent link">#</a></h1>
+<p>Shadow mode is the main way to use shad0w. Your model keeps doing its job, and shad0w learns from its answers. No human labels are involved at any point.</p>
+<h2 id="1-pick-a-decision-that-compiles">1. Pick a decision that compiles<a class="headerlink" href="#1-pick-a-decision-that-compiles" title="Permanent link">#</a></h2>
+<p>Good fits are decisions where the <strong>words</strong> carry the answer:</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Typical options</th>
+<th>Expected fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Customer intent in support or banking</td>
+<td>20–150</td>
+<td>strong: 45–71% offloaded at α = 5% in tests</td>
+</tr>
+<tr>
+<td>Ticket or email queue routing</td>
+<td>5–50</td>
+<td>strong when queues have distinctive vocabulary</td>
+</tr>
+<tr>
+<td>Topic and category labelling</td>
+<td>4–100</td>
+<td>strong on news and encyclopedic topics</td>
+</tr>
+<tr>
+<td>Spam, scam, prompt-injection screening</td>
+<td>2–5</td>
+<td>good when the classes have distinctive wording; test on your data</td>
+</tr>
+<tr>
+<td>Agent step: allow / block / escalate</td>
+<td>2–5</td>
+<td>depends on how consistent your model is; the certificate tells you</td>
+</tr>
+<tr>
+<td>Sentiment, tone, emotion</td>
+<td>2–6</td>
+<td><strong>poor</strong>: expect near-zero offload, keep the model</td>
+</tr>
+<tr>
+<td>Anything needing reasoning or world knowledge</td>
+<td>—</td>
+<td><strong>out of scope</strong></td>
+</tr>
+</tbody>
+</table>
+<p>You don't have to guess. If a decision does not compile, the certificate says so (certified share ≈ 0%) and nothing is served.</p>
+<h2 id="2-write-the-schema">2. Write the schema<a class="headerlink" href="#2-write-the-schema" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"choice"</span><span class="p">,</span><span class="w"> </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"refund"</span><span class="p">:</span><span class="w"> </span><span class="s2">"money back"</span><span class="p">,</span><span class="w"> </span><span class="nt">"lost_card"</span><span class="p">:</span><span class="w"> </span><span class="s2">"card lost or stolen"</span><span class="p">,</span><span class="w"> </span><span class="nt">"balance"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"other"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}}}</span>
+</code></pre></div>
+
+<ul>
+<li>Option names must match your model's answers <strong>exactly</strong>.</li>
+<li>If your model can say "none of these", include that option (for example <code>other</code>), so the table learns it too.</li>
+<li>A <code>yesno</code> question takes <code>true</code>/<code>false</code> answers.</li>
+</ul>
+<p><code>shad0w init</code> writes a starter file.</p>
+<h2 id="3-log-your-models-answers">3. Log your model's answers<a class="headerlink" href="#3-log-your-models-answers" title="Permanent link">#</a></h2>
+<p>The simplest way is the wrapper. With no bundle, every call goes to your model and is logged:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ask_my_llm</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="o">...</span>  <span class="c1"># your existing call; must return one of the schema's option names</span>
+
+<span class="n">sh</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Shadow</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">teacher</span><span class="o">=</span><span class="n">ask_my_llm</span><span class="p">,</span> <span class="n">question</span><span class="o">=</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">"teacher_log.jsonl"</span><span class="p">)</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="n">user_message</span><span class="p">)</span><span class="o">.</span><span class="n">answer</span>
+</code></pre></div>
+
+<p>You can also write the JSON Lines file yourself. Each line has <code>text</code> and one field per question:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my card was stolen yesterday"</span><span class="p">,</span><span class="w"> </span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">}</span>
+</code></pre></div>
+
+<p><strong>How much?</strong></p>
+<ul>
+<li>At least 100 answers per question to run.</li>
+<li>About 1,000 for a useful certificate.</li>
+<li>10k–100k for high offload at tight α. On AG News, offload at α = 5% grew from 31% at 2k answers to 70% at 100k.</li>
+</ul>
+<p><strong>Log representative traffic,</strong> not a curated sample. The certificate is only valid for traffic like it.</p>
+<h2 id="4-compile-and-certify">4. Compile and certify<a class="headerlink" href="#4-compile-and-certify" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>shadow<span class="w"> </span>--schema<span class="w"> </span>schema.json<span class="w"> </span>--data<span class="w"> </span>teacher_log.jsonl<span class="w"> </span>--teacher<span class="w"> </span>my-llm-v3<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span>--out<span class="w"> </span>bundle/
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>compiled and certified ['intent'] in 74.2s -&gt; bundle/
+  intent: agreement with teacher 85.3%; certified share 71.2% at alpha=0.05
+</code></pre></div>
+
+<p>What happened:</p>
+<ol>
+<li>The log was split. 30% of it (at most 3,000 records) was set aside for calibration and never used for fitting.</li>
+<li>A hashed n-gram table was fitted on the rest.</li>
+<li>On the calibration slice, <a href="certificate.html">Learn-then-Test</a> picked the lowest confidence threshold at which disagreement with your model is still provably ≤ α.</li>
+</ol>
+<h2 id="5-read-the-certificate">5. Read the certificate<a class="headerlink" href="#5-read-the-certificate" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>report<span class="w"> </span>--bundle<span class="w"> </span>bundle/
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shad0w-certificate/1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"certified_against"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"> </span><span class="nt">"teacher"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-llm-v3"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"alpha"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="nt">"delta"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"statement"</span><span class="p">:</span><span class="w"> </span><span class="s2">"On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. ..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"questions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"n_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w"> </span><span class="nt">"n_fit"</span><span class="p">:</span><span class="w"> </span><span class="mi">7000</span><span class="p">,</span><span class="w"> </span><span class="nt">"n_calibration"</span><span class="p">:</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span><span class="w"> </span><span class="nt">"data_sha256"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9f2c…"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"agreement_with_teacher"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.853</span><span class="p">,</span><span class="w"> </span><span class="nt">"threshold"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.91</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"certified_share_on_calibration"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.712</span><span class="p">,</span><span class="w"> </span><span class="nt">"disagreement_on_certified_calibration"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.041</span><span class="p">}}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Read it as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agreement_with_teacher</code></td>
+<td>how often the table matches your model on <em>all</em> calibration traffic</td>
+</tr>
+<tr>
+<td><code>certified_share_on_calibration</code></td>
+<td>the share the table will serve itself (your offload)</td>
+</tr>
+<tr>
+<td><code>disagreement_on_certified_calibration</code></td>
+<td>the observed disagreement among served answers; the bound α sits above it</td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>the certified confidence cut-off; <code>null</code> means nothing is certified</td>
+</tr>
+<tr>
+<td><code>data_sha256</code></td>
+<td>a hash of the exact records used, for audit trails (the records themselves are never stored)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A certified share of 0% is a correct result, not a bug.</strong> It means the bound is out of reach for this decision at this α with this much data. Collect more data, loosen α, or keep the decision on your model.</p>
+<h2 id="6-serve">6. Serve<a class="headerlink" href="#6-serve" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">sh</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Shadow</span><span class="p">(</span><span class="s2">"bundle/"</span><span class="p">,</span> <span class="n">teacher</span><span class="o">=</span><span class="n">ask_my_llm</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">"teacher_log.jsonl"</span><span class="p">,</span> <span class="n">audit_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="n">user_message</span><span class="p">)</span>
+</code></pre></div>
+
+<ul>
+<li><code>d.source == "table"</code>: certified, served in microseconds.</li>
+<li><code>d.source == "teacher"</code>: deferred. <code>d.flag</code> says why: <code>low_confidence</code>, <code>low_radius</code> (with <code>exposed=True</code>), or <code>drift</code>. The answer was logged.</li>
+<li>With probability <code>audit_rate</code>, a certified answer is <em>also</em> sent to your model, as a spot check. <code>sh.stats()</code> reports offload, audit disagreement and a Clopper–Pearson upper bound on it.</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="n">sh</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+<span class="c1"># {'table': 7104, 'teacher': 2896, 'audits': 71, 'audit_disagreements': 2,</span>
+<span class="c1">#  'offload': 0.71, 'audit_disagreement': 0.028, 'audit_disagreement_upper': 0.072}</span>
+</code></pre></div>
+
+<p>Other runtimes (JavaScript, HTTP, C) are in <a href="integrations.html">Integrations</a>.</p>
+<h2 id="7-keep-it-honest-over-time">7. Keep it honest over time<a class="headerlink" href="#7-keep-it-honest-over-time" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Do</th>
+<th>When</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Re-certify</td>
+<td>weekly, after a product launch, when <code>drift</code> fires</td>
+<td><code>shad0w certify --bundle bundle/ --data last_week.jsonl</code> (records not used to compile)</td>
+</tr>
+<tr>
+<td>Recompile</td>
+<td>monthly, or when you want more offload</td>
+<td><code>shad0w shadow ...</code> on the accumulated log</td>
+</tr>
+<tr>
+<td>Watch audits</td>
+<td>continuously</td>
+<td><code>sh.stats()</code>; for anytime-valid monitoring, <code>shad0w.audit.Auditor</code></td>
+</tr>
+<tr>
+<td>Restart the log</td>
+<td>when your model changes</td>
+<td>the certificate names the teacher it was computed against</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hot-swap without restarting:</strong> <code>sh.reload("bundle-v2/")</code>.</p>
+<p><strong>Exposed channels.</strong> If adversaries can probe the input (public forms, chat), pass <code>exposed=True</code>. Answers whose exact robustness radius is below <code>r_min</code> inserted items are then deferred.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="./"><small>← previous</small>Getting started</a><a class="next" href="integrations.html"><small>next →</small>Integrations</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-pick-a-decision-that-compiles">1. Pick a decision that compiles</a></li>
+<li><a href="#2-write-the-schema">2. Write the schema</a></li>
+<li><a href="#3-log-your-models-answers">3. Log your model's answers</a></li>
+<li><a href="#4-compile-and-certify">4. Compile and certify</a></li>
+<li><a href="#5-read-the-certificate">5. Read the certificate</a></li>
+<li><a href="#6-serve">6. Serve</a></li>
+<li><a href="#7-keep-it-honest-over-time">7. Keep it honest over time</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>
