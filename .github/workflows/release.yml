@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/shad0w/
+      url: https://pypi.org/project/shad0wllm/
     permissions:
       id-token: write
     steps:

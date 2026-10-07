@@ -12,8 +12,8 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/shad0w/"><img alt="PyPI" src="https://img.shields.io/pypi/v/shad0w?color=7c5cff&label=pypi"></a>
-  <a href="https://www.npmjs.com/package/shad0w"><img alt="npm" src="https://img.shields.io/npm/v/shad0w?color=7c5cff&label=npm"></a>
+  <a href="https://pypi.org/project/shad0wllm/"><img alt="PyPI" src="https://img.shields.io/pypi/v/shad0wllm?color=7c5cff&label=pypi"></a>
+  <a href="https://www.npmjs.com/package/shad0wllm"><img alt="npm" src="https://img.shields.io/npm/v/shad0wllm?color=7c5cff&label=npm"></a>
   <a href="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Python" src="https://img.shields.io/badge/python-3.10%E2%80%933.13-3776ab">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-2ea44f"></a>
@@ -92,8 +92,10 @@ It is not new science. The certificate is Learn‑then‑Test, in the spirit of 
 ## Quick start
 
 ```bash
-pip install "shad0w[compile]"        # the runtime alone is: pip install shad0w   (numpy only, C core included)
+pip install "shad0wllm[compile]"        # the runtime alone is: pip install shad0wllm   (numpy only, C core included)
 ```
+
+The package installs as `shad0wllm` and imports as `shad0w`. The command-line tool is `shad0w`.
 
 **1. Log your model's answers.** Wrap the call you already make. With no bundle yet, every call goes to your model and is logged:
 
@@ -128,12 +130,12 @@ shad0w certify --bundle bundle/ --data last_week.jsonl
 
 | | |
 |---|---|
-| **JavaScript** (Node, browsers, Workers, Deno, Bun), zero dependencies | `npm i shad0w` → `const b = await Bundle.load("bundle/"); b.decide(text)` |
+| **JavaScript** (Node, browsers, Workers, Deno, Bun), zero dependencies | `npm i shad0wllm` → `const b = await Bundle.load("bundle/"); b.decide(text)` |
 | **HTTP** sidecar, any language | `shad0w serve --bundle bundle/` → `POST /v1/decide` |
 | **C**, any language with an FFI | `shad0w/_native/reflex.c`: `s0_load`, `s0_decide` |
 | **Decorator** | `@shad0w.cascade("bundle/")` on your existing classify function |
 | **Human labels** instead of a teacher | `shad0w compile --data labels.jsonl` + `shad0w calibrate` (~300 labels) |
-| **No teacher, no labels** | `shad0w compile --unlabeled logs.txt` (option names + raw logs, `pip install "shad0w[logs]"`) |
+| **No teacher, no labels** | `shad0w compile --unlabeled logs.txt` (option names + raw logs, `pip install "shad0wllm[logs]"`) |
 
 Integration recipes for FastAPI, LiteLLM, LangGraph, Cloudflare Workers and the browser are in the [docs](https://2796gaurav.github.io/shad0w/docs/integrations.html).
 

@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "shad0w"
+name = "shad0wllm"
 version = "0.1.0"
 description = "Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU."
 readme = "README.md"
@@ -38,10 +38,10 @@ dependencies = ["numpy>=1.26"]
 # Compiling bundles (shadow mode, human labels): sparse logistic fit + certificate.
 compile = ["scipy>=1.13", "scikit-learn>=1.5", "torch>=2.4"]
 # Label-free mode (option names + unlabelled logs): a frozen sentence encoder at compile time.
-logs = ["shad0w[compile]", "sentence-transformers>=3.0"]
+logs = ["shad0wllm[compile]", "sentence-transformers>=3.0"]
 # The real-data demo and benchmark reproduction (downloads public datasets).
-demo = ["shad0w[logs]", "datasets>=3.0"]
-dev = ["shad0w[compile]", "pytest>=8", "ruff>=0.6"]
+demo = ["shad0wllm[logs]", "datasets>=3.0"]
+dev = ["shad0wllm[compile]", "pytest>=8", "ruff>=0.6"]
 
 [project.urls]
 Homepage = "https://2796gaurav.github.io/shad0w"
