@@ -119,9 +119,11 @@ class Question:
     _native: object = None
     _native_lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
-    def decide(self, text: str, its=None, exposed: bool = False, options: list[str] | None = None) -> dict:
+    def decide(self, text: str, its=None, exposed: bool = False, options: list[str] | None = None,
+               probabilities: bool = True) -> dict:
         """options: an optional subset of the compiled options to decide among (request-time narrowing,
-        as the /v1/decide wire format allows); probabilities are renormalised over the subset."""
+        as the /v1/decide wire format allows); probabilities are renormalised over the subset.
+        probabilities=False skips building the per-option dict (the slowest part of a call on the C path)."""
         if self._native is not None:
             with self._native_lock:
                 y, p, r = self._native.decide(text)
@@ -136,7 +138,7 @@ class Question:
                 sub = sub / max(float(sub.sum()), 1e-12)
                 p = np.zeros_like(np.asarray(p)); p[idx] = sub
                 y = int(idx[int(np.argmax(sub))])
-        conf = float(np.max(p))
+        conf = float(p[y])
         drift = self.guard.update(conf)
         flag = None
         if not self.calibrated:
@@ -154,8 +156,13 @@ class Question:
             out["answer"] = bool(y == 1)
         else:
             out["choice"] = self.options[y]
-            keep = set(options) if options else None
-            out["probabilities"] = {o: round(float(q), 6) for o, q in zip(self.options, p) if keep is None or o in keep}
+            if probabilities:
+                pl = np.round(p, 6).tolist()
+                if options:
+                    keep = set(options)
+                    out["probabilities"] = {o: q for o, q in zip(self.options, pl) if o in keep}
+                else:
+                    out["probabilities"] = dict(zip(self.options, pl))
         return out
 
 
@@ -164,7 +171,7 @@ class Model:
     questions: dict[str, Question] = field(default_factory=dict)
     meta: dict = field(default_factory=dict)
 
-    def decide(self, state, exposed: bool = False, questions: dict | None = None) -> dict:
+    def decide(self, state, exposed: bool = False, questions: dict | None = None, probabilities: bool = True) -> dict:
         """questions: optional wire-format questions {name: {"criteria": {...}}}; when given, each named question
         is narrowed to the requested criteria keys (a subset of its compiled options)."""
         text = state if isinstance(state, str) else json.dumps(state, ensure_ascii=False)
@@ -181,7 +188,7 @@ class Model:
                     opts = list(crit.keys())
                 elif isinstance(crit, list):
                     opts = list(crit)
-            out[n] = q.decide(text, its, exposed, opts)
+            out[n] = q.decide(text, its, exposed, opts, probabilities)
         return {"answers": out}
 
     def calibrate(self, question: str, texts, labels, alpha: float | None = None, delta: float = 0.1):

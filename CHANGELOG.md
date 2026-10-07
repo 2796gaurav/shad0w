@@ -11,5 +11,6 @@ First public release.
 - **Strict table loading** in all three runtimes. Unknown versions, impossible shapes, unsorted keys and truncated or padded files are refused.
 - Typed answers with confidence, an exact robustness radius, `certified` and `flag`. Also a label-free drift guard and anytime-valid auditors.
 - Human-label mode (`shad0w compile --data`, `shad0w calibrate`) and label-free mode (`shad0w compile --unlabeled`).
+- Fast Python path: `probabilities=False` skips the per-option dict (about 8 µs per call through the C core, versus about 15 µs with it).
 - Reference HTTP server: `POST /v1/decide` (alias `/v1/systemone`) and `GET /v1/health`.
 - `shad0w init` and `shad0w --version`.

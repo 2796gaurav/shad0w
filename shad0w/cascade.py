@@ -94,7 +94,7 @@ class Shadow:
             answer = self._ask(text, "teacher", name)
             self._count("teacher")
             return Decision(answer, "teacher", None, False, "no_bundle", _us(t0))
-        r = self.model.decide(text, exposed=self.exposed, questions={name: {}})["answers"][name]
+        r = self.model.decide(text, exposed=self.exposed, questions={name: {}}, probabilities=False)["answers"][name]
         local = r["choice"] if "choice" in r else r["answer"]
         if r["certified"]:
             if self.audit_rate and self._rng.random() < self.audit_rate:
