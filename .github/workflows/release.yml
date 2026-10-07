@@ -15,13 +15,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-14, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-14, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: pypa/cibuildwheel@v2.22
         env:
           CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
           CIBW_SKIP: "*-musllinux_* *-win32 *-manylinux_i686"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_TEST_REQUIRES: numpy
           CIBW_TEST_COMMAND: >-
             python -c "import shad0w.native as n; assert n.available(), 'C core missing from wheel'; print(n.find_library())"
