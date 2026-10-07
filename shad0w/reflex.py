@@ -53,8 +53,46 @@ def fit_lr_sklearn(X, y, C: float):
 
 
 def fit_lr(X, y, C: float, K: int | None = None, iters: int = 300):
-    """Same objective as sklearn's L2 multinomial LR (sum CE + ||W||^2 / (2C)), solved
-    with full-batch L-BFGS in torch on a sparse matrix: multithreaded and much faster."""
+    """Same objective as sklearn's L2 multinomial LR (sum CE + ||W||^2 / (2C)), solved with full-batch L-BFGS:
+    in torch when it is installed (multithreaded, fastest), else in scipy (no extra download)."""
+    try:
+        import torch  # noqa: F401
+    except ImportError:
+        return fit_lr_scipy(X, y, C, K, iters)
+    return fit_lr_torch(X, y, C, K, iters)
+
+
+def fit_lr_scipy(X, y, C: float, K: int | None = None, iters: int = 300):
+    """The same convex objective as fit_lr_torch, minimised with scipy's L-BFGS-B."""
+    from scipy.optimize import minimize
+
+    y = np.asarray(y)
+    K = K or int(y.max()) + 1
+    X = X.tocsr().astype(np.float64)
+    XT = X.T.tocsr()
+    n, F = X.shape
+    rows = np.arange(n)
+
+    def f(theta):
+        W = theta[:F * K].reshape(F, K)
+        b = theta[F * K:]
+        Z = X @ W + b
+        Z -= Z.max(1, keepdims=True)
+        E = np.exp(Z)
+        s = E.sum(1)
+        loss = float(np.log(s).sum() - Z[rows, y].sum() + (W * W).sum() / (2 * C))
+        P = E / s[:, None]
+        P[rows, y] -= 1.0
+        g = np.concatenate([(XT @ P + W / C).ravel(), P.sum(0)])
+        return loss, g
+
+    res = minimize(f, np.zeros(F * K + K), jac=True, method="L-BFGS-B",
+                   options={"maxiter": iters, "maxcor": 20, "gtol": 1e-7, "ftol": 1e-12})
+    W = res.x[:F * K].reshape(F, K)
+    return W.T.astype(np.float32).copy(), res.x[F * K:].astype(np.float32).copy()
+
+
+def fit_lr_torch(X, y, C: float, K: int | None = None, iters: int = 300):
     import torch
 
     y = np.asarray(y)

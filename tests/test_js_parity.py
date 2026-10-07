@@ -79,3 +79,45 @@ def test_esm_build_is_in_sync():
     r = subprocess.run(["node", os.path.join(ROOT, "js", "build.mjs")], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
     assert mjs.read_text(encoding="utf-8") == before, "js/index.mjs was stale: run `node js/build.mjs` and commit it"
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_shadow_and_openai_teacher(tmp_path):
+    """JS decision() against the mock LLM: log-only, then a trained bundle answers locally; matchOption parity."""
+    from shad0w.llm import match_option
+    from shad0w.shadow import shadow_compile
+
+    from .mock_llm import MockLLM
+    from .test_shadow import SCHEMA, synth
+
+    rows, _ = synth(3000, 41, teacher_noise=0.01)
+    m, _ = shadow_compile(SCHEMA, rows, alpha=0.05)
+    m.save(str(tmp_path / "b"))
+    mock = MockLLM("chatty")
+    try:
+        script = """
+const {decision, matchOption} = require(process.argv[1]);
+(async () => {
+  const rows = [];
+  const opts = {options: ["refund","lost_card","balance","transfer"], llm: "mock-1", baseURL: process.argv[2],
+                log: (r) => rows.push(r), auditRate: 0};
+  const before = await decision("intent", {...opts, bundle: process.argv[3] + "/missing"});
+  const a = await before.decide("hi block my card thanks");
+  const after = await decision("intent", {...opts, bundle: process.argv[3]});
+  const b = await after.decide("hi block my card thanks");
+  const probes = JSON.parse(process.argv[4]);
+  console.log(JSON.stringify({a, b, rows, m: probes.map(p => matchOption(p, ["refund","lost_card","balance","transfer"]))}));
+})().catch(e => { console.error(e); process.exit(1); });
+"""
+        probes = ["lost_card", " Lost Card. ", '{"answer": "refund"}', "The answer is transfer.", "refund or transfer", "nope"]
+        r = subprocess.run(["node", "-e", script, os.path.join(ROOT, "js", "index.js"), mock.url, str(tmp_path / "b"), json.dumps(probes)],
+                           capture_output=True, text=True, timeout=60)
+        assert r.returncode == 0, r.stderr
+        out = json.loads(r.stdout)
+        assert out["a"]["source"] == "teacher" and out["a"]["answer"] == "lost_card" and out["a"]["flag"] == "no_bundle"
+        assert out["b"]["source"] == "table" and out["b"]["answer"] == "lost_card"
+        assert out["rows"] == [{"text": "hi block my card thanks", "intent": "lost_card", "source": "teacher", "ts": out["rows"][0]["ts"]}]
+        assert out["m"] == [match_option(p, ["refund", "lost_card", "balance", "transfer"]) for p in probes]
+        assert "response_format" in mock.requests[0]["body"]
+    finally:
+        mock.close()

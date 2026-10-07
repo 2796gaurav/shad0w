@@ -58,6 +58,7 @@ def test_audits_measure_live_disagreement(bundle):
     sh = shad0w.Shadow(bundle, teacher=teacher, audit_rate=1.0, seed=0)
     for r in synth(400, 13)[0]:
         sh.decide(r["text"])
+    sh.flush()
     s = sh.stats()
     assert s["audits"] == s["table"] > 0
     assert 0.0 <= s["audit_disagreement"] <= s["audit_disagreement_upper"] <= 1.0

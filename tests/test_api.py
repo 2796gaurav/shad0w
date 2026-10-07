@@ -74,15 +74,16 @@ def test_exposed_channel_flags_low_radius(bundle):
 
 def test_server_roundtrip(bundle):
     from shad0w.server import serve
-    th = threading.Thread(target=serve, args=(bundle, "127.0.0.1", 8765), daemon=True)
-    th.start()
+    srv = serve(bundle, "127.0.0.1", 0, run=False)  # port 0: any free port
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{srv.server_address[1]}"
     for _ in range(50):
         try:
-            urllib.request.urlopen("http://127.0.0.1:8765/v1/health", timeout=1)
+            urllib.request.urlopen(base + "/v1/health", timeout=1)
             break
         except Exception:
             time.sleep(0.1)
-    req = urllib.request.Request("http://127.0.0.1:8765/v1/decide",
+    req = urllib.request.Request(base + "/v1/decide",
                                  data=json.dumps({"state": "send money to my sister"}).encode(),
                                  headers={"content-type": "application/json"})
     # functional check, not a benchmark: shared CI runners can stall a cold first call for milliseconds,
@@ -93,3 +94,7 @@ def test_server_roundtrip(bundle):
         assert r["answers"]["intent"]["choice"] == "transfer"
         lat.append(r["latency_us"])
     assert min(lat) < 50_000
+    stats = json.loads(urllib.request.urlopen(base + "/v1/stats", timeout=5).read())
+    assert stats["questions"]["intent"]["decisions"] == 5  # counted per question
+    assert b"shad0w_decisions_total" in urllib.request.urlopen(base + "/metrics", timeout=5).read()
+    srv.shutdown()

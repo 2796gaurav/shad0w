@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shad0wllm"
-version = "0.1.1"
+version = "0.2.0"
 description = "Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU."
 readme = "README.md"
 license = "Apache-2.0"
@@ -59,7 +59,7 @@ packages = ["shad0w", "shad0w.compiler"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-shad0w = ["py.typed", "_native/reflex.c"]
+shad0w = ["py.typed", "dashboard.html", "_native/reflex.c", "_native/shad0w.h"]
 
 [tool.ruff]
 line-length = 145

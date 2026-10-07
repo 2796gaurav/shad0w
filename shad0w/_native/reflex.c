@@ -27,7 +27,7 @@
 #define FORMAT_VERSION 1u
 #define MAX_F (1u << 22)  // at most one row per 22-bit bucket
 
-typedef struct {
+typedef struct S0Reflex {
   uint32_t F, K;
   float temperature;
   uint32_t *keys;
