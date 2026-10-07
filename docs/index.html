@@ -58,6 +58,9 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>              <span class="c1"># lost_card teacher</span>
 </code></pre></div>
 
+<blockquote>
+<p><strong>Tip: always include an <code>other</code> option.</strong> The table can only answer with one of your options. Without a catch-all, an off-topic message ("tell me a joke") gets mapped to the closest real intent, sometimes confidently. With <code>other</code>, it lands there, or goes to your LLM.</p>
+</blockquote>
 <p>On day one there is no table yet, so every call goes to your LLM. shad0w writes each <code>(text, answer)</code> pair to <code>shad0w/intent/log.jsonl</code>.</p>
 <p>Not on OpenAI? Use <code>anthropic/…</code>, <code>gemini/…</code>, <code>groq/…</code>, <code>ollama/llama3.1</code> or any OpenAI-compatible server. See <a href="connect-your-llm.html">Connect your LLM</a>. Already have a function that returns the answer? Pass it as <code>llm=my_function</code>.</p>
 <h2 id="3-train-once-1000-answers-are-logged">3. Train once ~1,000 answers are logged<a class="headerlink" href="#3-train-once-1000-answers-are-logged" title="Permanent link">#</a></h2>

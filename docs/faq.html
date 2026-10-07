@@ -47,6 +47,8 @@
 <p>No. Logs, training and tables are local files. The only network traffic is the LLM calls you already make.</p>
 <h3 id="what-happens-when-my-llm-changes-new-model-new-prompt">What happens when my LLM changes (new model, new prompt)?<a class="headerlink" href="#what-happens-when-my-llm-changes-new-model-new-prompt" title="Permanent link">#</a></h3>
 <p>The certificate is against the old teacher. Clear or rotate the log, let the new LLM answer for a while, and retrain. Until then, keep the old table (it is certified against the old LLM) or remove it to send everything to the new one.</p>
+<h3 id="off-topic-messages-get-a-real-intent-why">Off-topic messages get a real intent. Why?<a class="headerlink" href="#off-topic-messages-get-a-real-intent-why" title="Permanent link">#</a></h3>
+<p>The table can only answer with one of your options. Add a catch-all such as <code>"other": "anything else"</code>. Your LLM then labels off-topic traffic <code>other</code>, the table learns that, and off-topic messages stop landing in real intents.</p>
 <h3 id="can-i-use-it-for-multi-label-or-open-ended-output">Can I use it for multi-label or open-ended output?<a class="headerlink" href="#can-i-use-it-for-multi-label-or-open-ended-output" title="Permanent link">#</a></h3>
 <p>No. One answer from a fixed list per question. For several labels, use one yes/no question per label.</p>
 <h3 id="how-big-is-the-table">How big is the table?<a class="headerlink" href="#how-big-is-the-table" title="Permanent link">#</a></h3>
@@ -68,6 +70,7 @@
 <li><a href="#which-llms-can-be-the-teacher">Which LLMs can be the teacher?</a></li>
 <li><a href="#does-any-data-leave-my-machine">Does any data leave my machine?</a></li>
 <li><a href="#what-happens-when-my-llm-changes-new-model-new-prompt">What happens when my LLM changes (new model, new prompt)?</a></li>
+<li><a href="#off-topic-messages-get-a-real-intent-why">Off-topic messages get a real intent. Why?</a></li>
 <li><a href="#can-i-use-it-for-multi-label-or-open-ended-output">Can I use it for multi-label or open-ended output?</a></li>
 <li><a href="#how-big-is-the-table">How big is the table?</a></li>
 <li><a href="#is-it-safe-against-adversarial-input">Is it safe against adversarial input?</a></li>
