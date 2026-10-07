@@ -35,9 +35,9 @@
   <article class="prose"><h1 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">#</a></h1>
 <p>shad0w turns a decision your model already makes (an intent, a route, a policy check, a topic) into a small table that answers in microseconds on a CPU. It also states, as a finite-sample certificate, how often the table may disagree with your model. The table answers only what it can certify. Everything else goes to your model, as before.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0w<span class="w">                 </span><span class="c1"># runtime: numpy only, C core included in the wheel</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0w[compile]"</span><span class="w">      </span><span class="c1"># + compiling and certifying bundles (scipy, scikit-learn, torch)</span>
-npm<span class="w"> </span>i<span class="w"> </span>shad0w<span class="w">                       </span><span class="c1"># JavaScript runtime for Node, browsers and edge workers</span>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm<span class="w">                 </span><span class="c1"># runtime: numpy only, C core included in the wheel</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span><span class="w">      </span><span class="c1"># + compiling and certifying bundles (scipy, scikit-learn, torch)</span>
+npm<span class="w"> </span>i<span class="w"> </span>shad0wllm<span class="w">                       </span><span class="c1"># JavaScript runtime for Node, browsers and edge workers</span>
 </code></pre></div>
 
 <p>Python 3.10–3.13 on Linux, macOS and Windows. For a smaller install, install CPU-only torch first: <code>pip install torch --index-url https://download.pytorch.org/whl/cpu</code>.</p>
@@ -140,7 +140,7 @@ agreement with teacher 98.0%; certified share 100.0% at alpha=5%
 </div>
 <footer><div class="wrap">
   <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

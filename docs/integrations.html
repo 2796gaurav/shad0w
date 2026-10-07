@@ -125,10 +125,10 @@
 
 <p>The same shape works for a guard on agent steps (<code>allow</code> / <code>block</code> / <code>escalate</code>) before a tool call.</p>
 <h2 id="javascript-typescript-node-deno-bun">JavaScript / TypeScript (Node, Deno, Bun)<a class="headerlink" href="#javascript-typescript-node-deno-bun" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>i<span class="w"> </span>shad0w
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>i<span class="w"> </span>shad0wllm
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0w"</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">bundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Bundle</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">"bundle/"</span><span class="p">);</span>
 
@@ -140,7 +140,7 @@
 
 <p>The JS runtime makes the same decisions as Python and C; the test suite checks this on every commit. It applies the certified threshold from <code>manifest.json</code>. Robustness radius and drift guard are Python-only.</p>
 <h2 id="cloudflare-workers-and-other-edge-runtimes">Cloudflare Workers and other edge runtimes<a class="headerlink" href="#cloudflare-workers-and-other-edge-runtimes" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0w"</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
 <span class="kd">let</span><span class="w"> </span><span class="nx">bundle</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="p">{</span>
@@ -157,7 +157,7 @@
 <p>A 77-option table is about 2 MB, roughly 430 KB gzipped. It loads once per isolate.</p>
 <h2 id="in-the-browser">In the browser<a class="headerlink" href="#in-the-browser" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">"module"</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"https://cdn.jsdelivr.net/npm/shad0w/index.mjs"</span><span class="p">;</span>
+<span class="w">  </span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Bundle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"https://cdn.jsdelivr.net/npm/shad0wllm/index.mjs"</span><span class="p">;</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">bundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Bundle</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">"/bundle"</span><span class="p">);</span>
 <span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">bundle</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">).</span><span class="nx">answers</span><span class="p">.</span><span class="nx">intent</span><span class="p">);</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
@@ -208,7 +208,7 @@ curl<span class="w"> </span>-s<span class="w"> </span>localhost:8010/v1/decide<s
 </div>
 <footer><div class="wrap">
   <span>shad0w · built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0w/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0w">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>
