@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Changing your options · shad0w</title>
+<meta name="description" content="What happens when you add, remove or rename an option after training, and how shad0w keeps serving safely while it relearns.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/options.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Changing your options · shad0w">
+<meta property="og:description" content="What happens when you add, remove or rename an option after training, and how shad0w keeps serving safely while it relearns."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/options.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Changing your options · shad0w">
+<meta name="twitter:description" content="What happens when you add, remove or rename an option after training, and how shad0w keeps serving safely while it relearns."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Changing your options</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html" class=active>Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="changing-your-options">Changing your options<a class="headerlink" href="#changing-your-options" title="Permanent link">#</a></h1>
+<p>Products change. You will add an intent, retire a team, or rename a label. A table that was trained and certified on the old list of options cannot be trusted with the new one, so shad0w notices the change and adjusts on its own.</p>
+<p>The rule: <strong>the table only ever answers with options it learned, from a list you still offer, under the certificate it was given.</strong> Anything else goes to your LLM, and your LLM's answers keep being logged so the next training run learns the new list.</p>
+<h2 id="at-a-glance">At a glance<a class="headerlink" href="#at-a-glance" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>You…</th>
+<th>What the table does until you retrain</th>
+<th>Flag on deferred decisions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>add</strong> an option</td>
+<td>Nothing. Every decision goes to your LLM.</td>
+<td><code>options_changed</code></td>
+</tr>
+<tr>
+<td><strong>remove</strong> an option</td>
+<td>Keeps answering with the options that remain. Never answers with the removed one.</td>
+<td><code>option_removed</code></td>
+</tr>
+<tr>
+<td><strong>rename</strong> an option (with <code>rename=</code>)</td>
+<td>Keeps answering, using the new name.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>retrain</strong></td>
+<td>Learns the current list, gets a new certificate, and serves again.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="adding-an-option">Adding an option<a class="headerlink" href="#adding-an-option" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">,</span> <span class="s2">"transfer"</span><span class="p">],</span>   <span class="c1"># "transfer" is new</span>
+                         <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4.1-mini"</span><span class="p">)</span>
+<span class="n">intent</span><span class="o">.</span><span class="n">options_added</span>      <span class="c1"># ('transfer',)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"send 50 to my sister"</span><span class="p">)</span>
+<span class="c1"># Decision(answer='transfer', source='teacher', flag='options_changed', ...)   your LLM answered</span>
+</code></pre></div>
+
+<p>Why everything goes to your LLM, and not only the new option's messages: the table cannot recognise a message about something it has never seen. It would label "send 50 to my sister" with its closest old option, possibly with high confidence. In our test, before this protection existed, a table served more than half of a new option's messages with an old label. The certificate was earned on a world without the new option, so it no longer covers any answer.</p>
+<p>While you wait, nothing is wasted. Every LLM answer, including the new option, is logged. Once enough of them exist, retrain:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>            <span class="c1"># learns all four options; serving resumes with a fresh certificate</span>
+</code></pre></div>
+
+<p><code>auto_train</code> does this for you. The retrain gate (<code>retrain = "gated"</code>) never blocks this case: an old table that answers a different question is not a baseline for the new one.</p>
+<p><strong>Prefer to keep serving the old options anyway?</strong> <code>on_new_option = "serve"</code> keeps the table answering with what it knows, and only the new option's messages reach your LLM when the table happens to be unsure. That is a deliberate trade: the certificate no longer describes those answers. Use it only if a brief dip in agreement is cheaper than a burst of LLM calls.</p>
+<h2 id="removing-an-option">Removing an option<a class="headerlink" href="#removing-an-option" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=...</span><span class="p">)</span>   <span class="c1"># "balance" retired</span>
+<span class="n">intent</span><span class="o">.</span><span class="n">options_removed</span>    <span class="c1"># ('balance',)</span>
+</code></pre></div>
+
+<p>Answers the table would give as <code>balance</code> go to your LLM (flag <code>option_removed</code>), which now picks among the options you still offer. Everything else keeps being served: removing an option does not change what your LLM says about the others. At the next <code>train()</code>, old log rows labelled <code>balance</code> are left out automatically.</p>
+<h2 id="renaming-an-option">Renaming an option<a class="headerlink" href="#renaming-an-option" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"card_lost"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=...</span><span class="p">,</span>
+                         <span class="n">rename</span><span class="o">=</span><span class="p">{</span><span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"card_lost"</span><span class="p">})</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span><span class="o">.</span><span class="n">answer</span>      <span class="c1"># 'card_lost', straight from the table, no retraining</span>
+</code></pre></div>
+
+<p>A rename is the one change that needs no new certificate: the table's decisions are the same, only the name differs. The next <code>train()</code> rewrites the old name in the log as it reads it, so no history is lost. In <code>shad0w.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[questions.intent]</span>
+<span class="n">rename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lost_card</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"card_lost"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>From the command line: <code>shad0w train --log log.jsonl --out bundle/ --rename lost_card=card_lost</code>.</p>
+<h2 id="merging-and-splitting">Merging and splitting<a class="headerlink" href="#merging-and-splitting" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Merge two options</strong> into one: rename both to the same new name <strong>and</strong> list only the merged name in <code>options</code>. The table answers with the merged name at once; retrain soon so the certificate describes the merged option.</li>
+<li><strong>Split one option</strong> into two: that adds at least one option, so the table defers until it relearns from your LLM's new answers.</li>
+</ul>
+<h2 id="through-the-proxy">Through the proxy<a class="headerlink" href="#through-the-proxy" title="Permanent link">#</a></h2>
+<p>With the OpenAI Decisions API or System One, each request lists its options, and the proxy compares them with the table's on every request. Add a choice in your request and that question goes to the upstream model until the table is retrained; your code changes nothing else. On the chat path, the options come from your JSON-schema enum, a forced tool's enum, or the <code>X-Shad0w-Options</code> header.</p>
+<h2 id="in-javascript">In JavaScript<a class="headerlink" href="#in-javascript" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="s2">"balance"</span><span class="p">,</span><span class="w"> </span><span class="s2">"transfer"</span><span class="p">],</span><span class="w"> </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-4.1-mini"</span><span class="p">,</span>
+<span class="w">                                          </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/bundle"</span><span class="p">,</span><span class="w"> </span><span class="nx">rename</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">lost_card</span><span class="o">:</span><span class="w"> </span><span class="s2">"card_lost"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">intent</span><span class="p">.</span><span class="nx">optionsAdded</span><span class="w">     </span><span class="c1">// ["transfer"]: every decision goes to the LLM until the bundle is retrained</span>
+</code></pre></div>
+
+<p><code>onNewOption: "serve"</code> is the JavaScript spelling of <code>on_new_option = "serve"</code>.</p>
+<h2 id="checking-where-you-stand">Checking where you stand<a class="headerlink" href="#checking-where-you-stand" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w">     </span><span class="c1"># answers per option, and whether there are enough to train</span>
+</code></pre></div>
+
+<p><code>intent.stats()</code> reports <code>options_added</code> and <code>options_removed</code>; the dashboard shows the <code>options_changed</code> and <code>option_removed</code> flags with everything else. After adding an option, aim for at least 20 logged answers for it before retraining (shad0w warns below that). Until it has enough examples, the table rarely answers it, which is safe: those messages go to your LLM.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="tuning.html"><small>← previous</small>Tuning & fine-tuning</a><a class="next" href="without-llm.html"><small>next →</small>Running without an LLM</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#at-a-glance">At a glance</a></li>
+<li><a href="#adding-an-option">Adding an option</a></li>
+<li><a href="#removing-an-option">Removing an option</a></li>
+<li><a href="#renaming-an-option">Renaming an option</a></li>
+<li><a href="#merging-and-splitting">Merging and splitting</a></li>
+<li><a href="#through-the-proxy">Through the proxy</a></li>
+<li><a href="#in-javascript">In JavaScript</a></li>
+<li><a href="#checking-where-you-stand">Checking where you stand</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Adding a category without breaking production · shad0w</title>
+<meta name="description" content="A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/adding-a-category.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="Adding a category without breaking production · shad0w">
+<meta property="og:description" content="A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/adding-a-category.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Adding a category without breaking production · shad0w">
+<meta name="twitter:description" content="A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Adding a category without breaking production", "description": "A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.", "datePublished": "2026-10-08", "dateModified": "2026-10-08", "url": "https://2796gaurav.github.io/shad0w/blog/adding-a-category.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "production, lifecycle, safety, release notes", "wordCount": 652, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/adding-a-category.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "Adding a category without breaking production", "item": "https://2796gaurav.github.io/shad0w/blog/adding-a-category.html"}]}</script><meta property="article:published_time" content="2026-10-08"><meta property="article:author" content="Gaurav Chauhan">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>Adding a category without breaking production</h1><p class="lead">A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-08</span><span>3 min read</span><span class="tag">production</span><span class="tag">lifecycle</span><span class="tag">safety</span><span class="tag">release notes</span></div></header>
+  <article class="prose"><p>Every intent classifier meets the same Tuesday. Product adds a new intent, say <code>transfer</code>, to the list the LLM chooses from. The LLM handles it beautifully from the first request: it reads the new option in its prompt and uses it.</p>
+<p>Now imagine a learned shortcut in front of that LLM, trained last week on the old list. What does it do with "send 50 to my sister"?</p>
+<h2 id="what-goes-wrong">What goes wrong<a class="headerlink" href="#what-goes-wrong" title="Permanent link">#</a></h2>
+<p>It answers. A table trained on <code>refund</code>, <code>lost_card</code> and <code>balance</code> has never seen a transfer. It cannot say "I don't know this option". It can only pick its closest match, and it may pick it with high confidence.</p>
+<p>We tested exactly this before shad0w 0.3.1. Here is what happened on the new option's messages:</p>
+<ul>
+<li><strong>Added option:</strong> more than half went out with a wrong, old label, while marked certified.</li>
+<li><strong>Removed option:</strong> every message about it went out with the deleted label.</li>
+</ul>
+<p>The certificate was not lying about the world it was computed in. The world changed under it.</p>
+<div class="lifecycle" aria-label="Option lifecycle: add defers everything until retrain; remove defers only that option; rename applies at once">
+  <div class="lc"><b>add</b><span>defer everything</span><small>the table never learned it</small></div>
+  <div class="lc"><b>remove</b><span>never serve it</span><small>the rest keep serving</small></div>
+  <div class="lc"><b>rename</b><span>applies at once</span><small>same decisions, new name</small></div>
+  <div class="lc ok"><b>retrain</b><span>new certificate</span><small>serving resumes</small></div>
+</div>
+
+<h2 id="the-rule">The rule<a class="headerlink" href="#the-rule" title="Permanent link">#</a></h2>
+<p>Since 0.3.1, shad0w compares the options you offer now with the options the table learned, on every load. In the proxy, it compares them on every request. The rule is short:</p>
+<blockquote>
+<p>The table only answers with options it learned, from a list you still offer, under the certificate it was given.</p>
+</blockquote>
+<p>That plays out as follows.</p>
+<p><strong>You add an option.</strong> Every decision goes to your LLM, flagged <code>options_changed</code>, until you retrain. Not just the new option's messages: all of them. The table cannot tell which messages belong to the new option, and its certificate was earned without it. Nothing is wasted in the meantime. Your LLM's answers, including the new label, keep flowing into the log, and the next <code>train()</code> learns the full list.</p>
+<p><strong>You remove an option.</strong> The table keeps serving everything else. If it would answer with the removed option, that decision goes to your LLM instead, flagged <code>option_removed</code>. Removing an option does not change what your LLM says about the others, so their certificate still stands.</p>
+<p><strong>You rename an option.</strong> Nothing needs retraining. A rename changes the label, not the decision:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"card_lost"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=...</span><span class="p">,</span>
+                         <span class="n">rename</span><span class="o">=</span><span class="p">{</span><span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"card_lost"</span><span class="p">})</span>
+</code></pre></div>
+
+<p>The table answers <code>card_lost</code> straight away. The next training run rewrites the old name in the log as it reads it, so no history is lost.</p>
+<p><strong>You retrain.</strong> The table learns the current list, gets a new certificate, and serves again. The automatic retrain gate, which normally keeps an old table unless the new one is at least nearly as good, steps aside here. A table for a different list of options is no baseline.</p>
+<h2 id="why-not-keep-serving-the-old-options">Why not keep serving the old options?<a class="headerlink" href="#why-not-keep-serving-the-old-options" title="Permanent link">#</a></h2>
+<p>It is tempting. Most messages are not about the new option, so most of the table's answers are still right. That is why the option exists: <code>on_new_option = "serve"</code>.</p>
+<p>It is not the default, for one reason. The table cannot tell you <em>which</em> of its answers were really about the new option. Those come back confident and wrong, and nothing downstream knows. A burst of LLM calls for a day costs money. Silent wrong answers cost trust. We default to spending the money.</p>
+<h2 id="the-same-in-every-runtime">The same in every runtime<a class="headerlink" href="#the-same-in-every-runtime" title="Permanent link">#</a></h2>
+<p>The JavaScript package follows the same rules (<code>optionsAdded</code>, <code>optionsRemoved</code>, <code>rename</code>, <code>onNewOption</code>). The proxy applies them to the options each Decisions API request lists. And the new <a href="../docs/options.html">Changing your options</a> page covers merging, splitting and checking where you stand.</p>
+<div class="callout"><b>Upgrade:</b> <code>pip install -U shad0wllm</code> · <code>npm i shad0wllm@latest</code>. Nothing to configure: the protection is on by default.</div>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="system-zero.html"><small>2026-10-08 · 4 min</small><b>System Zero: the reflex layer your LLM stack is missing</b><span>LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.</span></a><a class="post-card" href="how-the-certificate-works.html"><small>2026-10-07 · 4 min</small><b>How can a small table promise it agrees with your LLM?</b><span>The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.</span></a><a class="post-card" href="what-we-measured.html"><small>2026-10-06 · 5 min</small><b>What we measured: where shad0w wins, and where it loses</b><span>Real LLMs, real proxies, public datasets and the same certifier for every method. The numbers that make shad0w worth using, and the ones that show when not to.</span></a></aside>
+</main>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

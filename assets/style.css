@@ -200,3 +200,63 @@ footer a { color: var(--dim); } footer a:hover { color: var(--ink); }
 .prose table { display: block; overflow-x: auto; max-width: 100%; }
 .prose table td:first-child, .prose table th:first-child { min-width: 200px; }
 .prose table td, .prose table th { min-width: 112px; }
+
+/* ---------- blog ---------- */
+.blog-index { padding: 60px 0 90px; }
+.blog-index .lead { max-width: 720px; font-size: 18px; }
+.post-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 34px; }
+.post-card { display: grid; gap: 6px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); color: var(--ink); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.post-card:hover { text-decoration: none; transform: translateY(-3px); border-color: color-mix(in srgb, var(--mint) 50%, var(--line)); box-shadow: var(--glow); }
+.post-card small { font: 600 12px var(--mono); color: var(--faint); }
+.post-card b { font: 700 19px/1.25 var(--display); letter-spacing: -.3px; }
+.post-card.big b { font-size: 24px; }
+.post-card span { color: var(--dim); font-size: 15px; }
+.post-card em { font-style: normal; color: var(--mint); font-weight: 600; font-size: 14px; margin-top: 6px; }
+.post { display: grid; grid-template-columns: minmax(0, 760px) 260px; gap: 50px; padding: 50px 0 80px; justify-content: center; }
+.post-head { grid-column: 1 / -1; max-width: 860px; }
+.post-head h1 { font: 700 clamp(34px, 5vw, 56px)/1.05 var(--display); letter-spacing: -1.6px; margin: 14px 0 14px; }
+.post-head .lead { font-size: 20px; color: var(--dim); margin: 0 0 18px; }
+.post-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; color: var(--faint); font: 500 13px var(--mono); }
+.tag { border: 1px solid var(--line2); border-radius: 99px; padding: 2px 10px; color: var(--dim); }
+.post .prose { font-size: 17.5px; line-height: 1.75; }
+.post .prose h2 { font-size: 30px; }
+.post-more { position: sticky; top: 90px; align-self: start; display: grid; gap: 12px; }
+.post-more h3 { font: 600 13px var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--faint); margin: 0; }
+.post-more .post-card { padding: 16px; } .post-more .post-card b { font-size: 16px; }
+.post-cta, .callout { margin: 40px 0 10px; padding: 22px; border-radius: 18px; border: 1px solid color-mix(in srgb, var(--mint) 40%, var(--line)); background: color-mix(in srgb, var(--mint) 6%, var(--card)); display: grid; gap: 10px; }
+.callout { display: block; margin: 30px 0; }
+.post-cta b { font: 700 20px var(--display); } .post-cta span { color: var(--dim); }
+.post-cta code { justify-self: start; }
+.post-cta .btn { justify-self: start; }
+@media (max-width: 980px) { .post { grid-template-columns: minmax(0, 1fr); } .post-more { position: static; } .post-grid { grid-template-columns: 1fr; } }
+
+/* System Zero layers */
+.layers { position: relative; display: grid; gap: 10px; margin: 30px 0; padding: 18px; border-radius: 20px; border: 1px solid var(--line); background: var(--bg2); overflow: hidden; }
+.layer { position: relative; display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; align-items: center; padding: 14px 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); z-index: 1; }
+.layer b { font: 700 18px var(--display); } .layer span { color: var(--dim); } .layer em { font: 600 13px var(--mono); font-style: normal; }
+.layer.l2 em { color: var(--pink); } .layer.l1 em { color: var(--amber); } .layer.l0 { border-color: color-mix(in srgb, var(--mint) 55%, var(--line)); box-shadow: var(--glow); } .layer.l0 em { color: var(--mint); }
+.layers .pulse { position: absolute; right: 38%; width: 10px; height: 10px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 14px var(--mint); bottom: 26px; animation: rise 3s ease-in-out infinite; z-index: 2; }
+.layers .p2 { right: 42%; animation-delay: 1s; } .layers .p3 { right: 46%; animation-delay: 2s; background: var(--amber); box-shadow: 0 0 14px var(--amber); animation-name: rise2; }
+@keyframes rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 40% { transform: translateY(0); } 55% { transform: translateX(160px); opacity: 0; } 100% { opacity: 0; } }
+@keyframes rise2 { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 70% { transform: translateY(-150px); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+@media (max-width: 640px) { .layer { grid-template-columns: 1fr; gap: 2px; } .layers .pulse { display: none; } }
+
+/* certificate demo */
+.cert-demo { margin: 30px 0; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--bg2); }
+.cd-bars { display: flex; align-items: flex-end; gap: 3px; height: 120px; }
+.cd-bars i { flex: 1; background: var(--line2); border-radius: 3px 3px 0 0; transition: background .4s; }
+.cd-bars i.in { background: linear-gradient(var(--mint), color-mix(in srgb, var(--mint) 40%, transparent)); }
+.cd-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0; color: var(--dim); font-size: 14px; }
+.cd-controls button { font: 700 13px var(--mono); padding: 7px 14px; border-radius: 10px; border: 1px solid var(--line2); background: var(--card); color: var(--ink); cursor: pointer; }
+.cd-controls button.on { border-color: var(--mint); color: var(--mint); box-shadow: var(--glow); }
+.cd-out { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cd-out div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.cd-out b { display: block; font: 700 28px var(--display); color: var(--mint); } .cd-out span { font-size: 13px; color: var(--dim); }
+.cd-note { margin: 12px 0 0; font-size: 12px; color: var(--faint); font-family: var(--mono); }
+
+/* option lifecycle */
+.lifecycle { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 30px 0; }
+.lc { padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); display: grid; gap: 4px; position: relative; }
+.lc b { font: 700 18px var(--mono); color: var(--amber); } .lc.ok b { color: var(--mint); } .lc span { font-weight: 600; } .lc small { color: var(--dim); }
+.lc:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 40%; color: var(--faint); }
+@media (max-width: 720px) { .lifecycle { grid-template-columns: 1fr 1fr; } .lc::after { display: none; } }

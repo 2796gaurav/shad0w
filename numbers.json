@@ -73,7 +73,16 @@
   "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)",
   "film.length_s": "102",
   "fit.torch_s": "40 s",
-  "fit.scipy_s": "217 s"
+  "fit.scipy_s": "217 s",
+  "scale.hardware": "Measured on 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39, 2026-10-08",
+  "scale.p50_range": "7.1 and 10.7 µs",
+  "scale.k150_options": "150",
+  "scale.k150_full_mb": "3.6 MB",
+  "scale.k150_budget_mb": "1.00 MB",
+  "scale.k150_cert_full": "94.4%",
+  "scale.k150_cert_budget": "94.4%",
+  "scale.largest": "500 options with a 4 MB budget (5.0 MB, 57.3% certified)",
+  "scale.largest_train": "21 minutes"
  },
  "raw": {
   "tests.count": 149,
@@ -151,7 +160,18 @@
   ],
   "film.length_s": 102,
   "fit.torch_s": 40.5,
-  "fit.scipy_s": 216.8
+  "fit.scipy_s": 216.8,
+  "scale.p50_range": [
+   7.1,
+   10.7
+  ],
+  "scale.k150_options": 150,
+  "scale.k150_full_mb": 3.62,
+  "scale.k150_budget_mb": 1.0,
+  "scale.k150_cert_full": 0.944,
+  "scale.k150_cert_budget": 0.944,
+  "scale.largest": 500,
+  "scale.largest_train": 1234.3
  },
  "prov": {
   "tests.count": {
@@ -727,6 +747,78 @@
    "dataset": "banking77",
    "teacher": null,
    "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.hardware": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.p50_range": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.k150_options": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.k150_full_mb": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.k150_budget_mb": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.k150_cert_full": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.k150_cert_budget": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.largest": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "scale.largest_train": {
+   "source": "results/b9_scale.json",
+   "dataset": "synthetic, one consistent teacher",
+   "teacher": null,
+   "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
    "date": "2026-10-08",
    "status": "new"
   }
@@ -2207,6 +2299,78 @@
    ],
    "note": "δ = 0.1 allows up to 10%.",
    "src": "results/b8_certificate_sim.json"
+  },
+  "scale": {
+   "columns": [
+    "options",
+    "logged answers",
+    "size budget",
+    "patterns kept",
+    "table size",
+    "training",
+    "p50 per decision",
+    "certified share",
+    "agreement"
+   ],
+   "rows": [
+    [
+     "10",
+     "400",
+     "none",
+     "2,267",
+     "0.03 MB",
+     "4 s",
+     "10.2 µs",
+     "90.0%",
+     "97.5%"
+    ],
+    [
+     "50",
+     "2,000",
+     "none",
+     "8,693",
+     "0.46 MB",
+     "27 s",
+     "7.1 µs",
+     "100.0%",
+     "98.3%"
+    ],
+    [
+     "150",
+     "6,000",
+     "none",
+     "24,026",
+     "3.62 MB",
+     "5 min",
+     "7.2 µs",
+     "94.4%",
+     "93.6%"
+    ],
+    [
+     "150",
+     "6,000",
+     "1 MB",
+     "6,216",
+     "1.00 MB",
+     "6 min",
+     "7.6 µs",
+     "94.4%",
+     "93.7%"
+    ],
+    [
+     "500",
+     "15,000",
+     "4 MB",
+     "8,322",
+     "4.97 MB",
+     "21 min",
+     "10.7 µs",
+     "57.3%",
+     "80.2%"
+    ]
+   ],
+   "note": "Synthetic traffic with one consistent teacher; α = 5%. Training time is wall clock on the machine below. The 500-option row: measured before the 0.3.1 size-budget fix (the K x K matrix was not counted), so it overshoots its 4 MB budget.",
+   "src": "results/b9_scale.json"
   }
  },
  "film": {

@@ -1,0 +1,47 @@
+# shad0w
+
+> shad0w (pip install shad0wllm, npm i shad0wllm) learns the fixed-choice decisions an application sends to an LLM
+> (intents, routing, moderation, agent tool choice), and answers the ones it can certify from a small table on the CPU in
+> microseconds. Every other request still goes to the LLM, and its answer is logged so the table keeps learning. The
+> certificate (Learn-then-Test with Clopper-Pearson bounds) states that, among served answers, disagreement with the LLM
+> is at most alpha (default 5%) with 90% confidence. It works in front of chat models, the OpenAI Decisions API and System
+> One decision models (Jev, Kev, Laya), from Python, JavaScript, C or HTTP, or with zero code through an OpenAI-compatible
+> proxy. Apache-2.0, by Gaurav Chauhan.
+
+## Docs
+- [Get started in 5 minutes](https://2796gaurav.github.io/shad0w/docs/)
+- [Decisions API & System One (zero code)](https://2796gaurav.github.io/shad0w/docs/decisions-api.html)
+- [Connect your LLM](https://2796gaurav.github.io/shad0w/docs/connect-your-llm.html)
+- [The proxy](https://2796gaurav.github.io/shad0w/docs/proxy.html)
+- [Python](https://2796gaurav.github.io/shad0w/docs/python.html)
+- [JavaScript & TypeScript](https://2796gaurav.github.io/shad0w/docs/javascript.html)
+- [HTTP](https://2796gaurav.github.io/shad0w/docs/http.html)
+- [C & other languages](https://2796gaurav.github.io/shad0w/docs/c.html)
+- [LangChain, LiteLLM, AI SDK…](https://2796gaurav.github.io/shad0w/docs/frameworks.html)
+- [Configuration](https://2796gaurav.github.io/shad0w/docs/configuration.html)
+- [Tuning & fine-tuning](https://2796gaurav.github.io/shad0w/docs/tuning.html)
+- [Changing your options](https://2796gaurav.github.io/shad0w/docs/options.html)
+- [Running without an LLM](https://2796gaurav.github.io/shad0w/docs/without-llm.html)
+- [Rollout: shadow → canary → serve](https://2796gaurav.github.io/shad0w/docs/rollout.html)
+- [Monitoring](https://2796gaurav.github.io/shad0w/docs/observability.html)
+- [Training & retraining](https://2796gaurav.github.io/shad0w/docs/training.html)
+- [Command line](https://2796gaurav.github.io/shad0w/docs/cli.html)
+- [Troubleshooting](https://2796gaurav.github.io/shad0w/docs/troubleshooting.html)
+- [The guarantee](https://2796gaurav.github.io/shad0w/docs/guarantee.html)
+- [Scale: options, size, speed](https://2796gaurav.github.io/shad0w/docs/scale.html)
+- [Benchmarks & evidence](https://2796gaurav.github.io/shad0w/docs/benchmarks.html)
+- [How it compares](https://2796gaurav.github.io/shad0w/docs/compare.html)
+- [Limits](https://2796gaurav.github.io/shad0w/docs/limits.html)
+- [FAQ](https://2796gaurav.github.io/shad0w/docs/faq.html)
+- [Reference](https://2796gaurav.github.io/shad0w/docs/reference.html)
+
+## Blog
+- [Adding a category without breaking production](https://2796gaurav.github.io/shad0w/blog/adding-a-category.html): A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.
+- [System Zero: the reflex layer your LLM stack is missing](https://2796gaurav.github.io/shad0w/blog/system-zero.html): LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.
+- [How can a small table promise it agrees with your LLM?](https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html): The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.
+- [What we measured: where shad0w wins, and where it loses](https://2796gaurav.github.io/shad0w/blog/what-we-measured.html): Real LLMs, real proxies, public datasets and the same certifier for every method. The numbers that make shad0w worth using, and the ones that show when not to.
+
+## Code
+- [GitHub](https://github.com/2796gaurav/shad0w)
+- [PyPI: shad0wllm](https://pypi.org/project/shad0wllm/)
+- [npm: shad0wllm](https://www.npmjs.com/package/shad0wllm)

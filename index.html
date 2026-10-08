@@ -3,20 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js")</script>
-<title>shad0w</title>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>shad0w: your LLM&#x27;s answers, served in microseconds</title>
 <meta name="description" content="shad0w learns the answers your LLM gives to fixed-choice questions (intents, routing, moderation, agent tool choice) and serves the ones it is certified on in microseconds. One line of code, or none with the OpenAI-compatible proxy and the Decisions API.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website"><meta property="og:title" content="shad0w">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="shad0w: your LLM&#x27;s answers, served in microseconds">
 <meta property="og:description" content="shad0w learns the answers your LLM gives to fixed-choice questions (intents, routing, moderation, agent tool choice) and serves the ones it is certified on in microseconds. One line of code, or none with the OpenAI-compatible proxy and the Decisions API."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/">
-<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="shad0w: your LLM&#x27;s answers, served in microseconds">
+<meta name="twitter:description" content="shad0w learns the answers your LLM gives to fixed-choice questions (intents, routing, moderation, agent tool choice) and serves the ones it is certified on in microseconds. One line of code, or none with the OpenAI-compatible proxy and the Decisions API."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
 <meta name="theme-color" content="#07070c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<script src="assets/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+<script src="assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this just a cache?", "acceptedAnswer": {"@type": "Answer", "text": "No. A cache only answers texts it has seen before. shad0w generalises: it answers new wordings of a question it has learned, and its guarantee covers new texts drawn like your traffic. Exact repeats are free on top."}}, {"@type": "Question", "name": "What does \"certified\" actually mean?", "acceptedAnswer": {"@type": "Answer", "text": "On answers it never trained on, shad0w picks the lowest confidence threshold for which it can prove, using Learn-then-Test with Clopper–Pearson bounds, that among the answers it serves, disagreement with your LLM is at most α (default 5%) with 90% confidence. Below the threshold it doesn't answer. Your LLM does. The 10% is real: in earlier runs the realised rate landed above α on 2 of 7 tasks (3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)), which is why live spot checks exist."}}, {"@type": "Question", "name": "How many examples does it need?", "acceptedAnswer": {"@type": "Answer", "text": "Around 1,000 logged answers per question for a useful start (100 is the hard minimum). The share it can take keeps growing with more traffic: 0% at 250 answers and 60% at 10,000 in our BANKING77 run."}}, {"@type": "Question", "name": "Does it work with the OpenAI Decisions API, Jev, Kev or Laya?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, and with no code change. Those requests already carry the question name and the allowed answers, so shad0w proxy intercepts /v1/decisions and /v1/systemone on its own: certified questions are answered from the table in the same JSON shape, the rest go upstream and are logged. Any of them can also be the teacher (llm=\"openai-decisions/gpt-6-luna\", llm=\"systemone/kev-0.8b\")."}}, {"@type": "Question", "name": "What can I tune?", "acceptedAnswer": {"@type": "Answer", "text": "α (how much disagreement you accept), δ, the rows needed before training, the spot-check rate, shadow mode, a canary share, labels that must always go to the LLM, and a manual confidence floor that can only make the table stricter. In code, as environment variables, or in shad0w.toml. See configuration."}}, {"@type": "Question", "name": "How many options can a question have?", "acceptedAnswer": {"@type": "Answer", "text": "Up to 1,024. Decisions stay in microseconds whatever the count; the table's size grows with options × vocabulary, so large option sets use a max_mb budget. Past 1,024, split into a coarse question and fine ones. See scale."}}, {"@type": "Question", "name": "What happens when I add, remove or rename an option?", "acceptedAnswer": {"@type": "Answer", "text": "An added option makes the table defer everything to your LLM until you retrain, because it never learned the new option. A removed option is never served. A rename applies at once with rename=. Your LLM's answers keep being logged, so the next training run learns the new list. See changing your options."}}, {"@type": "Question", "name": "Can it work without an LLM?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Train it on human labels, rules or an existing classifier, and give it a fallback (a default answer or a function, such as a review queue) for what it is unsure about. See running without an LLM."}}, {"@type": "Question", "name": "Does my data leave my machine?", "acceptedAnswer": {"@type": "Answer", "text": "No. Logs, training and the table are all local files. The only network calls are the LLM calls you already make."}}, {"@type": "Question", "name": "What does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing. It is Apache-2.0 open source. The runtime needs only numpy (Python) or nothing at all (JavaScript, C)."}}, {"@type": "Question", "name": "Which LLMs work as the teacher?", "acceptedAnswer": {"@type": "Answer", "text": "Any of them. Built-in presets cover OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Ollama, vLLM and LM Studio, and any other OpenAI-compatible URL. You can also pass a plain function, or LiteLLM, LangChain or the Vercel AI SDK."}}, {"@type": "Question", "name": "How is it different from fine-tuning a small model?", "acceptedAnswer": {"@type": "Answer", "text": "No GPU, no labelling, no training pipeline, microseconds instead of milliseconds, and a guarantee instead of a hope. Fine-tuning wins on tasks that need real language understanding; shad0w wins on the high-volume, recognisable ones and defers the rest."}}]}</script>
 </head>
 <body class="landing">
 <nav class="nav"><div class="wrap">
@@ -26,8 +31,9 @@
     <a href="./#how">How it works</a>
     <a href="./#compare">Compare</a>
     <a href="./#integrate">Integrate</a>
+    <a href="demo/">Playground</a>
     <a href="docs/">Docs</a>
-    <a href="demo/">Live demo</a>
+    <a href="blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
     <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
@@ -297,6 +303,43 @@
   .ntable tbody tr:first-child td, .ntable tbody tr:first-child td:first-child { box-shadow: none; background: none; }
   .tune .knobs div { grid-template-columns: 1fr; gap: 4px; }
 }
+
+/* 0.3.1: hero chips, try-it, production tiles */
+.hchips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.hchips span { font-size: 14px; color: var(--dim); border: 1px solid var(--line2); background: color-mix(in srgb, var(--card) 80%, transparent); border-radius: 99px; padding: 7px 14px; }
+.hchips b { color: var(--mint); font-family: var(--display); }
+.try { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; align-items: stretch; }
+.try-in, .try-out { border: 1px solid var(--line); border-radius: 22px; background: var(--card); padding: 20px; min-width: 0; }
+.try-in textarea { width: 100%; min-height: 120px; resize: vertical; background: var(--bg2); color: var(--ink); border: 1px solid var(--line2); border-radius: 14px; padding: 16px; font: 19px/1.45 var(--font); outline: none; }
+.try-in textarea:focus { border-color: var(--mint); box-shadow: var(--glow); }
+.tchips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.tchips button { font: 13px var(--font); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--line2); background: var(--bg2); color: var(--dim); cursor: pointer; }
+.tchips button:hover { color: var(--ink); border-color: var(--mint); }
+.tv { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 40px; }
+.tv b { font: 700 26px var(--display); letter-spacing: -.5px; }
+.tbadge { font: 700 12px var(--mono); padding: 6px 11px; border-radius: 99px; background: var(--line); color: var(--dim); }
+.tbadge.ok { background: color-mix(in srgb, var(--mint) 16%, transparent); color: var(--mint); }
+.tbadge.defer { background: color-mix(in srgb, var(--amber) 16%, transparent); color: var(--amber); }
+.tgauge { position: relative; height: 12px; border-radius: 99px; background: var(--line); margin: 30px 0 16px; }
+.tgauge .fill { height: 100%; border-radius: 99px; width: 0; background: var(--mint); transition: width .3s cubic-bezier(.2,.9,.2,1), background .3s; }
+.tgauge .thr { position: absolute; top: -8px; bottom: -8px; width: 2px; background: var(--ink); }
+.tgauge .thr span { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 11px var(--mono); color: var(--dim); margin-bottom: 4px; }
+.tk { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.tk div { background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.tk b { display: block; font: 700 26px var(--display); color: var(--mint); font-variant-numeric: tabular-nums; } .tk span { font-size: 12px; color: var(--dim); }
+.speed-out { margin-top: 14px; font-size: 15px; color: var(--dim); }
+.speed-out .bars2 { display: grid; gap: 8px; margin-top: 10px; }
+.speed-out .bars2 div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: center; font: 12px var(--mono); }
+.speed-out .bars2 i { display: block; height: 14px; border-radius: 6px; background: linear-gradient(90deg, var(--violet), var(--mint)); min-width: 3px; }
+.speed-out .bars2 i.slow { background: var(--amber); }
+.speed-out b { color: var(--ink); }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tile { display: grid; gap: 6px; padding: 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); color: var(--ink); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.tile:hover { text-decoration: none; transform: translateY(-3px); border-color: color-mix(in srgb, var(--mint) 50%, var(--line)); box-shadow: var(--glow); }
+.tile b { font: 700 24px var(--display); letter-spacing: -.5px; color: var(--mint); } .tile span { color: var(--dim); font-size: 15px; }
+.post-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0; }
+.tune-side p { color: var(--dim); font-size: 17px; margin: 0 0 18px; }
+@media (max-width: 900px) { .try, .tiles, .post-grid.three { grid-template-columns: 1fr; } }
 </style>
 
 <header class="hero">
@@ -304,14 +347,10 @@
   <div class="grid-bg" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow"><span class="dot"></span>for apps that ask an LLM to pick from a list</span>
+      <a class="eyebrow" href="blog/adding-a-category.html"><span class="dot"></span>New in 0.3.1: change your options safely →</a>
       <h1>Your LLM's answers,<br>served in <span class="speed">2.4&nbsp;µs</span>.</h1>
-      <p class="lede">shad0w watches the small decisions your app sends to an LLM (<i>which intent? which team? spam or not?</i>), learns them, and answers the ones it is <b>certified</b> on from a 1.5 MB table on your CPU. Everything else still goes to your LLM.</p>
-      <div class="facts">
-        <div><b>What</b><span>a self-training shortcut in front of your LLM, with a written guarantee</span></div>
-        <div><b>Shines at</b><span>intents · ticket routing · moderation · agent tool choice · tagging</span></div>
-        <div><b>Effort</b><span>one line of code, or zero: point an OpenAI Decisions API, Jev / Kev / Laya or chat client at the proxy</span></div>
-      </div>
+      <p class="lede">shad0w learns the small decisions your app sends to an LLM and answers the ones it can <b>prove</b>, from a 1.5 MB table on your CPU. The rest still go to your LLM.</p>
+      <div class="hchips"><span><b>61–86%</b> fewer LLM calls</span><span><b>≤ 5%</b> disagreement, certified</span><span><b>1 line</b> of code, or none</span></div>
       <div class="install" data-install>
         <div class="sw"><button class="on" data-cmd='pip install "shad0wllm[compile]"'>pip</button><button data-cmd="npm i shad0wllm">npm</button><button data-cmd="shad0w proxy --upstream https://api.openai.com/v1">proxy</button><button data-cmd='client = OpenAI(base_url="http://localhost:8010/v1")  # then client.decisions.create(...) unchanged'>Decisions API</button></div>
         <code>pip install "shad0wllm[compile]"</code>
@@ -324,8 +363,8 @@
       </div>
     </div>
 
-    <div class="race-card" aria-label="Animation: incoming requests reach shad0w; most are answered by the table in microseconds, the uncertain ones go to the LLM.">
-      <div class="bar"><span class="live">simulated animation</span><span>your traffic, with and without shad0w</span></div>
+    <div class="race-card" aria-label="Live: real customer messages run through a real 77-intent shad0w table in this tab; certified answers come back in microseconds, the rest would go to your LLM.">
+      <div class="bar"><span class="live">live</span><span>a real 77-intent table, deciding in this tab</span></div>
       <svg id="race" viewBox="0 0 560 400" role="img" aria-hidden="true">
         <defs>
           <linearGradient id="gm" x1="0" x2="1"><stop offset="0" stop-color="var(--violet)"/><stop offset="1" stop-color="var(--mint)"/></linearGradient>
@@ -336,7 +375,7 @@
         <path id="pL" d="M 256 200 C 320 200, 320 300, 372 300" fill="none" stroke="var(--amber)" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="6 6"/>
         <path id="pL2" d="M 470 300 L 548 300" fill="none" stroke="var(--amber)" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="6 6"/>
         <text x="262" y="96" font-size="12" fill="var(--mint)" font-weight="700">certified → table · 2.4 µs</text>
-        <text x="282" y="352" font-size="12" fill="var(--amber)" font-weight="700">not sure → your LLM · 1416 ms</text>
+        <text x="282" y="352" font-size="12" fill="var(--amber)" font-weight="700">not sure → your LLM</text>
         <!-- node -->
         <g transform="translate(235 200)">
           <circle r="40" fill="var(--card)" stroke="var(--line2)"/>
@@ -347,8 +386,8 @@
         <!-- answered bin -->
         <g transform="translate(466 20)">
           <rect width="88" height="64" rx="14" fill="color-mix(in srgb, var(--mint) 12%, transparent)" stroke="var(--mint)" stroke-opacity=".6"/>
-          <text x="44" y="26" text-anchor="middle" font-size="11" fill="var(--mint)" font-weight="700">ANSWERED</text>
-          <text id="binT" x="44" y="48" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">0</text>
+          <text x="44" y="22" text-anchor="middle" font-size="11" fill="var(--mint)" font-weight="700">ANSWERED</text>
+          <text id="binT" x="44" y="50" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">0</text>
         </g>
         <!-- LLM box -->
         <g transform="translate(372 260)">
@@ -362,23 +401,35 @@
       </svg>
       <div class="race-stats">
         <div><b id="sT" class="mint">0%</b><span>answered by the table</span></div>
-        <div><b id="sC">0</b><span>LLM calls saved</span></div>
-        <div><b id="sW">0 s</b><span>waiting saved</span></div>
-        <div><b id="sM">$0</b><span>spend saved*</span></div>
+        <div><b id="sC">0</b><span>messages decided</span></div>
+        <div><b id="sU">–</b><span>per table decision</span></div>
+        <div><b id="sW">0 s</b><span>LLM wait avoided</span></div>
       </div>
-      <div class="race-note">an animation, not live data · rate set to the 63.3% measured on BANKING77 (bge-small teacher, <a href="docs/benchmarks.html">source</a>) · *at $0.520 per 1,000 LLM calls (gpt-4.1-mini, measured on BANKING77 prompts)</div>
     </div>
-  </div>
-  <div class="wrap proof">
-    <span><b>61–86%</b> of the traffic answered locally</span>
-    <span><b>≤ α = 5%</b> disagreement on what it serves, certified</span>
-    <span><b>0</b> human labels</span>
-    <span><b>1.5 MB</b> · CPU · no GPU</span>
-    <span><b>Python · JS · C</b> · same answers</span>
   </div>
 </header>
 
 <div class="marquee" aria-hidden="true"><div class="track" id="marq"></div></div>
+
+<section class="section" id="try">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">try it</span><h2>Type anything.<br><span class="grad-text">The answer beats your keystroke.</span></h2></div>
+    <div class="try reveal">
+      <div class="try-in">
+        <textarea id="tryText" spellcheck="false" aria-label="A customer message">my card got stolen at the airport, please block it</textarea>
+        <div class="tchips" id="tryChips"></div>
+      </div>
+      <div class="try-out">
+        <div class="tv"><span id="tryBadge" class="tbadge">loading the table…</span><b id="tryAns">–</b></div>
+        <div class="tgauge"><div class="fill" id="tryFill"></div><div class="thr" id="tryThr"><span>certified line</span></div></div>
+        <div class="tk"><div><b id="tryUs">–</b><span>per decision, in this tab</span></div><div><b id="tryConf">–</b><span>confidence</span></div></div>
+        <button class="btn primary" id="speedBtn" type="button">Decide 100,000 messages →</button>
+        <div class="speed-out" id="speedOut" aria-live="polite"></div>
+      </div>
+    </div>
+    <p class="int-note">A real 77-intent banking table, learned from an open model's answers and certified at α = 5%. More in the <a href="demo/">playground</a>.</p>
+  </div>
+</section>
 
 <section class="section" id="change">
   <div class="wrap">
@@ -412,19 +463,19 @@
     </div>
     <div class="steps">
       <div class="step reveal">
-        <span class="n">STEP 1 <span class="simlbl">· simulated</span></span><h3>Watch</h3>
+        <span class="n">STEP 1</span><h3>Watch</h3>
         <p>Your LLM keeps answering. shad0w writes each question and answer down.</p>
         <div class="stage"><div class="logs" id="logs"></div></div>
         <div class="example">Example: <code>{"text": "block my card", "intent": "lost_card"}</code>: one line per decision, in a plain file you own.</div>
       </div>
       <div class="step reveal">
-        <span class="n">STEP 2 <span class="simlbl">· simulated</span></span><h3>Train</h3>
+        <span class="n">STEP 2</span><h3>Train</h3>
         <p>About 1,000 answers become a hashed word table with 8-bit weights, in seconds to a minute on a laptop.</p>
         <div class="stage"><div class="cells" id="cells"></div><div class="trainbar"><div class="t"><span id="tlab">1,000 answers</span><span id="tpct">0%</span></div><div class="p"><i id="tbar"></i></div></div></div>
         <div class="example">Example: <code>intent.train()</code> or <code>shad0w train --log log.jsonl</code> → a 1.5 MB file.</div>
       </div>
       <div class="step reveal">
-        <span class="n">STEP 3 <span class="simlbl">· simulated</span></span><h3>Certify &amp; serve</h3>
+        <span class="n">STEP 3</span><h3>Certify &amp; serve</h3>
         <p>On answers it never saw, shad0w finds the confidence above which it disagrees with your LLM on at most α (5% by default), with 90% confidence. Below that line it does not answer.</p>
         <div class="stage"><div class="cert"><div class="q" id="cq"></div><div class="meter"><div class="f" id="cf"></div><div class="th"></div></div><div class="r" id="cr"></div><div class="stamp" id="stamp">CERTIFIED<br>≤ 5% · 90%</div></div></div>
         <div class="example">Above the line: the table answers in µs. Below it: your LLM answers, and the answer is logged so the table learns.</div>
@@ -505,7 +556,7 @@
     <div class="section-head reveal">
       <span class="kicker">tune it</span>
       <h2>One knob that matters.<br><span class="grad-text">A few that help.</span></h2>
-      <p>α is the share of served answers that may differ from your LLM. Pick it per question; shad0w finds the confidence threshold that proves it. Everything else has a sensible default.</p>
+
     </div>
     <div class="tune">
       <div class="alpha reveal">
@@ -515,16 +566,9 @@
         <div class="bar"><i id="aBar"></i></div>
         <p class="src" data-src="alpha_sweep"></p>
       </div>
-      <div class="knobs reveal">
-        <div><code>alpha = 0.05</code><span>max disagreement on served answers. Lower is safer and saves fewer calls.</span></div>
-        <div><code>delta = 0.1</code><span>the chance the certificate itself is unlucky: 90% confidence.</span></div>
-        <div><code>mode = "shadow"</code><span>compute every answer, return your LLM's, and report what you would have saved. Zero risk.</span></div>
-        <div><code>canary = 0.1</code><span>let the table answer 10% of the certified traffic first.</span></div>
-        <div><code>never_serve = [...]</code><span>labels that always go to your LLM, whatever the confidence.</span></div>
-        <div><code>min_confidence</code><span>a manual floor on top of the certificate. It can only make the table stricter.</span></div>
-        <div><code>audit_rate = 0.01</code><span>share of decisions re-asked to your LLM, so the dashboard shows live agreement.</span></div>
-        <div><code>auto_train = 1000</code><span>retrain and re-certify every 1,000 new answers; a worse table never replaces a better one.</span></div>
-        <p class="int-note">Set them in code, as <code>SHAD0W_*</code> environment variables or in <code>shad0w.toml</code>. <a href="docs/configuration.html">Every setting, explained →</a> · <a href="docs/rollout.html">shadow → canary → serve</a></p>
+      <div class="tune-side reveal">
+        <p>α is the one number that decides safety: the most the table may disagree with your LLM on what it serves. Pick it per question; shad0w finds the confidence line that proves it.</p>
+        <div class="cta"><a class="btn" href="docs/tuning.html">Tuning recipes →</a><a class="btn" href="docs/configuration.html">Every setting →</a></div>
       </div>
     </div>
   </div>
@@ -539,6 +583,20 @@
     </div>
     <div class="cmp-wrap reveal"><table class='ntable'><thead><tr><th>method</th><th>answered without the LLM @ α = 5%</th><th>disagreement with the LLM on those</th><th>accuracy vs gold (cascade)</th><th>p50 per decision</th><th>cost per 1k decisions</th><th>needs</th><th>guarantee</th></tr></thead><tbody><tr><td data-label='method'>shad0w table</td><td data-label='answered without the LLM @ α = 5%'>61%</td><td data-label='disagreement with the LLM on those'>3.0%</td><td data-label='accuracy vs gold (cascade)'>76.5%</td><td data-label='p50 per decision'>4.0 µs</td><td data-label='cost per 1k decisions'>$0.204</td><td data-label='needs'>your LLM&#x27;s logged answers</td><td data-label='guarantee'>certified ≤ α vs your LLM</td></tr><tr><td data-label='method'>semantic cache (bge-small, nearest logged answer)</td><td data-label='answered without the LLM @ α = 5%'>0%</td><td data-label='disagreement with the LLM on those'>—</td><td data-label='accuracy vs gold (cascade)'>76.3%</td><td data-label='p50 per decision'>7.5 ms</td><td data-label='cost per 1k decisions'>$0.520</td><td data-label='needs'>embedding model + logged answers</td><td data-label='guarantee'>same certifier applied</td></tr><tr><td data-label='method'>embedding kNN router (bge-small, k=10)</td><td data-label='answered without the LLM @ α = 5%'>69%</td><td data-label='disagreement with the LLM on those'>2.9%</td><td data-label='accuracy vs gold (cascade)'>76.9%</td><td data-label='p50 per decision'>7.6 ms</td><td data-label='cost per 1k decisions'>$0.161</td><td data-label='needs'>embedding model + logged answers</td><td data-label='guarantee'>same certifier applied</td></tr><tr><td data-label='method'>small fine-tuned head (LR on bge-small)</td><td data-label='answered without the LLM @ α = 5%'>75%</td><td data-label='disagreement with the LLM on those'>3.4%</td><td data-label='accuracy vs gold (cascade)'>77.1%</td><td data-label='p50 per decision'>7.2 ms</td><td data-label='cost per 1k decisions'>$0.129</td><td data-label='needs'>embedding model + logged answers</td><td data-label='guarantee'>same certifier applied</td></tr><tr><td data-label='method'>exact-match cache</td><td data-label='answered without the LLM @ α = 5%'>0%</td><td data-label='disagreement with the LLM on those'>—</td><td data-label='accuracy vs gold (cascade)'>76.3%</td><td data-label='p50 per decision'>1.2 µs</td><td data-label='cost per 1k decisions'>$0.520</td><td data-label='needs'>logged answers</td><td data-label='guarantee'>exact repeats only</td></tr><tr><td data-label='method'>keep calling the LLM</td><td data-label='answered without the LLM @ α = 5%'>0%</td><td data-label='disagreement with the LLM on those'>0.0%</td><td data-label='accuracy vs gold (cascade)'>76.3%</td><td data-label='p50 per decision'>—</td><td data-label='cost per 1k decisions'>$0.520</td><td data-label='needs'>API or GPU</td><td data-label='guarantee'>it is the reference</td></tr><tr><td data-label='method'>Kev-0.8B decision model (local)</td><td data-label='answered without the LLM @ α = 5%'>100% (it replaces your LLM)</td><td data-label='disagreement with the LLM on those'>23% vs gpt-4.1-mini</td><td data-label='accuracy vs gold (cascade)'>80.0%</td><td data-label='p50 per decision'>271 ms</td><td data-label='cost per 1k decisions'>$0 (your hardware)</td><td data-label='needs'>a GPU/MLX machine, ~1-3 GB</td><td data-label='guarantee'>calibrated probabilities, no bound</td></tr><tr><td data-label='method'>Julia-1 decision model (local)</td><td data-label='answered without the LLM @ α = 5%'>100% (it replaces your LLM)</td><td data-label='disagreement with the LLM on those'>41% vs gpt-4.1-mini</td><td data-label='accuracy vs gold (cascade)'>61.6%</td><td data-label='p50 per decision'>11.9 ms</td><td data-label='cost per 1k decisions'>$0 (your hardware)</td><td data-label='needs'>llama.cpp, a laptop</td><td data-label='guarantee'>calibrated probabilities, no bound</td></tr><tr><td data-label='method'>Laya 421M decision model (local)</td><td data-label='answered without the LLM @ α = 5%'>100% (it replaces your LLM)</td><td data-label='disagreement with the LLM on those'>58% vs gpt-4.1-mini</td><td data-label='accuracy vs gold (cascade)'>38.0%</td><td data-label='p50 per decision'>91.6 ms</td><td data-label='cost per 1k decisions'>$0 (your hardware)</td><td data-label='needs'>a GPU or fast CPU, 0.8 GB</td><td data-label='guarantee'>calibrated probabilities, no bound</td></tr><tr><td data-label='method'>hosted decision model (OpenAI Decisions API, gpt-6-luna)</td><td data-label='answered without the LLM @ α = 5%'>100% (it replaces your LLM)</td><td data-label='disagreement with the LLM on those'>not measured (no API key)</td><td data-label='accuracy vs gold (cascade)'>not measured</td><td data-label='p50 per decision'>~150 ms claimed</td><td data-label='cost per 1k decisions'>$0.030 per 1k</td><td data-label='needs'>API key</td><td data-label='guarantee'>none (probabilities only)</td></tr><tr><td data-label='method'>hosted decision model (TypeSafe Jev 1.13)</td><td data-label='answered without the LLM @ α = 5%'>100% (it replaces your LLM)</td><td data-label='disagreement with the LLM on those'>not measured (no credits)</td><td data-label='accuracy vs gold (cascade)'>not measured</td><td data-label='p50 per decision'>70–500 ms claimed</td><td data-label='cost per 1k decisions'>$0.0126 per 1k</td><td data-label='needs'>API key</td><td data-label='guarantee'>none (probabilities only)</td></tr></tbody></table></div>
     <p class="int-note">shad0w needs about 1,000 logged answers before it serves anything, and it only covers the certified share; the rest still goes to your LLM. Full method notes and where shad0w loses: <a href="docs/compare.html">how it compares →</a></p>
+  </div>
+</section>
+
+<section class="section" id="ready">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">built for production</span><h2>Grows with you.<br><span class="grad-text">Fails safe.</span></h2></div>
+    <div class="tiles">
+      <a class="tile reveal" href="docs/scale.html"><b>1,024</b><span>options per question, with tables capped by <code>max_mb</code></span></a>
+      <a class="tile reveal" href="docs/options.html"><b>add · remove · rename</b><span>change your options; the table steps back until it relearns</span></a>
+      <a class="tile reveal" href="docs/without-llm.html"><b>no LLM?</b><span>train on labels or rules, serve with a fallback</span></a>
+      <a class="tile reveal" href="docs/rollout.html"><b>shadow → canary → serve</b><span>prove it on your own traffic before it answers</span></a>
+      <a class="tile reveal" href="docs/observability.html"><b>every decision</b><span>dashboard, Prometheus, OpenTelemetry, logs</span></a>
+      <a class="tile reveal" href="docs/benchmarks.html"><b>every number</b><span>comes from a result file you can rerun</span></a>
+    </div>
   </div>
 </section>
 
@@ -637,8 +695,8 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
 <section class="section" id="observe">
   <div class="wrap observe">
     <div class="dash reveal" aria-label="A live shad0w dashboard">
-      <span class="sim-tag">example data</span><div class="top"><span class="wordmark" style="font:700 16px var(--display);color:var(--ink)">shad<span class="o"></span>w</span><span style="color:var(--mint)">● proxy → api.openai.com</span></div>
-      <div class="k4"><div><small>by table</small><b id="dT" class="mint">0%</b></div><div><small>decisions</small><b id="dN">0</b></div><div><small>calls saved</small><b id="dS">0</b></div><div><small>live bound</small><b id="dB">–</b></div></div>
+      <div class="top"><span class="wordmark" style="font:700 16px var(--display);color:var(--ink)">shad<span class="o"></span>w</span><span style="color:var(--mint)">● live · the table in this page</span></div>
+      <div class="k4"><div><small>by table</small><b id="dT" class="mint">0%</b></div><div><small>decisions</small><b id="dN">0</b></div><div><small>calls saved</small><b id="dS">0</b></div><div><small>avg table</small><b id="dB">–</b></div></div>
       <svg id="dSpark" viewBox="0 0 300 60" preserveAspectRatio="none"></svg>
       <div class="rows" id="dRows"></div>
     </div>
@@ -674,6 +732,18 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
   </div>
 </section>
 
+<section class="section" id="read">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">read</span><h2>The ideas behind it.</h2></div>
+    <div class="post-grid three">
+      <a class="post-card reveal" href="blog/system-zero.html"><small>essay</small><b>System Zero: the reflex layer your LLM stack is missing</b><span>Why most of what apps ask is a repeat, and repeats need a reflex.</span></a>
+      <a class="post-card reveal" href="blog/how-the-certificate-works.html"><small>explainer</small><b>How can a small table promise it agrees with your LLM?</b><span>The certificate in plain words, with an interactive α.</span></a>
+      <a class="post-card reveal" href="blog/what-we-measured.html"><small>benchmarks</small><b>Where shad0w wins, and where it loses</b><span>Real LLMs, real proxies, the same certifier for everyone.</span></a>
+    </div>
+    <p class="int-note"><a href="blog/">All posts →</a></p>
+  </div>
+</section>
+
 <section class="section" id="faq">
   <div class="wrap">
     <div class="section-head center reveal" style="text-align:center"><span class="kicker">faq</span><h2>Questions people ask</h2></div>
@@ -683,6 +753,9 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
       <details><summary>How many examples does it need?</summary><p>Around 1,000 logged answers per question for a useful start (100 is the hard minimum). The share it can take keeps growing with more traffic: 0% at 250 answers and 60% at 10,000 in our BANKING77 run.</p></details>
       <details><summary>Does it work with the OpenAI Decisions API, Jev, Kev or Laya?</summary><p>Yes, and with no code change. Those requests already carry the question name and the allowed answers, so <code>shad0w proxy</code> intercepts <code>/v1/decisions</code> and <code>/v1/systemone</code> on its own: certified questions are answered from the table in the same JSON shape, the rest go upstream and are logged. Any of them can also be the teacher (<code>llm="openai-decisions/gpt-6-luna"</code>, <code>llm="systemone/kev-0.8b"</code>).</p></details>
       <details><summary>What can I tune?</summary><p>α (how much disagreement you accept), δ, the rows needed before training, the spot-check rate, shadow mode, a canary share, labels that must always go to the LLM, and a manual confidence floor that can only make the table stricter. In code, as environment variables, or in <code>shad0w.toml</code>. See <a href="docs/configuration.html">configuration</a>.</p></details>
+      <details><summary>How many options can a question have?</summary><p>Up to 1,024. Decisions stay in microseconds whatever the count; the table's size grows with options × vocabulary, so large option sets use a <code>max_mb</code> budget. Past 1,024, split into a coarse question and fine ones. See <a href="docs/scale.html">scale</a>.</p></details>
+      <details><summary>What happens when I add, remove or rename an option?</summary><p>An added option makes the table defer everything to your LLM until you retrain, because it never learned the new option. A removed option is never served. A rename applies at once with <code>rename=</code>. Your LLM's answers keep being logged, so the next training run learns the new list. See <a href="docs/options.html">changing your options</a>.</p></details>
+      <details><summary>Can it work without an LLM?</summary><p>Yes. Train it on human labels, rules or an existing classifier, and give it a <code>fallback</code> (a default answer or a function, such as a review queue) for what it is unsure about. See <a href="docs/without-llm.html">running without an LLM</a>.</p></details>
       <details><summary>Does my data leave my machine?</summary><p>No. Logs, training and the table are all local files. The only network calls are the LLM calls you already make.</p></details>
       <details><summary>What does it cost?</summary><p>Nothing. It is Apache-2.0 open source. The runtime needs only numpy (Python) or nothing at all (JavaScript, C).</p></details>
       <details><summary>Which LLMs work as the teacher?</summary><p>Any of them. Built-in presets cover OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Ollama, vLLM and LM Studio, and any other OpenAI-compatible URL. You can also pass a plain function, or LiteLLM, LangChain or the Vercel AI SDK.</p></details>
@@ -699,15 +772,15 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
       <div class="sw"><button class="on" data-cmd='pip install "shad0wllm[compile]"'>pip</button><button data-cmd="npm i shad0wllm">npm</button><button data-cmd="shad0w proxy --upstream https://api.openai.com/v1">proxy</button><button data-cmd='client = OpenAI(base_url="http://localhost:8010/v1")'>Decisions API</button></div>
       <code>pip install "shad0wllm[compile]"</code><button class="copy" type="button">copy</button>
     </div>
-    <div class="cta"><a class="btn primary" href="docs/">Read the 5-minute guide →</a><a class="btn" href="demo/">Try the live demo</a></div>
+    <div class="cta"><a class="btn primary" href="docs/">Read the 5-minute guide →</a><a class="btn" href="demo/">Open the playground</a></div>
   </div>
 </section>
 
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="docs/">Docs</a> · <a href="docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="docs/">Docs</a> · <a href="blog/">Blog</a> · <a href="demo/">Playground</a> · <a href="docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
-<script>window.SHAD0W_NUMBERS={"charts": {"src": {"speed": "p50 per decision · Apple M5 Pro (15 cores, 24 GB), macOS · results/b3_latency.json, b7_systemone.json", "tasks": "results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds · earlier runs: docs/benchmarks", "grow": "share answered at α = 5% vs LLM answers logged · results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds", "mean": "results/b7_systemone.json · Kev-0.8B (local, MLX) · 2026-10-08", "alpha_sweep": "results/evidence.json cmp.banking77.openai.shad0w · BANKING77"}, "speed": [{"name": "shad0w · C", "us": 1.0, "label": "1.0 µs", "hl": true, "legacy": false}, {"name": "shad0w · JavaScript", "us": 10.042, "label": "10 µs", "hl": true, "legacy": false}, {"name": "shad0w · Python", "us": 2.42, "label": "2.4 µs", "hl": true, "legacy": false}, {"name": "shad0w · via the proxy (HTTP)", "us": 532.0, "label": "0.53 ms", "hl": true, "legacy": false}, {"name": "Laya 421M (decision model)", "us": 91560.0, "label": "91.6 ms", "hl": false, "legacy": false}, {"name": "Kev-0.8B (decision model)", "us": 271450.0, "label": "271 ms", "hl": false, "legacy": false}, {"name": "gpt-4.1-mini (OpenAI)", "us": 1416100.0, "label": "1416 ms", "hl": false, "legacy": false}], "tasks": [{"name": "BANKING77 · 77 intents", "pct": 0.6082, "dis": 0.0302, "hl": true, "legacy": false}, {"name": "CLINC150 · 150 intents + OOS", "pct": 0.6681, "dis": 0.0596, "hl": true, "legacy": false}, {"name": "AG News · 4 topics", "pct": 0.8554, "dis": 0.0474, "hl": true, "legacy": false}, {"name": "SST-2 · sentiment", "pct": 0.0, "dis": null, "hl": true, "legacy": false}, {"name": "BANKING77 · Kev-0.8B teacher", "pct": 0.7055555555555556, "dis": 0.057292931837826744, "hl": false, "legacy": true}, {"name": "BANKING77 (embedding teacher)", "pct": 0.7100130039011704, "dis": 0.04085137072333931, "hl": false, "legacy": true}, {"name": "HWU64 (embedding teacher)", "pct": 0.6852540272614621, "dis": 0.05417478089026676, "hl": false, "legacy": true}, {"name": "CLINC150 (embedding teacher)", "pct": 0.6511111111111111, "dis": 0.049266046972651745, "hl": false, "legacy": true}, {"name": "MASSIVE (embedding teacher)", "pct": 0.6381977135171487, "dis": 0.0492240327992042, "hl": false, "legacy": true}, {"name": "DBpedia (embedding teacher)", "pct": 0.5359999999999999, "dis": 0.040254644080888365, "hl": false, "legacy": true}, {"name": "AG News (embedding teacher)", "pct": 0.4486666666666667, "dis": 0.03857107575064046, "hl": false, "legacy": true}], "grow": {"series": [{"name": "BANKING77 · gpt-4.1-mini", "points": [[250, 0.0], [500, 0.0], [1000, 0.0], [2000, 0.0], [5000, 0.3982], [10000, 0.6019]], "legacy": false}, {"name": "AG News · gpt-4.1-mini", "points": [[250, 0.0], [500, 0.0], [1000, 0.1981], [2000, 0.563], [5000, 0.7415], [10000, 0.8275]], "legacy": false}, {"name": "AG News · embedding teacher (earlier run)", "points": [[2000, 0.306], [5000, 0.4228], [10000, 0.5036], [30000, 0.6208], [100000, 0.7004]], "legacy": true}]}, "mean": {"llm_ms": 381.7, "cascade_ms": 115.25, "teacher": "Kev-0.8B (local, MLX)", "legacy": false, "note": "measured end to end"}, "alpha_sweep": [{"alpha": 0.01, "served": 0.0, "dis": null}, {"alpha": 0.02, "served": 0.2041, "dis": 0.0043}, {"alpha": 0.05, "served": 0.6082, "dis": 0.0302}, {"alpha": 0.1, "served": 0.8011, "dis": 0.0742}], "hero_served": 0.8554, "race_served": 0.6334415584415585, "llm_ms": 1416.1, "hero_us": 2.42}, "n": {"tests.count": "149", "lat.py_us": "5.2 µs", "lat.py_fast_us": "2.4 µs", "lat.py_numpy_us": "44 µs", "lat.c_us": "1.0 µs", "lat.js_us": "10 µs", "lat.js_p99_us": "38 µs", "lat.http_ms": "0.17 ms", "lat.proxy_ms": "0.53 ms", "lat.bundle_mb": "1.5 MB", "lat.runtime_sentence": "A decision costs 1.0 µs in C, 10 µs in JavaScript and 2.4 µs in Python (5.2 µs with per-option probabilities).", "hero.us": "2.4 µs", "hero.us_n": "2.4", "lat.llm_ms": "1416 ms", "lat.llm_model": "gpt-4.1-mini (OpenAI)", "lat.kev_ms": "271 ms", "lat.laya_ms": "91.6 ms", "legacy.fid.range_offload": "45–71%", "legacy.fid.range_dis": "3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)", "legacy.fid.tasks_n": "7", "headline.served_range": "61–86%", "headline.dis_range": "3.0–6.0%", "headline.tasks_n": "3", "headline.teacher": "gpt-4.1-mini (OpenAI)", "headline.llm_calls_left": "14–39%", "headline.alpha_pct": "5%", "headline.conf_pct": "90%", "headline.dis_sentence": "disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs", "curve.dataset": "BANKING77", "curve.first_n": "250", "curve.last_n": "10,000", "curve.first_pct": "0%", "curve.last_pct": "60%", "mean.llm_ms": "382 ms", "mean.cascade_ms": "115 ms", "mean.acc_delta": "+1.0", "kevteacher.offload": "70%", "mean.teacher": "Kev-0.8B (local, MLX)", "mean.measured": "measured end to end", "demo.offload": "63.3%", "demo.dis": "3.3%", "demo.teacher_acc": "68%", "demo.n_records": "10,003", "demo.n_cal": "3,000", "demo.agreement": "81.4%", "demo.threshold": "0.886", "demo.share_cal": "61.2%", "e2e.run": "gpt-4.1-mini (OpenAI) · 77 intents", "e2e.offload": "51.3%", "e2e.agreement": "95.9%", "e2e.llm_ms": "1397 ms", "e2e.n_log": "4,999", "e2e.n_cal": "1,499", "sweep.a01.served": "0%", "sweep.a01.dis": "n/a", "sweep.a02.served": "20%", "sweep.a02.dis": "0.4%", "sweep.a05.served": "61%", "sweep.a05.dis": "3.0%", "sweep.a10.served": "80%", "sweep.a10.dis": "7.4%", "sst2.served": "0%", "sst2.table_acc": "79%", "oos.silent": "5%", "ledgar.served": "13%", "price.luna_per_1k": "$0.030", "price.jev_per_1k": "$0.0126", "price.gpt41mini_per_1k": "$0.520", "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)", "film.length_s": "102", "fit.torch_s": "40 s", "fit.scipy_s": "217 s"}, "prov": {"tests.count": {"source": "results/b1_tests.txt", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_fast_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_numpy_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.c_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.js_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.js_p99_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.http_ms": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.proxy_ms": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.bundle_mb": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.runtime_sentence": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "hero.us": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "hero.us_n": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.llm_ms": {"source": "results/b4_e2e_openai_gpt-4.1-mini_8.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.llm_model": {"source": "results/evidence.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.kev_ms": {"source": "results/evidence.json s1.llama_Kev_0_8B", "dataset": null, "teacher": "Kev-0.8B (llama.cpp GGUF)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.laya_ms": {"source": "results/evidence.json s1.laya", "dataset": null, "teacher": "Laya 421M", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "legacy.fid.range_offload": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": "7 intent/topic tasks", "teacher": "EmbeddingGemma-300m zero-shot (6 tasks), Kev-0.8B (1 task)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "legacy.fid.range_dis": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": "7 tasks", "teacher": "EmbeddingGemma-300m / Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "legacy.fid.tasks_n": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "headline.served_range": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77, clinc150, ag_news", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.dis_range": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77, clinc150, ag_news, sst2", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.tasks_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.teacher": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.llm_calls_left": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.alpha_pct": {"source": "default alpha", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.conf_pct": {"source": "default delta = 0.1", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.dis_sentence": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.dataset": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.first_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.last_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.first_pct": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.last_pct": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.llm_ms": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": "Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.cascade_ms": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": "Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.acc_delta": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "kevteacher.offload": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.teacher": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.measured": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "demo.offload": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.dis": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.teacher_acc": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.n_records": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.n_cal": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.agreement": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.threshold": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.share_cal": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "e2e.run": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.offload": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": "BANKING77 fresh traffic", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.agreement": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": "BANKING77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.llm_ms": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.n_log": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.n_cal": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a01.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a01.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a02.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a02.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a05.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a05.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a10.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a10.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sst2.served": {"source": "results/b6_compare_openai_sst2.json", "dataset": "sst2", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "sst2.table_acc": {"source": "legacy/benchmarks/results/phase29_hybrid.json (table vs gold, SST-2)", "dataset": "SST-2", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "oos.silent": {"source": "results/b6_compare_openai_clinc150.json", "dataset": "clinc150", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "ledgar.served": {"source": "legacy/benchmarks/results/phase31_fidelity.json (gemma/ledgar)", "dataset": "LEDGAR (legal clauses)", "teacher": "EmbeddingGemma-300m", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "price.luna_per_1k": {"source": "https://developers.openai.com/api/docs/guides/decisions", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "price.jev_per_1k": {"source": "https://openrouter.ai/docs/guides/community/jev", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "price.gpt41mini_per_1k": {"source": "results/b6_compare_*.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "cert.violation": {"source": "results/b8_certificate_sim.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "film.length_s": {"source": "video/film.html (EVENTS-JSON duration)", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "fit.torch_s": {"source": "results/b2_fit_compare.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "fit.scipy_s": {"source": "results/b2_fit_compare.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}}, "status": "new", "generated": "2026-10-08"}</script>
+<script>window.SHAD0W_NUMBERS={"charts": {"src": {"speed": "p50 per decision · Apple M5 Pro (15 cores, 24 GB), macOS · results/b3_latency.json, b7_systemone.json", "tasks": "results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds · earlier runs: docs/benchmarks", "grow": "share answered at α = 5% vs LLM answers logged · results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds", "mean": "results/b7_systemone.json · Kev-0.8B (local, MLX) · 2026-10-08", "alpha_sweep": "results/evidence.json cmp.banking77.openai.shad0w · BANKING77"}, "speed": [{"name": "shad0w · C", "us": 1.0, "label": "1.0 µs", "hl": true, "legacy": false}, {"name": "shad0w · JavaScript", "us": 10.042, "label": "10 µs", "hl": true, "legacy": false}, {"name": "shad0w · Python", "us": 2.42, "label": "2.4 µs", "hl": true, "legacy": false}, {"name": "shad0w · via the proxy (HTTP)", "us": 532.0, "label": "0.53 ms", "hl": true, "legacy": false}, {"name": "Laya 421M (decision model)", "us": 91560.0, "label": "91.6 ms", "hl": false, "legacy": false}, {"name": "Kev-0.8B (decision model)", "us": 271450.0, "label": "271 ms", "hl": false, "legacy": false}, {"name": "gpt-4.1-mini (OpenAI)", "us": 1416100.0, "label": "1416 ms", "hl": false, "legacy": false}], "tasks": [{"name": "BANKING77 · 77 intents", "pct": 0.6082, "dis": 0.0302, "hl": true, "legacy": false}, {"name": "CLINC150 · 150 intents + OOS", "pct": 0.6681, "dis": 0.0596, "hl": true, "legacy": false}, {"name": "AG News · 4 topics", "pct": 0.8554, "dis": 0.0474, "hl": true, "legacy": false}, {"name": "SST-2 · sentiment", "pct": 0.0, "dis": null, "hl": true, "legacy": false}, {"name": "BANKING77 · Kev-0.8B teacher", "pct": 0.7055555555555556, "dis": 0.057292931837826744, "hl": false, "legacy": true}, {"name": "BANKING77 (embedding teacher)", "pct": 0.7100130039011704, "dis": 0.04085137072333931, "hl": false, "legacy": true}, {"name": "HWU64 (embedding teacher)", "pct": 0.6852540272614621, "dis": 0.05417478089026676, "hl": false, "legacy": true}, {"name": "CLINC150 (embedding teacher)", "pct": 0.6511111111111111, "dis": 0.049266046972651745, "hl": false, "legacy": true}, {"name": "MASSIVE (embedding teacher)", "pct": 0.6381977135171487, "dis": 0.0492240327992042, "hl": false, "legacy": true}, {"name": "DBpedia (embedding teacher)", "pct": 0.5359999999999999, "dis": 0.040254644080888365, "hl": false, "legacy": true}, {"name": "AG News (embedding teacher)", "pct": 0.4486666666666667, "dis": 0.03857107575064046, "hl": false, "legacy": true}], "grow": {"series": [{"name": "BANKING77 · gpt-4.1-mini", "points": [[250, 0.0], [500, 0.0], [1000, 0.0], [2000, 0.0], [5000, 0.3982], [10000, 0.6019]], "legacy": false}, {"name": "AG News · gpt-4.1-mini", "points": [[250, 0.0], [500, 0.0], [1000, 0.1981], [2000, 0.563], [5000, 0.7415], [10000, 0.8275]], "legacy": false}, {"name": "AG News · embedding teacher (earlier run)", "points": [[2000, 0.306], [5000, 0.4228], [10000, 0.5036], [30000, 0.6208], [100000, 0.7004]], "legacy": true}]}, "mean": {"llm_ms": 381.7, "cascade_ms": 115.25, "teacher": "Kev-0.8B (local, MLX)", "legacy": false, "note": "measured end to end"}, "alpha_sweep": [{"alpha": 0.01, "served": 0.0, "dis": null}, {"alpha": 0.02, "served": 0.2041, "dis": 0.0043}, {"alpha": 0.05, "served": 0.6082, "dis": 0.0302}, {"alpha": 0.1, "served": 0.8011, "dis": 0.0742}], "hero_served": 0.8554, "race_served": 0.6334415584415585, "llm_ms": 1416.1, "hero_us": 2.42}, "n": {"tests.count": "149", "lat.py_us": "5.2 µs", "lat.py_fast_us": "2.4 µs", "lat.py_numpy_us": "44 µs", "lat.c_us": "1.0 µs", "lat.js_us": "10 µs", "lat.js_p99_us": "38 µs", "lat.http_ms": "0.17 ms", "lat.proxy_ms": "0.53 ms", "lat.bundle_mb": "1.5 MB", "lat.runtime_sentence": "A decision costs 1.0 µs in C, 10 µs in JavaScript and 2.4 µs in Python (5.2 µs with per-option probabilities).", "hero.us": "2.4 µs", "hero.us_n": "2.4", "lat.llm_ms": "1416 ms", "lat.llm_model": "gpt-4.1-mini (OpenAI)", "lat.kev_ms": "271 ms", "lat.laya_ms": "91.6 ms", "legacy.fid.range_offload": "45–71%", "legacy.fid.range_dis": "3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)", "legacy.fid.tasks_n": "7", "headline.served_range": "61–86%", "headline.dis_range": "3.0–6.0%", "headline.tasks_n": "3", "headline.teacher": "gpt-4.1-mini (OpenAI)", "headline.llm_calls_left": "14–39%", "headline.alpha_pct": "5%", "headline.conf_pct": "90%", "headline.dis_sentence": "disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs", "curve.dataset": "BANKING77", "curve.first_n": "250", "curve.last_n": "10,000", "curve.first_pct": "0%", "curve.last_pct": "60%", "mean.llm_ms": "382 ms", "mean.cascade_ms": "115 ms", "mean.acc_delta": "+1.0", "kevteacher.offload": "70%", "mean.teacher": "Kev-0.8B (local, MLX)", "mean.measured": "measured end to end", "demo.offload": "63.3%", "demo.dis": "3.3%", "demo.teacher_acc": "68%", "demo.n_records": "10,003", "demo.n_cal": "3,000", "demo.agreement": "81.4%", "demo.threshold": "0.886", "demo.share_cal": "61.2%", "e2e.run": "gpt-4.1-mini (OpenAI) · 77 intents", "e2e.offload": "51.3%", "e2e.agreement": "95.9%", "e2e.llm_ms": "1397 ms", "e2e.n_log": "4,999", "e2e.n_cal": "1,499", "sweep.a01.served": "0%", "sweep.a01.dis": "n/a", "sweep.a02.served": "20%", "sweep.a02.dis": "0.4%", "sweep.a05.served": "61%", "sweep.a05.dis": "3.0%", "sweep.a10.served": "80%", "sweep.a10.dis": "7.4%", "sst2.served": "0%", "sst2.table_acc": "79%", "oos.silent": "5%", "ledgar.served": "13%", "price.luna_per_1k": "$0.030", "price.jev_per_1k": "$0.0126", "price.gpt41mini_per_1k": "$0.520", "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)", "film.length_s": "102", "fit.torch_s": "40 s", "fit.scipy_s": "217 s", "scale.hardware": "Measured on 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39, 2026-10-08", "scale.p50_range": "7.1 and 10.7 µs", "scale.k150_options": "150", "scale.k150_full_mb": "3.6 MB", "scale.k150_budget_mb": "1.00 MB", "scale.k150_cert_full": "94.4%", "scale.k150_cert_budget": "94.4%", "scale.largest": "500 options with a 4 MB budget (5.0 MB, 57.3% certified)", "scale.largest_train": "21 minutes"}, "prov": {"tests.count": {"source": "results/b1_tests.txt", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_fast_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.py_numpy_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.c_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.js_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.js_p99_us": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.http_ms": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.proxy_ms": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.bundle_mb": {"source": "results/b3_latency.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.runtime_sentence": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "hero.us": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "hero.us_n": {"source": "results/b3_latency.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.llm_ms": {"source": "results/b4_e2e_openai_gpt-4.1-mini_8.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "lat.llm_model": {"source": "results/evidence.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.kev_ms": {"source": "results/evidence.json s1.llama_Kev_0_8B", "dataset": null, "teacher": "Kev-0.8B (llama.cpp GGUF)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "lat.laya_ms": {"source": "results/evidence.json s1.laya", "dataset": null, "teacher": "Laya 421M", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "legacy.fid.range_offload": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": "7 intent/topic tasks", "teacher": "EmbeddingGemma-300m zero-shot (6 tasks), Kev-0.8B (1 task)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "legacy.fid.range_dis": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": "7 tasks", "teacher": "EmbeddingGemma-300m / Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "legacy.fid.tasks_n": {"source": "legacy/benchmarks/results/phase31_fidelity.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "headline.served_range": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77, clinc150, ag_news", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.dis_range": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77, clinc150, ag_news, sst2", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.tasks_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.teacher": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.llm_calls_left": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.alpha_pct": {"source": "default alpha", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.conf_pct": {"source": "default delta = 0.1", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "headline.dis_sentence": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.dataset": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.first_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.last_n": {"source": "results/b6_compare_openai_banking77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.first_pct": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "curve.last_pct": {"source": "results/b6_compare_openai_banking77.json", "dataset": "banking77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.llm_ms": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": "Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.cascade_ms": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": "Kev-0.8B", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.acc_delta": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "kevteacher.offload": {"source": "results/b7_systemone.json", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.teacher": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "mean.measured": {"source": "results/b7_systemone.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "demo.offload": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.dis": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.teacher_acc": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": "BANKING77 test", "teacher": "bge-small zero-shot", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.n_records": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.n_cal": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.agreement": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.threshold": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "demo.share_cal": {"source": "site-src/demo-data/replay.json + bundle/certificate.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "e2e.run": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.offload": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": "BANKING77 fresh traffic", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.agreement": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": "BANKING77", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.llm_ms": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.n_log": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "e2e.n_cal": {"source": "results/b4_e2e_openai_gpt-4.1-mini_77.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a01.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a01.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a02.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a02.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a05.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a05.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a10.served": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sweep.a10.dis": {"source": "results/evidence.json cmp.banking77.openai.shad0w", "dataset": "BANKING77", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "sst2.served": {"source": "results/b6_compare_openai_sst2.json", "dataset": "sst2", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "sst2.table_acc": {"source": "legacy/benchmarks/results/phase29_hybrid.json (table vs gold, SST-2)", "dataset": "SST-2", "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "oos.silent": {"source": "results/b6_compare_openai_clinc150.json", "dataset": "clinc150", "teacher": "gpt-4.1-mini (OpenAI)", "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "ledgar.served": {"source": "legacy/benchmarks/results/phase31_fidelity.json (gemma/ledgar)", "dataset": "LEDGAR (legal clauses)", "teacher": "EmbeddingGemma-300m", "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-01", "status": "legacy"}, "price.luna_per_1k": {"source": "https://developers.openai.com/api/docs/guides/decisions", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "price.jev_per_1k": {"source": "https://openrouter.ai/docs/guides/community/jev", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "price.gpt41mini_per_1k": {"source": "results/b6_compare_*.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "cert.violation": {"source": "results/b8_certificate_sim.json", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "film.length_s": {"source": "video/film.html (EVENTS-JSON duration)", "dataset": null, "teacher": null, "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS", "date": "2026-10-08", "status": "new"}, "fit.torch_s": {"source": "results/b2_fit_compare.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "fit.scipy_s": {"source": "results/b2_fit_compare.json", "dataset": "banking77", "teacher": null, "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit", "date": "2026-10-08", "status": "new"}, "scale.hardware": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.p50_range": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.k150_options": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.k150_full_mb": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.k150_budget_mb": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.k150_cert_full": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.k150_cert_budget": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.largest": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}, "scale.largest_train": {"source": "results/b9_scale.json", "dataset": "synthetic, one consistent teacher", "teacher": null, "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39", "date": "2026-10-08", "status": "new"}}, "status": "new", "generated": "2026-10-08"}</script>
 <script>
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -738,20 +811,38 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
   const row = qs.map(([q, a]) => `<span class="q">${q} <b>${a}</b></span>`).join("");
   $("marq").innerHTML = row + row;
 
-  // ---------- the race ----------
+  // ---------- one real table for the whole page (the 77-intent BANKING77 demo bundle) ----------
+  const LIVE = { b: null, msgs: [], q: "intent", thr: 1 };
+  const short = (t, n) => t.length > n ? t.slice(0, n - 1) + "…" : t;
+  function timeDecide(text, reps) {  // browsers round performance.now(), so time a batch and divide
+    const t0 = performance.now();
+    let a;
+    for (let i = 0; i < reps; i++) a = LIVE.b.decide(text, { questions: [LIVE.q] }).answers[LIVE.q];
+    return { a, us: (performance.now() - t0) * 1000 / reps };
+  }
+  const ready = (async () => {
+    const { Bundle } = await import("./assets/shad0w.mjs");
+    LIVE.b = await Bundle.load(new URL("demo/bundle", location.href).href);
+    const r = await (await fetch("demo/replay.json")).json();
+    LIVE.msgs = r.messages.map((m) => m[0]);
+    const t = LIVE.b.manifest.questions[LIVE.q].threshold;
+    LIVE.thr = t == null ? 1 : t;
+    for (let i = 0; i < 4000; i++) LIVE.b.decide(LIVE.msgs[i % LIVE.msgs.length], { questions: [LIVE.q] });  // warm the JIT first
+  })();
+  ready.catch((e) => console.warn("shad0w demo table did not load", e));
+
+  // ---------- the race: real messages through the real table ----------
   const svg = $("race"), pills = $("pills");
   const P = { in: $("pIn"), t: $("pT"), l: $("pL"), l2: $("pL2") };
   const len = Object.fromEntries(Object.entries(P).map(([k, p]) => [k, p.getTotalLength()]));
-  const msgs = [["block my card", "lost_card"], ["refund pls", "refund"], ["where's my money", "transfer"], ["pin locked", "pin_blocked"], ["card stolen!!", "lost_card"],
-    ["fee on atm?", "atm_fee"], ["is it raining?", null], ["exchange rate eur", "fx_rate"], ["top up failed", "top_up"], ["new card when?", "card_arrival"],
-    ["i want money back", "refund"], ["umm my thing broke", null], ["send 50 to mom", "transfer"], ["card missing", "lost_card"], ["charged twice", "refund"]];
-  let n = 0, nt = 0, inQueue = 0, k = 0;
+  let n = 0, nt = 0, inQueue = 0, k = 0, sumUs = 0;
   const NS = "http://www.w3.org/2000/svg";
   const ease = (x) => 1 - Math.pow(1 - x, 3);
   function pill(label, color) {
     const g = document.createElementNS(NS, "g");
     const w = Math.max(70, label.length * 7.2 + 18);
-    g.innerHTML = `<rect x="${-w / 2}" y="-13" width="${w}" height="26" rx="13" fill="var(--card)" stroke="${color}" stroke-width="1.5"/><text text-anchor="middle" y="4" font-size="11" fill="var(--ink)">${label}</text>`;
+    g.innerHTML = `<rect x="${-w / 2}" y="-13" width="${w}" height="26" rx="13" fill="var(--card)" stroke="${color}" stroke-width="1.5"/><text text-anchor="middle" y="4" font-size="11" fill="var(--ink)"></text>`;
+    g.querySelector("text").textContent = label;
     g.setAttribute("transform", "translate(-300 -300)");
     pills.appendChild(g);
     return g;
@@ -773,39 +864,90 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
   }
   function stats() {
     $("sT").textContent = n ? Math.round(100 * nt / n) + "%" : "0%";
-    $("sC").textContent = fmt(nt * 1000);
-    $("sW").textContent = dur(nt * 1000 * LLM_MS / 1000);
-    $("sM").textContent = "$" + (nt * 1000 * PRICE).toFixed(2);
-    $("binT").textContent = fmt(nt * 1000);
+    $("sC").textContent = fmt(n);
+    $("sU").textContent = n ? usLabel(sumUs / n) : "–";
+    $("sW").textContent = dur(nt * LLM_MS / 1000);
+    $("binT").textContent = fmt(nt);
     $("queue").textContent = "queue " + inQueue;
   }
+  function decideNext() {
+    const text = LIVE.msgs[k++ % LIVE.msgs.length];
+    const { a, us } = timeDecide(text, 300);
+    n++; sumUs += us;
+    if (a.certified) nt++;
+    document.dispatchEvent(new CustomEvent("shad0w:decision", { detail: { text, answer: a.choice, table: a.certified, us } }));
+    return { text, a, us };
+  }
   function spawn() {
-    const [text, ans] = msgs[k++ % msgs.length];
-    const sure = ans !== null && (Math.random() < Math.min(1, (CH.race_served || 0.69) / (13 / 15)));  // overall ≈ the measured served share; 2 of 15 messages are off-topic
-    const g = pill(text, "var(--line2)");
+    if (!LIVE.b) return;
+    const { text, a, us } = decideNext();
+    const g = pill(short(text, 22), "var(--line2)");
     along(g, P.in, len.in, 900, () => {
       $("ring").animate([{ strokeWidth: 7 }, { strokeWidth: 12 }, { strokeWidth: 7 }], { duration: 300 });
       g.remove();
-      n++;
-      if (sure) {
-        const a = pill("→ " + ans + " · " + usLabel(HERO_US).replace(" ", ""), "var(--mint)");
-        along(a, P.t, len.t, 420, () => {
-          flash(510, 52, "var(--mint)"); nt++; stats();
-          a.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).onfinish = () => a.remove();
+      if (a.certified) {
+        const p2 = pill("→ " + short(a.choice, 20) + " · " + usLabel(us).replace(" ", ""), "var(--mint)");
+        along(p2, P.t, len.t, 420, () => {
+          flash(510, 52, "var(--mint)"); stats();
+          p2.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).onfinish = () => p2.remove();
         });
       } else {
-        const a = pill(text, "var(--amber)");
+        const p2 = pill(short(text, 22), "var(--amber)");
         inQueue++; stats();
-        along(a, P.l, len.l, 650, () => {
-          a.style.opacity = 0;
-          setTimeout(() => { inQueue--; a.style.opacity = 1; along(a, P.l2, len.l2, 500, () => { a.remove(); stats(); }); }, 1500 + Math.random() * 900);
+        along(p2, P.l, len.l, 650, () => {
+          p2.style.opacity = 0;
+          setTimeout(() => { inQueue--; p2.style.opacity = 1; along(p2, P.l2, len.l2, 500, () => { p2.remove(); stats(); }); }, 1500 + Math.random() * 900);
         });
       }
     });
   }
   let spinA = 0;
   function spin() { spinA = (spinA + 3) % 360; $("spin").setAttribute("transform", `rotate(${spinA} 49 50)`); requestAnimationFrame(spin); }
-  if (!reduce) { spin(); setInterval(() => { if (visible(svg)) spawn(); }, 520); } else { n = 100; nt = Math.round(100 * (CH.race_served || 0.69)); stats(); }
+  ready.then(() => {
+    if (!reduce) { spin(); setInterval(() => { if (visible(svg)) spawn(); }, 520); }
+    else { for (let i = 0; i < 200; i++) decideNext(); stats(); }
+  });
+
+  // ---------- try it + the 100,000-message speed test ----------
+  (function tryIt() {
+    const ta = $("tryText"); if (!ta) return;
+    const ex = ["my card got stolen at the airport, please block it", "I was charged twice for the same coffee", "why is my top up still pending?",
+      "how do I change my PIN", "the ATM swallowed my card", "can I get a refund for this", "what's the exchange rate for euros", "is it going to rain tomorrow?"];
+    $("tryChips").innerHTML = "";
+    ex.forEach((t) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.addEventListener("click", () => { ta.value = t; render(); }); $("tryChips").appendChild(b); });
+    function render() {
+      if (!LIVE.b) return;
+      const { a, us } = timeDecide(ta.value || " ", 1000);
+      $("tryAns").textContent = a.choice.replaceAll("_", " ");
+      $("tryBadge").className = "tbadge " + (a.certified ? "ok" : "defer");
+      $("tryBadge").textContent = a.certified ? "✓ certified · answered here" : "→ not sure · your LLM would answer";
+      $("tryFill").style.width = (100 * a.confidence).toFixed(1) + "%";
+      $("tryFill").style.background = a.certified ? "var(--mint)" : "var(--amber)";
+      $("tryThr").style.left = (100 * Math.min(1, LIVE.thr)).toFixed(1) + "%";
+      $("tryUs").textContent = usLabel(us);
+      $("tryConf").textContent = (100 * a.confidence).toFixed(1) + "%";
+    }
+    ta.addEventListener("input", render);
+    ready.then(render);
+    $("speedBtn").addEventListener("click", () => {
+      if (!LIVE.b) return;
+      const btn = $("speedBtn"), out = $("speedOut"), N = 100000, chunk = 5000;
+      btn.disabled = true; let done = 0, served = 0, ms = 0;
+      const step = () => {
+        const t0 = performance.now();
+        for (let i = 0; i < chunk; i++) { if (LIVE.b.decide(LIVE.msgs[(done + i) % LIVE.msgs.length], { questions: [LIVE.q] }).answers[LIVE.q].certified) served++; }
+        ms += performance.now() - t0; done += chunk;
+        out.textContent = `deciding… ${fmt(done)} / ${fmt(N)}`;
+        if (done < N) return setTimeout(step, 0);
+        const llmS = N * LLM_MS / 1000, per = ms * 1000 / N;
+        out.innerHTML = `<b>${fmt(N)} decisions in ${(ms / 1000).toFixed(2)} s</b> on this device: ${usLabel(per)} each, ${fmt(N / (ms / 1000))} per second. The table answered ${Math.round(100 * served / N)}% itself.
+          <div class="bars2"><div><span>this table</span><i style="width:${Math.max(0.5, 100 * (ms / 1000) / llmS)}%"></i></div><div><span>one LLM, in a row</span><i class="slow" style="width:100%"></i></div></div>
+          <span style="font-size:13px">At ${usLabel(LLM_MS * 1000)} per call (${NB.n["lat.llm_model"] || "a hosted LLM"}, measured), the same ${fmt(N)} calls would take ${dur(llmS)}.</span>`;
+        btn.disabled = false; btn.textContent = "Run it again →";
+      };
+      out.textContent = "deciding…"; setTimeout(step, 30);
+    });
+  })();
 
   // ---------- diff reveal ----------
   onView($("diff"), () => {
@@ -833,7 +975,7 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
       p += 4;
       for (let j = 0; j < 5; j++) { const c = cs[(Math.random() * cs.length) | 0]; c.style.background = cols[(Math.random() * cols.length) | 0]; c.style.opacity = 0.35 + Math.random() * 0.65; }
       $("tbar").style.width = Math.min(100, p) + "%"; $("tpct").textContent = Math.min(100, p) + "%";
-      $("tlab").textContent = p >= 100 ? "done · table built · 7 s" : "1,000 answers → table";
+      $("tlab").textContent = p >= 100 ? "done · table built" : "1,000 answers → table";
       if (p >= 100) { clearInterval(iv); setTimeout(train, 2600); }
     }, 90);
   }
@@ -1006,22 +1148,23 @@ const intent = await decision("intent", { llm: teacher, bundle: "shad0w/intent/b
   $("iL").value = Math.min(3000, Math.max(100, Math.round(LLM_MS / 50) * 50)); $("iS").value = Math.round(100 * (CH.hero_served || 0.55)); $("iC").value = Math.max(0.05, Math.round(PRICE * 1000 * 20) / 20);
   ["iN", "iC", "iL", "iS"].forEach((id) => $(id).addEventListener("input", calc)); calc();
 
-  // ---------- dashboard mock ----------
-  let dn = 0, dt = 0; const hist = [];
-  const dRows = $("dRows"), dash = [["block my card", "lost_card"], ["refund?", "refund"], ["is it raining", null], ["send money", "transfer"], ["pin locked", "pin_blocked"], ["weird charge", null], ["new card?", "card_arrival"]];
-  function dtick() {
-    for (let i = 0; i < 37; i++) { dn++; if (Math.random() < 0.66) dt++; }
-    const [t, a] = dash[(Math.random() * dash.length) | 0], tb = a && Math.random() < 0.85;
-    $("dT").textContent = (100 * dt / dn).toFixed(1) + "%"; $("dN").textContent = fmt(dn); $("dS").textContent = fmt(dt);
-    $("dB").textContent = (3.1 + Math.random() * 0.4).toFixed(1) + "% ≤ 5%";  // example data (see .sim-tag)
-    const r = document.createElement("div");
-    r.innerHTML = `<span class="${tb ? "t" : "l"}">${tb ? "table" : "LLM"}</span><span>${t}</span><span>${tb ? a : "(asked)"}</span><span>${tb ? (7 + Math.random() * 6).toFixed(1) + " µs" : (420 + Math.random() * 400 | 0) + " ms"}</span>`;
-    dRows.prepend(r); if (dRows.childElementCount > 6) dRows.lastChild.remove();
-    hist.push(dt / dn); if (hist.length > 60) hist.shift();
-    if (hist.length > 1) { const p = hist.map((v, i) => `${i * 300 / (hist.length - 1)},${56 - (v - 0.5) * 220}`).join(" L "); $("dSpark").innerHTML = `<path d="M${p}" fill="none" stroke="var(--mint)" stroke-width="2"/>`; }
-  }
-  for (let i = 0; i < 6; i++) dtick();
-  if (!reduce) setInterval(() => { if (visible($("dRows"))) dtick(); }, 700);
+  // ---------- dashboard: the same live decisions ----------
+  (function dashboard() {
+    const dRows = $("dRows"); if (!dRows) return;
+    let dn = 0, dt = 0, dus = 0; const hist = [];
+    document.addEventListener("shad0w:decision", (e) => {
+      const d = e.detail; dn++; if (d.table) { dt++; dus += d.us; }
+      $("dT").textContent = (100 * dt / dn).toFixed(1) + "%"; $("dN").textContent = fmt(dn); $("dS").textContent = fmt(dt);
+      $("dB").textContent = dt ? usLabel(dus / dt) : "–";
+      const r = document.createElement("div");
+      [d.table ? "table" : "LLM", short(d.text, 28), d.table ? d.answer : "(asked)", d.table ? usLabel(d.us) : "—"].forEach((v, i) => {
+        const sp = document.createElement("span"); sp.textContent = v; if (i === 0) sp.className = d.table ? "t" : "l"; r.appendChild(sp);
+      });
+      dRows.prepend(r); if (dRows.childElementCount > 6) dRows.lastChild.remove();
+      hist.push(dt / dn); if (hist.length > 60) hist.shift();
+      if (hist.length > 1) { const p = hist.map((v, i) => `${i * 300 / (hist.length - 1)},${56 - (v - 0.4) * 160}`).join(" L "); $("dSpark").innerHTML = `<path d="M${p}" fill="none" stroke="var(--mint)" stroke-width="2"/>`; }
+    });
+  })();
 })();
 </script>
 </body>

@@ -3,20 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>Python · shad0w</title>
 <meta name="description" content="The Python API - decision(), Shadow, llm_teacher, async, decorators and the low-level model.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/python.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website"><meta property="og:title" content="Python · shad0w">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Python · shad0w">
 <meta property="og:description" content="The Python API - decision(), Shadow, llm_teacher, async, decorators and the low-level model."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/python.html">
-<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Python · shad0w">
+<meta name="twitter:description" content="The Python API - decision(), Shadow, llm_teacher, async, decorators and the low-level model."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
 <meta name="theme-color" content="#07070c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
-<script src="../assets/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
@@ -26,14 +31,15 @@
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
     <a href="../docs/" class=active>Docs</a>
-    <a href="../demo/">Live demo</a>
+    <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
     <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Python</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html" class=active>Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Python</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html" class=active>Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
   <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="python">Python<a class="headerlink" href="#python" title="Permanent link">#</a></h1>
 <div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm<span class="w">                 </span><span class="c1"># serving: numpy only, C core included</span>
@@ -42,7 +48,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </code></pre></div>
 
 <h2 id="shad0wdecision-the-one-liner"><code>shad0w.decision</code>: the one-liner<a class="headerlink" href="#shad0wdecision-the-one-liner" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"decision"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 </code></pre></div>
 
 <table>
@@ -55,7 +61,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <tbody>
 <tr>
 <td><code>name</code></td>
-<td>the question's name, e.g. <code>"intent"</code></td>
+<td>what the decision is called, e.g. <code>"intent"</code> (default <code>"decision"</code>). It names the folder, the field in the log, the question inside the bundle, the dashboard label and the Decisions-API question, so several decisions can run side by side</td>
 </tr>
 <tr>
 <td><code>options</code></td>
@@ -63,7 +69,11 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </tr>
 <tr>
 <td><code>llm</code></td>
-<td><code>"provider/model"</code> (see <a href="connect-your-llm.html">Connect your LLM</a>), a <code>shad0w.llm_teacher(...)</code>, or any <code>fn(text) -&gt; answer</code></td>
+<td><code>"provider/model"</code> (see <a href="connect-your-llm.html">Connect your LLM</a>), a <code>shad0w.llm_teacher(...)</code>, or any <code>fn(text) -&gt; answer</code>; omit it to run <a href="without-llm.html">without an LLM</a></td>
+</tr>
+<tr>
+<td><code>fallback</code></td>
+<td>the answer when the table defers and there is no <code>llm</code>: a value or <code>fn(text) -&gt; answer</code>, never logged</td>
 </tr>
 <tr>
 <td><code>folder</code></td>
@@ -116,6 +126,11 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <td><code>seed</code></td>
 <td></td>
 <td>random seed for spot checks and the canary</td>
+</tr>
+<tr>
+<td><code>fallback</code></td>
+<td></td>
+<td>answer when the table defers and there is no teacher: a value or <code>fn(text) -&gt; answer</code> (<code>source="fallback"</code>, never logged)</td>
 </tr>
 <tr>
 <td><code>on_decision</code></td>
@@ -281,7 +296,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>How can a small table promise it agrees with your LLM? · shad0w</title>
+<meta name="description" content="The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="How can a small table promise it agrees with your LLM? · shad0w">
+<meta property="og:description" content="The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="How can a small table promise it agrees with your LLM? · shad0w">
+<meta name="twitter:description" content="The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How can a small table promise it agrees with your LLM?", "description": "The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.", "datePublished": "2026-10-07", "dateModified": "2026-10-07", "url": "https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "certificate, statistics, learn then test, trust", "wordCount": 921, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "How can a small table promise it agrees with your LLM?", "item": "https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html"}]}</script><meta property="article:published_time" content="2026-10-07"><meta property="article:author" content="Gaurav Chauhan">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>How can a small table promise it agrees with your LLM?</h1><p class="lead">The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-07</span><span>4 min read</span><span class="tag">certificate</span><span class="tag">statistics</span><span class="tag">learn then test</span><span class="tag">trust</span></div></header>
+  <article class="prose"><p>"Our table agrees with your LLM 95% of the time" is an easy sentence to write and a hard one to mean. Agrees on <em>which</em> messages? Measured how? What if the measurement was lucky?</p>
+<p>shad0w answers those questions with a <strong>certificate</strong>: one sentence, computed before the table serves anything, that you could show to a sceptical colleague. This post explains how it is computed, without the maths, and then where the maths comes in.</p>
+<h2 id="step-1-hold-some-answers-back">Step 1: hold some answers back<a class="headerlink" href="#step-1-hold-some-answers-back" title="Permanent link">#</a></h2>
+<p>shad0w trains its table on your LLM's logged answers, but never on all of them. A slice is set aside: about a third of the log, up to 3,000 answers. Better still, it uses the uniform spot-check sample of live traffic when one exists. The table never sees these answers while it learns.</p>
+<p>That slice is the exam. Because the table has never seen it, how the table does on it is an honest preview of how it will do on new traffic like it.</p>
+<h2 id="step-2-sort-by-confidence">Step 2: sort by confidence<a class="headerlink" href="#step-2-sort-by-confidence" title="Permanent link">#</a></h2>
+<p>For every exam question, the table gives an answer and a confidence. Sort the exam from most confident to least. At the confident end, the table almost always agrees with your LLM. Further down, mistakes creep in.</p>
+<div class="cert-demo" id="certDemo" aria-label="Interactive: pick alpha and see how much of the traffic the table answers">
+  <div class="cd-bars" id="cdBars"></div>
+  <div class="cd-controls"><span>Allowed disagreement α</span>
+    <button data-a="a02">2%</button><button data-a="a05" class="on">5%</button><button data-a="a10">10%</button></div>
+  <div class="cd-out"><div><b id="cdServed">–</b><span>of traffic answered by the table</span></div><div><b id="cdDis">–</b><span>realised disagreement on those</span></div></div>
+  <p class="cd-note">BANKING77, 77 options, teacher gpt-4.1-mini (OpenAI), measured.</p>
+</div>
+<script>
+(() => {
+  const S = {a02: ["20%", "0.4%"], a05: ["61%", "3.0%"], a10: ["80%", "7.4%"]};
+  const bars = document.getElementById("cdBars"); const n = 40;
+  for (let i = 0; i < n; i++) { const b = document.createElement("i"); b.style.height = (96 - i * 2.1) + "%"; bars.appendChild(b); }
+  function show(k) {
+    const served = parseFloat(S[k][0]) / 100, cut = Math.round(served * n);
+    bars.querySelectorAll("i").forEach((b, i) => b.classList.toggle("in", i < cut));
+    document.getElementById("cdServed").textContent = S[k][0]; document.getElementById("cdDis").textContent = S[k][1];
+    document.querySelectorAll("#certDemo button").forEach((x) => x.classList.toggle("on", x.dataset.a === k));
+  }
+  document.querySelectorAll("#certDemo button").forEach((x) => x.addEventListener("click", () => show(x.dataset.a)));
+  show("a05");
+})();
+</script>
+
+<h2 id="step-3-draw-the-line-allowing-for-bad-luck">Step 3: draw the line, allowing for bad luck<a class="headerlink" href="#step-3-draw-the-line-allowing-for-bad-luck" title="Permanent link">#</a></h2>
+<p>Now pick α, the most disagreement you will accept among the answers the table serves. 5% is the default.</p>
+<p>The naive move: walk down the sorted list until the mistakes so far reach 5%, and draw the line there. The trouble is that the exam is a <em>sample</em>. A lucky exam can make the table look better than it is. So shad0w does not ask "is the disagreement above the line 5% or less?" It asks a stricter question:</p>
+<blockquote>
+<p>Even if this exam was unusually kind to the table, could the true disagreement above this line still be above 5%?</p>
+</blockquote>
+<p>If the answer is "plausibly, yes", the line moves up. The test behind that question is the <strong>Clopper–Pearson bound</strong>: given <em>k</em> mistakes in <em>n</em> answers, it gives the highest disagreement rate that is still believable at a chosen confidence. shad0w uses 90% confidence.</p>
+<p>The line ends where that worst believable rate stays within α. Above the line, the table answers. Below it, your LLM does.</p>
+<h2 id="step-4-say-exactly-what-was-promised">Step 4: say exactly what was promised<a class="headerlink" href="#step-4-say-exactly-what-was-promised" title="Permanent link">#</a></h2>
+<p>The result is one sentence:</p>
+<blockquote>
+<p>On traffic like the calibration traffic, among the answers the table serves, it disagrees with your LLM <strong>at most α</strong> of the time. This statement is wrong with probability at most <strong>10%</strong>.</p>
+</blockquote>
+<p>Three words in it carry weight:</p>
+<ul>
+<li><strong>"Like the calibration traffic."</strong> The promise is about traffic that resembles the exam. If your users start asking new kinds of questions, it no longer applies. That is why shad0w watches its own confidence for drift, spot-checks served answers against your LLM, and retrains.</li>
+<li><strong>"Among the answers the table serves."</strong> The bound covers served answers only. Deferred ones are your LLM's.</li>
+<li><strong>"Your LLM."</strong> The table is compared with its teacher, not with the truth. A wrong LLM produces a table that is wrong in the same way. For a bound against the truth, certify on about 300 human-labelled examples instead.</li>
+</ul>
+<h2 id="where-the-maths-comes-in">Where the maths comes in<a class="headerlink" href="#where-the-maths-comes-in" title="Permanent link">#</a></h2>
+<p>Picking a threshold with a test, then claiming the test's guarantee, is a known trap. Try enough lines and one will look good by chance. The framework that avoids it is called <strong>Learn-then-Test</strong> (Angelopoulos et al., 2021): treat each candidate line as a hypothesis, and test the hypotheses in a way that controls the chance of <em>any</em> false pass.</p>
+<p>shad0w runs two such procedures and keeps the more lenient result. The union bound pays for that choice by running each at half the error budget:</p>
+<ul>
+<li>a <strong>fixed-sequence</strong> test, which walks from strict to lenient lines;</li>
+<li>a <strong>Bonferroni</strong> test over twelve pre-chosen coverage levels.</li>
+</ul>
+<p>Why both? The fixed-sequence test is the more powerful when the teacher's mistakes cluster at low confidence. Bonferroni is the more robust when a teacher is a little noisy everywhere, which LLMs often are.</p>
+<p>We checked the promise by simulation: draw many calibration samples from a population where the truth is known, certify each, and count how often a certificate overstates. The result: 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%).</p>
+<h2 id="what-realised-numbers-look-like">What realised numbers look like<a class="headerlink" href="#what-realised-numbers-look-like" title="Permanent link">#</a></h2>
+<p>On BANKING77 with gpt-4.1-mini (OpenAI) as the teacher, at α = 5% the table answered 61% of fresh traffic, with 3.0% realised disagreement. At α = 2% it answered 20%, with 0.4%.</p>
+<p>A realised rate can land above α. A 90% promise is wrong one time in ten by design, and a different traffic mix voids it outright. On CLINC150, test traffic had about ten times the off-topic share of the logged traffic, and realised disagreement went over α. We publish that case in the <a href="../docs/benchmarks.html">benchmarks</a>. A certificate you can trust is one whose failures you can see.</p>
+<div class="callout"><b>See it on your own data.</b> <code>shad0w train --log log.jsonl --out bundle/ --alpha 0.02</code> prints what you would get. <a href="../docs/guarantee.html">The guarantee</a> has the formal statement.</div>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="adding-a-category.html"><small>2026-10-08 · 3 min</small><b>Adding a category without breaking production</b><span>A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.</span></a><a class="post-card" href="system-zero.html"><small>2026-10-08 · 4 min</small><b>System Zero: the reflex layer your LLM stack is missing</b><span>LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.</span></a><a class="post-card" href="what-we-measured.html"><small>2026-10-06 · 5 min</small><b>What we measured: where shad0w wins, and where it loses</b><span>Real LLMs, real proxies, public datasets and the same certifier for every method. The numbers that make shad0w worth using, and the ones that show when not to.</span></a></aside>
+</main>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

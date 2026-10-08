@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>&quot;Scale: options, size and speed&quot; · shad0w</title>
+<meta name="description" content="How many options a shad0w table supports, how its size grows, how long training takes, and how to keep a large table small with max_mb.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/scale.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="&quot;Scale: options, size and speed&quot; · shad0w">
+<meta property="og:description" content="How many options a shad0w table supports, how its size grows, how long training takes, and how to keep a large table small with max_mb."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/scale.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="&quot;Scale: options, size and speed&quot; · shad0w">
+<meta name="twitter:description" content="How many options a shad0w table supports, how its size grows, how long training takes, and how to keep a large table small with max_mb."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Scale: options, size, speed</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html" class=active>Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="scale-options-size-and-speed">Scale: options, size and speed<a class="headerlink" href="#scale-options-size-and-speed" title="Permanent link">#</a></h1>
+<p><strong>Short answers:</strong></p>
+<ul>
+<li><strong>Options:</strong> up to 1,024 per question.</li>
+<li><strong>Speed:</strong> stays in microseconds whatever the option count.</li>
+<li><strong>Size:</strong> grows with vocabulary × options. Cap it with <code>max_mb</code>.</li>
+<li><strong>Growth:</strong> the table does not keep growing on its own. Each training run replaces it.</li>
+</ul>
+<h2 id="measured">Measured<a class="headerlink" href="#measured" title="Permanent link">#</a></h2>
+<p>Synthetic traffic, so only the option count changes: each option has its own distinctive words, the teacher is perfectly consistent, and the same certifier runs everywhere. Measured on 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39, 2026-10-08.</p>
+<table>
+<thead>
+<tr>
+<th>options</th>
+<th>logged answers</th>
+<th>size budget</th>
+<th>patterns kept</th>
+<th>table size</th>
+<th>training</th>
+<th>p50 per decision</th>
+<th>certified share</th>
+<th>agreement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>400</td>
+<td>none</td>
+<td>2,267</td>
+<td>0.03 MB</td>
+<td>4 s</td>
+<td>10.2 µs</td>
+<td>90.0%</td>
+<td>97.5%</td>
+</tr>
+<tr>
+<td>50</td>
+<td>2,000</td>
+<td>none</td>
+<td>8,693</td>
+<td>0.46 MB</td>
+<td>27 s</td>
+<td>7.1 µs</td>
+<td>100.0%</td>
+<td>98.3%</td>
+</tr>
+<tr>
+<td>150</td>
+<td>6,000</td>
+<td>none</td>
+<td>24,026</td>
+<td>3.62 MB</td>
+<td>5 min</td>
+<td>7.2 µs</td>
+<td>94.4%</td>
+<td>93.6%</td>
+</tr>
+<tr>
+<td>150</td>
+<td>6,000</td>
+<td>1 MB</td>
+<td>6,216</td>
+<td>1.00 MB</td>
+<td>6 min</td>
+<td>7.6 µs</td>
+<td>94.4%</td>
+<td>93.7%</td>
+</tr>
+<tr>
+<td>500</td>
+<td>15,000</td>
+<td>4 MB</td>
+<td>8,322</td>
+<td>4.97 MB</td>
+<td>21 min</td>
+<td>10.7 µs</td>
+<td>57.3%</td>
+<td>80.2%</td>
+</tr>
+</tbody>
+</table>
+<p><em>Synthetic traffic with one consistent teacher; α = 5%. Training time is wall clock on the machine below. The 500-option row: measured before the 0.3.1 size-budget fix (the K x K matrix was not counted), so it overshoots its 4 MB budget.</em> Source: <code>results/b9_scale.json</code>.</p>
+<p>What the table shows:</p>
+<ul>
+<li><strong>Speed does not depend on the number of options in any way you will notice.</strong> A decision touches one row per word or character pattern in the message, whatever the size of the table. Per-decision time stayed between 7.1 and 10.7 µs in Python with the C core.</li>
+<li><strong>Size is roughly patterns × options bytes.</strong> Each learned pattern stores one byte per option, plus a 4-byte key. More options, or more varied wording, means a bigger table. With 150 options and no budget, the table was 3.6 MB.</li>
+<li><strong>A size budget is nearly free.</strong> With <code>max_mb=1</code>, the same 150-option table was 1.00 MB and certified exactly the same share (94.4% vs 94.4% without a budget). Most patterns carry almost no weight; training keeps the informative ones and refits on them.</li>
+<li><strong>Training time grows with options × patterns.</strong> It is the slowest part of the system, and the reason budgets matter at scale. The largest run, 500 options with a 4 MB budget (5.0 MB, 57.3% certified), took 21 minutes.</li>
+</ul>
+<h2 id="does-the-table-grow-over-time">Does the table grow over time?<a class="headerlink" href="#does-the-table-grow-over-time" title="Permanent link">#</a></h2>
+<p>Each <code>train()</code> builds a new table from the log and replaces the old one. So the table's size follows the vocabulary of your logged traffic and the number of options. It does not follow how long you have been running.</p>
+<p>Size grows when:</p>
+<ul>
+<li>your users bring new wording (new products, new phrasings, new languages);</li>
+<li>you add options.</li>
+</ul>
+<p>It stops growing once the vocabulary settles, and <code>max_mb</code> caps it either way. The log does keep growing: one line per LLM answer. Rotate or trim it as you would any log. A few tens of thousands of recent answers per question are plenty to train on.</p>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Options per question</th>
+<th>Suggested set-up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>up to ~100</td>
+<td>defaults; tables are small</td>
+</tr>
+<tr>
+<td>~100–400</td>
+<td><code>max_mb</code> between 1 and 4; log several thousand answers before expecting a large certified share</td>
+</tr>
+<tr>
+<td>~400–1,024</td>
+<td><code>max_mb</code> 4–16; train on a machine with a few GB of RAM; expect training to take tens of minutes</td>
+</tr>
+<tr>
+<td>more than 1,024</td>
+<td>split into two questions, coarse first (<code>team</code>), fine second (<code>intent</code> within a team)</td>
+</tr>
+</tbody>
+</table>
+<p>A two-level split often certifies <em>more</em> than one huge question. A coarse question with a few options certifies early, and each fine question only has to tell a few dozen intents apart.</p>
+<h2 id="memory">Memory<a class="headerlink" href="#memory" title="Permanent link">#</a></h2>
+<p>Training holds a weight matrix of options × patterns in memory. Above about 10 million weights, shad0w keeps a shorter optimiser history, and with a <code>max_mb</code> budget far below the vocabulary it keeps only the most frequent patterns before fitting. Both keep memory bounded on a laptop. Serving needs only the table itself.</p>
+<h2 id="many-questions">Many questions<a class="headerlink" href="#many-questions" title="Permanent link">#</a></h2>
+<p>Each question is its own table and its own certificate. Ten questions of 50 options each are ten small, fast tables, not one large one. <code>Metrics</code> can be shared so they appear on one dashboard.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="guarantee.html"><small>← previous</small>The guarantee</a><a class="next" href="benchmarks.html"><small>next →</small>Benchmarks & evidence</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#measured">Measured</a></li>
+<li><a href="#does-the-table-grow-over-time">Does the table grow over time?</a></li>
+<li><a href="#recommendations">Recommendations</a></li>
+<li><a href="#memory">Memory</a></li>
+<li><a href="#many-questions">Many questions</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

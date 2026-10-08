@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Running without an LLM · shad0w</title>
+<meta name="description" content="Train shad0w from human labels, a rule set or an existing classifier, and serve with a fallback instead of an LLM.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/without-llm.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Running without an LLM · shad0w">
+<meta property="og:description" content="Train shad0w from human labels, a rule set or an existing classifier, and serve with a fallback instead of an LLM."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/without-llm.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Running without an LLM · shad0w">
+<meta name="twitter:description" content="Train shad0w from human labels, a rule set or an existing classifier, and serve with a fallback instead of an LLM."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Running without an LLM</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html" class=active>Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="running-without-an-llm">Running without an LLM<a class="headerlink" href="#running-without-an-llm" title="Permanent link">#</a></h1>
+<p>shad0w learns from a <strong>teacher</strong>: whatever gives the right answer today. An LLM is the most common teacher, but it is not required. Three other set-ups work just as well:</p>
+<table>
+<thead>
+<tr>
+<th>Teacher</th>
+<th>When it fits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>People</strong> (support agents, moderators, reviewers)</td>
+<td>You already label things by hand, or can label a few hundred examples</td>
+</tr>
+<tr>
+<td><strong>An existing classifier or rule set</strong></td>
+<td>You want the same decisions in microseconds, in the browser, or offline</td>
+</tr>
+<tr>
+<td><strong>No teacher at serving time</strong></td>
+<td>Labels exist only for training; uncertain messages go to a queue, a default, or a person</td>
+</tr>
+</tbody>
+</table>
+<p>The certificate then compares the table with that teacher: people, rules or model, whatever produced the answers.</p>
+<h2 id="1-collect-answers">1. Collect answers<a class="headerlink" href="#1-collect-answers" title="Permanent link">#</a></h2>
+<p>Any JSON Lines file with a <code>text</code> and one field per question works:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my card was stolen at the station"</span><span class="p">,</span><span class="w"> </span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"why was I charged twice?"</span><span class="p">,</span><span class="w"> </span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"refund"</span><span class="p">}</span>
+</code></pre></div>
+
+<p>Or record them as they happen, from your own review tool:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">])</span>   <span class="c1"># no llm=</span>
+<span class="n">intent</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s2">"my card was stolen at the station"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">)</span>    <span class="c1"># an agent's label</span>
+</code></pre></div>
+
+<p>Aim for about 1,000 labelled examples (100 is the hard minimum), spread over your options the way real traffic is. For labels that people produced, about 300 extra examples held out for calibration give a certificate against the truth: see <code>shad0w calibrate</code> in <a href="training.html#human-labels-instead-of-an-llm">Training</a>.</p>
+<h2 id="2-train">2. Train<a class="headerlink" href="#2-train" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>                    <span class="c1"># or: shad0w train --log shad0w/intent/log.jsonl --out shad0w/intent/bundle</span>
+</code></pre></div>
+
+<h2 id="3-serve-with-a-fallback">3. Serve with a fallback<a class="headerlink" href="#3-serve-with-a-fallback" title="Permanent link">#</a></h2>
+<p>Without a teacher, something must answer the messages the table is unsure about. <code>fallback</code> is that something:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s2">"needs_review"</span><span class="p">)</span>      <span class="c1"># a fixed answer</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>         <span class="c1"># Decision(answer='lost_card', source='table', certified=True, ...)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"the thing with the stuff"</span><span class="p">)</span>   <span class="c1"># Decision(answer='needs_review', source='fallback', flag='low_confidence', ...)</span>
+</code></pre></div>
+
+<p>A function works too: rules, a lookup, or a ticket in a human queue:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">route_to_person</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>                  <span class="c1"># an agent will label it; record() it later to keep learning</span>
+    <span class="k">return</span> <span class="s2">"pending"</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="n">route_to_person</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Fallback answers come back with <code>source="fallback"</code> and are <strong>never</strong> written to the training log: they are not a teacher's judgement. When a person later labels the message, call <code>intent.record(text, label)</code> so the next training run learns from it.</p>
+<h2 id="only-the-certain-answers">Only the certain answers<a class="headerlink" href="#only-the-certain-answers" title="Permanent link">#</a></h2>
+<p>If you only want the table's answer when it is certified, and want to decide yourself what to do otherwise, use <code>peek</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">d</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">peek</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>     <span class="c1"># a Decision when the table would answer, else None</span>
+<span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>                                   <span class="c1"># your own path: a default, a queue, a slower model</span>
+</code></pre></div>
+
+<h2 id="from-an-existing-classifier">From an existing classifier<a class="headerlink" href="#from-an-existing-classifier" title="Permanent link">#</a></h2>
+<p>Any <code>fn(text) -&gt; label</code> is a teacher. Wrap a slow classifier and the table takes over its common cases:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">LABELS</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">my_bert_classifier</span><span class="p">)</span>   <span class="c1"># a callable, not an LLM</span>
+</code></pre></div>
+
+<h2 id="in-the-browser-or-at-the-edge">In the browser or at the edge<a class="headerlink" href="#in-the-browser-or-at-the-edge" title="Permanent link">#</a></h2>
+<p>A trained table needs nothing at run time: no network, no key, no model. In JavaScript, check <code>certified</code> and decide what to do with the rest:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bundle</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="nx">text</span><span class="p">).</span><span class="nx">answers</span><span class="p">.</span><span class="nx">intent</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">certified</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">choice</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"needs_review"</span><span class="p">;</span>
+</code></pre></div>
+
+<h2 id="label-free-start-experimental">Label-free start (experimental)<a class="headerlink" href="#label-free-start-experimental" title="Permanent link">#</a></h2>
+<p><code>shad0w compile --unlabeled texts.txt --schema schema.json</code> builds a first table from option names and unlabelled text with a sentence encoder (<code>pip install "shad0wllm[logs]"</code>). Such a table is <strong>uncalibrated</strong>: it serves nothing until real answers certify it, because a certificate computed on its own guesses would be meaningless. Use it to bootstrap, then record real labels.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="options.html"><small>← previous</small>Changing your options</a><a class="next" href="rollout.html"><small>next →</small>Rollout: shadow → canary → serve</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#1-collect-answers">1. Collect answers</a></li>
+<li><a href="#2-train">2. Train</a></li>
+<li><a href="#3-serve-with-a-fallback">3. Serve with a fallback</a></li>
+<li><a href="#only-the-certain-answers">Only the certain answers</a></li>
+<li><a href="#from-an-existing-classifier">From an existing classifier</a></li>
+<li><a href="#in-the-browser-or-at-the-edge">In the browser or at the edge</a></li>
+<li><a href="#label-free-start-experimental">Label-free start (experimental)</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

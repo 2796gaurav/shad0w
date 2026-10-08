@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>System Zero: the reflex layer your LLM stack is missing · shad0w</title>
+<meta name="description" content="LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/system-zero.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="System Zero: the reflex layer your LLM stack is missing · shad0w">
+<meta property="og:description" content="LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/system-zero.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="System Zero: the reflex layer your LLM stack is missing · shad0w">
+<meta name="twitter:description" content="LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "System Zero: the reflex layer your LLM stack is missing", "description": "LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.", "datePublished": "2026-10-08", "dateModified": "2026-10-08", "url": "https://2796gaurav.github.io/shad0w/blog/system-zero.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "system zero, architecture, decision models, llm cost", "wordCount": 923, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/system-zero.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "System Zero: the reflex layer your LLM stack is missing", "item": "https://2796gaurav.github.io/shad0w/blog/system-zero.html"}]}</script><meta property="article:published_time" content="2026-10-08"><meta property="article:author" content="Gaurav Chauhan">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>System Zero: the reflex layer your LLM stack is missing</h1><p class="lead">LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-08</span><span>4 min read</span><span class="tag">system zero</span><span class="tag">architecture</span><span class="tag">decision models</span><span class="tag">llm cost</span></div></header>
+  <article class="prose"><p>Pull your hand off a hot stove and you will notice something odd: you moved <em>before</em> you felt the pain. The signal never reached the part of your brain that thinks. It went to your spinal cord and straight back out. A reflex.</p>
+<p>Your brain is not lazy for doing that. It is efficient. The thinking parts are slow and expensive, so the body keeps them for questions that need them, and handles the familiar ones lower down, faster, and without asking.</p>
+<p>Most software built on language models has no such layer. Every question, however familiar, goes all the way up.</p>
+<h2 id="three-ways-to-answer-a-question">Three ways to answer a question<a class="headerlink" href="#three-ways-to-answer-a-question" title="Permanent link">#</a></h2>
+<div class="layers" aria-label="Three layers: System 2 reasons in seconds, System 1 decides in milliseconds, System 0 answers repeats in microseconds">
+  <div class="layer l2"><b>System 2</b><span>the LLM thinks</span><em>1416 ms per call</em></div>
+  <div class="layer l1"><b>System 1</b><span>a decision model picks</span><em>271 ms (Kev-0.8B, local)</em></div>
+  <div class="layer l0"><b>System 0</b><span>a reflex answers what it has learned</span><em>1.0 µs in C · 2.4 µs in Python</em></div>
+  <i class="pulse p1"></i><i class="pulse p2"></i><i class="pulse p3"></i>
+</div>
+
+<p>Psychologists talk about <strong>System 2</strong> (slow, deliberate reasoning) and <strong>System 1</strong> (fast, intuitive judgement). AI infrastructure grew the same two layers this year.</p>
+<ul>
+<li><strong>System 2 is the general LLM.</strong> You describe the task in a prompt and it reasons its way to an answer. It is flexible and slow: 1416 ms for a single fixed-choice decision from gpt-4.1-mini (OpenAI) in our runs.</li>
+<li><strong>System 1 is the decision model.</strong> OpenAI's Decisions API and the System One family of decision models (TypeSafe's Jev, and open models such as Kev and Laya that speak the same API) take a question and a fixed list of answers, and return a probability for each in one forward pass. That is tens to hundreds of milliseconds instead of seconds.</li>
+</ul>
+<p>Both layers <em>compute</em> every answer from scratch. Ask either one "which intent is <em>my card got stolen</em>?" a million times and you pay for a million computations of the same thing.</p>
+<h2 id="the-missing-layer">The missing layer<a class="headerlink" href="#the-missing-layer" title="Permanent link">#</a></h2>
+<p><strong>System Zero</strong> is the reflex. It does not reason and it does not compute probabilities over a prompt. It <em>remembers</em> how the layers above answered questions like this one, and it answers immediately, but only when it can prove the answer will match.</p>
+<p>Four rules define it:</p>
+<ol>
+<li><strong>It learns from the layer above, never from scratch.</strong> No labelling project, no new model to own. The LLM or decision model you already run is the teacher; System Zero studies its answers.</li>
+<li><strong>It only answers what it can prove.</strong> A reflex that fires at the wrong time is worse than none. System Zero carries a written, statistical guarantee on how often it disagrees with its teacher, and passes everything else up.</li>
+<li><strong>It lives where the request is.</strong> In your process, in a browser tab, in an edge worker. No network hop: the point of a reflex is that it does not travel.</li>
+<li><strong>Every pass upward teaches it.</strong> Whatever it hands to the layer above comes back with an answer, which becomes training data. The share of traffic it can answer grows on its own.</li>
+</ol>
+<h2 id="why-this-matters-now">Why this matters now<a class="headerlink" href="#why-this-matters-now" title="Permanent link">#</a></h2>
+<p>Look at what production apps actually send to their models. A support bot routes messages into a few dozen intents. A moderation pipeline asks "spam or not?" An agent framework asks "which tool next?" between every step. These are not open-ended questions. They are the same few questions, asked about wording that repeats, over and over.</p>
+<p>For that kind of traffic, a reflex does not need to be clever. A table of word and character patterns, learned from the teacher's own answers, is enough. On the three intent and topic tasks we measured with gpt-4.1-mini (OpenAI) as the teacher, such a table answered <strong>61–86%</strong> of the traffic. That share comes back in microseconds instead of a model call, and it disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs.</p>
+<p>The remaining 14–39% still goes up, as it should.</p>
+<h2 id="what-system-zero-is-not">What System Zero is not<a class="headerlink" href="#what-system-zero-is-not" title="Permanent link">#</a></h2>
+<p>A reflex is not a replacement for thinking. It cannot:</p>
+<ul>
+<li>write a reply;</li>
+<li>read sarcasm (on SST-2 sentiment it certified 0%, so everything went up);</li>
+<li>or answer a question that needs knowledge of the world.</li>
+</ul>
+<p>It is also not a cache. A cache only recognises exact repeats. A reflex generalises to new wordings of a familiar question, and its guarantee covers messages it has never seen, as long as traffic resembles what it learned from.</p>
+<p>That last condition matters. When traffic shifts, a good reflex notices and steps back. shad0w watches its own confidence and, when that drifts, sends everything up until it has relearned.</p>
+<h2 id="shad0w-is-a-system-zero">shad0w is a System Zero<a class="headerlink" href="#shad0w-is-a-system-zero" title="Permanent link">#</a></h2>
+<p>shad0w is our implementation of the idea:</p>
+<ul>
+<li><strong>Learns:</strong> a hashed word and character table with 8-bit weights, 1.5 MB for 77 options.</li>
+<li><strong>Proves:</strong> a Learn-then-Test certificate against the teacher.</li>
+<li><strong>Lives anywhere:</strong> runtimes in Python, JavaScript and C that give the same answers.</li>
+<li><strong>Connects:</strong> a proxy that sits in front of chat models, the OpenAI Decisions API and System One servers with no code change.</li>
+</ul>
+<p>It sits <em>below</em> whatever you run today. Put it in front of a general LLM and it takes the repeats off System 2. Put it in front of a decision model and it takes them off System 1: with Kev-0.8B as the teacher, mean latency per decision fell from 382 ms to 115 ms, and accuracy moved +1.0 points.</p>
+<p>The thinking layers get to do what they are good at. The reflex handles the rest.</p>
+<div class="callout"><b>Try the reflex.</b> The <a href="../demo/">playground</a> runs real shad0w tables in your browser. Type a message and watch the decision arrive before your finger leaves the key.</div>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="adding-a-category.html"><small>2026-10-08 · 3 min</small><b>Adding a category without breaking production</b><span>A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.</span></a><a class="post-card" href="how-the-certificate-works.html"><small>2026-10-07 · 4 min</small><b>How can a small table promise it agrees with your LLM?</b><span>The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.</span></a><a class="post-card" href="what-we-measured.html"><small>2026-10-06 · 5 min</small><b>What we measured: where shad0w wins, and where it loses</b><span>Real LLMs, real proxies, public datasets and the same certifier for every method. The numbers that make shad0w worth using, and the ones that show when not to.</span></a></aside>
+</main>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

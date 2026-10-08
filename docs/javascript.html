@@ -3,20 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>JavaScript &amp; TypeScript · shad0w</title>
 <meta name="description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/javascript.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website"><meta property="og:title" content="JavaScript &amp; TypeScript · shad0w">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="JavaScript &amp; TypeScript · shad0w">
 <meta property="og:description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/javascript.html">
-<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="JavaScript &amp; TypeScript · shad0w">
+<meta name="twitter:description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
 <meta name="theme-color" content="#07070c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
-<script src="../assets/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
@@ -26,14 +31,15 @@
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
     <a href="../docs/" class=active>Docs</a>
-    <a href="../demo/">Live demo</a>
+    <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
     <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · JavaScript & TypeScript</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html" class=active>JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · JavaScript & TypeScript</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html" class=active>JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
   <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="javascript-typescript">JavaScript &amp; TypeScript<a class="headerlink" href="#javascript-typescript" title="Permanent link">#</a></h1>
 <div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>i<span class="w"> </span>shad0wllm
@@ -116,8 +122,8 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <p>See <a href="decisions-api.html">Decisions API &amp; System One</a> for running an open decision model locally.</p>
 <h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
 <ul>
-<li><strong><code>decision(name, opts)</code> → <code>Promise&lt;Shadow&gt;</code>.</strong> <code>opts</code>: <code>options</code>, <code>llm</code>, <code>bundle</code>, <code>log</code>, <code>auditRate</code>, <code>onDecision</code>, <code>baseURL</code>, <code>apiKey</code>, <code>system</code>, <code>temperature</code>, <code>retries</code>, <code>headers</code>, <code>fetch</code>, <code>timeout</code>. A bundle path that does not exist yet starts log-only; a corrupt or unsupported bundle throws.</li>
-<li><strong><code>new Shadow(bundle | null, { teacher, question, log, auditRate, onDecision })</code>.</strong></li>
+<li><strong><code>decision(name?, opts)</code> → <code>Promise&lt;Shadow&gt;</code>.</strong> <code>name</code> defaults to <code>"decision"</code>. <code>opts</code>: <code>options</code>, <code>llm</code>, <code>bundle</code>, <code>log</code>, <code>fallback</code>, <code>rename</code>, <code>onNewOption</code>, <code>auditRate</code>, <code>onDecision</code>, <code>baseURL</code>, <code>apiKey</code>, <code>system</code>, <code>temperature</code>, <code>retries</code>, <code>headers</code>, <code>fetch</code>, <code>timeout</code>. A bundle path that does not exist yet starts log-only; a corrupt or unsupported bundle throws.</li>
+<li><strong><code>new Shadow(bundle | null, { teacher, question, options, log, fallback, rename, onNewOption, auditRate, onDecision })</code>.</strong> With <code>options</code> and a bundle, options the bundle never learned send every decision to the teacher until you retrain, removed ones are never served, and <code>rename</code> maps old labels to new ones (<a href="options.html">Changing your options</a>). Without a teacher, <code>fallback</code> answers what the table is unsure about.</li>
 <li><code>await shadow.decide(text, { teacher })</code> → <code>{ answer, source, confidence, certified, flag, latencyUs, question, threshold }</code>.</li>
 <li><code>await shadow.peek(text)</code> → the table's decision if it would serve it, else <code>null</code>. Never calls the teacher.</li>
 <li><code>await shadow.record(text, answer)</code> logs an answer you got from your model yourself.</li>
@@ -126,7 +132,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <li><strong><code>openaiTeacher({ options, model, baseURL, apiKey, fetch, system, timeout })</code> → <code>async (text) =&gt; option</code>.</strong> Structured output with a plain-text fallback, retries with backoff, a 30 s timeout per attempt by default, and every reply mapped to exactly one option (or an error).</li>
 <li><strong><code>systemoneTeacher({ options, model, baseURL })</code></strong> and <strong><code>decisionsTeacher({ options, model, baseURL, apiKey })</code></strong> ask a System One server or the OpenAI Decisions API instead of a chat model.</li>
 <li><strong><code>shad0wMiddleware(shadow, { specificationVersion, options, format })</code></strong> and <strong><code>decisionModel(shadow | { [question]: shadow }, { fallback, name })</code></strong> for the Vercel AI SDK (above).</li>
-<li><strong><code>Bundle.load(dirOrUrl)</code>; <code>bundle.decide(text, { questions })</code></strong> → <code>{ answers: { [name]: Answer } }</code>.</li>
+<li><strong><code>Bundle.load(dirOrUrl)</code>; <code>bundle.decide(text, { questions, probabilities })</code></strong> → <code>{ answers: { [name]: Answer } }</code>. <code>probabilities: false</code> is the fast path: the same answer, confidence and certified flag without the per-option map. <code>Shadow.decide</code> uses it.</li>
 <li><strong><code>new Table(arrayBuffer, labels).decide(text)</code>.</strong> One <code>.s0</code> file; returns <code>{ index, choice, confidence, probabilities }</code>.</li>
 <li><strong><code>matchOption(reply, options)</code>.</strong> The same reply-to-option mapping the teachers use.</li>
 <li><strong><code>explainFlag(flag)</code>, <code>FLAG_WORDS</code>.</strong> The reason behind a flag, in plain words (same wording as Python).</li>
@@ -149,7 +155,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

@@ -3,20 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>Configuration &amp; tuning · shad0w</title>
 <meta name="description" content="Every setting shad0w has, its default, its shad0w.toml key and SHAD0W_* variable, and how they combine.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/configuration.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website"><meta property="og:title" content="Configuration &amp; tuning · shad0w">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Configuration &amp; tuning · shad0w">
 <meta property="og:description" content="Every setting shad0w has, its default, its shad0w.toml key and SHAD0W_* variable, and how they combine."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/configuration.html">
-<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Configuration &amp; tuning · shad0w">
+<meta name="twitter:description" content="Every setting shad0w has, its default, its shad0w.toml key and SHAD0W_* variable, and how they combine."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
 <meta name="theme-color" content="#07070c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
-<script src="../assets/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
@@ -26,14 +31,15 @@
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
+    <a href="../demo/">Playground</a>
     <a href="../docs/" class=active>Docs</a>
-    <a href="../demo/">Live demo</a>
+    <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
     <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Configuration & tuning</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html" class=active>Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Configuration</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html" class=active>Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
   <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="configuration-tuning">Configuration &amp; tuning<a class="headerlink" href="#configuration-tuning" title="Permanent link">#</a></h1>
 <p>shad0w works with no configuration at all. Everything below is optional. Each setting can be given four ways, and the first one found wins:</p>
@@ -176,6 +182,33 @@ shad0w<span class="w"> </span>config<span class="w"> </span>--init<span class="w
 </tbody>
 </table>
 <p>Why the spot-check sample matters: once a table is serving, the log mostly holds the hard cases it deferred. Certifying a new table on those alone would describe a harder mix than your real traffic. When at least 100 spot-check rows exist, <code>train()</code> certifies on them instead, and the certificate records <code>"calibration": "uniform-audit"</code>. With fewer, it falls back to a random held-out split and records <code>"held-out-split"</code>. During the first weeks, <code>audit_rate = 0.05</code> fills that sample faster.</p>
+<h2 id="options-and-size">Options and size<a class="headerlink" href="#options-and-size" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>on_new_option</code></td>
+<td><code>"defer"</code></td>
+<td>Your option list gained options the trained table has never seen. <code>defer</code> sends every decision to your LLM until you retrain (the table was certified on a world without them). <code>serve</code> keeps serving the options it knows, at your own risk. Removed options are never served either way. See <a href="options.html">Changing your options</a>.</td>
+</tr>
+<tr>
+<td><code>rename</code></td>
+<td><code>{}</code></td>
+<td>Rename labels without retraining, for example <code>rename = {lost_card = "card_lost"}</code> in TOML or <code>SHAD0W_RENAME=lost_card=card_lost</code>. The table answers with the new names immediately, and the next <code>train()</code> renames the old rows in the log so no history is lost.</td>
+</tr>
+<tr>
+<td><code>max_mb</code></td>
+<td>none</td>
+<td>A size budget for each table, in MB. Training keeps the most informative features and refits on them; the certificate is computed on the smaller table. On 150 options, <code>max_mb=1</code> gave a 1.00 MB table that certified the same share as the unbudgeted 3.6 MB one. See <a href="scale.html">Scale</a>.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="everything-else">Everything else<a class="headerlink" href="#everything-else" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -256,12 +289,13 @@ shad0w<span class="w"> </span>config<span class="w"> </span>--init<span class="w
 </table>
 <p>Reading <code>shad0w.toml</code> needs Python 3.11, or <code>pip install tomli</code> on 3.10.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="frameworks.html"><small>← previous</small>LangChain, LiteLLM, AI SDK…</a><a class="next" href="rollout.html"><small>next →</small>Rollout: shadow → canary → serve</a></div></article>
+  <div class="pager"><a href="frameworks.html"><small>← previous</small>LangChain, LiteLLM, AI SDK…</a><a class="next" href="tuning.html"><small>next →</small>Tuning & fine-tuning</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#the-guarantee">The guarantee</a></li>
 <li><a href="#rolling-out">Rolling out</a></li>
 <li><a href="#retraining-and-spot-checks">Retraining and spot checks</a></li>
+<li><a href="#options-and-size">Options and size</a></li>
 <li><a href="#everything-else">Everything else</a></li>
 <li><a href="#other-environment-variables">Other environment variables</a></li>
 </ul>
@@ -270,7 +304,7 @@ shad0w<span class="w"> </span>config<span class="w"> </span>--init<span class="w
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>
