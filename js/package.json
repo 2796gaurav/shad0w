@@ -1,7 +1,7 @@
 {
   "name": "shad0wllm",
   "version": "0.3.0",
-  "description": "Put a microsecond, certified table in front of your LLM: it learns the LLM's answers and serves the ones it is sure about. Node, browsers, edge workers. Zero dependencies.",
+  "description": "Put a microsecond, certified table in front of your LLM or decision model: it learns the answers and serves the ones it is sure about. Node, browsers, edge workers. Zero dependencies.",
   "main": "./index.js",
   "module": "./index.mjs",
   "types": "./index.d.ts",
@@ -20,6 +20,6 @@
   "homepage": "https://2796gaurav.github.io/shad0w",
   "repository": { "type": "git", "url": "git+https://github.com/2796gaurav/shad0w.git", "directory": "js" },
   "bugs": "https://github.com/2796gaurav/shad0w/issues",
-  "keywords": ["llm", "classification", "intent", "routing", "edge", "cloudflare-workers", "browser", "distillation", "guardrails", "cascade"],
+  "keywords": ["llm", "classification", "intent", "routing", "edge", "cloudflare-workers", "browser", "distillation", "guardrails", "cascade", "openai", "decisions-api", "system-one", "vercel-ai-sdk"],
   "engines": { "node": ">=18" }
 }

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "shad0wllm"
 version = "0.3.0"
-description = "Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU."
+description = "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
@@ -13,7 +13,8 @@ authors = [{ name = "Gaurav Chauhan", email = "2796gaurav@gmail.com" }]
 requires-python = ">=3.10"
 keywords = [
   "llm", "distillation", "classification", "intent-detection", "routing", "cascade", "conformal-prediction",
-  "learn-then-test", "edge-ai", "cpu-inference", "guardrails", "llm-cost", "latency",
+  "learn-then-test", "edge-ai", "cpu-inference", "guardrails", "llm-cost", "latency", "openai", "decisions-api",
+  "system-one", "llm-proxy", "llm-observability",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
