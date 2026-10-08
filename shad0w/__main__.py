@@ -92,7 +92,9 @@ def _train(a):
         print("give --log and --out (or --dir [--question])", file=sys.stderr)
         return 2
     from . import config as _config
-    st = _config.resolve(a.question, path=a.config, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows)
+    rename = dict(x.split("=", 1) for x in (a.rename or []) if "=" in x) or None
+    st = _config.resolve(a.question, path=a.config, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows, max_mb=a.max_mb,
+                         rename=rename)
     records = read_jsonl(log_path)
     names = [a.question] if a.question else sorted({k for r in records for k in r} - {"text", "source", "ts"})
     full = json.load(open(a.schema, encoding="utf-8")) if a.schema else {}
@@ -101,7 +103,7 @@ def _train(a):
         full = json.load(open(old, encoding="utf-8"))
     schema, rows_all = {}, []
     for n in names:
-        rows, sch = rows_for_training(records, n, full.get(n))
+        rows, sch = rows_for_training(records, n, full.get(n), rename=st.rename_map)
         print(f"{n}: {len(rows):,} usable answers, {len(sch.get('criteria', {'yes': 1, 'no': 1}))} options")
         if len(rows) < st.min_rows:
             print(f"  not enough yet: need {st.min_rows:,} (--min-rows to override; 100 is the hard minimum)", file=sys.stderr)
@@ -116,16 +118,14 @@ def _train(a):
     t = time.time()
     m, cert = shadow_compile(schema, fit_rows, alpha=st.alpha, delta=st.delta, teacher=a.teacher, cal_records=cal_rows,
                              cal_fraction=st.cal_fraction, max_cal=st.max_cal, drift_window=st.drift_window,
-                             drift_margin=st.drift_margin)
+                             drift_margin=st.drift_margin, max_mb=st.max_mb)
     if a.gate and os.path.exists(os.path.join(out, "certificate.json")):
-        from .shadow import read_certificate
+        from .shadow import gate_reason, read_certificate
         old = read_certificate(out) or {}
         for q, s_ in cert["questions"].items():
-            o = (old.get("questions") or {}).get(q)
-            if o and o.get("threshold") is not None and (s_["threshold"] is None or
-                                                          s_["certified_share_on_calibration"] < 0.8 * o["certified_share_on_calibration"]):
-                print(f"{q}: new bundle certifies {s_['certified_share_on_calibration']:.1%} vs "
-                      f"{o['certified_share_on_calibration']:.1%} before; kept the old bundle (drop --gate to replace)", file=sys.stderr)
+            reason = gate_reason(s_, (old.get("questions") or {}).get(q))
+            if reason:
+                print(f"{q}: {reason}", file=sys.stderr)
                 return 3
     m.save(out)
     write_certificate(out, cert)
@@ -504,6 +504,8 @@ def _main(argv=None):
     tr.add_argument("--alpha", type=float, help="certified disagreement bound (default 0.05)")
     tr.add_argument("--delta", type=float, help="certificate failure probability (default 0.1)")
     tr.add_argument("--min-rows", type=int, help="logged answers needed (default 1000; 100 is the hard minimum)")
+    tr.add_argument("--max-mb", type=float, help="size budget per table in MB (keeps the most informative features)")
+    tr.add_argument("--rename", action="append", metavar="OLD=NEW", help="rename a label in the log while training (repeatable)")
     tr.add_argument("--gate", action="store_true", help="keep the old bundle unless the new one certifies >= 80%% of its share")
     tr.add_argument("--config", help="path to a shad0w.toml")
 

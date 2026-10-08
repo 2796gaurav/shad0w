@@ -45,6 +45,7 @@ from .observe import Metrics, TraceWriter, emit_span, log, otel_enabled
 
 __all__ = ["Shadow", "Decision", "cascade", "decision", "decide", "explain", "explain_model"]
 
+_NO_FALLBACK = object()  # sentinel: no fallback configured (decide() needs a teacher for what the table defers)
 MIN_UNIFORM_CAL = 100  # audit rows needed before train() certifies on them instead of a random split
 
 
@@ -77,6 +78,8 @@ _FLAG_WORDS = {
     "shadow": "shadow mode: the table's answer was recorded, your model's was returned",
     "off": "mode=off: the table was not consulted",
     "manual_threshold": "served under force_threshold: NOT covered by the certificate",
+    "options_changed": "your options include ones the table never learned: asked your model until you retrain",
+    "option_removed": "the table picked an option you removed: asked your model",
 }
 
 
@@ -113,6 +116,9 @@ class Shadow:
     metrics      a shared `shad0w.observe.Metrics` (default: a private one; see `stats()` and `metrics.prometheus()`)
     probabilities  fill `Decision.top` on every call (slower; default False)
     config       path to a shad0w.toml (default: ./shad0w.toml or $SHAD0W_CONFIG)
+    fallback     what to answer when the table defers and there is no teacher (running without an LLM): a value such
+                 as "needs_review", or callable(text) -> answer (rules, a queue). Fallback answers are never logged
+                 as training data and come back with source="fallback".
 
     Every other keyword is a setting (see `shad0w.config.DEFAULTS`): alpha, delta, min_rows, audit_rate,
     auto_train, retrain, mode, canary, never_serve, min_confidence, force_threshold, drift_window, drift_margin,
@@ -124,20 +130,21 @@ class Shadow:
                  log: str | None = None, *, seed: int | None = None, schema: dict | None = None,
                  on_decision: Callable[[Decision, str], Any] | None = None, trace: str | TraceWriter | None = None,
                  metrics: Metrics | None = None, probabilities: bool = False, config: str | None = None,
-                 settings: _config.Settings | None = None, **kw):
+                 settings: _config.Settings | None = None, fallback: Any = _NO_FALLBACK, **kw):
         if teacher is not None and not callable(teacher):
             raise TypeError("teacher must be a callable: text -> answer")
         self.question = question if question is not None else getattr(teacher, "question", None)
         self.settings = settings or _config.resolve(self.question or "decision", path=config, **kw)
         s = self.settings
         self.teacher, self.log = teacher, log
+        self.fallback = fallback
         self.audit_rate, self.alpha, self.exposed = s.audit_rate, s.alpha, s.exposed
         self.auto_train = s.auto_train or None
         self.on_decision, self.probabilities = on_decision, probabilities
         self._rng = random.Random(seed)
         self._lock = threading.Lock()
         self._train_lock = threading.Lock()
-        self._counts = {"table": 0, "teacher": 0, "audits": 0, "audit_disagreements": 0, "would_serve": 0,
+        self._counts = {"table": 0, "teacher": 0, "fallback": 0, "audits": 0, "audit_disagreements": 0, "would_serve": 0,
                         "shadow_disagreements": 0}
         self._since_train = 0
         self._otel = otel_enabled()
@@ -152,6 +159,40 @@ class Shadow:
         self.bundle_path = os.fspath(bundle) if isinstance(bundle, (str, os.PathLike)) else None
         exists = self.bundle_path is None or os.path.exists(os.path.join(self.bundle_path, "manifest.json"))
         self.reload(bundle if exists else None)
+
+    # -- options ----------------------------------------------------------------------------------------------
+    @property
+    def schema(self) -> dict | None:
+        return self._schema
+
+    @schema.setter
+    def schema(self, value: dict | None) -> None:
+        self._schema = value
+        self._diff_options()
+
+    def _diff_options(self) -> None:
+        """Compare the options you configure now with the ones the loaded table learned (after `rename`).
+
+        Added options: the table cannot answer them, so its other answers are not covered by the certificate
+        either (it was certified on a world without them). on_new_option="defer" (default) sends everything to
+        your LLM until you retrain. Removed options: answers naming them are never served."""
+        self.options_added, self.options_removed = (), ()
+        model, schema = getattr(self, "model", None), getattr(self, "_schema", None)
+        if model is None or not schema or schema.get("type", "choice") != "choice" or not schema.get("criteria"):
+            return
+        q = model.questions.get(self.question or "decision")
+        if q is None or q.qtype != "choice":
+            return
+        ren = self.settings.rename_map
+        known = {ren.get(o, o) for o in q.options}
+        wanted = {str(o) for o in schema["criteria"]}
+        self.options_added, self.options_removed = tuple(sorted(wanted - known)), tuple(sorted(known - wanted))
+        if self.options_added or self.options_removed:
+            log.warning("options for %r changed since training: added %s, removed %s. %s Retrain to pick them up "
+                        "(the log keeps collecting your LLM's answers).", self.question, list(self.options_added),
+                        list(self.options_removed),
+                        "Deferring every decision to your LLM until then." if self.options_added and
+                        self.settings.on_new_option == "defer" else "Answers naming removed options go to your LLM.")
 
     # -- bundle -----------------------------------------------------------------------------------------------
     def reload(self, bundle: str | Model | None = None) -> Shadow:
@@ -191,6 +232,7 @@ class Shadow:
                     self._since_train = max(0, self.log_rows() - int(n_rec))
         with self._lock:
             self.model = model
+        self._diff_options()
         return self
 
     # -- deciding ---------------------------------------------------------------------------------------------
@@ -200,6 +242,12 @@ class Shadow:
         r = self.model.decide(text, exposed=self.exposed, questions={name: {}},
                               probabilities=self.probabilities if probabilities is None else probabilities,
                               observe=observe)["answers"][name]
+        ren = self.settings.rename
+        if ren and "choice" in r:
+            ren = dict(ren)
+            r = {**r, "choice": ren.get(r["choice"], r["choice"])}
+            if "probabilities" in r:
+                r["probabilities"] = {ren.get(k, k): v for k, v in r["probabilities"].items()}
         return r, (r["choice"] if "choice" in r else r["answer"])
 
     def _policy(self, r: dict, local) -> tuple[bool, bool, str | None]:
@@ -207,6 +255,10 @@ class Shadow:
         s = self.settings
         if s.mode == "off":
             return False, False, "off"
+        if self.options_added and s.on_new_option == "defer":
+            return False, False, "options_changed"
+        if self.options_removed and local in self.options_removed:
+            return False, False, "option_removed"
         certified, flag = r["certified"], r["flag"]
         if certified and s.min_confidence is not None and r["confidence"] < s.min_confidence:
             certified, flag = False, "min_confidence"
@@ -243,23 +295,35 @@ class Shadow:
     def decide(self, text: str, teacher: Callable[[str], Any] | None = None, *, probabilities: bool | None = None) -> Decision:
         """The table's answer when certified, otherwise your model's (logged). `teacher` overrides the
         wrapper's teacher for this one call."""
-        t0 = time.perf_counter()
+        return self._decide_with(text, teacher or self.teacher, probabilities, None)
+
+    def _decide_with(self, text: str, teacher, probabilities, pre) -> Decision:
+        """decide(), optionally with the table's result already computed (pre = (t0, r, local, serve, certified, flag))."""
         ns0 = time.time_ns() if self._otel else 0
         name = self.question or "decision"
-        teacher = teacher or self.teacher
-        model = self.model
-        if model is None:
-            answer, ts = self._ask(teacher, text, self._src(), name)
-            return self._done(self._mk(answer, "teacher", None, False, "no_bundle", t0), text, name, ts, ns0)
-        r, local = self._table(text, probabilities)
-        serve, certified, flag = self._policy(r, local)
+        if pre is None:
+            t0 = time.perf_counter()
+            if self.model is None:
+                return self._defer(text, teacher, name, None, "no_bundle", None, t0, ns0)
+            r, local = self._table(text, probabilities)
+            serve, certified, flag = self._policy(r, local)
+        else:
+            t0, r, local, serve, certified, flag = pre
         if serve:
             d = self._mk(local, "table", r, certified, flag, t0)
             if certified:
                 self._spot_check(teacher, text, name, local)
             return self._done(d, text, name, None, ns0)
+        return self._defer(text, teacher, name, r, flag, local, t0, ns0)
+
+    def _defer(self, text, teacher, name, r, flag, local, t0, ns0) -> Decision:
+        """The table does not answer: ask the teacher (logged), or use the fallback when there is no teacher."""
+        if teacher is None and self.fallback is not _NO_FALLBACK:
+            answer = self.fallback(text) if callable(self.fallback) else self.fallback
+            return self._done(self._mk(answer, "fallback", r, False, flag, t0), text, name, None, ns0)
         answer, ts = self._ask(teacher, text, self._src(), name)
-        self._shadow_count(flag, r, answer, local)
+        if r is not None:
+            self._shadow_count(flag, r, answer, local)
         return self._done(self._mk(answer, "teacher", r, False, flag, t0), text, name, ts, ns0)
 
     __call__ = decide
@@ -314,12 +378,15 @@ class Shadow:
         a sync teacher runs in a worker thread."""
         teacher = teacher or self.teacher
         if not _is_async(teacher):
-            model = self.model
-            if model is not None:
-                r, local = self._table(text, observe=False)
-                if self._policy(r, local)[0]:
-                    return self.decide(text, teacher)  # microseconds; observes the guard exactly once
-            return await asyncio.to_thread(self.decide, text, teacher)
+            pre = None
+            if self.model is not None:  # the table runs on the event loop (microseconds), once
+                t0 = time.perf_counter()
+                r, local = self._table(text)
+                serve, certified, flag = self._policy(r, local)
+                pre = (t0, r, local, serve, certified, flag)
+                if serve or (teacher is None and self.fallback is not _NO_FALLBACK):
+                    return self._decide_with(text, teacher, None, pre)
+            return await asyncio.to_thread(self._decide_with, text, teacher, None, pre)
         t0 = time.perf_counter()
         name = self.question or "decision"
         model = self.model
@@ -421,11 +488,13 @@ class Shadow:
         c["threshold"] = self.model.questions[self.question].threshold if self.model is not None else None
         c["mode"], c["canary"] = self.settings.mode, self.settings.canary
         c["log_rows"] = self.log_rows()
+        c["options_added"], c["options_removed"] = list(self.options_added), list(self.options_removed)
         return c
 
     def _ask(self, teacher, text: str, source: str, name: str):
         if teacher is None:
-            raise RuntimeError("this Shadow has no teacher; pass teacher=... (or call with decide(text, teacher=...))")
+            raise RuntimeError("the table did not answer and this Shadow has no teacher: pass teacher=... (or llm=...), "
+                               "or fallback=... to run without an LLM")
         t = time.perf_counter()
         answer = teacher(text)
         took = time.perf_counter() - t
@@ -462,7 +531,7 @@ class Shadow:
 
         gate=True keeps the current bundle when the new one certifies less than 80% of its share (or nothing);
         that is what auto_train does under retrain="gated"."""
-        from .shadow import read_certificate, read_jsonl, shadow_compile, write_certificate
+        from .shadow import gate_reason, read_certificate, read_jsonl, shadow_compile, write_certificate
         s = self.settings
         out = out or self.bundle_path
         if not out:
@@ -474,7 +543,7 @@ class Shadow:
         delta = s.delta if delta is None else delta
         min_rows = s.min_rows if min_rows is None else min_rows
         with self._train_lock:
-            rows, schema = rows_for_training(read_jsonl(self.log), name, self.schema)
+            rows, schema = rows_for_training(read_jsonl(self.log), name, self.schema, rename=s.rename_map)
             if len(rows) < min_rows:
                 raise ValueError(f"{len(rows)} usable answers logged for {name!r}; need {min_rows} "
                                  f"(pass min_rows=... to try with fewer; 100 is the hard minimum)")
@@ -492,20 +561,18 @@ class Shadow:
                 model, cert = shadow_compile({name: schema}, fit_rows, alpha=alpha, delta=delta,
                                              cal_fraction=s.cal_fraction, max_cal=s.max_cal,
                                              teacher=getattr(self.teacher, "name", "unspecified"),
-                                             cal_records=cal_rows, drift_window=s.drift_window, drift_margin=s.drift_margin)
+                                             cal_records=cal_rows, drift_window=s.drift_window, drift_margin=s.drift_margin,
+                                             max_mb=s.max_mb)
             except ModuleNotFoundError as e:
                 if (e.name or "").split(".")[0] in ("sklearn", "scipy", "torch"):
                     raise ImportError('training needs: pip install "shad0wllm[compile]" (scipy, scikit-learn)') from e
                 raise
             q = cert["questions"][name]
-            old = (read_certificate(out) or {}).get("questions", {}).get(name) if gate else None
-            if old and old.get("threshold") is not None and self.model is not None:
-                new_share, old_share = q["certified_share_on_calibration"], old.get("certified_share_on_calibration", 0.0)
-                if q["threshold"] is None or new_share < 0.8 * old_share:
-                    reason = (f"new bundle certifies {new_share:.1%} of calibration traffic vs {old_share:.1%} before; "
-                              "kept the old one (retrain='always' to replace anyway)")
-                    log.warning("train %r rejected: %s", name, reason)
-                    return {**q, "accepted": False, "reason": reason}
+            old = (read_certificate(out) or {}).get("questions", {}).get(name) if gate and self.model is not None else None
+            reason = gate_reason(q, old)
+            if reason:
+                log.warning("train %r rejected: %s", name, reason)
+                return {**q, "accepted": False, "reason": reason}
             model.save(out)
             write_certificate(out, cert)
             with open(os.path.join(out, "schema.json"), "w", encoding="utf-8") as f:
@@ -529,10 +596,13 @@ class Shadow:
             self.trace.close()
 
 
-def rows_for_training(records: list[dict], name: str, schema: dict | None):
+def rows_for_training(records: list[dict], name: str, schema: dict | None, rename: dict | None = None):
     """Teacher answers usable for `name` (answers outside the options are dropped) and the schema to train with.
-    Without a schema the options are the answers seen in the log."""
+    Without a schema the options are the answers seen in the log. `rename` maps old labels in the log to new ones,
+    so renaming an option never throws its history away."""
     rows = [r for r in records if name in r and r.get("text") and r[name] is not None and r.get("source") != "table"]
+    if rename:
+        rows = [{**r, name: rename.get(r[name], r[name])} if isinstance(r[name], str) else r for r in rows]
     if schema is None:
         vals = {r[name] for r in rows}
         if vals <= {True, False}:
@@ -548,6 +618,13 @@ def rows_for_training(records: list[dict], name: str, schema: dict | None):
             raise ValueError(f"{name!r}: need at least 2 different answers to train, saw {sorted(opts)}")
         rows = [r for r in rows if str(r[name]) in opts]
         rows = [{**r, name: str(r[name])} for r in rows]
+        counts = {o: 0 for o in schema["criteria"]}
+        for r in rows:
+            counts[r[name]] += 1
+        thin = {o: n for o, n in counts.items() if n < 20}
+        if thin and rows:
+            log.warning("%r: options with fewer than 20 logged answers %s; the table will rarely answer them "
+                        "(those go to your LLM) until more are logged", name, thin)
     else:
         from .api import to_bool
         rows = [{**r, name: to_bool(r[name])} for r in rows]
@@ -558,13 +635,17 @@ _TEACHER_KW = ("base_url", "api_key", "client", "system", "temperature", "timeou
                "max_tokens", "complete")
 
 
-def decision(name: str, options: Any = None, llm: str | Callable[[str], Any] | None = None, *,
+def decision(name: str = "decision", options: Any = None, llm: str | Callable[[str], Any] | None = None, *,
              bundle: str | None = None, log: str | None = None, folder: str | None = None, **kw) -> Shadow:
     """One call from nothing to a certified cascade.
 
         intent = shad0w.decision("intent", options={"refund": "wants money back", ...}, llm="openai/gpt-6-luna")
         intent("my card was stolen")     # your LLM answers and is logged; later the table answers
         intent.train()                   # when ~1,000 answers are logged
+
+    name     what this decision is called (default "decision"). It names the folder (shad0w/<name>/), the field in
+             the log, the question inside the bundle, the dashboard and metrics label, and the question name on the
+             Decisions API, so several decisions can live side by side: decision("intent"), decision("urgent").
 
     options  list of option names, {name: description}, or a schema entry; optional when the bundle exists
     llm      "provider/model" (openai, anthropic, gemini, groq, ollama, openai-decisions, systemone, ...; see

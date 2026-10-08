@@ -83,17 +83,19 @@ const result = await experimental_decide({
 
 ## API
 
-- `decision(name, { options, llm, bundle, log, auditRate, onDecision, baseURL, apiKey, timeout })` → a `Shadow`. `llm` is `"provider/model"`, `"systemone/<model>"`, `"openai-decisions/<model>"` or your own `async (text) => answer`. A bundle path that does not exist yet starts log-only; a corrupt bundle throws.
-- `new Shadow(bundle, { teacher, question, log, auditRate, onDecision })`:
+- `decision(name?, { options, llm, bundle, log, fallback, rename, onNewOption, auditRate, onDecision, baseURL, apiKey, timeout })` → a `Shadow`. `name` defaults to `"decision"`; it names the question in the bundle and the log. `llm` is `"provider/model"`, `"systemone/<model>"`, `"openai-decisions/<model>"` or your own `async (text) => answer`. A bundle path that does not exist yet starts log-only; a corrupt bundle throws.
+- `new Shadow(bundle, { teacher, question, options, log, fallback, rename, onNewOption, auditRate, onDecision })`:
   - `await shadow.decide(text)` returns `{ answer, source, confidence, certified, flag, latencyUs, question, threshold }`;
   - `await shadow.peek(text)` returns the table's decision when it would be served, else `null` (never calls the teacher);
   - `await shadow.record(text, answer)` logs an answer you obtained yourself;
   - `shadow.explain(text)` returns `{ answer, confidence, threshold, certified, flag, why, top }` without calling your model;
-  - `shadow.stats()` returns offload and spot-check counts.
+  - `shadow.stats()` returns offload and spot-check counts, plus `optionsAdded` / `optionsRemoved`.
+- **Changing options.** Give `options` with a bundle: options the bundle never learned make every decision go to the teacher (`flag: "options_changed"`) until you retrain (`onNewOption: "serve"` to keep serving the known ones); removed options are never served (`"option_removed"`); `rename: { old: "new" }` applies without retraining.
+- **No LLM.** Without a teacher, `fallback` (a value or `(text) => answer`) answers what the table is unsure about, with `source: "fallback"`; it is never logged.
 - `openaiTeacher({ options, model, baseURL, apiKey, timeout })` → `async (text) => option`. It works with any OpenAI-compatible chat API, uses structured outputs with a plain-text fallback, retries, and times out after 30 s by default.
 - `systemoneTeacher({ options, model, baseURL })` and `decisionsTeacher({ options, model, apiKey })` ask a System One server or the OpenAI Decisions API instead of a chat model.
 - `shad0wMiddleware(shadow, { specificationVersion, format })` and `decisionModel(shadow | { [question]: shadow }, { fallback })` for the Vercel AI SDK (above).
-- `Bundle.load(dirOrUrl)`; `bundle.decide(text)` → `{ answers: { [question]: { choice | answer, confidence, certified, flag, probabilities } } }`.
+- `Bundle.load(dirOrUrl)`; `bundle.decide(text)` → `{ answers: { [question]: { choice | answer, confidence, certified, flag, probabilities } } }`. `bundle.decide(text, { probabilities: false })` is the fast path: same answers and confidences, without the per-option map.
 - `new Table(arrayBuffer, labels).decide(text)` works on a single `.s0` file.
 
 Decisions match the Python and C runtimes exactly; the test suite checks it.

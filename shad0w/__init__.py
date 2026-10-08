@@ -11,7 +11,7 @@ from .llm import LLMTeacher, TeacherError, llm_teacher  # noqa: F401
 from .observe import Metrics  # noqa: F401
 from .shadow import certify_bundle, read_certificate, shadow_compile  # noqa: F401
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __all__ = ["Model", "compile", "load", "Shadow", "Decision", "cascade", "decision", "decide", "explain", "llm_teacher",
            "LLMTeacher", "TeacherError", "Metrics", "Settings", "settings", "shadow_compile", "certify_bundle",
            "read_certificate", "__version__"]

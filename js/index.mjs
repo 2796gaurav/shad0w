@@ -29,21 +29,49 @@ function words(text) {
   return out;
 }
 
-/** Hashed items: word unigrams, word bigrams and character trigrams, each FNV-1a hashed to 22 bits. */
+/** Hashed items: word unigrams, word bigrams and character trigrams, each FNV-1a hashed to 22 bits.
+ *  Computed straight from the UTF-8 bytes with no per-word allocation (same hashes as words() + the obvious loops). */
+const PRIME = 0x01000193;
+/** The C core's slot scramble (murmur3 finaliser). */
+function mix(h) {
+  h ^= h >>> 16; h = Math.imul(h, 0x7feb352d) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x846ca68b) >>> 0; h ^= h >>> 16;
+  return h >>> 0;
+}
 function items(text) {
-  const ws = words(text);
-  const out = [];
-  for (const w of ws) {
-    out.push(fnv(119 /* 'w' */, w, 0, w.length));
-    const p = new Uint8Array(w.length + 2);
-    p[0] = 32; p.set(w, 1); p[w.length + 1] = 32;
-    for (let i = 0; i + 3 <= p.length; i++) out.push(fnv(99 /* 'c' */, p, i, i + 3));
+  const b = enc.encode(text), n = b.length;
+  const ws = [], we = [];  // word spans [start, end) in b, lowercased in place, truncated to MAX_WORD bytes
+  let i = 0;
+  while (i < n) {
+    let c = b[i];
+    if (c >= 65 && c <= 90) c += 32;
+    if (!((c >= 48 && c <= 57) || (c >= 97 && c <= 122) || c >= 0x80)) { i++; continue; }
+    const st = i;
+    while (i < n) {
+      let d = b[i];
+      if (d >= 65 && d <= 90) { d += 32; b[i] = d; }
+      if (!((d >= 48 && d <= 57) || (d >= 97 && d <= 122) || d >= 0x80)) break;
+      i++;
+    }
+    ws.push(st); we.push(Math.min(i, st + MAX_WORD));
   }
-  for (let i = 0; i + 1 < ws.length; i++) {
-    const a = ws[i], c = ws[i + 1];
-    const buf = new Uint8Array(a.length + 1 + c.length);
-    buf.set(a, 0); buf[a.length] = 1; buf.set(c, a.length + 1);
-    out.push(fnv(98 /* 'b' */, buf, 0, buf.length));
+  const out = [];
+  for (let w = 0; w < ws.length; w++) {
+    const st = ws[w], L = we[w] - st;
+    let h = Math.imul(0x811c9dc5 ^ 119, PRIME) >>> 0;          // word: 'w' + bytes
+    for (let j = st; j < st + L; j++) h = Math.imul(h ^ b[j], PRIME) >>> 0;
+    out.push((h & MASK) >>> 0);
+    for (let j = 0; j + 3 <= L + 2; j++) {                     // trigrams of " " + word + " ": 'c' + 3 bytes
+      let t = Math.imul(0x811c9dc5 ^ 99, PRIME) >>> 0;
+      for (let q = j; q < j + 3; q++) t = Math.imul(t ^ (q === 0 || q === L + 1 ? 32 : b[st + q - 1]), PRIME) >>> 0;
+      out.push((t & MASK) >>> 0);
+    }
+  }
+  for (let w = 0; w + 1 < ws.length; w++) {                    // bigrams: 'b' + word1 + 0x01 + word2
+    let h = Math.imul(0x811c9dc5 ^ 98, PRIME) >>> 0;
+    for (let j = ws[w]; j < we[w]; j++) h = Math.imul(h ^ b[j], PRIME) >>> 0;
+    h = Math.imul(h ^ 1, PRIME) >>> 0;
+    for (let j = ws[w + 1]; j < we[w + 1]; j++) h = Math.imul(h ^ b[j], PRIME) >>> 0;
+    out.push((h & MASK) >>> 0);
   }
   if (!out.length) out.push(fnv(101 /* 'e' */, new Uint8Array(0), 0, 0));
   return out;
@@ -75,21 +103,31 @@ class Table {
     this.scale = new Float32Array(buffer.slice(o, o + 4 * K)); o += 4 * K;
     this.bias = new Float32Array(buffer.slice(o, o + 4 * K));
     this.F = F; this.K = K; this.labels = labels || null;
+    // open-addressing index key -> row (as the C core does): one or two probes instead of a binary search
+    let cap = 1; while (cap < 2 * F) cap <<= 1;
+    this.cap = cap; this.slotKey = new Uint32Array(cap); this.slotRow = new Int32Array(cap);
+    for (let r = 0; r < F; r++) {
+      let i = mix(this.keys[r]) & (cap - 1);
+      while (this.slotKey[i] !== 0) i = (i + 1) & (cap - 1);
+      this.slotKey[i] = this.keys[r] + 1; this.slotRow[i] = r;
+    }
     this.acc = new Int32Array(K);
   }
 
   row(h) {
-    let lo = 0, hi = this.F - 1;
-    while (lo <= hi) {
-      const mid = (lo + hi) >>> 1, k = this.keys[mid];
-      if (k === h) return mid;
-      if (k < h) lo = mid + 1; else hi = mid - 1;
+    const cap = this.cap - 1, want = h + 1;  // keys are < 2^22, so key + 1 never wraps and 0 marks an empty slot
+    let i = mix(h) & cap;
+    for (;;) {
+      const k = this.slotKey[i];
+      if (k === want) return this.slotRow[i];
+      if (k === 0) return -1;
+      i = (i + 1) & cap;
     }
-    return -1;
   }
 
   /** Scores every option. Returns {index, choice, confidence, probabilities}. */
-  decide(text) {
+  /** Scores every option. probabilities=false skips building the per-option array (the fast path). */
+  decide(text, probabilities = true) {
     const its = items(String(text)), K = this.K, acc = this.acc;
     acc.fill(0);
     for (const h of its) {
@@ -98,7 +136,7 @@ class Table {
       const base = r * K;
       for (let j = 0; j < K; j++) acc[j] += this.T[base + j];
     }
-    const n = its.length, z = new Float64Array(K);
+    const n = its.length, z = this.z || (this.z = new Float64Array(K));
     let best = 0, mx = -Infinity;
     for (let j = 0; j < K; j++) {
       z[j] = Math.fround((Math.fround(Math.fround(acc[j] * this.scale[j]) / n) + this.bias[j]) / this.temperature);
@@ -106,8 +144,10 @@ class Table {
     }
     let s = 0;
     for (let j = 0; j < K; j++) { z[j] = Math.exp(z[j] - mx); s += z[j]; }
-    const probabilities = Array.from(z, (v) => v / s);
-    return { index: best, choice: this.labels ? this.labels[best] : best, confidence: probabilities[best], probabilities };
+    const choice = this.labels ? this.labels[best] : best;
+    if (!probabilities) return { index: best, choice, confidence: z[best] / s, p1: K > 1 ? z[1] / s : 0 };
+    const p = Array.from(z, (v) => v / s);
+    return { index: best, choice, confidence: p[best], probabilities: p };
   }
 }
 
@@ -152,14 +192,15 @@ class Bundle {
     const answers = {};
     for (const [name, { spec, table }] of Object.entries(this.questions)) {
       if (opts.questions && !opts.questions.includes(name)) continue;
-      const d = table.decide(text);
+      const full = opts.probabilities !== false;
+      const d = table.decide(text, full);
       const thr = spec.threshold === null || spec.threshold === undefined ? Infinity : spec.threshold;
       const flag = spec.calibrated === false ? "uncalibrated" : d.confidence < thr ? "low_confidence" : null;
       const out = { confidence: d.confidence, certified: flag === null, flag };
-      if (spec.type === "yesno") { out.answer = d.index === 1; out.probability = d.probabilities[1]; }
+      if (spec.type === "yesno") { out.answer = d.index === 1; out.probability = full ? d.probabilities[1] : d.p1; }
       else {
         out.choice = d.choice;
-        out.probabilities = Object.fromEntries(spec.options.map((o, i) => [o, d.probabilities[i]]));
+        if (full) out.probabilities = Object.fromEntries(spec.options.map((o, i) => [o, d.probabilities[i]]));
       }
       answers[name] = out;
     }
@@ -329,6 +370,8 @@ const FLAG_WORDS = {
   never_serve: "this label is on never_serve: asked your model",
   shadow: "shadow mode: the table's answer was recorded, your model's was returned",
   off: "mode=off: the table was not consulted",
+  options_changed: "your options include ones the table never learned: asked your model until you retrain",
+  option_removed: "the table picked an option you removed: asked your model",
 };
 const explainFlag = (flag) => FLAG_WORDS[flag === null || flag === undefined ? "null" : flag] || String(flag || "");
 
@@ -347,8 +390,25 @@ class Shadow {
     this.auditRate = opts.auditRate ?? 0.01;
     this.onDecision = opts.onDecision || null;
     this.random = opts.random || Math.random;
-    this.counts = { table: 0, teacher: 0, audits: 0, auditDisagreements: 0 };
+    this.counts = { table: 0, teacher: 0, fallback: 0, audits: 0, auditDisagreements: 0 };
     this._log = opts.log || null;
+    // Options can change after training. Added ones: the table never learned them, so (by default) every decision
+    // goes to your model until you retrain. Removed ones: answers naming them are never served. rename maps old
+    // labels to new ones without retraining. Same rules as the Python package.
+    this.fallback = opts.fallback;  // answer when the table defers and there is no teacher (value or (text) => answer)
+    this.rename = opts.rename || {};
+    this.onNewOption = opts.onNewOption || "defer";
+    this.optionsAdded = []; this.optionsRemoved = [];
+    if (bundle && opts.options) {
+      const spec = bundle.questions[this.question].spec;
+      const want = normalizeOptions(opts.options, this.question);
+      if (spec.type !== "yesno" && want.type === "choice") {
+        const known = new Set(spec.options.map((o) => this.rename[o] || o));
+        const wanted = new Set(Object.keys(want.criteria));
+        this.optionsAdded = [...wanted].filter((o) => !known.has(o)).sort();
+        this.optionsRemoved = [...known].filter((o) => !wanted.has(o)).sort();
+      }
+    }
   }
 
   async _write(row) {
@@ -372,9 +432,17 @@ class Shadow {
   }
 
   /** The bundle's raw answer for this question, or null without a bundle. */
-  _table(text) {
+  _table(text, probabilities = false) {
     if (!this.bundle) return null;
-    return this.bundle.decide(text, { questions: [this.question] }).answers[this.question];
+    let a = this.bundle.decide(text, { questions: [this.question], probabilities }).answers[this.question];
+    if ("choice" in a && Object.keys(this.rename).length) {
+      const r = (k) => this.rename[k] || k;
+      a = { ...a, choice: r(a.choice) };
+      if (a.probabilities) a.probabilities = Object.fromEntries(Object.entries(a.probabilities).map(([k, v]) => [r(k), v]));
+    }
+    if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
+    else if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };
+    return a;
   }
 
   /** The option names this question decides among (from the bundle, else from the teacher). */
@@ -417,7 +485,7 @@ class Shadow {
    */
   async peek(text, opts = {}) {
     const t0 = now();
-    const a = this._table(text);
+    const a = this._table(text, opts.probabilities !== false);
     if (!a || !a.certified) return null;
     const local = "choice" in a ? a.choice : a.answer;
     const d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null,
@@ -439,7 +507,7 @@ class Shadow {
 
   /** What the table thinks of `text`, without calling your model: answer, confidence vs threshold, reason, top options. */
   explain(text) {
-    const a = this._table(text);
+    const a = this._table(text, true);
     if (!a) return { text, answer: null, confidence: null, threshold: null, certified: false, flag: "no_bundle", why: explainFlag("no_bundle"), top: [] };
     const top = a.probabilities ? Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]).slice(0, 3)
       : [["yes", a.probability], ["no", 1 - a.probability]].sort((x, y) => y[1] - x[1]);
@@ -453,6 +521,11 @@ class Shadow {
     const teacher = opts.teacher || this.teacher;
     let d;
     const a = this._table(text);
+    if ((!a || !a.certified) && !teacher && this.fallback !== undefined) {   // no teacher: the fallback answers, unlogged
+      const answer = typeof this.fallback === "function" ? await this.fallback(text) : this.fallback;
+      d = { answer, source: "fallback", confidence: a ? a.confidence : null, certified: false, flag: a ? a.flag : "no_bundle" };
+      return this._done(d, text, t0);
+    }
     if (!a) {
       const answer = await this._ask(text, "teacher", teacher);
       d = { answer, source: "teacher", confidence: null, certified: false, flag: "no_bundle" };
@@ -473,6 +546,7 @@ class Shadow {
     const c = { ...this.counts }, total = c.table + c.teacher;
     c.offload = total ? c.table / total : 0;
     c.auditDisagreement = c.audits ? c.auditDisagreements / c.audits : null;
+    c.optionsAdded = [...this.optionsAdded]; c.optionsRemoved = [...this.optionsRemoved];
     return c;
   }
 }
@@ -482,6 +556,8 @@ class Shadow {
  * `bundle` may be a Bundle, a path/URL (loaded if it exists) or omitted (every call goes to the LLM and is logged).
  */
 async function decision(name, opts = {}) {
+  if (name && typeof name === "object") { opts = name; name = opts.name || "decision"; }  // decision({options, llm})
+  name = name || "decision";
   let bundle = opts.bundle || null;
   if (typeof bundle === "string") {
     // A bundle that does not exist yet is fine (log-only start); a corrupt or unsupported one is an error.

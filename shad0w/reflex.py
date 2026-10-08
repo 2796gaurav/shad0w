@@ -87,9 +87,15 @@ def fit_lr_scipy(X, y, C: float, K: int | None = None, iters: int = 300):
         return loss, g
 
     res = minimize(f, np.zeros(F * K + K), jac=True, method="L-BFGS-B",
-                   options={"maxiter": iters, "maxcor": 20, "gtol": 1e-7, "ftol": 1e-12})
+                   options={"maxiter": iters, "maxcor": _history(F * K), "gtol": 1e-7, "ftol": 1e-12})
     W = res.x[:F * K].reshape(F, K)
     return W.T.astype(np.float32).copy(), res.x[F * K:].astype(np.float32).copy()
+
+
+def _history(n_params: int) -> int:
+    """L-BFGS history length: 20 normally; 5 for huge tables, where 2 x 20 parameter-sized vectors would not fit
+    in memory (1,000 options x 100k features is 100M parameters)."""
+    return 20 if n_params < 10_000_000 else 5
 
 
 def fit_lr_torch(X, y, C: float, K: int | None = None, iters: int = 300):
@@ -107,7 +113,7 @@ def fit_lr_torch(X, y, C: float, K: int | None = None, iters: int = 300):
     W = torch.zeros(X.shape[1], K, requires_grad=True)
     b = torch.zeros(K, requires_grad=True)
     opt = torch.optim.LBFGS([W, b], lr=1, max_iter=iters, tolerance_grad=1e-7, tolerance_change=1e-10,
-                            history_size=20, line_search_fn="strong_wolfe")
+                            history_size=_history(X.shape[1] * K), line_search_fn="strong_wolfe")
 
     def closure():
         opt.zero_grad()

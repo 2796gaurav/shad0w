@@ -52,7 +52,7 @@ Decision requests already name each question and list its answers, so nothing ne
 import shad0w
 
 intent = shad0w.decision(
-    "intent",
+    "intent",                 # the decision's name: its log, table, dashboard label (optional; default "decision")
     options={"refund": "wants money back", "lost_card": "card lost or stolen", "balance": "asks about balance",
              "other": "anything else"},   # always give it an "other": off-topic messages land there, not in a real intent
     llm="openai/gpt-6-luna",   # or anthropic/…, gemini/…, groq/…, ollama/llama3.1, systemone/kev, any OpenAI-compatible server
@@ -132,6 +132,12 @@ shad0w doctor            # checks the C core, training deps, keys, upstream and 
 
 `min_confidence` raises the bar on top of the certificate. `force_threshold` lowers it, and every answer it lets through is marked `certified=False`. Rollout guide: [shadow → canary → serve](https://2796gaurav.github.io/shad0w/docs/rollout.html). All settings: [Configuration](https://2796gaurav.github.io/shad0w/docs/configuration.html).
 
+## Change, scale, or no LLM at all
+
+- **Your options will change. That is safe.** Add an option and the table steps back, sending every decision to your LLM until it has relearned. Remove one and the table never answers with it. Rename one with `rename={"lost_card": "card_lost"}` and nothing needs retraining. [Changing your options](https://2796gaurav.github.io/shad0w/docs/options.html)
+- **Up to 1,024 options per question**, still microseconds per decision. `max_mb=1` caps the table's size; training keeps the most informative patterns and the certificate is computed on the capped table. [Scale](https://2796gaurav.github.io/shad0w/docs/scale.html)
+- **No LLM?** Train on human labels, rules or an existing classifier, and serve with `fallback="needs_review"` (or a function) for what the table is unsure about. [Running without an LLM](https://2796gaurav.github.io/shad0w/docs/without-llm.html)
+
 ## Use it from anywhere
 
 | | Install | Three lines |
@@ -205,6 +211,10 @@ Accuracy against the true labels on the same test set: Kev-0.8B 80.0%, gpt-4.1-m
 - **It holds for traffic like the traffic it was certified on.** Re-train when your traffic changes. The drift guard and live spot checks show you when that is.
 - **Runtime installs only numpy**; the C core is inside the wheel. Training (`[compile]`) adds scipy and scikit-learn. `[torch]` adds torch for faster training on large logs; without it, training uses scipy.
 - **Nothing leaves your machine** except the LLM calls you already make.
+
+## Learn more
+
+[Get started](https://2796gaurav.github.io/shad0w/docs/) · [Reference: every parameter](https://2796gaurav.github.io/shad0w/docs/reference.html) · [Tuning](https://2796gaurav.github.io/shad0w/docs/tuning.html) · [The guarantee](https://2796gaurav.github.io/shad0w/docs/guarantee.html) · [Benchmarks](https://2796gaurav.github.io/shad0w/docs/benchmarks.html) · [Blog: System Zero](https://2796gaurav.github.io/shad0w/blog/system-zero.html) · [Playground](https://2796gaurav.github.io/shad0w/demo/)
 
 ## Contributing
 

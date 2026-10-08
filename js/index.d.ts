@@ -16,7 +16,7 @@ export interface Answer {
   confidence: number;
   /** true: serve this answer. false: call your model instead. */
   certified: boolean;
-  flag: "low_confidence" | "uncalibrated" | null;
+  flag: string | null;
   /** choice questions */
   choice?: string;
   probabilities?: Record<string, number>;
@@ -47,7 +47,7 @@ export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "drift" | "un
 export interface Decision<A = string | boolean> {
   answer: A;
   /** "table": certified, answered locally in microseconds. "teacher": your LLM answered (and it was logged). */
-  source: "table" | "teacher";
+  source: "table" | "teacher" | "fallback";
   confidence: number | null;
   certified: boolean;
   /** why the table deferred */
@@ -88,6 +88,14 @@ export interface ShadowOptions {
   /** receives every teacher answer as {text, <question>: answer, source, ts}: a function, a stream, or (Node) a file path */
   log?: LogSink;
   random?: () => number;
+  /** the options you offer now; compared with the trained bundle to catch added / removed options */
+  options?: string[] | Record<string, string | null> | Record<string, unknown>;
+  /** options added since training: "defer" (default) sends every decision to the teacher until you retrain */
+  onNewOption?: "defer" | "serve";
+  /** answer when the table defers and there is no teacher (running without an LLM); never logged */
+  fallback?: string | boolean | ((text: string) => string | boolean | Promise<string | boolean>);
+  /** rename labels without retraining, e.g. { lost_card: "card_lost" } */
+  rename?: Record<string, string>;
 }
 export class Shadow {
   constructor(bundle: Bundle | null, opts?: ShadowOptions);
@@ -104,7 +112,11 @@ export class Shadow {
   /** the option names of this question (from the bundle, else the teacher), or null */
   options(): string[] | null;
   threshold(): number | null;
-  stats(): { table: number; teacher: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null };
+  /** options added / removed since the bundle was trained (see ShadowOptions.options) */
+  readonly optionsAdded: string[];
+  readonly optionsRemoved: string[];
+  stats(): { table: number; teacher: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null;
+             optionsAdded: string[]; optionsRemoved: string[] };
 }
 
 export interface TeacherOptions {
@@ -151,10 +163,14 @@ export function decisionsTeacher(opts: DecisionTeacherOptions): Teacher & { opti
  * llm may also be "systemone/<model>" (with baseURL) or "openai-decisions/gpt-6-luna".
  * A bundle path that does not exist starts log-only; a corrupt or unsupported bundle throws.
  */
-export function decision(name: string, opts: Partial<TeacherOptions> & ShadowOptions & {
+export type DecisionOptions = Partial<TeacherOptions> & ShadowOptions & {
+  /** what this decision is called (default "decision"): its log field, bundle question and metrics label */
+  name?: string;
   llm?: string | Teacher;
   bundle?: Bundle | string | null;
-}): Promise<Shadow>;
+};
+export function decision(name: string, opts: DecisionOptions): Promise<Shadow>;
+export function decision(opts: DecisionOptions): Promise<Shadow>;
 
 /** Vercel AI SDK language-model middleware: wrapLanguageModel({ model, middleware: shad0wMiddleware(intent) }). */
 export interface MiddlewareOptions {

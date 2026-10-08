@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.3.1
+
+Changing options safely, scale, running without an LLM, and a faster JavaScript runtime.
+
+### Fixed
+- **Adding or removing an option after training no longer serves wrong answers.** A table trained on the old option list answered messages about a new option with an old label, marked certified (more than half of a new option's messages in our test), and kept answering with options you had removed. shad0w now compares the options you offer with the ones the table learned. Added options send every decision to your LLM (`flag="options_changed"`) until you retrain; removed options are never served (`flag="option_removed"`); everything your LLM answers meanwhile is logged, so the next `train()` learns the new list. The retrain gate never blocks this case. The proxy applies the same rule to the options each request names, and the chat path now parses replies against the request's own enum, so a new option is learned instead of dropped.
+- **`adecide()` with a canary could run a sync teacher on the event loop.** The rollout policy was drawn twice; it is now drawn once.
+
+### Added
+- **`rename={"old": "new"}`** (also `SHAD0W_RENAME`, TOML and `shad0w train --rename OLD=NEW`): rename options without retraining; the next training run renames the old rows in the log.
+- **`on_new_option = "defer" | "serve"`**: what to do with options the table never learned.
+- **`max_mb`** (also `shad0w train --max-mb`): a size budget per table. Training keeps the most informative patterns and refits on them; the certificate is computed on the capped table. On 150 options a 1 MB budget certified the same share as the 3.6 MB table without one.
+- **`fallback=`**: run without an LLM. A value or a function answers what the table is unsure about (`source="fallback"`, never logged as training data). Train on human labels, rules or an existing classifier.
+- **`decision()` name is optional** (default `"decision"`), in Python and JavaScript.
+- **Large option sets train faster with the same quality**: the C search runs on a subsample above 2M table cells, the temperature uses 3 folds, and L-BFGS keeps a shorter history above 10M weights, so up to 1,024 options train on a laptop.
+- `Shadow.stats()` reports `options_added` / `options_removed`; the JS `Shadow` has `optionsAdded`, `optionsRemoved`, `rename`, `onNewOption`, `fallback`.
+- Benchmark `bench/b9_scale.py`: size, speed, training time and certified share from 10 to 500 options.
+
+### Changed
+- **Faster JavaScript.** Hashing works straight on the UTF-8 bytes without allocations, rows are found through a hash table (as in the C core) instead of a binary search, and `bundle.decide(text, { probabilities: false })` skips the per-option map. On a 77-option table on a laptop CPU, `Shadow.decide` (which uses the fast path) went from about 20 µs to about 8 µs per decision, and `bundle.decide` with probabilities from about 20 µs to about 15 µs. Answers are bit-identical (checked on 20,000 inputs and by the parity tests).
+- The two copies of the retrain quality gate (Python and CLI) are one helper, `shad0w.shadow.gate_reason`.
+
 ## 0.3.0
 
 Zero-code for the new decision APIs, every knob in one place, and retraining you can trust.

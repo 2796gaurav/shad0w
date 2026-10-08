@@ -67,14 +67,14 @@ def _certify(q: Question, texts, y, alpha: float, delta: float, drift_window: in
 def shadow_compile(schema: dict, records: list[dict], alpha: float = 0.05, delta: float = 0.1,
                    cal_fraction: float = 0.3, max_cal: int = 3000, teacher: str = "unspecified",
                    seed: int = 0, r_min: float = 8.0, cal_records: list[dict] | None = None,
-                   drift_window: int = 500, drift_margin: float = 0.03):
+                   drift_window: int = 500, drift_margin: float = 0.03, max_mb: float | None = None):
     """Compile every question in `schema` from the teacher's logged answers in `records` and certify it.
     Returns (Model, certificate dict). Each question needs at least ~1,000 records for a useful certificate.
 
     cal_records: an optional separate calibration set (for example the uniform spot-check sample of live traffic).
     When given, every row of `records` is used for fitting and only `cal_records` certify; the certificate then
     says calibration="uniform-audit" instead of "held-out-split"."""
-    from .compiler.distill import compile_schema
+    from .compiler.distill import compile_schema, max_features_for
 
     rng = np.random.default_rng(seed)
     model = Model(meta={"mode": "shadow", "teacher": teacher, "alpha": alpha, "delta": delta})
@@ -109,7 +109,7 @@ def shadow_compile(schema: dict, records: list[dict], alpha: float = 0.05, delta
             cal, fit = perm[:n_cal], perm[n_cal:]
             cal_texts, cal_y = [texts[i] for i in cal], y[cal]
             how = "held-out-split"
-        comp = compile_schema([texts[i] for i in fit], y[fit], options)
+        comp = compile_schema([texts[i] for i in fit], y[fit], options, max_features=max_features_for(max_mb, len(options)))
         q = Question(name, qtype, options, comp.rx, float("inf"), alpha, DriftGuard(np.ones(2), np.ones(2, bool)), r_min, False)
         stats = _certify(q, cal_texts, cal_y, alpha, delta, drift_window, drift_margin)
         model.questions[name] = q
@@ -141,6 +141,22 @@ def certify_bundle(bundle: str, records: list[dict], alpha: float | None = None,
     m.save(bundle)
     write_certificate(bundle, cert)
     return cert
+
+
+def gate_reason(new: dict, old: dict | None) -> str | None:
+    """Why a retrained question should NOT replace the current one (None = accept it).
+
+    The new table must certify something and at least 80% of the old table's certified share. When the option set
+    changed, the old table answers a different question, so it is no baseline and the new one is always accepted."""
+    if not old or old.get("threshold") is None:
+        return None
+    if set(old.get("options") or []) != set(new.get("options") or []):
+        return None
+    new_share, old_share = new["certified_share_on_calibration"], old.get("certified_share_on_calibration", 0.0)
+    if new["threshold"] is None or new_share < 0.8 * old_share:
+        return (f"new bundle certifies {new_share:.1%} of calibration traffic vs {old_share:.1%} before; "
+                "kept the old one (retrain='always' or no --gate to replace anyway)")
+    return None
 
 
 def write_certificate(bundle: str, cert: dict):

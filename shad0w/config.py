@@ -44,6 +44,10 @@ DEFAULTS: dict[str, Any] = {
     "trace": None,              # JSON Lines file receiving every decision
     "capture": ["header", "model", "tools", "decisions"],  # proxy: how a request is recognised as a decision
     "timeout": 120.0,           # proxy: upstream request timeout in seconds
+    "on_new_option": "defer",   # your option list gained options the table never learned: "defer" everything to
+                                # your LLM until retrained (safe), or "serve" the options the table does know
+    "max_mb": None,             # size budget per question's table in MB; keeps the most informative features (None = all)
+    "rename": {},               # {"old_label": "new_label"}: rename options without retraining (logs follow at train)
 }
 
 HELP = {
@@ -69,6 +73,9 @@ HELP = {
     "trace": "JSON Lines file that receives every decision.",
     "capture": "Proxy: which request shapes count as decisions (header, model, tools, decisions, json_schema).",
     "timeout": "Proxy: upstream request timeout in seconds.",
+    "on_new_option": "Options added after training: 'defer' asks your LLM until you retrain; 'serve' keeps serving known ones.",
+    "max_mb": "Size budget for each table in MB. Many options or a huge vocabulary? Cap it; the certificate is computed on the capped table.",
+    "rename": "Rename labels without retraining, e.g. {lost_card = \"card_lost\"}. Applied to the table and, at the next train, to the log.",
 }
 
 ENV_PREFIX = "SHAD0W_"
@@ -76,6 +83,7 @@ CONFIG_ENV = "SHAD0W_CONFIG"
 CONFIG_FILE = "shad0w.toml"
 MODES = ("serve", "shadow", "off")
 RETRAIN = ("gated", "always")
+ON_NEW_OPTION = ("defer", "serve")
 CAPTURE = ("header", "model", "tools", "json_schema", "decisions")
 
 
@@ -103,6 +111,13 @@ class Settings:
     trace: str | None = None
     capture: tuple = ("header", "model", "tools", "decisions")
     timeout: float = 120.0
+    on_new_option: str = "defer"
+    max_mb: float | None = None
+    rename: tuple = ()  # ((old, new), ...): hashable form of the rename map
+
+    @property
+    def rename_map(self) -> dict[str, str]:
+        return dict(self.rename)
 
     def asdict(self) -> dict:
         return {f.name: getattr(self, f.name) for f in fields(self)}
@@ -147,10 +162,12 @@ def _coerce(key: str, raw: str) -> Any:
         if s.lower() in ("off", "false", "no"):
             return 0
         return int(float(s))
-    if isinstance(d, float) or key in ("min_confidence", "force_threshold", "cost_per_call", "llm_latency_ms"):
+    if isinstance(d, float) or key in ("min_confidence", "force_threshold", "cost_per_call", "llm_latency_ms", "max_mb"):
         return float(s)
     if isinstance(d, list):
         return [x.strip() for x in s.split(",") if x.strip()]
+    if isinstance(d, dict):  # "old=new,old2=new2"
+        return dict(p.split("=", 1) for p in (x.strip() for x in s.split(",")) if "=" in p)
     return s
 
 
@@ -159,6 +176,12 @@ def _norm(key: str, v: Any) -> Any:
         if isinstance(v, str):
             v = [x.strip() for x in v.split(",") if x.strip()]
         return tuple(str(x) for x in (v or ()))
+    if key == "rename":
+        if isinstance(v, str):
+            v = dict(p.split("=", 1) for p in (x.strip() for x in v.split(",")) if "=" in p)
+        if isinstance(v, dict):
+            v = v.items()
+        return tuple(sorted((str(a).strip(), str(b).strip()) for a, b in (v or ())))
     if key == "auto_train" and (v is None or v is False):
         return 0
     if key == "trace" and v is not None and not isinstance(v, str):
@@ -180,8 +203,14 @@ def _validate(s: dict) -> None:
     between("cal_fraction", 0.01, 0.9)
     between("min_confidence", 0.0, 1.0, allow_none=True)
     between("force_threshold", 0.0, 1.0, allow_none=True)
+    between("max_mb", 0.01, 4096, allow_none=True)
     if s["mode"] not in MODES:
         raise ValueError(f"mode must be one of {MODES}, got {s['mode']!r}")
+    if s["on_new_option"] not in ON_NEW_OPTION:
+        raise ValueError(f"on_new_option must be one of {ON_NEW_OPTION}, got {s['on_new_option']!r}")
+    olds = [a for a, _ in s["rename"]]
+    if len(set(olds)) != len(olds) or any(not a or not b or a == b for a, b in s["rename"]):
+        raise ValueError(f"rename must map distinct non-empty labels to different non-empty labels, got {dict(s['rename'])}")
     if s["retrain"] not in RETRAIN:
         raise ValueError(f"retrain must be one of {RETRAIN}, got {s['retrain']!r}")
     if int(s["min_rows"]) < 100:

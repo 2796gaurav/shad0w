@@ -109,8 +109,8 @@ class Gateway:
                             metrics=self.metrics, trace=self._trace, settings=qs)
                 self._shadows[q] = sh
                 self._mtimes[q] = _mtime(bundle)
-            elif sh.schema is None and schema is not None:
-                sh.schema = schema
+            elif schema is not None and _option_set(sh.schema) != _option_set(schema):
+                sh.schema = schema  # the request names the options: it is the source of truth (and flags changes)
             return sh
 
     def maybe_reload(self, q: str, sh: Shadow):
@@ -130,6 +130,15 @@ class Gateway:
                 log.warning("reload of %r failed: %s", q, e)
 
     def options(self, q: str, sh: Shadow, req: dict, headers=None) -> list[str] | None:
+        """The options to parse your LLM's reply against: the request's own (json_schema / tool enum / header) when
+        it names them, else the configured schema, else the table's."""
+        named = options_of(req, headers)
+        if named:
+            if _option_set(sh.schema) != set(named):
+                sh.schema = {"type": "choice", "criteria": {o: None for o in named}}
+            return named
+        if sh.schema and sh.schema.get("type", "choice") == "choice" and sh.schema.get("criteria"):
+            return list(sh.schema["criteria"])
         if sh.model is not None:
             return list(sh.model.questions[q].options)
         if sh.schema:
@@ -202,6 +211,14 @@ def _tool_enum(req: dict) -> tuple[str, str, list[str]] | None:
         if len(enums) == 1:
             return name, enums[0][0], [str(x) for x in enums[0][1]]
     return None
+
+
+def _option_set(schema: dict | None):
+    if not schema:
+        return None
+    if schema.get("type", "choice") == "yesno":
+        return {"__yesno__"}
+    return {str(o) for o in (schema.get("criteria") or {})}
 
 
 def options_of(req: dict, headers=None) -> list[str] | None:
