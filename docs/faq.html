@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>FAQ · shad0w</title>
 <meta name="description" content="Common questions about shad0w.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/faq.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,18 +33,27 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html" class=active>FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · FAQ</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html" class=active>FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h1>
 <h3 id="is-this-a-cache">Is this a cache?<a class="headerlink" href="#is-this-a-cache" title="Permanent link">#</a></h3>
 <p>No. A cache answers only texts it has seen. shad0w generalises to new wordings of what it learned, and its guarantee covers new texts drawn like your traffic.</p>
 <h3 id="how-much-traffic-does-it-take-over">How much traffic does it take over?<a class="headerlink" href="#how-much-traffic-does-it-take-over" title="Permanent link">#</a></h3>
-<p>On seven public intent and topic tasks, 45–71% at α = 5%, with end-to-end accuracy within 1 point of the LLM alone. It grows with logged traffic: 31% at 2k answers and 70% at 100k on AG News. Sentiment-like tasks: near 0%, by design.</p>
+<p>On 3 public intent and topic tasks, 61–86% at α = 5% (teacher: gpt-4.1-mini (OpenAI)), with end-to-end accuracy within 1 point of the LLM alone. It grows with logged traffic: 0% at 250 answers and 60% at 10,000 on BANKING77. Sentiment-like tasks: 0%, by design. Sources: <a href="benchmarks.html">benchmarks</a>.</p>
 <h3 id="how-fast-is-it">How fast is it?<a class="headerlink" href="#how-fast-is-it" title="Permanent link">#</a></h3>
-<p>About 1 µs per decision in C, 7–11 µs in JavaScript, and 8–15 µs in Python. Through the proxy or HTTP server, add the network hop (~0.2 ms on localhost).</p>
+<p>1.0 µs per decision in C, 10 µs in JavaScript, and 5.2 µs in Python (2.4 µs without the per-option probabilities). Through the proxy, 0.53 ms end to end at the client; the bare HTTP hop is 0.17 ms on localhost. Measured on an Apple M5 Pro; see <a href="benchmarks.html">benchmarks</a>.</p>
+<h3 id="does-it-work-with-the-openai-decisions-api">Does it work with the OpenAI Decisions API?<a class="headerlink" href="#does-it-work-with-the-openai-decisions-api" title="Permanent link">#</a></h3>
+<p>Yes, with no code change. Run <code>shad0w proxy --upstream https://api.openai.com/v1</code> and set your client's <code>base_url</code> to it. Requests to <code>/v1/decisions</code> already name each question and list its answers, so the proxy needs no marking. Questions the table is certified on are answered locally in the same JSON shape; only the rest are sent to <code>gpt-6-luna</code>, and their answers are logged for training. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
+<h3 id="jev-kev-and-laya-are-already-fast-why-add-shad0w">Jev, Kev and Laya are already fast. Why add shad0w?<a class="headerlink" href="#jev-kev-and-laya-are-already-fast-why-add-shad0w" title="Permanent link">#</a></h3>
+<p>They answer in milliseconds to a second per call, from a hosted API or a model you run. The table answers its certified share in microseconds on your CPU, with no per-call price and a written bound on how often it disagrees with them. It needs about 1,000 logged answers per question first and never covers everything. Use the decision model as the teacher and let shad0w take the repeat traffic. See <a href="compare.html">How it compares</a>.</p>
+<h3 id="how-do-i-tune-it">How do I tune it?<a class="headerlink" href="#how-do-i-tune-it" title="Permanent link">#</a></h3>
+<p><code>alpha</code> sets the bound, <code>audit_rate</code> the spot checks, <code>mode</code> and <code>canary</code> the rollout, <code>never_serve</code> the labels that always go to your LLM. Set them in code, in <code>SHAD0W_*</code> variables or in <code>shad0w.toml</code>; <code>shad0w config</code> shows the result. See <a href="configuration.html">Configuration</a>.</p>
+<h3 id="can-i-set-the-confidence-threshold-myself">Can I set the confidence threshold myself?<a class="headerlink" href="#can-i-set-the-confidence-threshold-myself" title="Permanent link">#</a></h3>
+<p>You can make it stricter with <code>min_confidence</code>; the certificate still holds. <code>force_threshold</code> lets the table answer below the certified threshold, but those answers are marked <code>certified=False</code> with the flag <code>manual_threshold</code>, because the guarantee no longer covers them.</p>
 <h3 id="does-it-need-a-gpu-labels-or-a-training-pipeline">Does it need a GPU, labels or a training pipeline?<a class="headerlink" href="#does-it-need-a-gpu-labels-or-a-training-pipeline" title="Permanent link">#</a></h3>
 <p>No. It needs a CPU, your LLM's answers, and seconds of training.</p>
 <h3 id="which-llms-can-be-the-teacher">Which LLMs can be the teacher?<a class="headerlink" href="#which-llms-can-be-the-teacher" title="Permanent link">#</a></h3>
-<p>Any. Presets cover OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Azure, Ollama, vLLM and LM Studio. Anything else works through <code>base_url=</code>, a <code>complete=</code> function, or a plain <code>fn(text) -&gt; answer</code>.</p>
+<p>Any. Presets cover OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Ollama, vLLM and LM Studio, plus the OpenAI Decisions API (<code>openai-decisions/</code>) and System One decision models such as Jev, Kev and Laya (<code>systemone/</code>). Anything else works through <code>base_url=</code>, a <code>complete=</code> function, or a plain <code>fn(text) -&gt; answer</code>.</p>
 <h3 id="does-any-data-leave-my-machine">Does any data leave my machine?<a class="headerlink" href="#does-any-data-leave-my-machine" title="Permanent link">#</a></h3>
 <p>No. Logs, training and tables are local files. The only network traffic is the LLM calls you already make.</p>
 <h3 id="what-happens-when-my-llm-changes-new-model-new-prompt">What happens when my LLM changes (new model, new prompt)?<a class="headerlink" href="#what-happens-when-my-llm-changes-new-model-new-prompt" title="Permanent link">#</a></h3>
@@ -52,7 +63,7 @@
 <h3 id="can-i-use-it-for-multi-label-or-open-ended-output">Can I use it for multi-label or open-ended output?<a class="headerlink" href="#can-i-use-it-for-multi-label-or-open-ended-output" title="Permanent link">#</a></h3>
 <p>No. One answer from a fixed list per question. For several labels, use one yes/no question per label.</p>
 <h3 id="how-big-is-the-table">How big is the table?<a class="headerlink" href="#how-big-is-the-table" title="Permanent link">#</a></h3>
-<p>About 2 MB for 77 options. Smaller is possible: 256 KB still kept 88.5% of the share answered in our tests.</p>
+<p>About 1.5 MB for 77 options. It grows with the number of options and the vocabulary of your traffic, not with the amount of traffic.</p>
 <h3 id="is-it-safe-against-adversarial-input">Is it safe against adversarial input?<a class="headerlink" href="#is-it-safe-against-adversarial-input" title="Permanent link">#</a></h3>
 <p>Use <code>exposed=True</code> for user-facing, adversarial channels. The table then also defers any answer that a few inserted words could flip (an exact robustness radius). For high-stakes decisions, keep your LLM in the loop.</p>
 <h3 id="what-does-it-cost">What does it cost?<a class="headerlink" href="#what-does-it-cost" title="Permanent link">#</a></h3>
@@ -66,6 +77,10 @@
 <li><a href="#is-this-a-cache">Is this a cache?</a></li>
 <li><a href="#how-much-traffic-does-it-take-over">How much traffic does it take over?</a></li>
 <li><a href="#how-fast-is-it">How fast is it?</a></li>
+<li><a href="#does-it-work-with-the-openai-decisions-api">Does it work with the OpenAI Decisions API?</a></li>
+<li><a href="#jev-kev-and-laya-are-already-fast-why-add-shad0w">Jev, Kev and Laya are already fast. Why add shad0w?</a></li>
+<li><a href="#how-do-i-tune-it">How do I tune it?</a></li>
+<li><a href="#can-i-set-the-confidence-threshold-myself">Can I set the confidence threshold myself?</a></li>
 <li><a href="#does-it-need-a-gpu-labels-or-a-training-pipeline">Does it need a GPU, labels or a training pipeline?</a></li>
 <li><a href="#which-llms-can-be-the-teacher">Which LLMs can be the teacher?</a></li>
 <li><a href="#does-any-data-leave-my-machine">Does any data leave my machine?</a></li>
@@ -82,7 +97,7 @@
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

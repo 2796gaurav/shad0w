@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>The guarantee · shad0w</title>
 <meta name="description" content="What &quot;certified&quot; means in plain words, what it assumes, and the math behind it.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/guarantee.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,10 +33,11 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html" class=active>The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · The guarantee</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html" class=active>The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="the-guarantee">The guarantee<a class="headerlink" href="#the-guarantee" title="Permanent link">#</a></h1>
 <h2 id="in-plain-words">In plain words<a class="headerlink" href="#in-plain-words" title="Permanent link">#</a></h2>
-<p>Before the table answers anything, shad0w tests it on answers from your LLM that the table <strong>never trained on</strong>. It looks for a confidence level with this property: whenever the table is at least that confident, it agrees with your LLM at least 95% of the time (for α = 5%). It allows for bad luck in which answers happened to be held out.</p>
+<p>Before the table answers anything, shad0w tests it on answers from your LLM that the table <strong>never trained on</strong>. It looks for a confidence level with this property: whenever the table is at least that confident, it disagrees with your LLM on at most α of the answers it serves (α = 5% by default), with 90% confidence. It allows for bad luck in which answers happened to be held out; that bad luck is what δ measures, so in up to 10% of certifications the realised rate can land above α. In our earlier runs it did on 2 of 7 tasks (3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)); the live spot checks are there to catch that.</p>
 <p>That gives you one sentence you can show a reviewer:</p>
 <blockquote>
 <p>On traffic like the calibration traffic, among the answers the table serves, it disagrees with your LLM <strong>at most α</strong> of the time. This statement is wrong with probability at most <strong>δ</strong> (10% by default).</p>
@@ -72,7 +75,7 @@
 <li>Joulin et al., <em>Bag of Tricks for Efficient Text Classification</em>, 2016. <a href="https://arxiv.org/abs/1607.01759">arXiv:1607.01759</a></li>
 </ul>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="cli.html"><small>← previous</small>Command line</a><a class="next" href="limits.html"><small>next →</small>Limits</a></div></article>
+  <div class="pager"><a href="troubleshooting.html"><small>← previous</small>Troubleshooting</a><a class="next" href="benchmarks.html"><small>next →</small>Benchmarks & evidence</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#in-plain-words">In plain words</a></li>
@@ -86,7 +89,7 @@
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

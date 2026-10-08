@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<title>Decisions API &amp; System One (zero code) · shad0w</title>
+<meta name="description" content="Point an OpenAI Decisions API client, or a Jev / Kev / Laya (System One) client, at shad0w and change nothing else.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/decisions-api.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Decisions API &amp; System One (zero code) · shad0w">
+<meta property="og:description" content="Point an OpenAI Decisions API client, or a Jev / Kev / Laya (System One) client, at shad0w and change nothing else."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/decisions-api.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Decisions API & System One (zero code)</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html" class=active>Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="decisions-api-system-one-zero-code">Decisions API &amp; System One: zero code<a class="headerlink" href="#decisions-api-system-one-zero-code" title="Permanent link">#</a></h1>
+<p>Two kinds of API already describe a decision completely in every request: the question's name and its finite list of answers.</p>
+<ul>
+<li><strong>OpenAI's Decisions API</strong>: <code>POST /v1/decisions</code>, model <code>gpt-6-luna</code>, in public beta since 6 Oct 2026. Question types <code>choice</code>, <code>predicate</code> (yes/no) and <code>score</code>.</li>
+<li><strong>System One decision models</strong>: TypeSafe's Jev, and the open Kev, Laya, Julia, Clef and others. They all speak <code>POST /v1/systemone</code>, with question types <code>choice</code>, <code>noul</code> (yes/no) and <code>score</code>.</li>
+</ul>
+<p>Because the request already says what is being decided, <code>shad0w proxy</code> needs no header and no marking. You move <code>base_url</code>, and nothing else.</p>
+<h2 id="openai-decisions-api">OpenAI Decisions API<a class="headerlink" href="#openai-decisions-api" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w">      </span><span class="c1"># dashboard at http://localhost:8010</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>                                <span class="c1"># openai &gt;= 3.26</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:8010/v1"</span><span class="p">)</span>     <span class="c1"># the only change</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">decisions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">"my card was stolen yesterday"</span><span class="p">,</span>
+    <span class="n">questions</span><span class="o">=</span><span class="p">[{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"choice"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Which support intent is this?"</span><span class="p">,</span>
+        <span class="s2">"choices"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"card lost or stolen"</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"wants money back"</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"anything else"</span><span class="p">}],</span>
+    <span class="p">}],</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>The response has the same shape whether OpenAI or the table answered it: an <code>answers</code> list with <code>choice</code>, <code>confidence</code> and <code>probabilities</code> for each question. Table answers also carry a <code>shad0w</code> object (<code>source</code>, <code>certified</code>, <code>flag</code>), and every response has an <code>x-shad0w-source</code> header: <code>table</code>, <code>teacher</code> or <code>mixed</code>. Your API key is forwarded to OpenAI as usual, or set <code>--api-key-env OPENAI_API_KEY</code> on the proxy.</p>
+<h2 id="system-one-servers-jev-kev-laya">System One servers (Jev, Kev, Laya, ...)<a class="headerlink" href="#system-one-servers-jev-kev-laya" title="Permanent link">#</a></h2>
+<p>Point the proxy at any server that implements <code>/v1/systemone</code>, then point your client at the proxy:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>http://127.0.0.1:8081/v1<span class="w">         </span><span class="c1"># the System One server's base URL</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"http://localhost:8010/v1/systemone"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">"model"</span><span class="p">:</span> <span class="s2">"kev"</span><span class="p">,</span>
+    <span class="s2">"state"</span><span class="p">:</span> <span class="s2">"my card was stolen yesterday"</span><span class="p">,</span>
+    <span class="s2">"questions"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"intent"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"choice"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Which support intent is this?"</span><span class="p">,</span>
+                   <span class="s2">"criteria"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"card lost or stolen"</span><span class="p">,</span> <span class="s2">"refund"</span><span class="p">:</span> <span class="s2">"wants money back"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"anything else"</span><span class="p">}},</span>
+        <span class="s2">"urgent"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"noul"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Is it urgent?"</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">})</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">r</span><span class="p">[</span><span class="s2">"answers"</span><span class="p">][</span><span class="s2">"intent"</span><span class="p">][</span><span class="s2">"choice"</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">"answers"</span><span class="p">][</span><span class="s2">"urgent"</span><span class="p">][</span><span class="s2">"noul"</span><span class="p">]</span>
+</code></pre></div>
+
+<p><strong>Run an open decision model on your laptop.</strong> llama.cpp serves the System One endpoint for the open GGUF builds (Kev 0.8B/4B/9B, Laya, Julia-1, Clef-Flash, Nimble, OpenJev and lev from <code>ggml-org</code> on Hugging Face):</p>
+<div class="codehilite"><pre><span></span><code>llama-server<span class="w"> </span>-hf<span class="w"> </span>ggml-org/Kev-0.8B-GGUF<span class="w"> </span>--port<span class="w"> </span><span class="m">8081</span><span class="w">      </span><span class="c1"># then: shad0w proxy --upstream http://127.0.0.1:8081/v1</span>
+</code></pre></div>
+
+<p>This exact setup was tested end to end on an Apple-silicon Mac with shad0w 0.3.0 and llama.cpp 0.6.0. Ollama's library also lists decision models such as <code>laya</code>, <code>tev1</code>, <code>nimble</code> and <code>clef-flash</code>, served at <code>/v1/systemone</code> from Ollama 0.40; that route was not tested here.</p>
+<p>llama.cpp implements <code>/v1/systemone</code> but not <code>/v1/decisions</code>. A Decisions-API request the table cannot answer is forwarded upstream, so against llama.cpp it comes back as the server's 404, unchanged.</p>
+<h2 id="what-gets-saved-exactly">What gets saved, exactly<a class="headerlink" href="#what-gets-saved-exactly" title="Permanent link">#</a></h2>
+<p>For each request, every <code>choice</code> and yes/no question goes to the table first.</p>
+<ul>
+<li><strong>All of them certified:</strong> the proxy answers by itself. No upstream call, no tokens, microseconds.</li>
+<li><strong>Some certified:</strong> only the remaining questions are sent upstream, in one request. The answers are merged back in the original order. You pay for the smaller request.</li>
+<li><strong>None certified:</strong> the request goes upstream as it is.</li>
+</ul>
+<p><code>score</code> questions always go upstream: shad0w does not learn ordinal scales. Every answer that came from upstream is logged per question, so <code>shad0w train --dir shad0w</code> can learn from it. Questions are created the first time their name is seen, with their options taken from the request.</p>
+<p>Spot checks work as everywhere else: <code>--audit-rate</code> re-asks a share of table answers upstream in the background to measure live agreement.</p>
+<p>To turn interception off for these endpoints, drop <code>decisions</code> from the capture list: <code>--capture header,model,tools</code>.</p>
+<h2 id="use-a-decision-model-as-the-teacher">Use a decision model as the teacher<a class="headerlink" href="#use-a-decision-model-as-the-teacher" title="Permanent link">#</a></h2>
+<p>You can also go the other way: let shad0w call a decision model directly, with no proxy, and learn from its answers.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span>
+    <span class="s2">"intent"</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"card lost or stolen"</span><span class="p">,</span> <span class="s2">"refund"</span><span class="p">:</span> <span class="s2">"wants money back"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"anything else"</span><span class="p">},</span>
+    <span class="n">llm</span><span class="o">=</span><span class="s2">"systemone/kev"</span><span class="p">,</span>                       <span class="c1"># or "openai-decisions/gpt-6-luna" (uses OPENAI_API_KEY)</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">"http://127.0.0.1:8081"</span><span class="p">,</span>          <span class="c1"># the System One server; "/v1" is added when missing</span>
+<span class="p">)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen yesterday"</span><span class="p">)</span>         <span class="c1"># Kev answers, the answer is logged</span>
+<span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>                                 <span class="c1"># later: the table answers the certified share itself</span>
+</code></pre></div>
+
+<p>Yes/no questions (<code>options={"type": "yesno", "instructions": "Is it urgent?"}</code>) map to <code>noul</code> on System One and to <code>predicate</code> on the Decisions API. In JavaScript the same presets are <code>llm: "systemone/kev"</code> and <code>llm: "openai-decisions/gpt-6-luna"</code>; see <a href="javascript.html">JavaScript</a>.</p>
+<h2 id="shad0w-serve-speaks-both-too"><code>shad0w serve</code> speaks both too<a class="headerlink" href="#shad0w-serve-speaks-both-too" title="Permanent link">#</a></h2>
+<p>A trained bundle served with <code>shad0w serve --bundle shad0w/intent/bundle</code> answers <code>POST /v1/decisions</code> and <code>POST /v1/systemone</code> from the table alone. Questions the bundle does not know, and <code>score</code> questions, come back with the flag <code>unsupported</code>; there is no LLM behind <code>serve</code>. See <a href="http.html">HTTP</a>.</p>
+<h2 id="is-this-worth-it-next-to-a-decision-model">Is this worth it next to a decision model?<a class="headerlink" href="#is-this-worth-it-next-to-a-decision-model" title="Permanent link">#</a></h2>
+<p>Decision models are already fast and cheap, so the case is narrower than against a chat LLM:</p>
+<ul>
+<li>The table answers in microseconds on your own CPU, with no network hop and no per-token price. A hosted decision costs about $0.030 per 1,000 at gpt-6-luna's list price, or $0.0126 with Jev.</li>
+<li>It carries a written bound on how often it disagrees with the model it learned from.</li>
+<li>It needs about 1,000 logged answers per question first, and it only answers the share it is certified on. The rest still goes to the decision model.</li>
+</ul>
+<p>The <a href="compare.html">comparison page</a> puts numbers on this.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="./"><small>← previous</small>Get started in 5 minutes</a><a class="next" href="connect-your-llm.html"><small>next →</small>Connect your LLM</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#openai-decisions-api">OpenAI Decisions API</a></li>
+<li><a href="#system-one-servers-jev-kev-laya">System One servers (Jev, Kev, Laya, ...)</a></li>
+<li><a href="#what-gets-saved-exactly">What gets saved, exactly</a></li>
+<li><a href="#use-a-decision-model-as-the-teacher">Use a decision model as the teacher</a></li>
+<li><a href="#shad0w-serve-speaks-both-too">shad0w serve speaks both too</a></li>
+<li><a href="#is-this-worth-it-next-to-a-decision-model">Is this worth it next to a decision model?</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

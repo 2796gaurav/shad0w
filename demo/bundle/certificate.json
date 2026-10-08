@@ -6,7 +6,7 @@
   "alpha": 0.05,
   "delta": 0.1,
   "statement": "On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. The bound is against the teacher, not the truth, and does not survive a shift in the traffic mix without re-certification.",
-  "created_utc": "2026-10-07T06:58:24+00:00",
+  "created_utc": "2026-10-08T01:57:40+00:00",
   "questions": {
     "intent": {
       "type": "choice",
@@ -89,14 +89,15 @@
         "wrong_amount_of_cash_received",
         "wrong_exchange_rate_for_cash_withdrawal"
       ],
-      "n_records": 9993,
-      "n_fit": 6996,
-      "data_sha256": "0410b5fb1ac5101ac33c8bc47786a7250216c2ae6820acaa03fe2d539043e0ba",
-      "n_calibration": 2997,
-      "agreement_with_teacher": 0.8208208208208209,
-      "threshold": 0.8274253010749817,
-      "certified_share_on_calibration": 0.651317984651318,
-      "disagreement_on_certified_calibration": 0.04047131147540984,
+      "n_records": 10003,
+      "n_fit": 7003,
+      "data_sha256": "22607f49dcb9ef9ea625ab01a321d356a1d10f20c16e239c7a6f59d6f52109e2",
+      "calibration": "held-out-split",
+      "n_calibration": 3000,
+      "agreement_with_teacher": 0.8143333333333334,
+      "threshold": 0.8856799602508545,
+      "certified_share_on_calibration": 0.6123333333333333,
+      "disagreement_on_certified_calibration": 0.04082743603701688,
       "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
     }
   }

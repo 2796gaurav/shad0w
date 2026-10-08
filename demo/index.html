@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Live demo · shad0w</title>
 <meta name="description" content="Type a banking support message and watch a real 77-intent shad0w table decide in your browser, in microseconds.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/demo/">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/">Docs</a>
     <a href="../demo/" class=active>Live demo</a>
@@ -34,7 +36,7 @@
   <div class="section-head" style="margin-bottom:34px">
     <div class="kicker">live demo · runs in your browser</div>
     <h2 style="margin-top:8px">A real 77-intent banking table,<br><span class="grad-text">deciding as you type.</span></h2>
-    <p>This table was compiled in shadow mode from the answers of an open model (bge-small, zero-shot) on the public BANKING77 dataset, then certified at α = 5%. The decision runs locally in this tab, with no server and no network after load.</p>
+    <p>This table was compiled in shadow mode from the answers of a small open model (bge-small, zero-shot, 68% accurate on this task) on the public BANKING77 dataset, then certified at α = 5% on 3,000 answers it never trained on. The decision runs locally in this tab, with no server and no network after load.</p>
   </div>
 
   <div class="demo-shell">
@@ -66,14 +68,15 @@
       <div class="panel">
         <h3>The certificate</h3>
         <dl class="kv" id="cert"><dt>loading…</dt><dd></dd></dl>
-        <p class="muted" style="font-size:13px;margin:14px 0 0">The bound is against the teacher (a 68%-accurate open model), not against the truth. In production, your own LLM is the teacher.</p>
+        <p class="muted" style="font-size:13px;margin:14px 0 0">The bound is against the teacher (an open model that is 68% accurate here), not against the truth. In production, your own LLM is the teacher.</p>
+        <div id="alphaBox" style="display:none;margin-top:14px"><div class="kicker" style="font-size:11px">try another <span class="nc">α</span></div><div class="chips" id="alphaChips" style="margin-top:8px"></div><p class="muted" style="font-size:12.5px;margin:8px 0 0">The bundle is certified at α = 5%. The other thresholds were computed by the same certifier on the same held-out answers; the test-set figures next to each are what that threshold would have served.</p></div>
       </div>
     </div>
   </div>
 
   <div class="panel" style="margin-top:22px">
     <h3>Replay real traffic</h3>
-    <p class="muted" style="margin:0 0 6px">Stream 800 held-out BANKING77 test messages through the table. Certified answers are served locally. The rest would go to the teacher.</p>
+    <p class="muted" style="margin:0 0 6px">Stream 800 held-out BANKING77 test messages through the table. Certified answers are served locally. The rest would go to the teacher. These 800 are a random sample of the 3,080 test messages, so their rates move a little around the test-set figures above. On a sample this small, a disagreement a bit over α is expected now and then; the bound is about the long run.</p>
     <div class="replay-grid">
       <div><b id="r-served">0%</b><span>answered locally</span></div>
       <div><b id="r-dis">–</b><span>disagreement with the teacher on served answers</span></div>
@@ -87,7 +90,7 @@
 </main>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 <script type="module">
 import { Bundle } from "../assets/shad0w.mjs";
@@ -97,7 +100,8 @@ const examples = ["my card got stolen at the airport, please block it", "I was c
   "how do I change my PIN", "the ATM swallowed my card", "can I get a refund for this", "what's the exchange rate for euros", "is it going to rain tomorrow?"];
 $("chips").innerHTML = examples.map((e) => `<button class="chip" type="button">${e}</button>`).join("");
 
-let bundle, spec, replay;
+let bundle, spec, replay, alphas = null, alphaKey = "0.05";
+const thrNow = () => (alphas && alphas[alphaKey]) ? alphas[alphaKey].threshold : (spec.threshold ?? 1);
 const fmtUs = (us) => us < 1000 ? `${us.toFixed(us < 10 ? 1 : 0)} µs` : `${(us / 1000).toFixed(1)} ms`;
 
 function timeIt(text) {
@@ -112,7 +116,8 @@ function render() {
   if (!bundle) return;
   const text = $("q").value;
   const a = bundle.decide(text).answers.intent;
-  const thr = spec.threshold ?? 1;
+  const thr = thrNow();
+  a.certified = a.confidence >= thr;
   $("answer").textContent = a.choice.replaceAll("_", " ");
   $("badge").className = "badge " + (a.certified ? "ok" : "defer");
   $("badge").textContent = a.certified ? "✓ certified · served locally" : "↗ not certified · defer to your model";
@@ -144,6 +149,7 @@ $("replay").addEventListener("click", async () => {
   for (let i = 0; i < msgs.length; i++) {
     const [text, teacher] = msgs[i];
     const a = bundle.decide(text).answers.intent;
+    a.certified = a.confidence >= thrNow();
     n++;
     if (a.certified) { served++; if (a.choice !== teacher) dis++; }
     if (i % 4 === 0 || i === msgs.length - 1) {
@@ -167,6 +173,12 @@ $("replay").addEventListener("click", async () => {
     spec = bundle.manifest.questions.intent;
     const cert = await (await fetch("bundle/certificate.json")).json();
     replay = await (await fetch("replay.json")).json();
+    try { alphas = await (await fetch("alphas.json")).json(); } catch (e) { alphas = null; }
+    if (alphas) {
+      $("alphaBox").style.display = "";
+      $("alphaChips").innerHTML = Object.keys(alphas).sort((x, y) => +x - +y).map((k) => `<button class="chip${k === "0.05" ? " on" : ""}" data-alpha="${k}" type="button">α = ${Math.round(k * 100)}% · serves ${(100 * alphas[k].served_test).toFixed(0)}%</button>`).join("");
+      $("alphaChips").addEventListener("click", (e) => { const b = e.target.closest("[data-alpha]"); if (!b) return; alphaKey = b.dataset.alpha; $("alphaChips").querySelectorAll(".chip").forEach((c) => c.classList.toggle("on", c === b)); $("thr").textContent = (thrNow() * 100).toFixed(1) + "%"; render(); });
+    }
     const q = cert.questions.intent, s = replay.stats;
     $("thr").textContent = (spec.threshold * 100).toFixed(1) + "%";
     $("k").textContent = spec.options.length;

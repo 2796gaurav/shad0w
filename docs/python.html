@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Python · shad0w</title>
 <meta name="description" content="The Python API - decision(), Shadow, llm_teacher, async, decorators and the low-level model.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/python.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,10 +33,12 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html" class=active>Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Python</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html" class=active>Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="python">Python<a class="headerlink" href="#python" title="Permanent link">#</a></h1>
 <div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm<span class="w">                 </span><span class="c1"># serving: numpy only, C core included</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span><span class="w">      </span><span class="c1"># + training (scipy, scikit-learn, torch; without torch it falls back to scipy)</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span><span class="w">      </span><span class="c1"># + training (scipy, scikit-learn)</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[torch]"</span><span class="w">        </span><span class="c1"># + torch: faster training on large logs (optional)</span>
 </code></pre></div>
 
 <h2 id="shad0wdecision-the-one-liner"><code>shad0w.decision</code>: the one-liner<a class="headerlink" href="#shad0wdecision-the-one-liner" title="Permanent link">#</a></h2>
@@ -45,7 +49,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <thead>
 <tr>
 <th>Argument</th>
-<th></th>
+<th>What it is</th>
 </tr>
 </thead>
 <tbody>
@@ -67,7 +71,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </tr>
 <tr>
 <td><code>**kw</code></td>
-<td>anything <code>Shadow</code> takes (below), plus LLM settings: <code>base_url</code>, <code>api_key</code>, <code>client</code>, <code>system</code>, <code>temperature</code>, <code>timeout</code>, <code>retries</code>, <code>headers</code></td>
+<td>anything <code>Shadow</code> takes (below), any <a href="configuration.html">setting</a>, plus LLM settings: <code>base_url</code>, <code>api_key</code>, <code>client</code>, <code>complete</code>, <code>system</code>, <code>temperature</code>, <code>timeout</code>, <code>retries</code>, <code>headers</code>, <code>structured</code>, <code>max_tokens</code></td>
 </tr>
 </tbody>
 </table>
@@ -76,6 +80,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <div class="codehilite"><pre><span></span><code><span class="n">sh</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Shadow</span><span class="p">(</span><span class="s2">"bundle/"</span><span class="p">,</span> <span class="n">teacher</span><span class="o">=</span><span class="n">ask_llm</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">"log.jsonl"</span><span class="p">)</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">sh</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>         <span class="c1"># same as sh.decide(text)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">confidence</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">certified</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">flag</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">latency_us</span>
+<span class="n">d</span><span class="o">.</span><span class="n">question</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">top</span>     <span class="c1"># top: options by probability, when probabilities=True</span>
 </code></pre></div>
 
 <table>
@@ -83,7 +88,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <tr>
 <th>Argument</th>
 <th>Default</th>
-<th></th>
+<th>What it does</th>
 </tr>
 </thead>
 <tbody>
@@ -108,19 +113,9 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <td>which question to answer</td>
 </tr>
 <tr>
-<td><code>audit_rate</code></td>
-<td><code>0.01</code></td>
-<td>share of table answers re-asked to the teacher in the background</td>
-</tr>
-<tr>
-<td><code>alpha</code></td>
-<td><code>0.05</code></td>
-<td>disagreement bound used by <code>train()</code></td>
-</tr>
-<tr>
-<td><code>auto_train</code></td>
-<td>off</td>
-<td>retrain in the background every N new teacher answers</td>
+<td><code>seed</code></td>
+<td></td>
+<td>random seed for spot checks and the canary</td>
 </tr>
 <tr>
 <td><code>on_decision</code></td>
@@ -138,17 +133,28 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <td>a shared <code>shad0w.Metrics</code> (several wrappers, one dashboard)</td>
 </tr>
 <tr>
-<td><code>exposed</code></td>
-<td><code>False</code></td>
-<td>treat inputs as adversarial: also defer answers a few inserted words could flip</td>
-</tr>
-<tr>
 <td><code>schema</code></td>
 <td>from the teacher/table</td>
 <td>the options, if neither the teacher nor the table knows them</td>
 </tr>
+<tr>
+<td><code>probabilities</code></td>
+<td><code>False</code></td>
+<td>fill <code>Decision.top</code> on every call (slower)</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><code>./shad0w.toml</code></td>
+<td>path to a config file</td>
+</tr>
+<tr>
+<td>any setting</td>
+<td>see <a href="configuration.html">Configuration</a></td>
+<td><code>alpha</code>, <code>delta</code>, <code>min_rows</code>, <code>audit_rate</code>, <code>auto_train</code>, <code>retrain</code>, <code>mode</code>, <code>canary</code>, <code>never_serve</code>, <code>min_confidence</code>, <code>force_threshold</code>, <code>drift_window</code>, <code>drift_margin</code>, <code>exposed</code>, <code>cost_per_call</code>, <code>llm_latency_ms</code></td>
+</tr>
 </tbody>
 </table>
+<p>Settings you don't pass come from <code>SHAD0W_*</code> environment variables, then <code>shad0w.toml</code>, then the defaults. <code>shad0w config</code> shows the result.</p>
 <p><strong><code>Decision.source</code></strong> is <code>"table"</code> (certified, answered locally) or <code>"teacher"</code> (your LLM answered). <strong><code>flag</code></strong> says why the table deferred:</p>
 <table>
 <thead>
@@ -172,17 +178,44 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </tr>
 <tr>
 <td><code>drift</code></td>
-<td>traffic looks different from calibration; re-train</td>
+<td>traffic looks different from calibration; clears when it looks familiar again, retrain if it persists</td>
 </tr>
 <tr>
 <td><code>uncalibrated</code></td>
 <td>table has no certificate</td>
 </tr>
+<tr>
+<td><code>shadow</code></td>
+<td><code>mode="shadow"</code>: the table would have answered; your LLM's answer was returned</td>
+</tr>
+<tr>
+<td><code>canary</code></td>
+<td>certified, but held back by <code>canary</code></td>
+</tr>
+<tr>
+<td><code>never_serve</code></td>
+<td>the label is on <code>never_serve</code></td>
+</tr>
+<tr>
+<td><code>min_confidence</code></td>
+<td>certified, but below your <code>min_confidence</code> floor</td>
+</tr>
+<tr>
+<td><code>manual_threshold</code></td>
+<td>served from the table under <code>force_threshold</code>: <strong>not</strong> covered by the certificate (<code>certified=False</code>)</td>
+</tr>
+<tr>
+<td><code>off</code></td>
+<td><code>mode="off"</code>: the table was not consulted</td>
+</tr>
 </tbody>
 </table>
 <p>Methods:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">sh</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">min_rows</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>     <span class="c1"># compile + certify from the log, save, hot-swap; returns the certificate</span>
-<span class="n">sh</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>                  <span class="c1"># counts, offload, live spot-check bound, p50/p99 latency, flags</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">gate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>         <span class="c1"># keep the current table unless the new one certifies &gt;= 80% of its share</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>                  <span class="c1"># counts, offload, live spot-check bound, p50/p99 latency, flags, would_serve</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">peek</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>               <span class="c1"># the table's answer if it would serve it, else None; never calls your LLM</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span>     <span class="c1"># log an answer you got from your LLM yourself (integrations use peek + record)</span>
 <span class="n">sh</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="s2">"some text"</span><span class="p">)</span>     <span class="c1"># top-3 options, confidence vs threshold, the reason in plain words</span>
 <span class="n">sh</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>                 <span class="c1"># pick up a table retrained elsewhere (e.g. by `shad0w train`)</span>
 <span class="k">await</span> <span class="n">sh</span><span class="o">.</span><span class="n">adecide</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>      <span class="c1"># async: the table path never blocks; async teachers are awaited</span>
@@ -192,7 +225,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 
 <h2 id="async">Async<a class="headerlink" href="#async" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">ask</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>                     <span class="c1"># your async LLM call; returns one of the options</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4o-mini"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 <span class="n">sh</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Shadow</span><span class="p">(</span><span class="s2">"bundle/"</span><span class="p">,</span> <span class="n">teacher</span><span class="o">=</span><span class="n">ask</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">"log.jsonl"</span><span class="p">)</span>
@@ -200,7 +233,20 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </code></pre></div>
 
 <p>With an async teacher, certified answers return immediately and spot checks run as tasks. With a sync teacher, LLM calls run in a worker thread.</p>
-<h2 id="decorator">Decorator<a class="headerlink" href="#decorator" title="Permanent link">#</a></h2>
+<h2 id="decorators">Decorators<a class="headerlink" href="#decorators" title="Permanent link">#</a></h2>
+<p>The return annotation names the options and the function body is the teacher:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="nd">@shad0w</span><span class="o">.</span><span class="n">decide</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"billing"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">ask_llm</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="n">route</span><span class="p">(</span><span class="s2">"my invoice is wrong"</span><span class="p">)</span>       <span class="c1"># "billing", from the table once trained and certified</span>
+<span class="n">route</span><span class="o">.</span><span class="n">shadow</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>               <span class="c1"># after ~1,000 logged answers</span>
+</code></pre></div>
+
+<p>A <code>-&gt; bool</code> annotation makes a yes/no question. Files live in <code>shad0w/&lt;function name&gt;/</code>, like <code>decision()</code>.</p>
+<p>To wrap an existing table and log:</p>
 <div class="codehilite"><pre><span></span><code><span class="nd">@shad0w</span><span class="o">.</span><span class="n">cascade</span><span class="p">(</span><span class="s2">"bundle/"</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">"log.jsonl"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">classify</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ask_llm</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
@@ -216,17 +262,17 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 <span class="c1">#              "urgent": {"answer": True, "probability": 0.93, "certified": True, ...}}}</span>
 </code></pre></div>
 
-<p><code>m.decide(text, probabilities=False)</code> skips the per-option dictionary, the fastest path (about 8 µs through the C core). <code>shad0w.load(path, native=False)</code> forces pure numpy; decisions are identical.</p>
+<p><code>m.decide(text, probabilities=False)</code> skips the per-option dictionary, the fastest path (2.4 µs through the C core on an Apple M5 Pro). <code>shad0w.load(path, native=False)</code> forces pure numpy; decisions are identical.</p>
 <h2 id="thread-safety">Thread safety<a class="headerlink" href="#thread-safety" title="Permanent link">#</a></h2>
 <p><code>Shadow</code>, <code>Model</code> and the HTTP servers are safe to share across threads. The C core is guarded by a lock per question.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="proxy.html"><small>← previous</small>The proxy (zero code)</a><a class="next" href="javascript.html"><small>next →</small>JavaScript & TypeScript</a></div></article>
+  <div class="pager"><a href="proxy.html"><small>← previous</small>The proxy</a><a class="next" href="javascript.html"><small>next →</small>JavaScript & TypeScript</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#shad0wdecision-the-one-liner">shad0w.decision: the one-liner</a></li>
 <li><a href="#shad0wshadow">shad0w.Shadow</a></li>
 <li><a href="#async">Async</a></li>
-<li><a href="#decorator">Decorator</a></li>
+<li><a href="#decorators">Decorators</a></li>
 <li><a href="#several-questions-per-text">Several questions per text</a></li>
 <li><a href="#thread-safety">Thread safety</a></li>
 </ul>
@@ -235,7 +281,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

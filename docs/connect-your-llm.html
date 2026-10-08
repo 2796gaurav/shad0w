@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Connect your LLM · shad0w</title>
 <meta name="description" content="Use OpenAI, Anthropic, Gemini, Groq, Ollama, vLLM or any OpenAI-compatible model as shad0w&#x27;s teacher.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/connect-your-llm.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,7 +33,8 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html" class=active>Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Connect your LLM</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html" class=active>Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="connect-your-llm">Connect your LLM<a class="headerlink" href="#connect-your-llm" title="Permanent link">#</a></h1>
 <p>The LLM that answers today is shad0w's <strong>teacher</strong>: the table learns its answers and is certified against them. Name it with a <code>"provider/model"</code> string:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"anthropic/claude-haiku-4-5"</span><span class="p">)</span>
@@ -48,7 +51,7 @@
 <tbody>
 <tr>
 <td>OpenAI</td>
-<td><code>openai/gpt-4o-mini</code></td>
+<td><code>openai/gpt-6-luna</code></td>
 <td><code>OPENAI_API_KEY</code></td>
 </tr>
 <tr>
@@ -73,7 +76,7 @@
 </tr>
 <tr>
 <td>OpenRouter</td>
-<td><code>openrouter/openai/gpt-4o-mini</code></td>
+<td><code>openrouter/openai/gpt-6-luna</code></td>
 <td><code>OPENROUTER_API_KEY</code></td>
 </tr>
 <tr>
@@ -97,11 +100,6 @@
 <td><code>XAI_API_KEY</code></td>
 </tr>
 <tr>
-<td>Azure OpenAI</td>
-<td><code>azure/&lt;deployment&gt;</code> + <code>base_url="https://&lt;resource&gt;.openai.azure.com/openai/v1"</code></td>
-<td><code>AZURE_OPENAI_API_KEY</code></td>
-</tr>
-<tr>
 <td>Ollama (local)</td>
 <td><code>ollama/llama3.1</code></td>
 <td>none</td>
@@ -116,17 +114,34 @@
 <td><code>lmstudio/&lt;model&gt;</code></td>
 <td>none</td>
 </tr>
+<tr>
+<td>OpenAI Decisions API</td>
+<td><code>openai-decisions/gpt-6-luna</code></td>
+<td><code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td>System One decision models (Jev, Kev, Laya, llama.cpp, ...)</td>
+<td><code>systemone/&lt;model&gt;</code> + <code>base_url="http://host:port"</code></td>
+<td>none, or <code>api_key=</code> for a hosted one</td>
+</tr>
 </tbody>
 </table>
 <p>Model names are examples; use any model your provider serves. Pass <code>api_key=</code> to skip the environment variable.</p>
+<h2 id="decision-models-as-the-teacher">Decision models as the teacher<a class="headerlink" href="#decision-models-as-the-teacher" title="Permanent link">#</a></h2>
+<p>Decision models answer with a typed choice instead of text, so there is no reply to parse. <code>openai-decisions/</code> calls <code>POST /v1/decisions</code>; <code>systemone/</code> calls <code>POST /v1/systemone</code> on the server you name (<code>/v1</code> is added to <code>base_url</code> when missing). Yes/no questions become <code>predicate</code> and <code>noul</code> questions respectively.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"card lost or stolen"</span><span class="p">,</span> <span class="s2">"refund"</span><span class="p">:</span> <span class="s2">"wants money back"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"anything else"</span><span class="p">},</span>
+                         <span class="n">llm</span><span class="o">=</span><span class="s2">"systemone/kev"</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"http://127.0.0.1:8081"</span><span class="p">)</span>    <span class="c1"># e.g. llama-server -hf ggml-org/Kev-0.8B-GGUF --port 8081</span>
+</code></pre></div>
+
+<p>To use a decision model with no code change at all, put <code>shad0w proxy</code> in front of it instead: see <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
 <h2 id="any-other-openai-compatible-server">Any other OpenAI-compatible server<a class="headerlink" href="#any-other-openai-compatible-server" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"my-model"</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"https://llm.internal/v1"</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">"..."</span><span class="p">)</span>
 </code></pre></div>
 
 <p><code>SHAD0W_BASE_URL</code> sets the default base URL for every teacher.</p>
 <h2 id="reuse-an-sdk-client">Reuse an SDK client<a class="headerlink" href="#reuse-an-sdk-client" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">AzureOpenAI</span>
-<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"gpt-4o-mini"</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">OpenAI</span><span class="p">())</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">OpenAI</span><span class="p">())</span>
 </code></pre></div>
 
 <h2 id="anything-else-give-it-a-function">Anything else: give it a function<a class="headerlink" href="#anything-else-give-it-a-function" title="Permanent link">#</a></h2>
@@ -156,13 +171,14 @@
 <li><strong>Your own prompt.</strong> Pass <code>system="..."</code> to replace the system message.</li>
 </ul>
 <h2 id="yesno-questions">Yes/no questions<a class="headerlink" href="#yesno-questions" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="n">spam</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"spam"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"yesno"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Is this message spam?"</span><span class="p">},</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="n">spam</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"spam"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"yesno"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Is this message spam?"</span><span class="p">},</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-6-luna"</span><span class="p">)</span>
 <span class="n">spam</span><span class="p">(</span><span class="s2">"WIN A FREE CRUISE, click now"</span><span class="p">)</span><span class="o">.</span><span class="n">answer</span>      <span class="c1"># True</span>
 </code></pre></div>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="./"><small>← previous</small>Get started in 5 minutes</a><a class="next" href="proxy.html"><small>next →</small>The proxy (zero code)</a></div></article>
+  <div class="pager"><a href="decisions-api.html"><small>← previous</small>Decisions API & System One (zero code)</a><a class="next" href="proxy.html"><small>next →</small>The proxy</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
+<li><a href="#decision-models-as-the-teacher">Decision models as the teacher</a></li>
 <li><a href="#any-other-openai-compatible-server">Any other OpenAI-compatible server</a></li>
 <li><a href="#reuse-an-sdk-client">Reuse an SDK client</a></li>
 <li><a href="#anything-else-give-it-a-function">Anything else: give it a function</a></li>
@@ -174,7 +190,7 @@
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

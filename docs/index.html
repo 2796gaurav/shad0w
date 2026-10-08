@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Get started in 5 minutes · shad0w</title>
 <meta name="description" content="Put shad0w in front of your LLM, let it learn, and serve certified answers in microseconds.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,15 +33,17 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./" class=active>Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Get started in 5 minutes</summary><h5>Start</h5><a href="./" class=active>Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="get-started-in-5-minutes">Get started in 5 minutes<a class="headerlink" href="#get-started-in-5-minutes" title="Permanent link">#</a></h1>
-<p class="lead">shad0w learns the answers your LLM gives to a small, fixed-choice question (which intent, which team, spam or not) and serves the ones it is <b>certified</b> on from a 2&nbsp;MB table in about 10&nbsp;µs. Everything else still goes to your LLM.</p>
+<p class="lead">shad0w learns the answers your LLM gives to a small, fixed-choice question (which intent, which team, spam or not) and serves the ones it is <b>certified</b> on from a 1.5 MB table in about 2.4 µs. Everything else still goes to your LLM.</p>
 
 <h2 id="1-install">1. Install<a class="headerlink" href="#1-install" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span><span class="w">     </span><span class="c1"># Python 3.10–3.13 · Linux, macOS, Windows</span>
 </code></pre></div>
 
-<p>The package installs as <code>shad0wllm</code>, imports as <code>shad0w</code>, and adds a <code>shad0w</code> command. <code>[compile]</code> adds what training needs (scipy, scikit-learn, torch); install CPU-only torch first for a much smaller download: <code>pip install torch --index-url https://download.pytorch.org/whl/cpu</code>. Serving alone needs only <code>pip install shad0wllm</code>, which depends on numpy.</p>
+<p>The package installs as <code>shad0wllm</code>, imports as <code>shad0w</code>, and adds a <code>shad0w</code> command. <code>[compile]</code> adds what training needs (scipy and scikit-learn). Add <code>[torch]</code> for faster training on large logs. Serving alone needs only <code>pip install shad0wllm</code>, which depends on numpy. Run <code>shad0w doctor</code> to check the setup.</p>
+<p><strong>Already using the OpenAI Decisions API, or a decision model such as Jev, Kev or Laya?</strong> You can skip the code below entirely: run <code>shad0w proxy</code> and move your client's <code>base_url</code>. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
 <h2 id="2-wrap-the-question-you-already-ask-your-llm">2. Wrap the question you already ask your LLM<a class="headerlink" href="#2-wrap-the-question-you-already-ask-your-llm" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
 
@@ -51,7 +55,7 @@
         <span class="s2">"balance"</span><span class="p">:</span>   <span class="s2">"the customer asks about their balance"</span><span class="p">,</span>
         <span class="s2">"other"</span><span class="p">:</span>     <span class="s2">"anything else"</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span>          <span class="c1"># reads OPENAI_API_KEY</span>
+    <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-6-luna"</span><span class="p">,</span>          <span class="c1"># reads OPENAI_API_KEY</span>
 <span class="p">)</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">intent</span><span class="p">(</span><span class="s2">"someone stole my card at the airport"</span><span class="p">)</span>
@@ -62,12 +66,12 @@
 <p><strong>Tip: always include an <code>other</code> option.</strong> The table can only answer with one of your options. Without a catch-all, an off-topic message ("tell me a joke") gets mapped to the closest real intent, sometimes confidently. With <code>other</code>, it lands there, or goes to your LLM.</p>
 </blockquote>
 <p>On day one there is no table yet, so every call goes to your LLM. shad0w writes each <code>(text, answer)</code> pair to <code>shad0w/intent/log.jsonl</code>.</p>
-<p>Not on OpenAI? Use <code>anthropic/…</code>, <code>gemini/…</code>, <code>groq/…</code>, <code>ollama/llama3.1</code> or any OpenAI-compatible server. See <a href="connect-your-llm.html">Connect your LLM</a>. Already have a function that returns the answer? Pass it as <code>llm=my_function</code>.</p>
+<p>Not on OpenAI? Use <code>anthropic/…</code>, <code>gemini/…</code>, <code>groq/…</code>, <code>ollama/llama3.1</code>, a decision model (<code>systemone/…</code>, <code>openai-decisions/…</code>) or any OpenAI-compatible server. See <a href="connect-your-llm.html">Connect your LLM</a>. Already have a function that returns the answer? Pass it as <code>llm=my_function</code>.</p>
 <h2 id="3-train-once-1000-answers-are-logged">3. Train once ~1,000 answers are logged<a class="headerlink" href="#3-train-once-1000-answers-are-logged" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">())</span>        <span class="c1"># compiles + certifies, then starts serving from the table</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code>{'certified_share_on_calibration': 0.68, 'agreement_with_teacher': 0.96, 'threshold': 0.91, ...}
+<div class="codehilite"><pre><span></span><code>{'certified_share_on_calibration': 0.68, 'agreement_with_teacher': 0.84, 'threshold': 0.91, 'accepted': True, ...}   # example output
 </code></pre></div>
 
 <p>From now on:</p>
@@ -90,7 +94,10 @@ shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w">
 <p>See <a href="observability.html">Monitoring</a> for the live dashboard, Prometheus metrics and hooks.</p>
 <h2 id="what-next">What next<a class="headerlink" href="#what-next" title="Permanent link">#</a></h2>
 <ul>
+<li><strong>Roll it out safely:</strong> <a href="rollout.html">shadow → canary → serve</a>.</li>
+<li><strong>Tune it:</strong> α, spot checks, labels that must never be served: <a href="configuration.html">Configuration</a>.</li>
 <li><strong>Change no code at all:</strong> run the <a href="proxy.html">OpenAI-compatible proxy</a> and point your client's <code>base_url</code> at it.</li>
+<li><strong>Something not working:</strong> <code>shad0w doctor</code>, then <a href="troubleshooting.html">Troubleshooting</a>.</li>
 <li><strong>JavaScript, browsers, edge:</strong> <a href="javascript.html">JavaScript</a>.</li>
 <li><strong>Any language:</strong> <a href="http.html">HTTP</a> or <a href="c.html">C</a>.</li>
 <li><strong>LangChain, LiteLLM, Vercel AI SDK, FastAPI:</strong> <a href="frameworks.html">Frameworks</a>.</li>
@@ -98,7 +105,7 @@ shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w">
 <li><strong>What "certified" means:</strong> <a href="guarantee.html">The guarantee</a>.</li>
 </ul>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><span></span><a class="next" href="connect-your-llm.html"><small>next →</small>Connect your LLM</a></div></article>
+  <div class="pager"><span></span><a class="next" href="decisions-api.html"><small>next →</small>Decisions API & System One (zero code)</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#1-install">1. Install</a></li>
@@ -112,7 +119,7 @@ shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w">
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

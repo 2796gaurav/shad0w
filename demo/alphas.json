@@ -1,0 +1,22 @@
+{
+ "0.01": {
+  "threshold": 1.0,
+  "served_test": 0.0,
+  "disagreement_test": null
+ },
+ "0.02": {
+  "threshold": 0.990066409111023,
+  "served_test": 0.3496753246753247,
+  "disagreement_test": 0.009285051067780872
+ },
+ "0.05": {
+  "threshold": 0.8856799602508545,
+  "served_test": 0.6334415584415585,
+  "disagreement_test": 0.032803690415171706
+ },
+ "0.10": {
+  "threshold": 0.6949368119239807,
+  "served_test": 0.7808441558441559,
+  "disagreement_test": 0.07650727650727651
+ }
+}

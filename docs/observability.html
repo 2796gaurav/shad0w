@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Monitoring · shad0w</title>
 <meta name="description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/observability.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,7 +33,8 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html" class=active>Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Monitoring</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html" class=active>Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">#</a></h1>
 <p>You should be able to see, at any moment, how much the table is answering, how fast, why it deferred, and whether it still agrees with your LLM. shad0w gives you that out of the box.</p>
 <h2 id="the-dashboard">The dashboard<a class="headerlink" href="#the-dashboard" title="Permanent link">#</a></h2>
@@ -43,11 +46,11 @@ open<span class="w"> </span>http://localhost:8010
 <p>It shows, updated every second:</p>
 <ul>
 <li><strong>share answered by the table</strong> (with a sparkline);</li>
-<li><strong>LLM calls saved</strong>, <strong>time saved</strong> (calls saved × your LLM's measured mean latency) and <strong>money saved</strong> (with <code>--cost-per-call</code>);</li>
-<li>per question: <strong>table vs LLM latency</strong> (p50), <strong>why the table deferred</strong> (not sure, drift, not trained), and the <strong>live safety bound</strong>;</li>
+<li><strong>LLM calls saved</strong>, <strong>time saved</strong> (calls saved × your LLM's measured mean latency, or <code>--llm-latency-ms</code> until one is measured) and <strong>money saved</strong> (with <code>--cost-per-call</code>);</li>
+<li>per question: <strong>table vs LLM latency</strong> (p50), <strong>why the table deferred</strong> (not sure, drift, not trained, and the rollout reasons: shadow, canary, never_serve, min_confidence), and the <strong>live safety bound</strong>;</li>
 <li>the latest decisions, with source, confidence and latency (<code>--no-text</code> hides the text).</li>
 </ul>
-<p>The <strong>live safety bound</strong> is the 90% upper confidence bound on disagreement among table answers, computed from background spot checks (<code>audit_rate</code>, default 1%). If it rises above α, the dashboard turns red. Re-train.</p>
+<p>The <strong>live safety bound</strong> is the 90% upper confidence bound on disagreement among table answers, computed from background spot checks (<code>audit_rate</code>, default 1%). While it is at or below α the dashboard shows it in green; above α it turns amber and says "re-train".</p>
 <p>In a terminal:</p>
 <div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>watch<span class="w"> </span>--url<span class="w"> </span>http://localhost:8010
 </code></pre></div>
@@ -103,6 +106,8 @@ shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 809
 <li><code>shad0w.question</code>, <code>shad0w.source</code>, <code>shad0w.answer</code>, <code>shad0w.confidence</code>, <code>shad0w.certified</code>, <code>shad0w.flag</code>;</li>
 <li><code>gen_ai.request.model</code>, the teacher.</li>
 </ul>
+<h2 id="playground">Playground<a class="headerlink" href="#playground" title="Permanent link">#</a></h2>
+<p>The dashboard has a <strong>Playground</strong> card: pick a question, type a text, and see the table's answer, its confidence against the certified threshold, the reason in words and the top options. On <code>shad0w proxy</code> started with <code>--model</code>, it can also ask your LLM for the same text and show both answers side by side. Nothing typed there is logged unless you ask for it. The same is available as <code>POST /v1/playground</code> (see <a href="http.html">HTTP</a>).</p>
 <h2 id="explain-one-decision">Explain one decision<a class="headerlink" href="#explain-one-decision" title="Permanent link">#</a></h2>
 <div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>try<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span><span class="s2">"the ATM ate my card"</span>
 </code></pre></div>
@@ -115,7 +120,7 @@ shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 809
 
 <p>The same from Python: <code>intent.explain(text)</code>.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="frameworks.html"><small>← previous</small>LangChain, LiteLLM, AI SDK…</a><a class="next" href="training.html"><small>next →</small>Training & retraining</a></div></article>
+  <div class="pager"><a href="rollout.html"><small>← previous</small>Rollout: shadow → canary → serve</a><a class="next" href="training.html"><small>next →</small>Training & retraining</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#the-dashboard">The dashboard</a></li>
@@ -123,6 +128,7 @@ shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 809
 <li><a href="#logs">Logs</a></li>
 <li><a href="#hooks-and-traces">Hooks and traces</a></li>
 <li><a href="#opentelemetry">OpenTelemetry</a></li>
+<li><a href="#playground">Playground</a></li>
 <li><a href="#explain-one-decision">Explain one decision</a></li>
 </ul>
 </div>
@@ -130,7 +136,7 @@ shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 809
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

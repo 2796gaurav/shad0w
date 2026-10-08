@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Limits · shad0w</title>
 <meta name="description" content="Where shad0w does not help, measured.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/limits.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,7 +33,8 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html" class=active>Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Limits</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html" class=active>Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="limits">Limits<a class="headerlink" href="#limits" title="Permanent link">#</a></h1>
 <p>shad0w is careful engineering on well-known ideas: a fastText-shaped table and a Learn-then-Test certificate. Knowing where it stops is what makes the guarantee useful.</p>
 <h2 id="it-picks-it-doesnt-write">It picks; it doesn't write<a class="headerlink" href="#it-picks-it-doesnt-write" title="Permanent link">#</a></h2>
@@ -47,13 +50,21 @@
 <h2 id="the-guarantee-is-against-your-llm">The guarantee is against your LLM<a class="headerlink" href="#the-guarantee-is-against-your-llm" title="Permanent link">#</a></h2>
 <p>A certified table in front of a wrong LLM is wrong the same way. For a bound against the truth, calibrate on ~300 human labels.</p>
 <h2 id="it-assumes-traffic-like-the-calibration-traffic">It assumes traffic like the calibration traffic<a class="headerlink" href="#it-assumes-traffic-like-the-calibration-traffic" title="Permanent link">#</a></h2>
-<p>A big change in what users send can break the bound. The drift guard catches shifts that lower confidence; the spot checks catch the rest, more slowly. Retrain regularly.</p>
+<p>A big change in what users send can break the bound. The certificate is computed on a slice of your logged traffic, so it describes traffic with that same mix.</p>
+<p>The most common way this goes wrong is the share of off-topic messages. In our CLINC150 run, the logged traffic had very few out-of-scope messages and the test traffic had many more. The table was certified on the first mix and served the second, and its realised disagreement went above α. Messages it should have sent to <code>other</code> were sometimes answered with a real intent. See <a href="benchmarks.html#where-shad0w-loses">where shad0w loses</a>.</p>
+<p>What protects you:</p>
+<ul>
+<li><strong>Log real traffic, including the off-topic part, at its real rate.</strong> Don't filter the log down to "good" examples before training.</li>
+<li><strong>Always offer an <code>other</code> option</strong>, so the LLM has somewhere to put messages that fit no intent and the table learns that answer too. If answering a real intent by mistake is costly, add <code>never_serve = ["other"]</code> so off-topic calls always go to your LLM.</li>
+<li><strong>Watch the drift guard.</strong> It notices when the share of low-confidence inputs rises above what calibration saw. That is what a jump in off-topic traffic looks like. It then marks answers <code>drift</code> and sends them to your LLM until the mix settles or you retrain. Spot checks catch slower shifts.</li>
+<li><strong>Retrain when the mix changes</strong>, for example after a launch or a new channel.</li>
+</ul>
 <h2 id="most-accurate-answer-every-time">Most accurate answer, every time?<a class="headerlink" href="#most-accurate-answer-every-time" title="Permanent link">#</a></h2>
 <p>Then call your best model. A 9B decision model scored 7 points higher on BANKING77 than the table, at about 70,000× the latency. shad0w belongs <strong>in front of</strong> that model, not instead of it.</p>
 <h2 id="no-built-in-auth">No built-in auth<a class="headerlink" href="#no-built-in-auth" title="Permanent link">#</a></h2>
 <p><code>shad0w serve</code> and <code>shad0w proxy</code> have no authentication. Run them on localhost or behind your own gateway.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="guarantee.html"><small>← previous</small>The guarantee</a><a class="next" href="faq.html"><small>next →</small>FAQ</a></div></article>
+  <div class="pager"><a href="compare.html"><small>← previous</small>How it compares</a><a class="next" href="faq.html"><small>next →</small>FAQ</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#it-picks-it-doesnt-write">It picks; it doesn't write</a></li>
@@ -68,7 +79,7 @@
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

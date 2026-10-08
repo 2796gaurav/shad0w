@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<title>Configuration &amp; tuning · shad0w</title>
+<meta name="description" content="Every setting shad0w has, its default, its shad0w.toml key and SHAD0W_* variable, and how they combine.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/configuration.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Configuration &amp; tuning · shad0w">
+<meta property="og:description" content="Every setting shad0w has, its default, its shad0w.toml key and SHAD0W_* variable, and how they combine."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/configuration.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Configuration & tuning</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html" class=active>Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="configuration-tuning">Configuration &amp; tuning<a class="headerlink" href="#configuration-tuning" title="Permanent link">#</a></h1>
+<p>shad0w works with no configuration at all. Everything below is optional. Each setting can be given four ways, and the first one found wins:</p>
+<ol>
+<li><strong>Code or a CLI flag</strong>: <code>shad0w.decision(..., alpha=0.02)</code>, <code>Shadow(..., canary=0.1)</code>, <code>shad0w proxy --alpha 0.02</code>.</li>
+<li><strong>An environment variable</strong>: <code>SHAD0W_</code> plus the name in capitals, for example <code>SHAD0W_ALPHA=0.02</code> or <code>SHAD0W_NEVER_SERVE=fraud,self_harm</code>.</li>
+<li><strong>A config file</strong>: <code>./shad0w.toml</code>, or the path in <code>SHAD0W_CONFIG</code>. A <code>[questions.&lt;name&gt;]</code> section overrides the top level for that one question.</li>
+<li><strong>The defaults</strong> in the table below.</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="c1"># shad0w.toml</span>
+<span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span>
+<span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.02</span>
+<span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"shadow"</span><span class="w">            </span><span class="c1"># watch first, then "serve"</span>
+
+<span class="k">[questions.fraud_check]</span>
+<span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="w">               </span><span class="c1"># stricter for a costly decision</span>
+<span class="n">never_serve</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"fraud"</span><span class="p">]</span><span class="w">    </span><span class="c1"># this label always goes to your LLM</span>
+</code></pre></div>
+
+<p>See every effective value and where it came from:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>config<span class="w">                    </span><span class="c1"># every setting and its source</span>
+shad0w<span class="w"> </span>config<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">  </span><span class="c1"># with [questions.intent] applied</span>
+shad0w<span class="w"> </span>config<span class="w"> </span>--init<span class="w">             </span><span class="c1"># write a commented shad0w.toml</span>
+</code></pre></div>
+
+<p>Python reads the same values: <code>shad0w.settings("intent")</code> returns the resolved <code>Settings</code>.</p>
+<h2 id="the-guarantee">The guarantee<a class="headerlink" href="#the-guarantee" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alpha</code></td>
+<td><code>0.05</code></td>
+<td>The most the table may disagree with your LLM on the answers it serves. Lower is safer and serves less.</td>
+</tr>
+<tr>
+<td><code>delta</code></td>
+<td><code>0.1</code></td>
+<td>The chance that the certificate itself is wrong because the calibration sample was unlucky. <code>0.1</code> means 90% confidence.</td>
+</tr>
+<tr>
+<td><code>min_rows</code></td>
+<td><code>1000</code></td>
+<td>Logged LLM answers needed before <code>train()</code> runs. More rows usually certify a larger share. The hard minimum is 100.</td>
+</tr>
+<tr>
+<td><code>cal_fraction</code></td>
+<td><code>0.3</code></td>
+<td>Share of the log held back to certify the table. Those rows are never trained on.</td>
+</tr>
+<tr>
+<td><code>max_cal</code></td>
+<td><code>3000</code></td>
+<td>Upper limit on that calibration slice.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Picking α.</strong> 5% suits routing and triage, where a wrong answer costs a retry. Use 1–2% where a wrong answer is expensive. A lower α moves the threshold up, so the table serves fewer answers. Try several on your own log with <code>shad0w train --alpha 0.02</code> before deciding: the printed certified share is what you would get.</p>
+<p><strong>Why there is no per-label α.</strong> The certificate controls one number: the disagreement rate over everything the table serves. A separate bound per label needs a different, per-class procedure and many more calibration rows for rare labels. For a label that must be stricter, use <code>never_serve</code> (always ask the LLM) or a per-question section with a lower <code>alpha</code>.</p>
+<h2 id="rolling-out">Rolling out<a class="headerlink" href="#rolling-out" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td><code>"serve"</code></td>
+<td><code>serve</code> answers from the table when certified. <code>shadow</code> computes the table's answer but always returns your LLM's, and counts <code>would_serve</code> and <code>shadow_disagreements</code>. <code>off</code> skips the table.</td>
+</tr>
+<tr>
+<td><code>canary</code></td>
+<td><code>1.0</code></td>
+<td>Share of certified answers the table may actually serve. <code>0.1</code> serves one in ten; the rest go to your LLM and are logged as usual.</td>
+</tr>
+<tr>
+<td><code>never_serve</code></td>
+<td><code>[]</code></td>
+<td>Labels that always go to your LLM, even when the table is certain.</td>
+</tr>
+<tr>
+<td><code>min_confidence</code></td>
+<td>none</td>
+<td>A confidence floor on top of the certificate. It can only make serving stricter: answers below it are deferred with the flag <code>min_confidence</code>.</td>
+</tr>
+<tr>
+<td><code>force_threshold</code></td>
+<td>none</td>
+<td>Serve from the table above this confidence even when the certificate says no. <strong>This voids the guarantee for those answers</strong>: they carry <code>certified=False</code> and the flag <code>manual_threshold</code>, and shad0w logs a warning at start-up. Use it only to experiment.</td>
+</tr>
+</tbody>
+</table>
+<p><code>min_confidence</code> and <code>force_threshold</code> are deliberately asymmetric. Raising the bar keeps the certificate valid, because the table then serves a subset of what was certified. Lowering it does not, so shad0w marks every such answer as uncertified instead of pretending otherwise.</p>
+<p>The <a href="rollout.html">rollout guide</a> walks through <code>shadow</code>, then a canary, then <code>serve</code>.</p>
+<h2 id="retraining-and-spot-checks">Retraining and spot checks<a class="headerlink" href="#retraining-and-spot-checks" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>audit_rate</code></td>
+<td><code>0.01</code></td>
+<td>Share of all decisions also sent to your LLM. Served answers are re-asked in the background; deferred ones are simply marked. The result is a uniform sample of live traffic, used for the live agreement figure and for honest re-certification.</td>
+</tr>
+<tr>
+<td><code>auto_train</code></td>
+<td><code>0</code> (off)</td>
+<td>Retrain in the background every N new logged answers.</td>
+</tr>
+<tr>
+<td><code>retrain</code></td>
+<td><code>"gated"</code></td>
+<td><code>gated</code> keeps the current table unless the new one certifies at least 80% of the old certified share. <code>always</code> swaps whatever comes out.</td>
+</tr>
+<tr>
+<td><code>drift_window</code></td>
+<td><code>500</code></td>
+<td>Decisions in the drift guard's sliding window.</td>
+</tr>
+<tr>
+<td><code>drift_margin</code></td>
+<td><code>0.03</code></td>
+<td>Rise in estimated error (absolute) that raises the <code>drift</code> flag and sends answers to your LLM until it clears.</td>
+</tr>
+</tbody>
+</table>
+<p>Why the spot-check sample matters: once a table is serving, the log mostly holds the hard cases it deferred. Certifying a new table on those alone would describe a harder mix than your real traffic. When at least 100 spot-check rows exist, <code>train()</code> certifies on them instead, and the certificate records <code>"calibration": "uniform-audit"</code>. With fewer, it falls back to a random held-out split and records <code>"held-out-split"</code>. During the first weeks, <code>audit_rate = 0.05</code> fills that sample faster.</p>
+<h2 id="everything-else">Everything else<a class="headerlink" href="#everything-else" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>exposed</code></td>
+<td><code>false</code></td>
+<td>Treat inputs as adversarial: also defer answers that a few character edits could flip.</td>
+</tr>
+<tr>
+<td><code>folder</code></td>
+<td><code>"shad0w"</code></td>
+<td>Where logs and bundles live: <code>&lt;folder&gt;/&lt;question&gt;/log.jsonl</code> and <code>&lt;folder&gt;/&lt;question&gt;/bundle/</code>.</td>
+</tr>
+<tr>
+<td><code>trace</code></td>
+<td>none</td>
+<td>A JSON Lines file that receives every decision, table and LLM.</td>
+</tr>
+<tr>
+<td><code>cost_per_call</code></td>
+<td>none</td>
+<td>What one LLM call costs you. The dashboard then shows money saved.</td>
+</tr>
+<tr>
+<td><code>llm_latency_ms</code></td>
+<td>none</td>
+<td>LLM latency to assume until one is measured, so the dashboard shows time saved from the first table answer.</td>
+</tr>
+<tr>
+<td><code>capture</code></td>
+<td><code>header, model, tools, decisions</code></td>
+<td>Proxy only: which request shapes count as decisions. Add <code>json_schema</code> to also capture any request with a named JSON schema. See <a href="proxy.html">the proxy page</a>.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>120</code></td>
+<td>Proxy only: upstream timeout in seconds.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="other-environment-variables">Other environment variables<a class="headerlink" href="#other-environment-variables" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SHAD0W_CONFIG</code></td>
+<td>Path of the config file, instead of <code>./shad0w.toml</code>.</td>
+</tr>
+<tr>
+<td><code>SHAD0W_LOG</code></td>
+<td><code>info</code> or <code>debug</code> for log lines; <code>debug</code> prints one line per decision.</td>
+</tr>
+<tr>
+<td><code>SHAD0W_OTEL</code></td>
+<td><code>1</code> to emit OpenTelemetry spans.</td>
+</tr>
+<tr>
+<td><code>SHAD0W_BASE_URL</code></td>
+<td>Default <code>base_url</code> for LLM teachers.</td>
+</tr>
+<tr>
+<td><code>SHAD0W_NATIVE_LIB</code></td>
+<td>Path to a C core library to load instead of the bundled one.</td>
+</tr>
+</tbody>
+</table>
+<p>Reading <code>shad0w.toml</code> needs Python 3.11, or <code>pip install tomli</code> on 3.10.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="frameworks.html"><small>← previous</small>LangChain, LiteLLM, AI SDK…</a><a class="next" href="rollout.html"><small>next →</small>Rollout: shadow → canary → serve</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#the-guarantee">The guarantee</a></li>
+<li><a href="#rolling-out">Rolling out</a></li>
+<li><a href="#retraining-and-spot-checks">Retraining and spot checks</a></li>
+<li><a href="#everything-else">Everything else</a></li>
+<li><a href="#other-environment-variables">Other environment variables</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

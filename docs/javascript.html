@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>JavaScript &amp; TypeScript · shad0w</title>
 <meta name="description" content="Run shad0w in Node, browsers, Cloudflare Workers, Deno and Bun - decision(), Shadow, openaiTeacher and Bundle.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/javascript.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,7 +33,8 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html" class=active>JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · JavaScript & TypeScript</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html" class=active>JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="javascript-typescript">JavaScript &amp; TypeScript<a class="headerlink" href="#javascript-typescript" title="Permanent link">#</a></h1>
 <div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>i<span class="w"> </span>shad0wllm
 </code></pre></div>
@@ -42,7 +45,7 @@
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">refund</span><span class="o">:</span><span class="w"> </span><span class="s2">"wants money back"</span><span class="p">,</span><span class="w"> </span><span class="nx">lost_card</span><span class="o">:</span><span class="w"> </span><span class="s2">"card lost or stolen"</span><span class="p">,</span><span class="w"> </span><span class="nx">balance</span><span class="o">:</span><span class="w"> </span><span class="s2">"asks about balance"</span><span class="p">,</span><span class="w"> </span><span class="nx">other</span><span class="o">:</span><span class="w"> </span><span class="s2">"anything else"</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span><span class="w">               </span><span class="c1">// reads OPENAI_API_KEY in Node; pass apiKey elsewhere</span>
+<span class="w">  </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-6-luna"</span><span class="p">,</span><span class="w">               </span><span class="c1">// reads OPENAI_API_KEY in Node; pass apiKey elsewhere</span>
 <span class="w">  </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/bundle"</span><span class="p">,</span><span class="w">          </span><span class="c1">// optional: a trained table (folder in Node, URL in browsers/workers)</span>
 <span class="w">  </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/log.jsonl"</span><span class="p">,</span><span class="w">          </span><span class="c1">// where LLM answers go: a file (Node), a function, or a stream</span>
 <span class="p">});</span>
@@ -65,7 +68,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">env</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">intent</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-4o-mini"</span><span class="p">,</span><span class="w"> </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">OPENAI_API_KEY</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"openai/gpt-6-luna"</span><span class="p">,</span><span class="w"> </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">OPENAI_API_KEY</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">BUNDLE_URL</span><span class="p">,</span><span class="w">                         </span><span class="c1">// e.g. a static-assets or R2 URL</span>
 <span class="w">      </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">row</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">env</span><span class="p">.</span><span class="nx">LOG_QUEUE</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">row</span><span class="p">),</span><span class="w">           </span><span class="c1">// collect LLM answers for the next training run</span>
 <span class="w">    </span><span class="p">});</span>
@@ -81,17 +84,54 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bundle</span><span class="p">.</span><span class="nx">decide</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">value</span><span class="p">).</span><span class="nx">answers</span><span class="p">.</span><span class="nx">intent</span><span class="p">;</span><span class="w">   </span><span class="c1">// { choice, confidence, certified, flag, probabilities }</span>
 </code></pre></div>
 
+<h2 id="4-vercel-ai-sdk">4. Vercel AI SDK<a class="headerlink" href="#4-vercel-ai-sdk" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">wrapLanguageModel</span><span class="p">,</span><span class="w"> </span><span class="nx">experimental_decide</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"ai"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">openai</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@ai-sdk/openai"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decision</span><span class="p">,</span><span class="w"> </span><span class="nx">shad0wMiddleware</span><span class="p">,</span><span class="w"> </span><span class="nx">decisionModel</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="s2">"other"</span><span class="p">],</span><span class="w"> </span><span class="nx">bundle</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/bundle"</span><span class="p">,</span><span class="w"> </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="s2">"shad0w/intent/log.jsonl"</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// generateText / generateObject: certified answers skip the model; the model's answers are logged for training.</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wrapLanguageModel</span><span class="p">({</span><span class="w"> </span><span class="nx">model</span><span class="o">:</span><span class="w"> </span><span class="nx">openai</span><span class="p">(</span><span class="s2">"gpt-6-luna"</span><span class="p">),</span><span class="w"> </span><span class="nx">middleware</span><span class="o">:</span><span class="w"> </span><span class="nx">shad0wMiddleware</span><span class="p">(</span><span class="nx">intent</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">specificationVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">"v3"</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">});</span>
+
+<span class="c1">// experimental_decide: the table answers the questions it certifies, the fallback decision model answers the rest.</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">experimental_decide</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">model</span><span class="o">:</span><span class="w"> </span><span class="nx">decisionModel</span><span class="p">(</span><span class="nx">intent</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fallback</span><span class="o">:</span><span class="w"> </span><span class="nx">openai</span><span class="p">.</span><span class="nx">decisionModel</span><span class="p">(</span><span class="s2">"gpt-6-luna"</span><span class="p">)</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">  </span><span class="nx">state</span><span class="o">:</span><span class="w"> </span><span class="s2">"my card was stolen"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">questions</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">intent</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"choice"</span><span class="p">,</span><span class="w"> </span><span class="nx">instructions</span><span class="o">:</span><span class="w"> </span><span class="s2">"What does the customer want?"</span><span class="p">,</span><span class="w"> </span><span class="nx">criteria</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">refund</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">lost_card</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">other</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p><code>specificationVersion</code> must match the installed <code>ai</code> major version: ai 5 → <code>"v2"</code>, ai 6 → <code>"v3"</code>, ai 7 → <code>"v4"</code>. For enum output through <code>generateObject</code>, pass <code>format: (a) =&gt; JSON.stringify({ result: a })</code>. Without a <code>fallback</code>, questions the table can't answer come back as <code>{ type: "refusal" }</code> with a warning.</p>
+<h2 id="5-decision-models-as-the-teacher">5. Decision models as the teacher<a class="headerlink" href="#5-decision-models-as-the-teacher" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">lost_card</span><span class="o">:</span><span class="w"> </span><span class="s2">"card lost or stolen"</span><span class="p">,</span><span class="w"> </span><span class="nx">refund</span><span class="o">:</span><span class="w"> </span><span class="s2">"wants money back"</span><span class="p">,</span><span class="w"> </span><span class="nx">other</span><span class="o">:</span><span class="w"> </span><span class="s2">"anything else"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">llm</span><span class="o">:</span><span class="w"> </span><span class="s2">"systemone/kev"</span><span class="p">,</span><span class="w"> </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="s2">"http://127.0.0.1:8081"</span><span class="p">,</span><span class="w">   </span><span class="c1">// any /v1/systemone server: Jev, Kev, Laya, llama.cpp</span>
+<span class="w">  </span><span class="c1">// llm: "openai-decisions/gpt-6-luna",                     // the OpenAI Decisions API (reads OPENAI_API_KEY)</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>See <a href="decisions-api.html">Decisions API &amp; System One</a> for running an open decision model locally.</p>
 <h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
 <ul>
-<li><strong><code>decision(name, opts)</code> → <code>Promise&lt;Shadow&gt;</code>.</strong> <code>opts</code>: <code>options</code>, <code>llm</code>, <code>bundle</code>, <code>log</code>, <code>auditRate</code>, <code>onDecision</code>, <code>baseURL</code>, <code>apiKey</code>, <code>system</code>, <code>temperature</code>, <code>retries</code>, <code>headers</code>, <code>fetch</code>.</li>
+<li><strong><code>decision(name, opts)</code> → <code>Promise&lt;Shadow&gt;</code>.</strong> <code>opts</code>: <code>options</code>, <code>llm</code>, <code>bundle</code>, <code>log</code>, <code>auditRate</code>, <code>onDecision</code>, <code>baseURL</code>, <code>apiKey</code>, <code>system</code>, <code>temperature</code>, <code>retries</code>, <code>headers</code>, <code>fetch</code>, <code>timeout</code>. A bundle path that does not exist yet starts log-only; a corrupt or unsupported bundle throws.</li>
 <li><strong><code>new Shadow(bundle | null, { teacher, question, log, auditRate, onDecision })</code>.</strong></li>
-<li><code>await shadow.decide(text, { teacher })</code> → <code>{ answer, source, confidence, certified, flag, latencyUs }</code>.</li>
+<li><code>await shadow.decide(text, { teacher })</code> → <code>{ answer, source, confidence, certified, flag, latencyUs, question, threshold }</code>.</li>
+<li><code>await shadow.peek(text)</code> → the table's decision if it would serve it, else <code>null</code>. Never calls the teacher.</li>
+<li><code>await shadow.record(text, answer)</code> logs an answer you got from your model yourself.</li>
+<li><code>shadow.explain(text)</code> → <code>{ text, answer, confidence, threshold, certified, flag, why, top }</code>, without calling your model.</li>
 <li><code>shadow.stats()</code> → <code>{ table, teacher, offload, audits, auditDisagreements, auditDisagreement }</code>.</li>
-<li><strong><code>openaiTeacher({ options, model, baseURL, apiKey, fetch, system })</code> → <code>async (text) =&gt; option</code>.</strong> It uses structured output with a plain-text fallback, retries with backoff, and maps every reply to exactly one option (or throws).</li>
+<li><strong><code>openaiTeacher({ options, model, baseURL, apiKey, fetch, system, timeout })</code> → <code>async (text) =&gt; option</code>.</strong> Structured output with a plain-text fallback, retries with backoff, a 30 s timeout per attempt by default, and every reply mapped to exactly one option (or an error).</li>
+<li><strong><code>systemoneTeacher({ options, model, baseURL })</code></strong> and <strong><code>decisionsTeacher({ options, model, baseURL, apiKey })</code></strong> ask a System One server or the OpenAI Decisions API instead of a chat model.</li>
+<li><strong><code>shad0wMiddleware(shadow, { specificationVersion, options, format })</code></strong> and <strong><code>decisionModel(shadow | { [question]: shadow }, { fallback, name })</code></strong> for the Vercel AI SDK (above).</li>
 <li><strong><code>Bundle.load(dirOrUrl)</code>; <code>bundle.decide(text, { questions })</code></strong> → <code>{ answers: { [name]: Answer } }</code>.</li>
 <li><strong><code>new Table(arrayBuffer, labels).decide(text)</code>.</strong> One <code>.s0</code> file; returns <code>{ index, choice, confidence, probabilities }</code>.</li>
 <li><strong><code>matchOption(reply, options)</code>.</strong> The same reply-to-option mapping the teachers use.</li>
+<li><strong><code>explainFlag(flag)</code>, <code>FLAG_WORDS</code>.</strong> The reason behind a flag, in plain words (same wording as Python).</li>
 </ul>
+<p>The rollout settings (<code>mode</code>, <code>canary</code>, <code>never_serve</code>, <code>min_confidence</code>) and training are Python-only. A table trained and certified in Python serves identically in JavaScript.</p>
 <p>The <code>log</code> row format matches Python's, so <code>shad0w train</code> reads logs written by either language.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
   <div class="pager"><a href="python.html"><small>← previous</small>Python</a><a class="next" href="http.html"><small>next →</small>HTTP</a></div></article>
@@ -100,6 +140,8 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <li><a href="#1-put-it-in-front-of-your-llm">1. Put it in front of your LLM</a></li>
 <li><a href="#2-train-python-once">2. Train (Python, once)</a></li>
 <li><a href="#3-serve">3. Serve</a></li>
+<li><a href="#4-vercel-ai-sdk">4. Vercel AI SDK</a></li>
+<li><a href="#5-decision-models-as-the-teacher">5. Decision models as the teacher</a></li>
 <li><a href="#api">API</a></li>
 </ul>
 </div>
@@ -107,7 +149,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

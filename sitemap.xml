@@ -3,6 +3,7 @@
   <url><loc>https://2796gaurav.github.io/shad0w/</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/demo/</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/decisions-api.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/connect-your-llm.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/proxy.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/python.html</loc></url>
@@ -10,10 +11,15 @@
   <url><loc>https://2796gaurav.github.io/shad0w/docs/http.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/c.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/frameworks.html</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/configuration.html</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/rollout.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/observability.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/training.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/cli.html</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/troubleshooting.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/guarantee.html</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/benchmarks.html</loc></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/compare.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/limits.html</loc></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/faq.html</loc></url>
 </urlset>

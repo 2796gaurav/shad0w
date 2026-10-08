@@ -13,7 +13,7 @@
 <rect width="1280" height="460" rx="28" fill="url(#grid)"/>
 <rect width="1280" height="460" rx="28" fill="url(#au1)"/><rect width="1280" height="460" rx="28" fill="url(#au2)"/>
 <text x="64" y="190" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#f3f2ff" letter-spacing="-2">shad</text><circle cx="348.3" cy="153.0" r="30.2" fill="none" stroke="#3ef0b0" stroke-width="9.5" filter="url(#glow)"/><circle cx="348.3" cy="153.0" r="6.2" fill="#3ef0b0"/><text x="384.1" y="190" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#f3f2ff" letter-spacing="-2">w</text>
-<text x="68" y="252" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#f3f2ff">your LLM's answers, served in <tspan fill="#3ef0b0">10 µs</tspan>.</text>
+<text x="68" y="252" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#f3f2ff">your LLM's answers, served in <tspan fill="#3ef0b0">2.4 µs</tspan>.</text>
 <text x="68" y="300" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#a09fbd">Learns what your LLM decides. Answers what it's certified on.</text>
 <text x="68" y="328" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#a09fbd">Sends the rest to your LLM, and keeps learning.</text>
 <g font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700">
@@ -23,7 +23,7 @@
 <use href="#pin" fill="none" stroke="#2a2a44" stroke-width="2" stroke-dasharray="4 7"/>
 <use href="#pt" fill="none" stroke="#3ef0b0" stroke-opacity=".55" stroke-width="3"/>
 <use href="#pl" fill="none" stroke="#ffb648" stroke-opacity=".5" stroke-width="3" stroke-dasharray="7 7"/>
-<g font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700"><text x="900" y="76" fill="#3ef0b0">certified → table · ~10 µs</text><text x="880" y="420" fill="#ffb648">not sure → your LLM · ~600 ms</text></g>
+<g font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700"><text x="900" y="76" fill="#3ef0b0">certified → table · 2.4 µs</text><text x="880" y="420" fill="#ffb648">not sure → your LLM · 1416 ms</text></g>
 <g transform="translate(830 230)"><circle r="46" fill="#11111e" stroke="#2a2a44" stroke-width="2"/>
 <circle r="29" fill="none" stroke="#3ef0b0" stroke-width="8" filter="url(#glow)"><animate attributeName="stroke-width" values="8;12;8" dur="1s" repeatCount="indefinite"/></circle><circle r="6" fill="#3ef0b0"/></g>
 <g transform="translate(1128 86)"><rect width="124" height="70" rx="16" fill="#3ef0b0" fill-opacity=".1" stroke="#3ef0b0" stroke-opacity=".6"/>
@@ -39,13 +39,13 @@
 <rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">block my card</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="0.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="0.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-86" y="-15" width="172" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 9µs</text></g>
+<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="1.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="1.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
 <rect x="-56" y="-15" width="112" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">refund pls</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="1.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="1.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ refund · 9µs</text></g>
+<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ refund · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="2.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="2.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
 <rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">is it raining?</text></g>
@@ -57,13 +57,13 @@
 <rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">send 50 to mom</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="3.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="3.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ transfer · 9µs</text></g>
+<rect x="-90" y="-15" width="181" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ transfer · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="4.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="4.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
 <rect x="-56" y="-15" width="112" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">pin locked</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="4.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="4.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ pin_blocked · 9µs</text></g>
+<rect x="-103" y="-15" width="207" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ pin_blocked · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="5.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="5.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
 <rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">umm the thing</text></g>
@@ -75,11 +75,11 @@
 <rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">card stolen!!</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="6.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="6.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-86" y="-15" width="172" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 9µs</text></g>
+<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="7.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="7.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
 <rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">top up failed</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="7.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="7.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ top_up · 9µs</text></g>
+<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ top_up · 2.4µs</text></g>
 </svg>

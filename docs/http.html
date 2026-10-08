@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>HTTP server · shad0w</title>
 <meta name="description" content="Serve a trained table over HTTP to any language, with metrics and a live dashboard.">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/http.html">
@@ -23,6 +24,7 @@
   <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
   <div class="links">
     <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
     <a href="../#integrate">Integrate</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../demo/">Live demo</a>
@@ -31,7 +33,8 @@
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy (zero code)</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html" class=active>HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></aside>
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · HTTP</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html" class=active>HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
   <article class="prose"><h1 id="http-server">HTTP server<a class="headerlink" href="#http-server" title="Permanent link">#</a></h1>
 <div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>serve<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span>--port<span class="w"> </span><span class="m">8010</span>
 </code></pre></div>
@@ -50,13 +53,41 @@
 <li><code>"exposed": true</code> treats the input as adversarial;</li>
 <li><code>"questions": {"intent": {"criteria": ["refund", "lost_card"]}}</code> decides among a subset of options.</li>
 </ul>
-<p><code>/v1/systemone</code> is accepted as an alias of <code>/v1/decide</code>.</p>
+<h2 id="the-decisions-api-and-system-one-shapes">The Decisions API and System One shapes<a class="headerlink" href="#the-decisions-api-and-system-one-shapes" title="Permanent link">#</a></h2>
+<p>The same table also answers in the two decision-model formats, so a client written for them works against <code>shad0w serve</code> unchanged.</p>
+<p><strong>OpenAI Decisions API</strong>, <code>POST /v1/decisions</code>:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>localhost:8010/v1/decisions<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"model": "any", "input": "my card was stolen",</span>
+<span class="s1">  "questions": [{"type": "choice", "name": "intent", "instructions": "...",</span>
+<span class="s1">                 "choices": [{"value": "refund"}, {"value": "lost_card"}, {"value": "balance"}]}]}'</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"object"</span><span class="p">:</span><span class="w"> </span><span class="s2">"decision"</span><span class="p">,</span><span class="w"> </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w"> </span><span class="nt">"answers"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"choice"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="nt">"choice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="nt">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.999</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"refund"</span><span class="p">,</span><span class="w"> </span><span class="nt">"probability"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0001</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="nt">"probability"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.999</span><span class="p">},</span><span class="w"> </span><span class="s2">"..."</span><span class="p">],</span>
+<span class="w">              </span><span class="nt">"shad0w"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w"> </span><span class="nt">"certified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"flag"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}}],</span>
+<span class="w"> </span><span class="nt">"usage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"input_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"output_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"total_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="nt">"shad0w"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"latency_us"</span><span class="p">:</span><span class="w"> </span><span class="mf">38.0</span><span class="p">,</span><span class="w"> </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">}}</span>
+</code></pre></div>
+
+<p><strong>System One</strong> (Jev, Kev, Laya clients), <code>POST /v1/systemone</code>:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>localhost:8010/v1/systemone<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"model": "any", "state": "my card was stolen",</span>
+<span class="s1">  "questions": {"intent": {"type": "choice", "instructions": "...", "criteria": {"refund": "", "lost_card": "", "balance": ""}}}}'</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span><span class="w"> </span><span class="nt">"answers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"intent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"choice"</span><span class="p">,</span><span class="w"> </span><span class="nt">"choice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="nt">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.999</span><span class="p">,</span>
+<span class="w">                                       </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"refund"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0001</span><span class="p">,</span><span class="w"> </span><span class="nt">"lost_card"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.999</span><span class="p">,</span><span class="w"> </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">                                       </span><span class="nt">"shad0w"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w"> </span><span class="nt">"certified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"flag"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}}},</span>
+<span class="w"> </span><span class="nt">"latency_ms"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04</span><span class="p">}</span>
+</code></pre></div>
+
+<p>Yes/no questions are <code>predicate</code> (answer: <code>probability</code>) and <code>noul</code> (answer: <code>noul</code>, the probability of yes) respectively. The listed options narrow the decision to that subset. A question the bundle doesn't know, and any <code>score</code> question, comes back with the flag <code>unsupported</code>: <code>serve</code> has no LLM behind it. For the version that forwards those to a real model, use the <a href="proxy.html">proxy</a>.</p>
+<h2 id="playground">Playground<a class="headerlink" href="#playground" title="Permanent link">#</a></h2>
+<p><code>POST /v1/playground {"question": "intent", "text": "..."}</code> returns what the table thinks without recording a decision: answer, confidence, threshold, α, whether it is certified, the reason in words, and the top three options. The dashboard's Playground card uses it.</p>
 <h2 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Endpoint</th>
-<th></th>
+<th>What it does</th>
 </tr>
 </thead>
 <tbody>
@@ -78,13 +109,15 @@
 </tr>
 </tbody>
 </table>
-<p>The server speaks HTTP/1.1 keep-alive, is multi-threaded, and adds about 0.2 ms per request on localhost. Bodies over 1 MiB are refused. It has no authentication: keep it on localhost or behind your own gateway.</p>
+<p>The server speaks HTTP/1.1 keep-alive, is multi-threaded, and adds about 0.17 ms per request on localhost. Bodies over 1 MiB are refused. It has no authentication: keep it on localhost or behind your own gateway.</p>
 <p>Want the server to call your LLM too, and log for training? Use the <a href="proxy.html">proxy</a>.</p>
   <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
   <div class="pager"><a href="javascript.html"><small>← previous</small>JavaScript & TypeScript</a><a class="next" href="c.html"><small>next →</small>C & other languages</a></div></article>
   <aside class="toc"><b>On this page</b><div class="toc">
 <ul>
 <li><a href="#decide">Decide</a></li>
+<li><a href="#the-decisions-api-and-system-one-shapes">The Decisions API and System One shapes</a></li>
+<li><a href="#playground">Playground</a></li>
 <li><a href="#watch">Watch</a></li>
 </ul>
 </div>
@@ -92,7 +125,7 @@
 </div>
 <footer><div class="wrap">
   <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
 </div></footer>
 </body>
 </html>

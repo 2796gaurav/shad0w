@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<title>How it compares · shad0w</title>
+<meta name="description" content="shad0w next to semantic caches, embedding routers, small fine-tuned models, LLM-only, and the new decision models (OpenAI Decisions API, Jev, Kev, Laya), measured with the same certifier.">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/compare.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="How it compares · shad0w">
+<meta property="og:description" content="shad0w next to semantic caches, embedding routers, small fine-tuned models, LLM-only, and the new decision models (OpenAI Decisions API, Jev, Kev, Laya), measured with the same certifier."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/compare.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"shad0w","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","offers":{"@type":"Offer","price":"0"},"author":{"@type":"Person","name":"Gaurav Chauhan"},"license":"https://www.apache.org/licenses/LICENSE-2.0","url":"https://2796gaurav.github.io/shad0w/","codeRepository":"https://github.com/2796gaurav/shad0w"}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../#integrate">Integrate</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../demo/">Live demo</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · How it compares</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration & tuning</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html" class=active>How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a></details>
+  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
+  <article class="prose"><h1 id="how-it-compares">How it compares<a class="headerlink" href="#how-it-compares" title="Permanent link">#</a></h1>
+<p>Every learned method below was trained on the <strong>same logged LLM answers</strong>, split the same way, and certified with the <strong>same Learn-then-Test procedure at the same α and δ</strong>, so "answered without the LLM at α = 5%" is compared like for like. Decision models are a different kind of thing: a model you call <em>instead of</em> your LLM for every request, with calibrated probabilities but no bound against anything. They can also be shad0w's teacher.</p>
+<!-- numbers:begin compare_table -->
+<table>
+<thead>
+<tr>
+<th>method</th>
+<th>answered without the LLM @ α = 5%</th>
+<th>disagreement with the LLM on those</th>
+<th>accuracy vs gold (cascade)</th>
+<th>p50 per decision</th>
+<th>cost per 1k decisions</th>
+<th>needs</th>
+<th>guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shad0w table</td>
+<td>61%</td>
+<td>3.0%</td>
+<td>76.5%</td>
+<td>4.0 µs</td>
+<td>$0.204</td>
+<td>your LLM's logged answers</td>
+<td>certified ≤ α vs your LLM</td>
+</tr>
+<tr>
+<td>semantic cache (bge-small, nearest logged answer)</td>
+<td>0%</td>
+<td>—</td>
+<td>76.3%</td>
+<td>7.5 ms</td>
+<td>$0.520</td>
+<td>embedding model + logged answers</td>
+<td>same certifier applied</td>
+</tr>
+<tr>
+<td>embedding kNN router (bge-small, k=10)</td>
+<td>69%</td>
+<td>2.9%</td>
+<td>76.9%</td>
+<td>7.6 ms</td>
+<td>$0.161</td>
+<td>embedding model + logged answers</td>
+<td>same certifier applied</td>
+</tr>
+<tr>
+<td>small fine-tuned head (LR on bge-small)</td>
+<td>75%</td>
+<td>3.4%</td>
+<td>77.1%</td>
+<td>7.2 ms</td>
+<td>$0.129</td>
+<td>embedding model + logged answers</td>
+<td>same certifier applied</td>
+</tr>
+<tr>
+<td>exact-match cache</td>
+<td>0%</td>
+<td>—</td>
+<td>76.3%</td>
+<td>1.2 µs</td>
+<td>$0.520</td>
+<td>logged answers</td>
+<td>exact repeats only</td>
+</tr>
+<tr>
+<td>keep calling the LLM</td>
+<td>0%</td>
+<td>0.0%</td>
+<td>76.3%</td>
+<td>—</td>
+<td>$0.520</td>
+<td>API or GPU</td>
+<td>it is the reference</td>
+</tr>
+<tr>
+<td>Kev-0.8B decision model (local)</td>
+<td>100% (it replaces your LLM)</td>
+<td>23% vs gpt-4.1-mini</td>
+<td>80.0%</td>
+<td>271 ms</td>
+<td>$0 (your hardware)</td>
+<td>a GPU/MLX machine, ~1-3 GB</td>
+<td>calibrated probabilities, no bound</td>
+</tr>
+<tr>
+<td>Julia-1 decision model (local)</td>
+<td>100% (it replaces your LLM)</td>
+<td>41% vs gpt-4.1-mini</td>
+<td>61.6%</td>
+<td>11.9 ms</td>
+<td>$0 (your hardware)</td>
+<td>llama.cpp, a laptop</td>
+<td>calibrated probabilities, no bound</td>
+</tr>
+<tr>
+<td>Laya 421M decision model (local)</td>
+<td>100% (it replaces your LLM)</td>
+<td>58% vs gpt-4.1-mini</td>
+<td>38.0%</td>
+<td>91.6 ms</td>
+<td>$0 (your hardware)</td>
+<td>a GPU or fast CPU, 0.8 GB</td>
+<td>calibrated probabilities, no bound</td>
+</tr>
+<tr>
+<td>hosted decision model (OpenAI Decisions API, gpt-6-luna)</td>
+<td>100% (it replaces your LLM)</td>
+<td>not measured (no API key)</td>
+<td>not measured</td>
+<td>~150 ms claimed</td>
+<td>$0.030 per 1k</td>
+<td>API key</td>
+<td>none (probabilities only)</td>
+</tr>
+<tr>
+<td>hosted decision model (TypeSafe Jev 1.13)</td>
+<td>100% (it replaces your LLM)</td>
+<td>not measured (no credits)</td>
+<td>not measured</td>
+<td>70–500 ms claimed</td>
+<td>$0.0126 per 1k</td>
+<td>API key</td>
+<td>none (probabilities only)</td>
+</tr>
+</tbody>
+</table>
+<!-- numbers:end compare_table -->
+
+<h2 id="what-each-row-means">What each row means<a class="headerlink" href="#what-each-row-means" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>shad0w table</strong>: hashed word/character table with 8-bit weights, trained on your LLM's logged answers, certified; answers in microseconds on a CPU.</li>
+<li><strong>semantic cache</strong>: embed the text (bge-small), return the logged answer of the nearest logged text when the cosine similarity clears a threshold. This is what vCache (Berkeley, ICLR 2026) does with a learned per-entry threshold; we apply the same certifier to the similarity so the comparison is fair. Needs an embedding model call per request.</li>
+<li><strong>embedding kNN router</strong>: like the cache, but a weighted vote over the 10 nearest logged texts.</li>
+<li><strong>small fine-tuned head</strong>: logistic regression on bge-small embeddings, the cheapest "fine-tune a small model" stand-in. Needs the embedding model at serving time.</li>
+<li><strong>exact-match cache</strong>: free, but only repeats.</li>
+<li><strong>decision models</strong>: OpenAI Decisions API (gpt-6-luna, $0.10 per 1M input tokens, output free), TypeSafe Jev (hosted), Kev (Apache-2.0, 0.8B–27B) and Laya (Apache-2.0, 421M). They answer typed questions directly in 10 ms–1 s. shad0w can learn from any of them and answer the certified share in microseconds. The open ones now run locally too: llama.cpp serves <code>/v1/systemone</code> (<code>llama-server -hf ggml-org/Kev-0.8B-GGUF</code>; also Laya, Julia-1, Clef-Flash and Nimble GGUFs) and Ollama 0.40 ships <code>laya</code>, so <code>llm="systemone/kev-0.8b"</code> with <code>base_url="http://localhost:8080"</code> works as a free local teacher.</li>
+</ul>
+<h2 id="where-shad0w-loses">Where shad0w loses<a class="headerlink" href="#where-shad0w-loses" title="Permanent link">#</a></h2>
+<ul>
+<li>Sentiment and tone (SST-2): the table reaches 79% accuracy at best, certifies 0% and defers everything. That is the correct behaviour, and a decision model or your LLM is the right tool.</li>
+<li>Legal clauses (LEDGAR, 100 labels, long texts): 13% served in an earlier run.</li>
+<li>Raw accuracy: a decision model answers <em>every</em> input; shad0w only answers the certified share and hands the rest back. If you need one engine for everything, use the decision model and put shad0w in front of it.</li>
+<li>Cold start: nothing is served until ~1,000 answers are logged and <code>train()</code> has run.</li>
+</ul>
+<p>Numbers, hardware and dates: <a href="benchmarks.html">benchmarks</a>.</p>
+  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
+  <div class="pager"><a href="benchmarks.html"><small>← previous</small>Benchmarks & evidence</a><a class="next" href="limits.html"><small>next →</small>Limits</a></div></article>
+  <aside class="toc"><b>On this page</b><div class="toc">
+<ul>
+<li><a href="#what-each-row-means">What each row means</a></li>
+<li><a href="#where-shad0w-loses">Where shad0w loses</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<footer><div class="wrap">
+  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
+  <span><a href="../docs/">Docs</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+</div></footer>
+</body>
+</html>

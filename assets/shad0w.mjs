@@ -173,7 +173,6 @@ class Bundle {
 /** provider -> [base URL, environment variable holding the key (null for local servers)] */
 const PROVIDERS = {
   openai: ["https://api.openai.com/v1", "OPENAI_API_KEY"],
-  azure: ["", "AZURE_OPENAI_API_KEY"],
   anthropic: ["https://api.anthropic.com/v1", "ANTHROPIC_API_KEY"],
   gemini: ["https://generativelanguage.googleapis.com/v1beta/openai", "GEMINI_API_KEY"],
   groq: ["https://api.groq.com/openai/v1", "GROQ_API_KEY"],
@@ -247,7 +246,7 @@ function prompt({ question, type, criteria, instructions }) {
  */
 function openaiTeacher(opts) {
   const spec = normalizeOptions(opts.options, opts.question);
-  const model = opts.model || "openai/gpt-4o-mini";
+  const model = opts.model || "openai/gpt-6-luna";
   let [provider, ...rest] = model.includes("/") ? model.split("/") : ["", model];
   let name = rest.join("/");
   if (!(provider in PROVIDERS)) { provider = ""; name = model; }
@@ -260,6 +259,7 @@ function openaiTeacher(opts) {
   const options = spec.type === "yesno" ? ["yes", "no"] : Object.keys(spec.criteria);
   const system = opts.system || prompt(spec);
   const retries = opts.retries ?? 2;
+  const timeout = opts.timeout ?? 30000;  // ms per request; a timed-out request is retried like a network error
   let structured = opts.structured ?? true;
   const dropped = new Set();
   const responseFormat = { type: "json_schema", json_schema: { name: String(spec.question).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64) || "decision", strict: true,
@@ -273,10 +273,13 @@ function openaiTeacher(opts) {
       for (const k of dropped) delete body[k];
       if (structured) body.response_format = responseFormat;
       const headers = { "content-type": "application/json", ...(opts.headers || {}) };
-      if (apiKey) { headers.authorization = `Bearer ${apiKey}`; if (provider === "azure") headers["api-key"] = apiKey; }
+      if (apiKey) headers.authorization = `Bearer ${apiKey}`;
       let r;
-      try { r = await doFetch(`${baseURL}/chat/completions`, { method: "POST", headers, body: JSON.stringify(body) }); }
-      catch (e) { last = e; r = null; }
+      const ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timer = ctl ? setTimeout(() => ctl.abort(), timeout) : null;
+      try { r = await doFetch(`${baseURL}/chat/completions`, { method: "POST", headers, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined }); }
+      catch (e) { last = e && e.name === "AbortError" ? new Error(`timeout after ${timeout} ms`) : e; r = null; }
+      finally { if (timer) clearTimeout(timer); }
       if (r && r.ok) {
         const data = await r.json();
         return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
@@ -311,6 +314,23 @@ function openaiTeacher(opts) {
   teacher.teacherName = model;
   return teacher;
 }
+
+/** Why a decision went where it went, in plain words (mirrors shad0w.cascade._FLAG_WORDS). */
+const FLAG_WORDS = {
+  null: "certified: answered by the table",
+  no_bundle: "no trained table yet: asked your model",
+  low_confidence: "table not sure enough to stay inside the certified bound: asked your model",
+  low_radius: "input could be flipped by a few edits (exposed mode): asked your model",
+  drift: "traffic looks different from calibration: asked your model until re-certified",
+  uncalibrated: "table has no certificate: asked your model",
+  min_confidence: "below your min_confidence floor (stricter than the certificate): asked your model",
+  manual_threshold: "served under force_threshold: NOT covered by the certificate",
+  canary: "held back by the canary share: asked your model",
+  never_serve: "this label is on never_serve: asked your model",
+  shadow: "shadow mode: the table's answer was recorded, your model's was returned",
+  off: "mode=off: the table was not consulted",
+};
+const explainFlag = (flag) => FLAG_WORDS[flag === null || flag === undefined ? "null" : flag] || String(flag || "");
 
 /**
  * The cascade around one question. Certified answers come from the bundle in microseconds; everything else goes to
@@ -351,34 +371,102 @@ class Shadow {
     return answer;
   }
 
+  /** The bundle's raw answer for this question, or null without a bundle. */
+  _table(text) {
+    if (!this.bundle) return null;
+    return this.bundle.decide(text, { questions: [this.question] }).answers[this.question];
+  }
+
+  /** The option names this question decides among (from the bundle, else from the teacher). */
+  options() {
+    if (this.bundle) {
+      const spec = this.bundle.questions[this.question].spec;
+      return spec.type === "yesno" ? ["yes", "no"] : [...spec.options];
+    }
+    return this.teacher && this.teacher.options ? [...this.teacher.options] : null;
+  }
+
+  /** The certified threshold of this question, or null. */
+  threshold() {
+    if (!this.bundle) return null;
+    const t = this.bundle.questions[this.question].spec.threshold;
+    return t === undefined ? null : t;
+  }
+
+  _done(d, text, t0) {
+    d.question = this.question;
+    d.threshold = this.threshold();
+    d.latencyUs = (now() - t0) * 1000;
+    this.counts[d.source]++;
+    if (this.onDecision) { try { this.onDecision(d, text); } catch { /* hooks never break a decision */ } }
+    return d;
+  }
+
+  _audit(text, local, teacher) {
+    if (teacher && this.auditRate && this.random() < this.auditRate) {
+      this._ask(text, "audit", teacher).then((truth) => {
+        this.counts.audits++;
+        if (String(truth) !== String(local)) this.counts.auditDisagreements++;
+      }).catch(() => {});
+    }
+  }
+
+  /**
+   * The table's decision when it would be served (counted and logged like any table decision), else null.
+   * Never calls the teacher, except for the sampled background spot check.
+   */
+  async peek(text, opts = {}) {
+    const t0 = now();
+    const a = this._table(text);
+    if (!a || !a.certified) return null;
+    const local = "choice" in a ? a.choice : a.answer;
+    const d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null,
+      probabilities: a.probabilities || null };
+    this._audit(text, local, opts.teacher || this.teacher);
+    return this._done(d, text, t0);
+  }
+
+  /** Log an answer you obtained from your model yourself, and count it as a teacher decision. */
+  async record(text, answer) {
+    const t0 = now();
+    if (answer !== null && answer !== undefined) {
+      await this._write({ text, [this.question]: answer, source: "teacher", ts: Math.round(Date.now()) / 1000 });
+    }
+    const a = this._table(text);
+    const d = { answer, source: "teacher", confidence: a ? a.confidence : null, certified: false, flag: a ? a.flag : "no_bundle" };
+    return this._done(d, text, t0);
+  }
+
+  /** What the table thinks of `text`, without calling your model: answer, confidence vs threshold, reason, top options. */
+  explain(text) {
+    const a = this._table(text);
+    if (!a) return { text, answer: null, confidence: null, threshold: null, certified: false, flag: "no_bundle", why: explainFlag("no_bundle"), top: [] };
+    const top = a.probabilities ? Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]).slice(0, 3)
+      : [["yes", a.probability], ["no", 1 - a.probability]].sort((x, y) => y[1] - x[1]);
+    return { text, answer: "choice" in a ? a.choice : a.answer, confidence: a.confidence, threshold: this.threshold(),
+      certified: a.certified, flag: a.flag, why: explainFlag(a.flag), top };
+  }
+
   /** @returns {Promise<{answer, source: "table"|"teacher", confidence, certified, flag, latencyUs}>} */
   async decide(text, opts = {}) {
     const t0 = now();
     const teacher = opts.teacher || this.teacher;
     let d;
-    if (!this.bundle) {
+    const a = this._table(text);
+    if (!a) {
       const answer = await this._ask(text, "teacher", teacher);
       d = { answer, source: "teacher", confidence: null, certified: false, flag: "no_bundle" };
     } else {
-      const a = this.bundle.decide(text, { questions: [this.question] }).answers[this.question];
       const local = "choice" in a ? a.choice : a.answer;
       if (a.certified) {
         d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null };
-        if (teacher && this.auditRate && this.random() < this.auditRate) {
-          this._ask(text, "audit", teacher).then((truth) => {
-            this.counts.audits++;
-            if (String(truth) !== String(local)) this.counts.auditDisagreements++;
-          }).catch(() => {});
-        }
+        this._audit(text, local, teacher);
       } else {
         const answer = await this._ask(text, "teacher", teacher);
         d = { answer, source: "teacher", confidence: a.confidence, certified: false, flag: a.flag };
       }
     }
-    d.latencyUs = (now() - t0) * 1000;
-    this.counts[d.source]++;
-    if (this.onDecision) { try { this.onDecision(d, text); } catch { /* hooks never break a decision */ } }
-    return d;
+    return this._done(d, text, t0);
   }
 
   stats() {
@@ -390,22 +478,229 @@ class Shadow {
 }
 
 /**
- * One call to a working cascade: decision("intent", {options, llm: "openai/gpt-4o-mini", bundle: "intent.bundle"}).
+ * One call to a working cascade: decision("intent", {options, llm: "openai/gpt-6-luna", bundle: "intent.bundle"}).
  * `bundle` may be a Bundle, a path/URL (loaded if it exists) or omitted (every call goes to the LLM and is logged).
  */
 async function decision(name, opts = {}) {
   let bundle = opts.bundle || null;
   if (typeof bundle === "string") {
-    try { bundle = await Bundle.load(bundle); } catch { bundle = null; }
+    // A bundle that does not exist yet is fine (log-only start); a corrupt or unsupported one is an error.
+    try { bundle = await Bundle.load(bundle); }
+    catch (e) { if (!isMissing(e)) throw e; bundle = null; }
   }
   let teacher = opts.llm;
   if (typeof teacher === "string") {
     if (!opts.options && bundle) opts = { ...opts, options: bundle.questions[name].spec.options };
     if (!opts.options) throw new Error("pass options so the LLM knows what to choose from");
-    teacher = openaiTeacher({ ...opts, options: opts.options, model: teacher, question: name });
+    const provider = teacher.split("/")[0];
+    const t = { ...opts, options: opts.options, model: teacher, question: name };
+    teacher = provider === "systemone" ? systemoneTeacher({ ...t, model: teacher.slice("systemone/".length) })
+      : provider === "openai-decisions" ? decisionsTeacher({ ...t, model: teacher.slice("openai-decisions/".length) })
+      : openaiTeacher(t);
   }
   return new Shadow(bundle, { ...opts, teacher, question: name });
 }
 
-export { Table, Bundle, Shadow, openaiTeacher, decision, matchOption, PROVIDERS, items, words, TABLE_VERSION };
-export default { Table, Bundle, Shadow, openaiTeacher, decision, matchOption, PROVIDERS, items, words, TABLE_VERSION };
+function isMissing(e) {
+  const s = String((e && (e.code || e.message)) || e);
+  return /ENOENT|ENOTDIR|HTTP 404/.test(s);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Decision-model teachers: System One servers (Jev, Kev, Laya, Ollaya, llama.cpp) and the OpenAI Decisions API.
+
+/** POST JSON with a timeout and retries on network errors, 429 and 5xx. Returns the parsed body. */
+async function postJSON(url, headers, body, { fetch: doFetch = globalThis.fetch, timeout = 30000, retries = 2 } = {}) {
+  let last;
+  for (let attempt = 0; ; attempt++) {
+    const ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = ctl ? setTimeout(() => ctl.abort(), timeout) : null;
+    let r = null;
+    try { r = await doFetch(url, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined }); }
+    catch (e) { last = e && e.name === "AbortError" ? new Error(`timeout after ${timeout} ms`) : e; }
+    finally { if (timer) clearTimeout(timer); }
+    if (r && r.ok) return r.json();
+    if (r) {
+      last = new Error(`HTTP ${r.status}: ${(await r.text()).slice(0, 500)}`);
+      if (r.status !== 429 && r.status < 500) throw last;
+    }
+    if (attempt >= retries) throw last;
+    await new Promise((res) => setTimeout(res, Math.min(8000, 500 * 2 ** attempt)));
+  }
+}
+
+/**
+ * A teacher that asks a System One server (TypeSafe wire format: Jev, Kev, Laya, Ollaya, llama.cpp /v1/systemone).
+ * systemoneTeacher({ baseURL: "http://localhost:8009", model: "kev-0.8b", question: "intent", options })
+ */
+function systemoneTeacher(opts) {
+  const spec = normalizeOptions(opts.options, opts.question);
+  if (!opts.baseURL) throw new Error("systemoneTeacher: pass baseURL (the server that speaks /v1/systemone)");
+  const root = String(opts.baseURL).replace(/\/+$/, "").replace(/\/v1$/, "");
+  const options = spec.type === "yesno" ? ["yes", "no"] : Object.keys(spec.criteria);
+  const q = spec.type === "yesno"
+    ? { type: "noul", instructions: spec.instructions || `Is the answer to '${spec.question}' yes for this text?` }
+    : { type: "choice", instructions: spec.instructions || `Classify the text (${spec.question}). Pick exactly one option.`,
+        criteria: Object.fromEntries(options.map((o) => [o, spec.criteria[o] || o])) };
+  const headers = { ...(opts.headers || {}) };
+  if (opts.apiKey) headers.authorization = `Bearer ${opts.apiKey}`;
+  const teacher = async (text) => {
+    const data = await postJSON(`${root}/v1/systemone`, headers, { model: opts.model || "default", state: String(text), questions: { [spec.question]: q } }, opts);
+    const a = data && data.answers && data.answers[spec.question];
+    if (!a) throw new Error(`systemone server returned no answer for "${spec.question}"`);
+    if (spec.type === "yesno") {
+      if (typeof a.answer === "boolean") return a.answer;
+      if (typeof a.probability === "number") return a.probability >= 0.5;
+      const m = matchOption(a.answer ?? a.choice ?? a.noul, ["yes", "no"]);
+      if (m === null) throw new Error(`systemone server replied ${JSON.stringify(a).slice(0, 200)}: not a yes/no`);
+      return m === "yes";
+    }
+    const opt = matchOption(a.choice ?? a.value ?? a.answer, options);
+    if (opt === null) throw new Error(`systemone server replied ${JSON.stringify(a).slice(0, 200)}, which matches none of ${options.join(", ")}`);
+    return opt;
+  };
+  teacher.question = spec.question; teacher.options = options; teacher.teacherName = `systemone/${opts.model || "default"}`;
+  return teacher;
+}
+
+/**
+ * A teacher that asks the OpenAI Decisions API (POST /v1/decisions, model gpt-6-luna): one choice or predicate question.
+ * decisionsTeacher({ model: "gpt-6-luna", question: "intent", options })   // key from OPENAI_API_KEY or apiKey
+ */
+function decisionsTeacher(opts) {
+  const spec = normalizeOptions(opts.options, opts.question);
+  const baseURL = String(opts.baseURL || env("SHAD0W_BASE_URL") || "https://api.openai.com/v1").replace(/\/+$/, "");
+  const apiKey = opts.apiKey !== undefined ? opts.apiKey : env("OPENAI_API_KEY");
+  if (!apiKey && /api\.openai\.com/.test(baseURL)) throw new Error("openai-decisions: set OPENAI_API_KEY or pass apiKey");
+  const options = spec.type === "yesno" ? ["yes", "no"] : Object.keys(spec.criteria);
+  const question = spec.type === "yesno"
+    ? { type: "predicate", name: spec.question, instructions: spec.instructions || `Is the answer to '${spec.question}' yes for this text?` }
+    : { type: "choice", name: spec.question, instructions: spec.instructions || `Classify the text (${spec.question}). Pick exactly one option.`,
+        choices: options.map((o) => (spec.criteria[o] ? { value: o, description: spec.criteria[o] } : { value: o })) };
+  const headers = { ...(opts.headers || {}) };
+  if (apiKey) headers.authorization = `Bearer ${apiKey}`;
+  const teacher = async (text) => {
+    const data = await postJSON(`${baseURL}/decisions`, headers, { model: opts.model || "gpt-6-luna", input: String(text), questions: [question] }, opts);
+    const a = data && Array.isArray(data.answers) ? (data.answers.find((x) => x.name === spec.question) || data.answers[0]) : null;
+    if (!a) throw new Error(`decisions API returned no answer for "${spec.question}"`);
+    if (a.type === "refusal") throw new Error(`decisions API refused "${spec.question}"`);
+    if (spec.type === "yesno") {
+      if (typeof a.probability === "number") return a.probability >= 0.5;
+      const m = matchOption(a.choice ?? a.value, ["yes", "no"]);
+      if (m === null) throw new Error(`decisions API replied ${JSON.stringify(a).slice(0, 200)}: not a yes/no`);
+      return m === "yes";
+    }
+    const opt = matchOption(a.choice ?? a.value, options);
+    if (opt === null) throw new Error(`decisions API replied ${JSON.stringify(a).slice(0, 200)}, which matches none of ${options.join(", ")}`);
+    return opt;
+  };
+  teacher.question = spec.question; teacher.options = options; teacher.teacherName = `openai-decisions/${opts.model || "gpt-6-luna"}`;
+  return teacher;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Vercel AI SDK: a language-model middleware and a decision model, both backed by a Shadow.
+
+function lastUserText(prompt) {
+  for (let i = (prompt || []).length - 1; i >= 0; i--) {
+    const m = prompt[i];
+    if (!m || m.role !== "user") continue;
+    if (typeof m.content === "string") return m.content;
+    if (Array.isArray(m.content)) return m.content.filter((p) => p && p.type === "text").map((p) => p.text).join("\n");
+  }
+  return null;
+}
+
+function resultText(r) {
+  if (!r) return "";
+  if (Array.isArray(r.content)) return r.content.filter((p) => p && p.type === "text").map((p) => p.text).join("");
+  return typeof r.text === "string" ? r.text : "";
+}
+
+/**
+ * Middleware for `wrapLanguageModel({ model, middleware: shad0wMiddleware(intent) })`.
+ * Certified answers come from the table without calling the model; the model's own answers are logged for training.
+ * specificationVersion must match the installed `ai` major (ai 5 → "v2", ai 6 → "v3", ai 7 → "v4").
+ * format(answer) shapes the reply text (default: the bare option; e.g. a => JSON.stringify({ result: a }) for enum output).
+ */
+function shad0wMiddleware(shadow, opts = {}) {
+  const { specificationVersion = "v3", format = String } = opts;
+  const options = opts.options || shadow.options();
+  return {
+    specificationVersion,
+    middlewareVersion: specificationVersion,
+    wrapGenerate: async ({ doGenerate, params }) => {
+      const text = lastUserText(params && params.prompt);
+      if (text !== null) {
+        const d = await shadow.peek(text);
+        if (d) {
+          return { content: [{ type: "text", text: format(d.answer) }], finishReason: "stop",
+            usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 }, warnings: [],
+            providerMetadata: { shad0w: { source: "table", answer: d.answer, confidence: d.confidence, certified: true, latencyUs: d.latencyUs } } };
+        }
+      }
+      const r = await doGenerate();
+      if (text !== null && options) {
+        const a = matchOption(resultText(r), options);
+        if (a !== null) await shadow.record(text, shadow.bundle && shadow.bundle.questions[shadow.question].spec.type === "yesno" ? a === "yes" : a);
+      }
+      return r;
+    },
+  };
+}
+
+/**
+ * A decision model for `experimental_decide({ model: decisionModel(intent), state, questions })` (AI SDK, spec v4).
+ * `shadows` is one Shadow or { [questionName]: Shadow }. Choice and boolean questions that a Shadow certifies are
+ * answered from its table with probabilities; everything else goes to `fallback` (another decision model, e.g.
+ * openai.decisionModel("gpt-6-luna")) and the fallback's answers are logged into the matching Shadow for training.
+ */
+function decisionModel(shadows, opts = {}) {
+  const map = shadows instanceof Shadow ? { [shadows.question]: shadows } : { ...shadows };
+  const fallback = opts.fallback || null;
+  return {
+    specificationVersion: "v4",
+    provider: opts.provider || "shad0w",
+    modelId: opts.name || `shad0w:${Object.keys(map).join("+")}`,
+    supportedQuestionTypes: fallback && fallback.supportedQuestionTypes ? [...fallback.supportedQuestionTypes] : ["choice", "boolean"],
+    async doDecide({ state, questions, abortSignal, headers, providerOptions }) {
+      const text = typeof state === "string" ? state : JSON.stringify(state);
+      const answers = {}, pending = {}, meta = { table: [], fallback: [] };
+      for (const [id, q] of Object.entries(questions || {})) {
+        const sh = map[id];
+        const d = sh && (q.type === "choice" || q.type === "boolean") ? await sh.peek(text) : null;
+        if (!d) { pending[id] = q; continue; }
+        meta.table.push(id);
+        if (q.type === "boolean") {
+          const p = typeof d.answer === "boolean" ? (d.answer ? d.confidence : 1 - d.confidence) : (d.probabilities ? d.probabilities.yes ?? d.confidence : d.confidence);
+          answers[id] = { type: "boolean", probability: p };
+        } else {
+          const probabilities = d.probabilities ? Object.fromEntries(Object.keys(q.criteria || {}).filter((k) => k in d.probabilities).map((k) => [k, d.probabilities[k]])) : undefined;
+          answers[id] = { type: "choice", choice: d.answer, ...(probabilities ? { probabilities } : {}) };
+        }
+      }
+      let usage = { inputTokens: 0, outputTokens: 0 }, warnings = [], response, providerMetadata = {};
+      if (Object.keys(pending).length) {
+        if (!fallback) {
+          for (const id of Object.keys(pending)) { answers[id] = { type: "refusal" }; warnings.push({ type: "other", message: `shad0w: no certified answer for "${id}" and no fallback model` }); }
+        } else {
+          const r = await fallback.doDecide({ state, questions: pending, abortSignal, headers, providerOptions });
+          for (const [id, a] of Object.entries(r.answers || {})) {
+            answers[id] = a; meta.fallback.push(id);
+            const sh = map[id];
+            if (!sh || !a || a.type === "refusal") continue;
+            if (a.type === "choice") await sh.record(text, a.choice);
+            else if (a.type === "boolean" && typeof a.probability === "number") await sh.record(text, a.probability >= 0.5);
+          }
+          usage = r.usage || usage; warnings = r.warnings || warnings; response = r.response; providerMetadata = r.providerMetadata || {};
+        }
+      }
+      return { answers, usage, warnings, response, providerMetadata: { ...providerMetadata, shad0w: meta } };
+    },
+  };
+}
+
+export { Table, Bundle, Shadow, openaiTeacher, systemoneTeacher, decisionsTeacher, decision, shad0wMiddleware, decisionModel,
+  explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };
+export default { Table, Bundle, Shadow, openaiTeacher, systemoneTeacher, decisionsTeacher, decision, shad0wMiddleware, decisionModel,
+  explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };

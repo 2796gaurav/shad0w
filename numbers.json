@@ -1,0 +1,2289 @@
+{
+ "generated": "2026-10-08",
+ "status": "new",
+ "n": {
+  "tests.count": "149",
+  "lat.py_us": "5.2 µs",
+  "lat.py_fast_us": "2.4 µs",
+  "lat.py_numpy_us": "44 µs",
+  "lat.c_us": "1.0 µs",
+  "lat.js_us": "10 µs",
+  "lat.js_p99_us": "38 µs",
+  "lat.http_ms": "0.17 ms",
+  "lat.proxy_ms": "0.53 ms",
+  "lat.bundle_mb": "1.5 MB",
+  "lat.runtime_sentence": "A decision costs 1.0 µs in C, 10 µs in JavaScript and 2.4 µs in Python (5.2 µs with per-option probabilities).",
+  "hero.us": "2.4 µs",
+  "hero.us_n": "2.4",
+  "lat.llm_ms": "1416 ms",
+  "lat.llm_model": "gpt-4.1-mini (OpenAI)",
+  "lat.kev_ms": "271 ms",
+  "lat.laya_ms": "91.6 ms",
+  "legacy.fid.range_offload": "45–71%",
+  "legacy.fid.range_dis": "3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)",
+  "legacy.fid.tasks_n": "7",
+  "headline.served_range": "61–86%",
+  "headline.dis_range": "3.0–6.0%",
+  "headline.tasks_n": "3",
+  "headline.teacher": "gpt-4.1-mini (OpenAI)",
+  "headline.llm_calls_left": "14–39%",
+  "headline.alpha_pct": "5%",
+  "headline.conf_pct": "90%",
+  "headline.dis_sentence": "disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs",
+  "curve.dataset": "BANKING77",
+  "curve.first_n": "250",
+  "curve.last_n": "10,000",
+  "curve.first_pct": "0%",
+  "curve.last_pct": "60%",
+  "mean.llm_ms": "382 ms",
+  "mean.cascade_ms": "115 ms",
+  "mean.acc_delta": "+1.0",
+  "kevteacher.offload": "70%",
+  "mean.teacher": "Kev-0.8B (local, MLX)",
+  "mean.measured": "measured end to end",
+  "demo.offload": "63.3%",
+  "demo.dis": "3.3%",
+  "demo.teacher_acc": "68%",
+  "demo.n_records": "10,003",
+  "demo.n_cal": "3,000",
+  "demo.agreement": "81.4%",
+  "demo.threshold": "0.886",
+  "demo.share_cal": "61.2%",
+  "e2e.run": "gpt-4.1-mini (OpenAI) · 77 intents",
+  "e2e.offload": "51.3%",
+  "e2e.agreement": "95.9%",
+  "e2e.llm_ms": "1397 ms",
+  "e2e.n_log": "4,999",
+  "e2e.n_cal": "1,499",
+  "sweep.a01.served": "0%",
+  "sweep.a01.dis": "n/a",
+  "sweep.a02.served": "20%",
+  "sweep.a02.dis": "0.4%",
+  "sweep.a05.served": "61%",
+  "sweep.a05.dis": "3.0%",
+  "sweep.a10.served": "80%",
+  "sweep.a10.dis": "7.4%",
+  "sst2.served": "0%",
+  "sst2.table_acc": "79%",
+  "oos.silent": "5%",
+  "ledgar.served": "13%",
+  "price.luna_per_1k": "$0.030",
+  "price.jev_per_1k": "$0.0126",
+  "price.gpt41mini_per_1k": "$0.520",
+  "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)",
+  "film.length_s": "102",
+  "fit.torch_s": "40 s",
+  "fit.scipy_s": "217 s"
+ },
+ "raw": {
+  "tests.count": 149,
+  "lat.py_us": 5.17,
+  "lat.py_fast_us": 2.42,
+  "lat.py_numpy_us": 43.79,
+  "lat.c_us": 1.0,
+  "lat.js_us": 10.042,
+  "lat.js_p99_us": 37.625,
+  "lat.http_ms": 0.171,
+  "lat.proxy_ms": 0.532,
+  "lat.bundle_mb": 1.54,
+  "hero.us": 2.42,
+  "hero.us_n": 2.42,
+  "lat.llm_ms": 1416.1,
+  "lat.kev_ms": 271.45,
+  "lat.laya_ms": 91.56,
+  "legacy.fid.range_offload": [
+   0.4486666666666667,
+   0.7100130039011704
+  ],
+  "legacy.fid.range_dis": [
+   0.03857107575064046,
+   0.057292931837826744
+  ],
+  "legacy.fid.tasks_n": 7,
+  "headline.served_range": [
+   0.6082,
+   0.8554
+  ],
+  "headline.dis_range": [
+   0.0302,
+   0.0596
+  ],
+  "headline.alpha_pct": 0.05,
+  "headline.conf_pct": 0.9,
+  "curve.first_n": 250,
+  "curve.last_n": 10000,
+  "curve.first_pct": 0.0,
+  "curve.last_pct": 0.6019,
+  "mean.llm_ms": 381.7,
+  "mean.cascade_ms": 115.25,
+  "mean.acc_delta": 0.009800000000000031,
+  "kevteacher.offload": 0.6981,
+  "demo.offload": 0.6334415584415585,
+  "demo.dis": 0.032803690415171706,
+  "demo.teacher_acc": 0.6795454545454546,
+  "demo.n_records": 10003,
+  "demo.n_cal": 3000,
+  "demo.agreement": 0.8143333333333334,
+  "demo.threshold": 0.8856799602508545,
+  "demo.share_cal": 0.6123333333333333,
+  "e2e.offload": 0.513,
+  "e2e.agreement": 0.9591,
+  "e2e.llm_ms": 1396.8,
+  "e2e.n_log": 4999,
+  "e2e.n_cal": 1499,
+  "sweep.a01.served": 0.0,
+  "sweep.a02.served": 0.2041,
+  "sweep.a02.dis": 0.0043,
+  "sweep.a05.served": 0.6082,
+  "sweep.a05.dis": 0.0302,
+  "sweep.a10.served": 0.8011,
+  "sweep.a10.dis": 0.0742,
+  "sst2.served": 0.0,
+  "sst2.table_acc": 0.786,
+  "oos.silent": 0.0496,
+  "ledgar.served": 0.1298,
+  "price.luna_per_1k": 0.03,
+  "price.jev_per_1k": 0.0126,
+  "price.gpt41mini_per_1k": 0.52043,
+  "cert.violation": [
+   0.0,
+   0.081
+  ],
+  "film.length_s": 102,
+  "fit.torch_s": 40.5,
+  "fit.scipy_s": 216.8
+ },
+ "prov": {
+  "tests.count": {
+   "source": "results/b1_tests.txt",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.py_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.py_fast_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.py_numpy_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.c_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.js_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.js_p99_us": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.http_ms": {
+   "source": "results/b3_latency.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.proxy_ms": {
+   "source": "results/b3_latency.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.bundle_mb": {
+   "source": "results/b3_latency.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.runtime_sentence": {
+   "source": "results/b3_latency.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "hero.us": {
+   "source": "results/b3_latency.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "hero.us_n": {
+   "source": "results/b3_latency.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.llm_ms": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_8.json",
+   "dataset": "banking77",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.llm_model": {
+   "source": "results/evidence.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.kev_ms": {
+   "source": "results/evidence.json s1.llama_Kev_0_8B",
+   "dataset": null,
+   "teacher": "Kev-0.8B (llama.cpp GGUF)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "lat.laya_ms": {
+   "source": "results/evidence.json s1.laya",
+   "dataset": null,
+   "teacher": "Laya 421M",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "legacy.fid.range_offload": {
+   "source": "legacy/benchmarks/results/phase31_fidelity.json",
+   "dataset": "7 intent/topic tasks",
+   "teacher": "EmbeddingGemma-300m zero-shot (6 tasks), Kev-0.8B (1 task)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "legacy.fid.range_dis": {
+   "source": "legacy/benchmarks/results/phase31_fidelity.json",
+   "dataset": "7 tasks",
+   "teacher": "EmbeddingGemma-300m / Kev-0.8B",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "legacy.fid.tasks_n": {
+   "source": "legacy/benchmarks/results/phase31_fidelity.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "headline.served_range": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": "banking77, clinc150, ag_news",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.dis_range": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": "banking77, clinc150, ag_news, sst2",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.tasks_n": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.teacher": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.llm_calls_left": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.alpha_pct": {
+   "source": "default alpha",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.conf_pct": {
+   "source": "default delta = 0.1",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "headline.dis_sentence": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "curve.dataset": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "curve.first_n": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "curve.last_n": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "curve.first_pct": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": "banking77",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "curve.last_pct": {
+   "source": "results/b6_compare_openai_banking77.json",
+   "dataset": "banking77",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "mean.llm_ms": {
+   "source": "results/b7_systemone.json",
+   "dataset": "BANKING77",
+   "teacher": "Kev-0.8B",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "mean.cascade_ms": {
+   "source": "results/b7_systemone.json",
+   "dataset": "BANKING77",
+   "teacher": "Kev-0.8B",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "mean.acc_delta": {
+   "source": "results/b7_systemone.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "kevteacher.offload": {
+   "source": "results/b7_systemone.json",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "mean.teacher": {
+   "source": "results/b7_systemone.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "mean.measured": {
+   "source": "results/b7_systemone.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "demo.offload": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": "BANKING77 test",
+   "teacher": "bge-small zero-shot",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.dis": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": "BANKING77 test",
+   "teacher": "bge-small zero-shot",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.teacher_acc": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": "BANKING77 test",
+   "teacher": "bge-small zero-shot",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.n_records": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.n_cal": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.agreement": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.threshold": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "demo.share_cal": {
+   "source": "site-src/demo-data/replay.json + bundle/certificate.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "e2e.run": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "e2e.offload": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": "BANKING77 fresh traffic",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "e2e.agreement": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": "BANKING77",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "e2e.llm_ms": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": null,
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "e2e.n_log": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "e2e.n_cal": {
+   "source": "results/b4_e2e_openai_gpt-4.1-mini_77.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a01.served": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a01.dis": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a02.served": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a02.dis": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a05.served": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a05.dis": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a10.served": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sweep.a10.dis": {
+   "source": "results/evidence.json cmp.banking77.openai.shad0w",
+   "dataset": "BANKING77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sst2.served": {
+   "source": "results/b6_compare_openai_sst2.json",
+   "dataset": "sst2",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "sst2.table_acc": {
+   "source": "legacy/benchmarks/results/phase29_hybrid.json (table vs gold, SST-2)",
+   "dataset": "SST-2",
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "oos.silent": {
+   "source": "results/b6_compare_openai_clinc150.json",
+   "dataset": "clinc150",
+   "teacher": "gpt-4.1-mini (OpenAI)",
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "ledgar.served": {
+   "source": "legacy/benchmarks/results/phase31_fidelity.json (gemma/ledgar)",
+   "dataset": "LEDGAR (legal clauses)",
+   "teacher": "EmbeddingGemma-300m",
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-01",
+   "status": "legacy"
+  },
+  "price.luna_per_1k": {
+   "source": "https://developers.openai.com/api/docs/guides/decisions",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "price.jev_per_1k": {
+   "source": "https://openrouter.ai/docs/guides/community/jev",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "price.gpt41mini_per_1k": {
+   "source": "results/b6_compare_*.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "cert.violation": {
+   "source": "results/b8_certificate_sim.json",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "film.length_s": {
+   "source": "video/film.html (EVENTS-JSON duration)",
+   "dataset": null,
+   "teacher": null,
+   "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "fit.torch_s": {
+   "source": "results/b2_fit_compare.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  },
+  "fit.scipy_s": {
+   "source": "results/b2_fit_compare.json",
+   "dataset": "banking77",
+   "teacher": null,
+   "hardware": "Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit",
+   "date": "2026-10-08",
+   "status": "new"
+  }
+ },
+ "charts": {
+  "src": {
+   "speed": "p50 per decision · Apple M5 Pro (15 cores, 24 GB), macOS · results/b3_latency.json, b7_systemone.json",
+   "tasks": "results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds · earlier runs: docs/benchmarks",
+   "grow": "share answered at α = 5% vs LLM answers logged · results/b6_compare_openai_*.json · gpt-4.1-mini teacher · 3 seeds",
+   "mean": "results/b7_systemone.json · Kev-0.8B (local, MLX) · 2026-10-08",
+   "alpha_sweep": "results/evidence.json cmp.banking77.openai.shad0w · BANKING77"
+  },
+  "speed": [
+   {
+    "name": "shad0w · C",
+    "us": 1.0,
+    "label": "1.0 µs",
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "shad0w · JavaScript",
+    "us": 10.042,
+    "label": "10 µs",
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "shad0w · Python",
+    "us": 2.42,
+    "label": "2.4 µs",
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "shad0w · via the proxy (HTTP)",
+    "us": 532.0,
+    "label": "0.53 ms",
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "Laya 421M (decision model)",
+    "us": 91560.0,
+    "label": "91.6 ms",
+    "hl": false,
+    "legacy": false
+   },
+   {
+    "name": "Kev-0.8B (decision model)",
+    "us": 271450.0,
+    "label": "271 ms",
+    "hl": false,
+    "legacy": false
+   },
+   {
+    "name": "gpt-4.1-mini (OpenAI)",
+    "us": 1416100.0,
+    "label": "1416 ms",
+    "hl": false,
+    "legacy": false
+   }
+  ],
+  "tasks": [
+   {
+    "name": "BANKING77 · 77 intents",
+    "pct": 0.6082,
+    "dis": 0.0302,
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "CLINC150 · 150 intents + OOS",
+    "pct": 0.6681,
+    "dis": 0.0596,
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "AG News · 4 topics",
+    "pct": 0.8554,
+    "dis": 0.0474,
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "SST-2 · sentiment",
+    "pct": 0.0,
+    "dis": null,
+    "hl": true,
+    "legacy": false
+   },
+   {
+    "name": "BANKING77 · Kev-0.8B teacher",
+    "pct": 0.7055555555555556,
+    "dis": 0.057292931837826744,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "BANKING77 (embedding teacher)",
+    "pct": 0.7100130039011704,
+    "dis": 0.04085137072333931,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "HWU64 (embedding teacher)",
+    "pct": 0.6852540272614621,
+    "dis": 0.05417478089026676,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "CLINC150 (embedding teacher)",
+    "pct": 0.6511111111111111,
+    "dis": 0.049266046972651745,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "MASSIVE (embedding teacher)",
+    "pct": 0.6381977135171487,
+    "dis": 0.0492240327992042,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "DBpedia (embedding teacher)",
+    "pct": 0.5359999999999999,
+    "dis": 0.040254644080888365,
+    "hl": false,
+    "legacy": true
+   },
+   {
+    "name": "AG News (embedding teacher)",
+    "pct": 0.4486666666666667,
+    "dis": 0.03857107575064046,
+    "hl": false,
+    "legacy": true
+   }
+  ],
+  "grow": {
+   "series": [
+    {
+     "name": "BANKING77 · gpt-4.1-mini",
+     "points": [
+      [
+       250,
+       0.0
+      ],
+      [
+       500,
+       0.0
+      ],
+      [
+       1000,
+       0.0
+      ],
+      [
+       2000,
+       0.0
+      ],
+      [
+       5000,
+       0.3982
+      ],
+      [
+       10000,
+       0.6019
+      ]
+     ],
+     "legacy": false
+    },
+    {
+     "name": "AG News · gpt-4.1-mini",
+     "points": [
+      [
+       250,
+       0.0
+      ],
+      [
+       500,
+       0.0
+      ],
+      [
+       1000,
+       0.1981
+      ],
+      [
+       2000,
+       0.563
+      ],
+      [
+       5000,
+       0.7415
+      ],
+      [
+       10000,
+       0.8275
+      ]
+     ],
+     "legacy": false
+    },
+    {
+     "name": "AG News · embedding teacher (earlier run)",
+     "points": [
+      [
+       2000,
+       0.306
+      ],
+      [
+       5000,
+       0.4228
+      ],
+      [
+       10000,
+       0.5036
+      ],
+      [
+       30000,
+       0.6208
+      ],
+      [
+       100000,
+       0.7004
+      ]
+     ],
+     "legacy": true
+    }
+   ]
+  },
+  "mean": {
+   "llm_ms": 381.7,
+   "cascade_ms": 115.25,
+   "teacher": "Kev-0.8B (local, MLX)",
+   "legacy": false,
+   "note": "measured end to end"
+  },
+  "alpha_sweep": [
+   {
+    "alpha": 0.01,
+    "served": 0.0,
+    "dis": null
+   },
+   {
+    "alpha": 0.02,
+    "served": 0.2041,
+    "dis": 0.0043
+   },
+   {
+    "alpha": 0.05,
+    "served": 0.6082,
+    "dis": 0.0302
+   },
+   {
+    "alpha": 0.1,
+    "served": 0.8011,
+    "dis": 0.0742
+   }
+  ],
+  "hero_served": 0.8554,
+  "race_served": 0.6334415584415585,
+  "llm_ms": 1416.1,
+  "hero_us": 2.42
+ },
+ "tables": {
+  "compare": {
+   "columns": [
+    "method",
+    "answered without the LLM @ α = 5%",
+    "disagreement with the LLM on those",
+    "accuracy vs gold (cascade)",
+    "p50 per decision",
+    "cost per 1k decisions",
+    "needs",
+    "guarantee"
+   ],
+   "rows": [
+    [
+     "shad0w table",
+     "61%",
+     "3.0%",
+     "76.5%",
+     "4.0 µs",
+     "$0.204",
+     "your LLM's logged answers",
+     "certified ≤ α vs your LLM"
+    ],
+    [
+     "semantic cache (bge-small, nearest logged answer)",
+     "0%",
+     "—",
+     "76.3%",
+     "7.5 ms",
+     "$0.520",
+     "embedding model + logged answers",
+     "same certifier applied"
+    ],
+    [
+     "embedding kNN router (bge-small, k=10)",
+     "69%",
+     "2.9%",
+     "76.9%",
+     "7.6 ms",
+     "$0.161",
+     "embedding model + logged answers",
+     "same certifier applied"
+    ],
+    [
+     "small fine-tuned head (LR on bge-small)",
+     "75%",
+     "3.4%",
+     "77.1%",
+     "7.2 ms",
+     "$0.129",
+     "embedding model + logged answers",
+     "same certifier applied"
+    ],
+    [
+     "exact-match cache",
+     "0%",
+     "—",
+     "76.3%",
+     "1.2 µs",
+     "$0.520",
+     "logged answers",
+     "exact repeats only"
+    ],
+    [
+     "keep calling the LLM",
+     "0%",
+     "0.0%",
+     "76.3%",
+     "—",
+     "$0.520",
+     "API or GPU",
+     "it is the reference"
+    ],
+    [
+     "Kev-0.8B decision model (local)",
+     "100% (it replaces your LLM)",
+     "23% vs gpt-4.1-mini",
+     "80.0%",
+     "271 ms",
+     "$0 (your hardware)",
+     "a GPU/MLX machine, ~1-3 GB",
+     "calibrated probabilities, no bound"
+    ],
+    [
+     "Julia-1 decision model (local)",
+     "100% (it replaces your LLM)",
+     "41% vs gpt-4.1-mini",
+     "61.6%",
+     "11.9 ms",
+     "$0 (your hardware)",
+     "llama.cpp, a laptop",
+     "calibrated probabilities, no bound"
+    ],
+    [
+     "Laya 421M decision model (local)",
+     "100% (it replaces your LLM)",
+     "58% vs gpt-4.1-mini",
+     "38.0%",
+     "91.6 ms",
+     "$0 (your hardware)",
+     "a GPU or fast CPU, 0.8 GB",
+     "calibrated probabilities, no bound"
+    ],
+    [
+     "hosted decision model (OpenAI Decisions API, gpt-6-luna)",
+     "100% (it replaces your LLM)",
+     "not measured (no API key)",
+     "not measured",
+     "~150 ms claimed",
+     "$0.030 per 1k",
+     "API key",
+     "none (probabilities only)"
+    ],
+    [
+     "hosted decision model (TypeSafe Jev 1.13)",
+     "100% (it replaces your LLM)",
+     "not measured (no credits)",
+     "not measured",
+     "70–500 ms claimed",
+     "$0.0126 per 1k",
+     "API key",
+     "none (probabilities only)"
+    ]
+   ],
+   "note": "",
+   "src": ""
+  },
+  "alpha_sweep": {
+   "columns": [
+    "α (max disagreement)",
+    "answered by the table",
+    "realised disagreement"
+   ],
+   "rows": [
+    [
+     "1%",
+     "0%",
+     "n/a"
+    ],
+    [
+     "2%",
+     "20%",
+     "0.4%"
+    ],
+    [
+     "5%",
+     "61%",
+     "3.0%"
+    ],
+    [
+     "10%",
+     "80%",
+     "7.4%"
+    ]
+   ],
+   "note": "BANKING77. Lower α = safer, fewer calls saved.",
+   "src": "results/evidence.json cmp.banking77.openai.shad0w"
+  },
+  "latency": {
+   "columns": [
+    "runtime",
+    "p50 per decision"
+   ],
+   "rows": [
+    [
+     "shad0w · C",
+     "1.0 µs"
+    ],
+    [
+     "shad0w · JavaScript",
+     "10 µs"
+    ],
+    [
+     "shad0w · Python",
+     "2.4 µs"
+    ],
+    [
+     "shad0w · via the proxy (HTTP)",
+     "0.53 ms"
+    ],
+    [
+     "Laya 421M (decision model)",
+     "91.6 ms"
+    ],
+    [
+     "Kev-0.8B (decision model)",
+     "271 ms"
+    ],
+    [
+     "gpt-4.1-mini (OpenAI)",
+     "1416 ms"
+    ]
+   ],
+   "note": "",
+   "src": "p50 per decision · Apple M5 Pro (15 cores, 24 GB), macOS · results/b3_latency.json, b7_systemone.json"
+  },
+  "legacy_fidelity": {
+   "columns": [
+    "task",
+    "teacher",
+    "answered by the table @ α = 5%",
+    "realised disagreement",
+    "max over seeds",
+    "cascade acc − teacher acc"
+   ],
+   "rows": [
+    [
+     "BANKING77 · Kev-0.8B teacher",
+     "Kev-0.8B (local GPU, 77 options)",
+     "71%",
+     "5.7%",
+     "6.5%",
+     "+0.8"
+    ],
+    [
+     "BANKING77",
+     "EmbeddingGemma-300m zero-shot",
+     "71%",
+     "4.1%",
+     "4.7%",
+     "+0.2"
+    ],
+    [
+     "HWU64",
+     "EmbeddingGemma-300m zero-shot",
+     "69%",
+     "5.4%",
+     "5.8%",
+     "-0.8"
+    ],
+    [
+     "CLINC150",
+     "EmbeddingGemma-300m zero-shot",
+     "65%",
+     "4.9%",
+     "5.1%",
+     "+0.2"
+    ],
+    [
+     "MASSIVE",
+     "EmbeddingGemma-300m zero-shot",
+     "64%",
+     "4.9%",
+     "5.7%",
+     "-0.7"
+    ],
+    [
+     "DBpedia",
+     "EmbeddingGemma-300m zero-shot",
+     "54%",
+     "4.0%",
+     "4.3%",
+     "+0.4"
+    ],
+    [
+     "AG News",
+     "EmbeddingGemma-300m zero-shot",
+     "45%",
+     "3.9%",
+     "4.1%",
+     "+0.4"
+    ],
+    [
+     "LEDGAR (legal clauses)",
+     "EmbeddingGemma-300m zero-shot",
+     "13%",
+     "4.3%",
+     "4.5%",
+     "+0.0"
+    ],
+    [
+     "SST-2 (sentiment)",
+     "EmbeddingGemma-300m zero-shot",
+     "0%",
+     "0.0%",
+     "0.0%",
+     "+0.0"
+    ],
+    [
+     "toxic (yes/no)",
+     "EmbeddingGemma-300m zero-shot",
+     "0%",
+     "0.0%",
+     "0.0%",
+     "+0.0"
+    ],
+    [
+     "tweet sentiment",
+     "EmbeddingGemma-300m zero-shot",
+     "2%",
+     "6.3%",
+     "18.9%",
+     "-0.1"
+    ]
+   ],
+   "note": "Earlier runs (pre-0.1.1 certificate procedure), 3 seeds, 7k fit / 3k calibration rows. Two tasks landed above α on the mean; the bound allows that in up to δ = 10% of certifications.",
+   "src": "legacy/benchmarks/results/phase31_fidelity.json"
+  },
+  "curve": {
+   "columns": [
+    "LLM answers logged",
+    "answered by the table @ α = 5%"
+   ],
+   "rows": [
+    [
+     "250",
+     "0%"
+    ],
+    [
+     "500",
+     "0%"
+    ],
+    [
+     "1,000",
+     "0%"
+    ],
+    [
+     "2,000",
+     "0%"
+    ],
+    [
+     "5,000",
+     "40%"
+    ],
+    [
+     "10,000",
+     "60%"
+    ]
+   ],
+   "note": "BANKING77.",
+   "src": "results/b6_compare_openai_banking77.json"
+  },
+  "e2e": {
+   "columns": [
+    "run",
+    "LLM p50",
+    "answered by the table (fresh traffic)",
+    "agreement with the LLM on those",
+    "answers logged",
+    "fresh messages"
+   ],
+   "rows": [
+    [
+     "gpt-4.1-mini (OpenAI) · 77 intents",
+     "1397 ms",
+     "51.3%",
+     "95.9%",
+     "4,999",
+     "1,000"
+    ],
+    [
+     "gpt-4.1-mini (OpenAI) · 8 intents",
+     "1416 ms",
+     "94.3%",
+     "97.2%",
+     "1,000",
+     "300"
+    ],
+    [
+     "local Ollama model · 8 intents",
+     "1960 ms",
+     "96.0%",
+     "97.6%",
+     "1,000",
+     "300"
+    ],
+    [
+     "Decisions API shape (mock upstream)",
+     "174 ms",
+     "92.7%",
+     "98.2%",
+     "1,000",
+     "300"
+    ]
+   ],
+   "note": "The openai SDK → shad0w proxy → the LLM, on this machine; agreement re-asks the LLM directly.",
+   "src": "results/b4_*.json"
+  },
+  "systemone": {
+   "columns": [
+    "engine",
+    "p50",
+    "p99",
+    "accuracy vs gold",
+    "answered @ α = 5% (same certifier)"
+   ],
+   "rows": [
+    [
+     "shad0w (in process)",
+     "0.01 ms",
+     "0.01 ms",
+     "74.1%",
+     "55%"
+    ],
+    [
+     "shad0w (HTTP /v1/systemone)",
+     "0.25 ms",
+     "0.29 ms",
+     "74.1%",
+     "55%"
+    ],
+    [
+     "Kev-0.8B (llama.cpp)",
+     "271 ms",
+     "508 ms",
+     "80.0%",
+     "0%"
+    ],
+    [
+     "Julia-1 (llama.cpp)",
+     "11.9 ms",
+     "13.3 ms",
+     "61.6%",
+     "0%"
+    ],
+    [
+     "Laya 421M (Ollama)",
+     "91.6 ms",
+     "299 ms",
+     "38.0%",
+     "0%"
+    ],
+    [
+     "Laya 421M (llama.cpp)",
+     "42.4 ms",
+     "47.3 ms",
+     "37.9%",
+     "0%"
+    ]
+   ],
+   "note": "BANKING77, 77 options, the same 2,000 test prompts for every engine, teacher gpt-4.1-mini (77% accurate). Decision models answer everything themselves; the last column is what the same certifier would let them serve while staying within 5% of gpt-4.1-mini.",
+   "src": "results/b7_systemone.json"
+  },
+  "cert_sim": {
+   "columns": [
+    "procedure",
+    "population",
+    "α",
+    "calibration n",
+    "share of certificates above α",
+    "upper CI"
+   ],
+   "rows": [
+    [
+     "auto",
+     "flat",
+     "1%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "1%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "1%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "2%",
+     "1000",
+     "1.3%",
+     "2.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "2%",
+     "2000",
+     "1.0%",
+     "1.6%"
+    ],
+    [
+     "auto",
+     "flat",
+     "2%",
+     "3000",
+     "0.5%",
+     "0.9%"
+    ],
+    [
+     "auto",
+     "flat",
+     "2%",
+     "500",
+     "1.5%",
+     "2.2%"
+    ],
+    [
+     "auto",
+     "flat",
+     "5%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "5%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "5%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "5%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "flat",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "1%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "1%",
+     "2000",
+     "0.8%",
+     "1.4%"
+    ],
+    [
+     "auto",
+     "rising",
+     "1%",
+     "3000",
+     "1.1%",
+     "1.8%"
+    ],
+    [
+     "auto",
+     "rising",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "2%",
+     "1000",
+     "1.8%",
+     "2.6%"
+    ],
+    [
+     "auto",
+     "rising",
+     "2%",
+     "2000",
+     "2.6%",
+     "3.6%"
+    ],
+    [
+     "auto",
+     "rising",
+     "2%",
+     "3000",
+     "2.4%",
+     "3.4%"
+    ],
+    [
+     "auto",
+     "rising",
+     "2%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "5%",
+     "1000",
+     "3.1%",
+     "4.2%"
+    ],
+    [
+     "auto",
+     "rising",
+     "5%",
+     "2000",
+     "3.3%",
+     "4.4%"
+    ],
+    [
+     "auto",
+     "rising",
+     "5%",
+     "3000",
+     "4.5%",
+     "5.8%"
+    ],
+    [
+     "auto",
+     "rising",
+     "5%",
+     "500",
+     "2.4%",
+     "3.4%"
+    ],
+    [
+     "auto",
+     "rising",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "auto",
+     "rising",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "1%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "1%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "1%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "2%",
+     "1000",
+     "0.2%",
+     "0.5%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "2%",
+     "2000",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "2%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "2%",
+     "500",
+     "0.3%",
+     "0.6%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "5%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "5%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "5%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "5%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "flat",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "1%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "1%",
+     "2000",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "1%",
+     "3000",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "2%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "2%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "2%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "2%",
+     "500",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "5%",
+     "1000",
+     "0.5%",
+     "0.9%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "5%",
+     "2000",
+     "0.2%",
+     "0.5%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "5%",
+     "3000",
+     "0.2%",
+     "0.5%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "5%",
+     "500",
+     "0.3%",
+     "0.6%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "bonferroni",
+     "rising",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "1%",
+     "1000",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "1%",
+     "2000",
+     "0.1%",
+     "0.3%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "1%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "2%",
+     "1000",
+     "3.5%",
+     "4.6%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "2%",
+     "2000",
+     "4.2%",
+     "5.4%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "2%",
+     "3000",
+     "4.0%",
+     "5.2%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "2%",
+     "500",
+     "4.2%",
+     "5.4%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "5%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "5%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "5%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "5%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "flat",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "1%",
+     "1000",
+     "2.1%",
+     "3.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "1%",
+     "2000",
+     "3.3%",
+     "4.4%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "1%",
+     "3000",
+     "2.3%",
+     "3.2%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "1%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "2%",
+     "1000",
+     "2.9%",
+     "3.9%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "2%",
+     "2000",
+     "4.8%",
+     "6.1%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "2%",
+     "3000",
+     "4.2%",
+     "5.4%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "2%",
+     "500",
+     "4.2%",
+     "5.4%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "5%",
+     "1000",
+     "6.8%",
+     "8.4%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "5%",
+     "2000",
+     "5.7%",
+     "7.1%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "5%",
+     "3000",
+     "8.1%",
+     "9.8%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "5%",
+     "500",
+     "5.4%",
+     "6.8%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "10%",
+     "1000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "10%",
+     "2000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "10%",
+     "3000",
+     "0.0%",
+     "0.0%"
+    ],
+    [
+     "fixed_sequence",
+     "rising",
+     "10%",
+     "500",
+     "0.0%",
+     "0.0%"
+    ]
+   ],
+   "note": "δ = 0.1 allows up to 10%.",
+   "src": "results/b8_certificate_sim.json"
+  }
+ },
+ "film": {
+  "cert_n": 1499,
+  "cert_agreement_pct": 95.9,
+  "served_pct": 51,
+  "py_us": 2.4,
+  "llm_ms": 1416,
+  "bundle_mb": 1.5,
+  "curve": [
+   [
+    250,
+    0
+   ],
+   [
+    500,
+    0
+   ],
+   [
+    1000,
+    0
+   ],
+   [
+    2000,
+    0
+   ],
+   [
+    5000,
+    40
+   ],
+   [
+    10000,
+    60
+   ]
+  ],
+  "curve_dataset": "BANKING77",
+  "alpha_sweep": [
+   [
+    "1%",
+    0,
+    null
+   ],
+   [
+    "2%",
+    20,
+    0.4
+   ],
+   [
+    "5%",
+    61,
+    3.0
+   ],
+   [
+    "10%",
+    80,
+    7.4
+   ]
+  ],
+  "compare": [
+   [
+    "semantic cache",
+    "ms, embedding model, no bound"
+   ],
+   [
+    "small fine-tuned model",
+    "ms, GPU, labels or logs, no bound"
+   ],
+   [
+    "decision models (Jev, Kev…)",
+    "10 ms–1 s, no bound"
+   ],
+   [
+    "shad0w",
+    "2.4 µs · $0 · certified ≤ α"
+   ]
+  ],
+  "llm_calls_label": "1,240,000",
+  "status": "new"
+ }
+}
