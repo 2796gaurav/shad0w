@@ -61,12 +61,14 @@ class _Hist:
 class Metrics:
     """Thread-safe decision counters shared by `Shadow`, `shad0w serve` and `shad0w proxy`.
 
-    cost_per_call  what one LLM call costs you (any unit, e.g. dollars); turns calls saved into money saved
-    keep_text      keep the input text in the recent-decisions list shown on the dashboard (False to redact)
+    cost_per_call   what one LLM call costs you (any unit, e.g. dollars); turns calls saved into money saved
+    keep_text       keep the input text in the recent-decisions list shown on the dashboard (False to redact)
+    llm_latency_ms  assumed LLM latency until one is measured, so "time saved" shows from the first table answer
     """
 
-    def __init__(self, cost_per_call: float | None = None, keep_text: bool = True, recent: int = 50):
-        self.cost_per_call, self.keep_text = cost_per_call, keep_text
+    def __init__(self, cost_per_call: float | None = None, keep_text: bool = True, recent: int = 50,
+                 llm_latency_ms: float | None = None):
+        self.cost_per_call, self.keep_text, self.llm_latency_ms = cost_per_call, keep_text, llm_latency_ms
         self.started = time.time()
         self._lock = threading.Lock()
         self._q: dict[str, dict] = {}
@@ -132,13 +134,15 @@ class Metrics:
                 llm_n += tl.n
             recent = list(self._recent)[::-1]
         served = tot["table"] + tot["teacher"] + tot["deferred"]
-        mean_llm = llm_s_sum / llm_n if llm_n else None
+        assumed = not llm_n and self.llm_latency_ms is not None
+        mean_llm = llm_s_sum / llm_n if llm_n else (self.llm_latency_ms / 1e3 if assumed else None)
         return {
             "uptime_s": round(time.time() - self.started, 1),
             "decisions": served, "table": tot["table"], "teacher": tot["teacher"], "deferred": tot["deferred"],
             "offload": tot["table"] / served if served else 0.0,
             "llm_calls_saved": tot["table"],
             "llm_mean_ms": None if mean_llm is None else round(mean_llm * 1e3, 2),
+            "llm_latency_assumed": assumed,
             "time_saved_s": None if mean_llm is None else round(tot["table"] * mean_llm, 3),
             "cost_per_call": self.cost_per_call,
             "cost_saved": None if self.cost_per_call is None else round(tot["table"] * self.cost_per_call, 6),

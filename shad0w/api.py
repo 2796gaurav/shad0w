@@ -34,6 +34,15 @@ FORMAT_VERSION = 1  # manifest.json
 TABLE_VERSION = 1  # .s0 header
 
 
+def to_bool(v) -> bool:
+    """A yes/no label as a bool: True/False, 1/0, or the strings yes/no, true/false, y/n, 1/0 (case-insensitive)."""
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)):
+        return bool(v)
+    return str(v).strip().lower() in ("yes", "true", "y", "1")
+
+
 def _load_reflex(path) -> Reflex:
     """Read a .s0 table, refusing unknown versions, impossible shapes and truncated or padded files."""
     import struct
@@ -94,6 +103,14 @@ class DriftGuard:
     def raised(self) -> bool:
         return len(self.buf) >= self.window // 2 and self.estimate > self.base + self.margin
 
+    def reconfigure(self, window: int | None = None, margin: float | None = None) -> None:
+        """Change the window or margin at runtime (the bundle on disk keeps the values it was trained with)."""
+        if window is not None:
+            self.window = int(window)
+        if margin is not None:
+            self.margin = float(margin)
+        self._init_buf()
+
     def state(self):
         return {"t": self.t, "base": self.base, "window": self.window, "margin": self.margin}
 
@@ -120,10 +137,11 @@ class Question:
     _native_lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def decide(self, text: str, its=None, exposed: bool = False, options: list[str] | None = None,
-               probabilities: bool = True) -> dict:
+               probabilities: bool = True, observe: bool = True) -> dict:
         """options: an optional subset of the compiled options to decide among (request-time narrowing,
         as the /v1/decide wire format allows); probabilities are renormalised over the subset.
-        probabilities=False skips building the per-option dict (the slowest part of a call on the C path)."""
+        probabilities=False skips building the per-option dict (the slowest part of a call on the C path).
+        observe=False answers without feeding the drift guard (for explain / dry runs / pre-checks)."""
         if self._native is not None:
             with self._native_lock:
                 y, p, r = self._native.decide(text)
@@ -139,7 +157,7 @@ class Question:
                 p = np.zeros_like(np.asarray(p)); p[idx] = sub
                 y = int(idx[int(np.argmax(sub))])
         conf = float(p[y])
-        drift = self.guard.update(conf)
+        drift = self.guard.update(conf) if observe else self.guard.raised
         flag = None
         if not self.calibrated:
             flag = "uncalibrated"
@@ -171,7 +189,8 @@ class Model:
     questions: dict[str, Question] = field(default_factory=dict)
     meta: dict = field(default_factory=dict)
 
-    def decide(self, state, exposed: bool = False, questions: dict | None = None, probabilities: bool = True) -> dict:
+    def decide(self, state, exposed: bool = False, questions: dict | None = None, probabilities: bool = True,
+               observe: bool = True) -> dict:
         """questions: optional wire-format questions {name: {"criteria": {...}}}; when given, each named question
         is narrowed to the requested criteria keys (a subset of its compiled options)."""
         text = state if isinstance(state, str) else json.dumps(state, ensure_ascii=False)
@@ -188,7 +207,7 @@ class Model:
                     opts = list(crit.keys())
                 elif isinstance(crit, list):
                     opts = list(crit)
-            out[n] = q.decide(text, its, exposed, opts, probabilities)
+            out[n] = q.decide(text, its, exposed, opts, probabilities, observe)
         return {"answers": out}
 
     def calibrate(self, question: str, texts, labels, alpha: float | None = None, delta: float = 0.1):
@@ -197,7 +216,7 @@ class Model:
         from .reliability import SelectiveRiskController
         q = self.questions[question]
         alpha = q.alpha if alpha is None else alpha
-        y = np.array([q.options.index(v) if q.qtype == "choice" else int(bool(v)) for v in labels])
+        y = np.array([q.options.index(v) if q.qtype == "choice" else int(to_bool(v)) for v in labels])
         P = np.stack([softmax(q.rx.logits(items(t))) for t in texts])
         conf, correct = P.max(1), P.argmax(1) == y
         q.threshold = float(SelectiveRiskController(alpha, delta).fit(conf, correct).threshold)
@@ -221,11 +240,12 @@ class Model:
         manifest = {"format": FORMAT_VERSION, "meta": self.meta, "questions": {}}
         for n, q in self.questions.items():
             q.rx.save(os.path.join(path, f"{n}.s0"))
-            manifest["questions"][n] = {"type": q.qtype, "options": q.options, "threshold": q.threshold,
+            thr = q.threshold if math.isfinite(q.threshold) else None  # JSON has no Infinity; null = certifies nothing
+            manifest["questions"][n] = {"type": q.qtype, "options": q.options, "threshold": thr,
                                         "alpha": q.alpha, "r_min": q.r_min, "guard": q.guard.state(),
                                         "calibrated": q.calibrated}
         with open(os.path.join(path, "manifest.json"), "w", encoding="utf-8") as f:
-            json.dump(manifest, f, indent=2)
+            json.dump(manifest, f, indent=2, allow_nan=False)
 
 
 def load(path: str, native: bool = True) -> Model:
@@ -237,7 +257,7 @@ def load(path: str, native: bool = True) -> Model:
     for n, q in man["questions"].items():
         rx = _load_reflex(os.path.join(path, f"{n}.s0"))
         rx.labels = q["options"]
-        m.questions[n] = Question(n, q["type"], q["options"], rx, q["threshold"], q["alpha"],
+        m.questions[n] = Question(n, q["type"], q["options"], rx, math.inf if q["threshold"] is None else q["threshold"], q["alpha"],
                                   DriftGuard.from_state(q["guard"]), q.get("r_min", 0.0),
                                   q.get("calibrated", True))
     if native:
@@ -266,7 +286,7 @@ def compile(schema: dict, labeled: dict | None = None, unlabeled: list[str] | No
         options = list(spec["criteria"].keys()) if qtype == "choice" else ["no", "yes"]
         if labeled and name in labeled:
             texts, ys = labeled[name]
-            y = np.array([options.index(v) if qtype == "choice" else int(bool(v)) for v in ys])
+            y = np.array([options.index(v) if qtype == "choice" else int(to_bool(v)) for v in ys])
         elif unlabeled is not None:
             from .compiler.selfcompile import pseudo_label
             texts = list(unlabeled)

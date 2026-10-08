@@ -98,3 +98,84 @@ def test_server_roundtrip(bundle):
     assert stats["questions"]["intent"]["decisions"] == 5  # counted per question
     assert b"shad0w_decisions_total" in urllib.request.urlopen(base + "/metrics", timeout=5).read()
     srv.shutdown()
+
+
+def test_observe_false_does_not_touch_guard(bundle):
+    m = shad0w.load(bundle, native=False)
+    q = m.questions["intent"]
+    n0 = len(q.guard.buf)
+    q.decide("refund the store charge", observe=False)
+    m.decide("refund the store charge", observe=False)
+    assert len(q.guard.buf) == n0
+    m.decide("refund the store charge")
+    assert len(q.guard.buf) == n0 + 1
+
+
+def test_drift_guard_reconfigure_and_raise():
+    from shad0w.api import DriftGuard
+    g = DriftGuard(np.linspace(0.5, 1.0, 100), np.array([False] * 10 + [True] * 90), window=10, margin=0.0)
+    for _ in range(20):
+        g.update(0.0)
+    assert g.raised and g.state()["window"] == 10
+    g.reconfigure(window=500, margin=0.5)
+    assert g.window == 500 and not g.raised and len(g.buf) == 0
+
+
+def test_calibrate_accepts_yes_no_strings(bundle):
+    texts, intent, urgent = data(300)
+    a = shad0w.load(bundle, native=False)
+    b = shad0w.load(bundle, native=False)
+    ra = a.calibrate("urgent", texts, urgent)
+    rb = b.calibrate("urgent", texts, ["yes" if u else "no" for u in urgent])
+    assert ra["threshold"] == rb["threshold"] and ra["accuracy"] == rb["accuracy"] and 0 <= ra["certified_share"] <= 1
+    from shad0w.api import to_bool
+    assert [to_bool(v) for v in ("yes", "No", True, 0, "1", "false", "Y")] == [True, False, True, False, True, False, True]
+
+
+def test_server_decisions_systemone_playground(bundle):
+    from shad0w.server import serve
+    srv = serve(bundle, "127.0.0.1", 0, run=False)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{srv.server_address[1]}"
+
+    def post(path, body):
+        req = urllib.request.Request(base + path, data=json.dumps(body).encode(), headers={"content-type": "application/json"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return json.loads(r.read())
+
+    out = post("/v1/decisions", {"model": "x", "input": "send money to my sister", "questions": [
+        {"type": "choice", "name": "intent", "instructions": "", "choices": [{"value": "refund"}, {"value": "transfer"}]},
+        {"type": "predicate", "name": "urgent", "instructions": ""},
+        {"type": "score", "name": "severity", "instructions": "", "levels": [{"label": "a"}, {"label": "b"}]},
+        {"type": "choice", "name": "unknown", "instructions": "", "choices": [{"value": "x"}, {"value": "y"}]}]})
+    a = out["answers"]
+    assert out["object"] == "decision" and [x["name"] for x in a] == ["intent", "urgent", "severity", "unknown"]
+    assert a[0]["choice"] == "transfer" and {p["value"] for p in a[0]["probabilities"]} == {"refund", "transfer"}
+    assert a[1]["type"] == "predicate" and 0 <= a[1]["probability"] <= 1
+    assert a[2]["shad0w"]["flag"] == "unsupported" and a[3]["shad0w"]["flag"] == "unsupported"
+    out = post("/v1/systemone", {"model": "x", "state": "URGENT send money to my sister asap", "questions": {
+        "intent": {"type": "choice", "criteria": {"refund": "r", "transfer": "t", "lost_card": "l"}},
+        "urgent": {"type": "noul"}}})
+    assert out["answers"]["intent"]["choice"] == "transfer" and out["answers"]["urgent"]["type"] == "noul"
+    assert out["answers"]["urgent"]["answer"] == "yes" and "latency_ms" in out
+    out = post("/v1/playground", {"question": "intent", "text": "send money to my sister"})
+    assert out["explain"]["answer"] == "transfer" and "threshold" in out["explain"] and out["llm"] is None
+    srv.shutdown()
+
+
+def test_uncertified_bundle_manifest_is_strict_json(tmp_path):
+    """A question that certified nothing has an infinite threshold; the manifest must still be valid JSON (null)."""
+    import json as _json
+    import math as _math
+
+    from shad0w.api import load
+    from shad0w.shadow import shadow_compile
+    rows = [{"text": f"word{i % 7} filler {i}", "q": ["a", "b"][i % 2]} for i in range(300)]  # labels unrelated to text
+    model, _ = shadow_compile({"q": {"type": "choice", "criteria": {"a": None, "b": None}}}, rows, alpha=0.001)
+    model.questions["q"].threshold = float("inf")
+    model.save(str(tmp_path))
+    raw = (tmp_path / "manifest.json").read_text()
+    assert "Infinity" not in raw and _json.loads(raw)["questions"]["q"]["threshold"] is None
+    m = load(str(tmp_path), native=False)
+    assert _math.isinf(m.questions["q"].threshold)
+    assert m.decide("word1 filler")["answers"]["q"]["certified"] is False

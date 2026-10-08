@@ -15,7 +15,7 @@ import { decision } from "shad0wllm";
 
 const intent = await decision("intent", {
   options: { refund: "wants money back", lost_card: "card lost or stolen", balance: "asks about balance" },
-  llm: "openai/gpt-4o-mini",          // or anthropic/…, gemini/…, groq/…, ollama/llama3.1, or baseURL for any OpenAI-compatible server
+  llm: "openai/gpt-6-luna",          // or anthropic/…, gemini/…, groq/…, ollama/llama3.1, or baseURL for any OpenAI-compatible server
   bundle: "shad0w/intent/bundle",      // a trained table, if you have one yet (path in Node, URL in browsers/workers)
   log: "shad0w/intent/log.jsonl",      // where the LLM's answers go (a file path in Node, or a function / stream anywhere)
 });
@@ -51,7 +51,7 @@ import { decision } from "shad0wllm";
 let intent;
 export default {
   async fetch(req, env) {
-    intent ??= await decision("intent", { llm: "openai/gpt-4o-mini", apiKey: env.OPENAI_API_KEY, bundle: env.BUNDLE_URL,
+    intent ??= await decision("intent", { llm: "openai/gpt-6-luna", apiKey: env.OPENAI_API_KEY, bundle: env.BUNDLE_URL,
                                           log: (row) => env.LOGS.send(row) });   // e.g. a Queue
     const { text } = await req.json();
     return Response.json(await intent.decide(text));
@@ -59,13 +59,40 @@ export default {
 };
 ```
 
+## Middleware and decision models (Vercel AI SDK)
+
+```js
+import { wrapLanguageModel, experimental_decide } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { decision, shad0wMiddleware, decisionModel } from "shad0wllm";
+
+const intent = await decision("intent", { options: ["refund", "lost_card", "other"], bundle: "shad0w/intent/bundle", log: "shad0w/intent/log.jsonl" });
+
+// 1. generateText / generateObject: certified answers skip the model entirely; the model's answers are logged for training.
+const model = wrapLanguageModel({ model: openai("gpt-6-luna"), middleware: shad0wMiddleware(intent, { specificationVersion: "v3" }) });
+
+// 2. experimental_decide: the table answers the questions it certifies, gpt-6-luna answers the rest (and teaches the table).
+const result = await experimental_decide({
+  model: decisionModel(intent, { fallback: openai.decisionModel("gpt-6-luna") }),
+  state: "my card was stolen",
+  questions: { intent: { type: "choice", instructions: "What does the customer want?", criteria: { refund: null, lost_card: null, other: null } } },
+});
+```
+
+`specificationVersion` must match the installed `ai` major (ai 5 → `"v2"`, ai 6 → `"v3"`, ai 7 → `"v4"`). Decision-model servers can also be the teacher: `llm: "systemone/kev-0.8b"` with `baseURL` (Jev, Kev, Laya, Ollaya, llama.cpp) or `llm: "openai-decisions/gpt-6-luna"`.
+
 ## API
 
-- `decision(name, { options, llm, bundle, log, auditRate, onDecision, baseURL, apiKey })` → a `Shadow`.
+- `decision(name, { options, llm, bundle, log, auditRate, onDecision, baseURL, apiKey, timeout })` → a `Shadow`. `llm` is `"provider/model"`, `"systemone/<model>"`, `"openai-decisions/<model>"` or your own `async (text) => answer`. A bundle path that does not exist yet starts log-only; a corrupt bundle throws.
 - `new Shadow(bundle, { teacher, question, log, auditRate, onDecision })`:
-  - `await shadow.decide(text)` returns `{ answer, source, confidence, certified, flag, latencyUs }`;
+  - `await shadow.decide(text)` returns `{ answer, source, confidence, certified, flag, latencyUs, question, threshold }`;
+  - `await shadow.peek(text)` returns the table's decision when it would be served, else `null` (never calls the teacher);
+  - `await shadow.record(text, answer)` logs an answer you obtained yourself;
+  - `shadow.explain(text)` returns `{ answer, confidence, threshold, certified, flag, why, top }` without calling your model;
   - `shadow.stats()` returns offload and spot-check counts.
-- `openaiTeacher({ options, model, baseURL, apiKey })` → `async (text) => option`. It works with any OpenAI-compatible chat API, uses structured outputs with a plain-text fallback, and retries.
+- `openaiTeacher({ options, model, baseURL, apiKey, timeout })` → `async (text) => option`. It works with any OpenAI-compatible chat API, uses structured outputs with a plain-text fallback, retries, and times out after 30 s by default.
+- `systemoneTeacher({ options, model, baseURL })` and `decisionsTeacher({ options, model, apiKey })` ask a System One server or the OpenAI Decisions API instead of a chat model.
+- `shad0wMiddleware(shadow, { specificationVersion, format })` and `decisionModel(shadow | { [question]: shadow }, { fallback })` for the Vercel AI SDK (above).
 - `Bundle.load(dirOrUrl)`; `bundle.decide(text)` → `{ answers: { [question]: { choice | answer, confidence, certified, flag, probabilities } } }`.
 - `new Table(arrayBuffer, labels).decide(text)` works on a single `.s0` file.
 

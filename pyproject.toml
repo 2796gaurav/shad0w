@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shad0wllm"
-version = "0.2.0"
+version = "0.3.0"
 description = "Compile the decisions your LLM already makes into a certified 2 MB table that answers in microseconds on a CPU."
 readme = "README.md"
 license = "Apache-2.0"
@@ -35,13 +35,15 @@ classifiers = [
 dependencies = ["numpy>=1.26"]
 
 [project.optional-dependencies]
-# Compiling bundles (shadow mode, human labels): sparse logistic fit + certificate.
-compile = ["scipy>=1.13", "scikit-learn>=1.5", "torch>=2.4"]
+# Compiling bundles (shadow mode, human labels): sparse logistic fit (scipy L-BFGS) + certificate.
+compile = ["scipy>=1.13", "scikit-learn>=1.5"]
+# Faster training with torch (optional; the scipy solver gives the same tables, more slowly).
+torch = ["shad0wllm[compile]", "torch>=2.4"]
 # Label-free mode (option names + unlabelled logs): a frozen sentence encoder at compile time.
-logs = ["shad0wllm[compile]", "sentence-transformers>=3.0"]
+logs = ["shad0wllm[torch]", "sentence-transformers>=3.0"]
 # The real-data demo and benchmark reproduction (downloads public datasets).
 demo = ["shad0wllm[logs]", "datasets>=3.0"]
-dev = ["shad0wllm[compile]", "pytest>=8", "ruff>=0.6"]
+dev = ["shad0wllm[compile]", "pytest>=8", "ruff>=0.6", "tomli>=2; python_version < '3.11'"]
 
 [project.urls]
 Homepage = "https://2796gaurav.github.io/shad0w"
@@ -55,7 +57,7 @@ Changelog = "https://github.com/2796gaurav/shad0w/blob/main/CHANGELOG.md"
 shad0w = "shad0w.__main__:main"
 
 [tool.setuptools]
-packages = ["shad0w", "shad0w.compiler"]
+packages = ["shad0w", "shad0w.compiler", "shad0w.integrations"]
 include-package-data = false
 
 [tool.setuptools.package-data]
@@ -68,6 +70,9 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
 ignore = ["E702", "E731", "E741", "B007", "B008", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_js_features.py" = ["E501"]  # embeds JavaScript snippets as long strings
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

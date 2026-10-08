@@ -20,7 +20,7 @@ import os
 
 import numpy as np
 
-from .api import DriftGuard, Model, Question, load
+from .api import DriftGuard, Model, Question, load, to_bool
 from .features import items
 from .mathutil import softmax
 
@@ -41,10 +41,10 @@ def _encode_labels(qtype, options, ys):
         if unknown:
             raise ValueError(f"teacher answers not in the schema options: {unknown[:5]}")
         return np.array([idx[v] for v in ys])
-    return np.array([int(bool(v)) for v in ys])
+    return np.array([int(to_bool(v)) for v in ys])
 
 
-def _certify(q: Question, texts, y, alpha: float, delta: float):
+def _certify(q: Question, texts, y, alpha: float, delta: float, drift_window: int = 500, drift_margin: float = 0.03):
     """Fit the certified threshold on teacher-labelled calibration texts (never used for fitting)."""
     from .reliability import SelectiveRiskController
     P = np.stack([softmax(q.rx.logits(items(t))) for t in texts])
@@ -53,7 +53,7 @@ def _certify(q: Question, texts, y, alpha: float, delta: float):
     thr = float(ctl.threshold)
     served = conf >= thr
     q.threshold, q.alpha, q.calibrated = thr, alpha, True
-    q.guard = DriftGuard(conf, agree)
+    q.guard = DriftGuard(conf, agree, drift_window, drift_margin)
     return {
         "n_calibration": int(len(y)),
         "agreement_with_teacher": float(agree.mean()),
@@ -66,9 +66,14 @@ def _certify(q: Question, texts, y, alpha: float, delta: float):
 
 def shadow_compile(schema: dict, records: list[dict], alpha: float = 0.05, delta: float = 0.1,
                    cal_fraction: float = 0.3, max_cal: int = 3000, teacher: str = "unspecified",
-                   seed: int = 0, r_min: float = 8.0):
+                   seed: int = 0, r_min: float = 8.0, cal_records: list[dict] | None = None,
+                   drift_window: int = 500, drift_margin: float = 0.03):
     """Compile every question in `schema` from the teacher's logged answers in `records` and certify it.
-    Returns (Model, certificate dict). Each question needs at least ~1,000 records for a useful certificate."""
+    Returns (Model, certificate dict). Each question needs at least ~1,000 records for a useful certificate.
+
+    cal_records: an optional separate calibration set (for example the uniform spot-check sample of live traffic).
+    When given, every row of `records` is used for fitting and only `cal_records` certify; the certificate then
+    says calibration="uniform-audit" instead of "held-out-split"."""
     from .compiler.distill import compile_schema
 
     rng = np.random.default_rng(seed)
@@ -89,15 +94,27 @@ def shadow_compile(schema: dict, records: list[dict], alpha: float = 0.05, delta
             raise ValueError(f"question {name!r}: {len(rows)} teacher records; need at least 100 (1,000+ recommended)")
         texts = [r["text"] for r in rows]
         y = _encode_labels(qtype, options, [r[name] for r in rows])
-        perm = rng.permutation(len(texts))
-        n_cal = int(min(max_cal, max(100, cal_fraction * len(texts))))
-        cal, fit = perm[:n_cal], perm[n_cal:]
+        ext = [r for r in (cal_records or []) if name in r and r.get("text")]
+        if ext:
+            if len(ext) < 100:
+                raise ValueError(f"question {name!r}: {len(ext)} calibration records; need at least 100")
+            if len(ext) > max_cal:
+                ext = [ext[i] for i in sorted(rng.permutation(len(ext))[:max_cal])]
+            fit = np.arange(len(texts))
+            cal_texts, cal_y = [r["text"] for r in ext], _encode_labels(qtype, options, [r[name] for r in ext])
+            how = "uniform-audit"
+        else:
+            perm = rng.permutation(len(texts))
+            n_cal = int(min(max_cal, max(100, cal_fraction * len(texts))))
+            cal, fit = perm[:n_cal], perm[n_cal:]
+            cal_texts, cal_y = [texts[i] for i in cal], y[cal]
+            how = "held-out-split"
         comp = compile_schema([texts[i] for i in fit], y[fit], options)
         q = Question(name, qtype, options, comp.rx, float("inf"), alpha, DriftGuard(np.ones(2), np.ones(2, bool)), r_min, False)
-        stats = _certify(q, [texts[i] for i in cal], y[cal], alpha, delta)
+        stats = _certify(q, cal_texts, cal_y, alpha, delta, drift_window, drift_margin)
         model.questions[name] = q
         cert["questions"][name] = {"type": qtype, "options": options, "n_records": len(texts), "n_fit": int(len(fit)),
-                                   "data_sha256": _hash_records(texts, [r[name] for r in rows]), **stats}
+                                   "data_sha256": _hash_records(texts, [r[name] for r in rows]), "calibration": how, **stats}
     return model, cert
 
 

@@ -113,3 +113,29 @@ def test_cli_shadow_and_report(tmp_path):
     r = subprocess.run([sys.executable, "-m", "shad0w", "report", "--bundle", str(out)], capture_output=True, text=True,
                        cwd=os.path.dirname(os.path.dirname(__file__)))
     assert '"certified_against": "teacher"' in r.stdout
+
+
+def test_cal_records_are_never_fit_on():
+    rows, _ = synth(2000, 7, teacher_noise=0.01)
+    cal, _ = synth(400, 8, teacher_noise=0.01)
+    m, cert = shadow_compile(SCHEMA, rows, alpha=0.05, cal_records=cal)
+    q = cert["questions"]["intent"]
+    assert q["n_fit"] == 2000 and q["n_calibration"] == 400 and q["calibration"] == "uniform-audit"
+    m2, cert2 = shadow_compile(SCHEMA, rows, alpha=0.05)
+    assert cert2["questions"]["intent"]["calibration"] == "held-out-split"
+    try:
+        shadow_compile(SCHEMA, rows, alpha=0.05, cal_records=cal[:50])
+        raise AssertionError("expected a ValueError for too few calibration records")
+    except ValueError:
+        pass
+
+
+def test_yesno_string_labels():
+    from shad0w.shadow import _encode_labels
+    enc = _encode_labels("yesno", ["no", "yes"], ["no", "false", False, "yes", True, "1", "No", "YES"])
+    assert enc.tolist() == [0, 0, 0, 1, 1, 1, 0, 1]
+    rows = [{"text": f"free money click here {i}" if i % 2 else f"hello there friend {i}", "spam": "yes" if i % 2 else "no"}
+            for i in range(400)]
+    m, cert = shadow_compile({"spam": {"type": "yesno"}}, rows, alpha=0.1)
+    assert m.decide("free money click here now")["answers"]["spam"]["answer"] is True
+    assert m.decide("hello there friend today")["answers"]["spam"]["answer"] is False

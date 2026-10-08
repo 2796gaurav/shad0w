@@ -2,6 +2,8 @@
 
 Start:
   shad0w init                                                                       # starter schema.json + example log
+  shad0w doctor [--bundle B] [--upstream URL] [--llm provider/model]                # is everything in place?
+  shad0w config [--question Q] [--init]                                             # effective settings and their source
   shad0w proxy --upstream https://api.openai.com/v1                                 # OpenAI-compatible gateway, zero code
   shad0w train --log shad0w/intent/log.jsonl --out shad0w/intent/bundle             # compile + certify from logged answers
   shad0w try   --bundle shad0w/intent/bundle "my card was stolen"                   # see what the table does, and why
@@ -89,6 +91,8 @@ def _train(a):
     if not log_path or not out:
         print("give --log and --out (or --dir [--question])", file=sys.stderr)
         return 2
+    from . import config as _config
+    st = _config.resolve(a.question, path=a.config, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows)
     records = read_jsonl(log_path)
     names = [a.question] if a.question else sorted({k for r in records for k in r} - {"text", "source", "ts"})
     full = json.load(open(a.schema, encoding="utf-8")) if a.schema else {}
@@ -99,13 +103,30 @@ def _train(a):
     for n in names:
         rows, sch = rows_for_training(records, n, full.get(n))
         print(f"{n}: {len(rows):,} usable answers, {len(sch.get('criteria', {'yes': 1, 'no': 1}))} options")
-        if len(rows) < a.min_rows:
-            print(f"  not enough yet: need {a.min_rows:,} (--min-rows to override; 100 is the hard minimum)", file=sys.stderr)
+        if len(rows) < st.min_rows:
+            print(f"  not enough yet: need {st.min_rows:,} (--min-rows to override; 100 is the hard minimum)", file=sys.stderr)
             return 1
         schema[n] = sch
         rows_all.extend(rows)
+    cal = [r for r in rows_all if r.get("source") == "audit"]
+    fit_rows, cal_rows = rows_all, None
+    if len(cal) >= 100:
+        fit_rows, cal_rows = [r for r in rows_all if r.get("source") != "audit"], cal
+        print(f"certifying on {len(cal):,} uniform spot-check rows; fitting on the other {len(fit_rows):,}")
     t = time.time()
-    m, cert = shadow_compile(schema, rows_all, alpha=a.alpha, delta=a.delta, teacher=a.teacher)
+    m, cert = shadow_compile(schema, fit_rows, alpha=st.alpha, delta=st.delta, teacher=a.teacher, cal_records=cal_rows,
+                             cal_fraction=st.cal_fraction, max_cal=st.max_cal, drift_window=st.drift_window,
+                             drift_margin=st.drift_margin)
+    if a.gate and os.path.exists(os.path.join(out, "certificate.json")):
+        from .shadow import read_certificate
+        old = read_certificate(out) or {}
+        for q, s_ in cert["questions"].items():
+            o = (old.get("questions") or {}).get(q)
+            if o and o.get("threshold") is not None and (s_["threshold"] is None or
+                                                          s_["certified_share_on_calibration"] < 0.8 * o["certified_share_on_calibration"]):
+                print(f"{q}: new bundle certifies {s_['certified_share_on_calibration']:.1%} vs "
+                      f"{o['certified_share_on_calibration']:.1%} before; kept the old bundle (drop --gate to replace)", file=sys.stderr)
+                return 3
     m.save(out)
     write_certificate(out, cert)
     with open(os.path.join(out, "schema.json"), "w", encoding="utf-8") as f:
@@ -113,12 +134,20 @@ def _train(a):
     print(f"trained in {time.time() - t:.1f}s -> {out}")
     for q, s_ in cert["questions"].items():
         print(f"  {q}: the table will answer {s_['certified_share_on_calibration']:.1%} of traffic like this, disagreeing with "
-              f"your model on at most {a.alpha:.0%} of those (with {1 - a.delta:.0%} confidence)")
+              f"your model on at most {st.alpha:.0%} of those (with {1 - st.delta:.0%} confidence; "
+              f"calibration: {s_.get('calibration', 'held-out-split')})")
     return 0
+
+
+def _need_bundle(path):
+    import os
+    if not os.path.exists(os.path.join(path, "manifest.json")):
+        raise FileNotFoundError(f"no bundle at {path} (expected manifest.json; run `shad0w train` first)")
 
 
 def _try(a):
     from .cascade import Shadow
+    _need_bundle(a.bundle)
     sh = Shadow(a.bundle, teacher=None, question=a.question, audit_rate=0)
     texts = a.text or None
 
@@ -127,9 +156,9 @@ def _try(a):
         t0 = time.perf_counter_ns()
         sh.model.decide(t, questions={sh.question: {}}, probabilities=False)
         us = (time.perf_counter_ns() - t0) / 1e3
-        mark = "\u2713 table" if e["certified"] else "\u2192 your LLM"
+        mark = "\u2713 table" if e.get("would_serve", e["certified"]) else "\u2192 your LLM"
         print(f"  {mark}  {e['answer']}  (confidence {e['confidence']:.3f}, needs {e['threshold']:.3f})  {us:.1f} \u00b5s")
-        print(f"     {e['why']}")
+        print(f"     {e['why']}" + (f"  [{e['policy_flag']}]" if e.get("policy_flag") not in (None, e["flag"]) else ""))
         print("     top: " + ", ".join(f"{k} {v:.2f}" for k, v in e["top"]))
     if sh.model is None:
         print(f"no bundle at {a.bundle}", file=sys.stderr)
@@ -158,6 +187,10 @@ def _stats(a):
         import urllib.request
         print(json.dumps(json.load(urllib.request.urlopen(a.url.rstrip("/") + "/v1/stats")), indent=2))
         return 0
+    from . import config as _config
+    need = _config.resolve().min_rows
+    if not os.path.exists(a.log):
+        raise FileNotFoundError(f"nothing logged yet at {a.log}")
     rows = [json.loads(l) for l in open(a.log, encoding="utf-8") if l.strip()]
     names = sorted({k for r in rows for k in r} - {"text", "source", "ts"})
     src = Counter(r.get("source", "teacher") for r in rows)
@@ -170,7 +203,7 @@ def _stats(a):
             print(f"  {k:<32} {v:>7,}  {'#' * max(1, round(40 * v / max(c.values())))}")
         if len(c) > a.top:
             print(f"  ... {len(c) - a.top} more")
-        ready = "ready to train" if tot >= 1000 else f"{1000 - tot:,} more answers before training (100 minimum to try)"
+        ready = "ready to train" if tot >= need else f"{need - tot:,} more answers before training (100 minimum to try)"
         print(f"  -> {ready}")
     if a.trace and os.path.exists(a.trace):
         tr = [json.loads(l) for l in open(a.trace, encoding="utf-8") if l.strip()]
@@ -208,7 +241,162 @@ def _watch(a):
         return 0
 
 
+def _config_cmd(a):
+    import os
+
+    from . import config as _config
+    if a.init:
+        p = a.config or _config.CONFIG_FILE
+        if os.path.exists(p):
+            print(f"{p} exists; not overwriting", file=sys.stderr)
+            return 2
+        lines = ["# shad0w settings. Precedence: code / flags > SHAD0W_* environment > this file > defaults.",
+                 "# Every key is optional. Per-question overrides go under [questions.<name>].", ""]
+        for k, v in _config.DEFAULTS.items():
+            if k in ("trace", "folder", "capture", "timeout"):
+                continue
+            val = json.dumps(v) if not isinstance(v, (list, tuple)) else json.dumps(list(v))
+            if v is None:
+                lines.append(f"# {k} = ...   # {_config.HELP[k]}")
+            else:
+                lines.append(f"# {k} = {val}   # {_config.HELP[k]}")
+        lines += ["", "# [questions.intent]", "# alpha = 0.02", ""]
+        with open(p, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+        print(f"wrote {p}")
+        return 0
+    rows = _config.explain(a.question, path=a.config)
+    w = max(len(k) for k, _, _ in rows)
+    for k, v, src in rows:
+        print(f"{k:<{w}}  {json.dumps(list(v) if isinstance(v, tuple) else v):<28}  {src}")
+    cfg = _config.find_config(a.config)
+    print(f"\nconfig file: {cfg or 'none (create one with: shad0w config --init)'}")
+    return 0
+
+
+def _doctor(a):
+    import importlib.util
+    import os
+    import platform
+    import shutil
+    import subprocess
+    import urllib.request
+
+    from . import __version__
+    from . import config as _config
+    from .llm import PROVIDERS
+    from .native import available, find_library
+    rows, fails = [], 0
+
+    def ok(label, detail=""):
+        rows.append(("ok", label, detail))
+
+    def warn(label, detail=""):
+        rows.append(("--", label, detail))
+
+    def fail(label, detail=""):
+        nonlocal fails
+        fails += 1
+        rows.append(("!!", label, detail))
+
+    py = platform.python_version()
+    (ok if tuple(sys.version_info[:2]) >= (3, 10) else fail)(f"Python {py}", f"shad0w {__version__}")
+    if available():
+        ok("C core", find_library() or "built in")
+    else:
+        warn("C core", "numpy fallback (same answers, slower)")
+    missing = [m for m in ("scipy", "sklearn") if importlib.util.find_spec(m) is None]
+    if missing:
+        warn("training deps (scipy, scikit-learn)", f"missing {missing}: pip install \"shad0wllm[compile]\"")
+    else:
+        ok("training deps (scipy, scikit-learn)", "installed")
+    has_torch = importlib.util.find_spec("torch") is not None
+    (ok if has_torch else warn)("torch (optional, faster training)", "installed" if has_torch else "not installed: scipy solver is used")
+    try:
+        import tomllib  # noqa: F401
+        ok("TOML config reader", "tomllib")
+    except ModuleNotFoundError:
+        if importlib.util.find_spec("tomli"):
+            ok("TOML config reader", "tomli")
+        else:
+            warn("TOML config reader", "pip install tomli (needed to read shad0w.toml on 3.10)")
+    node = shutil.which("node")
+    if node:
+        try:
+            v = subprocess.run([node, "--version"], capture_output=True, text=True, timeout=10).stdout.strip()
+        except Exception:
+            v = "?"
+        ok("Node (JavaScript package)", v)
+    else:
+        warn("Node (JavaScript package)", "not found; only needed for the npm package and its tests")
+    try:
+        cfg = _config.find_config(a.config)
+        st = _config.resolve(path=a.config)
+        ok("config", f"{cfg or 'defaults'}; mode={st.mode} alpha={st.alpha} audit_rate={st.audit_rate} canary={st.canary}")
+    except Exception as e:
+        fail("config", str(e))
+    if a.llm:
+        provider = a.llm.split("/", 1)[0]
+        env = PROVIDERS.get(provider, ("", None))[1] if provider in PROVIDERS else None
+        if provider not in PROVIDERS:
+            warn(f"provider {provider!r}", "unknown preset; pass base_url= in code")
+        elif env and not os.environ.get(env):
+            fail(f"{provider} API key", f"{env} is not set")
+        else:
+            ok(f"{provider} API key", env or "no key needed")
+    if a.upstream:
+        try:
+            req = urllib.request.Request(a.upstream.rstrip("/") + "/models")
+            urllib.request.urlopen(req, timeout=3).close()
+            ok("upstream reachable", a.upstream)
+        except urllib.error.HTTPError as e:
+            ok("upstream reachable", f"{a.upstream} (HTTP {e.code})")
+        except Exception as e:
+            fail("upstream reachable", f"{a.upstream}: {e}")
+    if a.bundle:
+        try:
+            from .api import load
+            from .shadow import read_certificate
+            m = load(a.bundle, native=False)
+            cert = read_certificate(a.bundle)
+            for q, qq in m.questions.items():
+                thr, fin = qq.threshold, qq.threshold != float("inf")
+                detail = f"{len(qq.options)} options, threshold {thr:.3f}, alpha {qq.alpha}" if fin else "certifies nothing (threshold inf)"
+                (ok if qq.calibrated and fin else warn)(f"bundle question {q!r}", detail)
+            (ok if cert else warn)("certificate.json", "present" if cert else "missing: run shad0w train / shadow / certify")
+        except Exception as e:
+            fail("bundle", f"{a.bundle}: {e}")
+    if a.log:
+        n = sum(1 for l in open(a.log, encoding="utf-8") if l.strip()) if os.path.exists(a.log) else 0
+        st = _config.resolve(path=a.config)
+        (ok if n >= st.min_rows else warn)("log", f"{n:,} rows ({'ready to train' if n >= st.min_rows else f'need {st.min_rows:,}'})")
+    w = max(len(r[1]) for r in rows)
+    for mark, label, detail in rows:
+        print(f"[{mark}] {label:<{w}}  {detail}")
+    print("\nall good" if not fails else f"\n{fails} problem(s); fix the [!!] lines")
+    return 1 if fails else 0
+
+
 def main(argv=None):
+    try:
+        return _main(argv)
+    except FileNotFoundError as e:
+        print(f"shad0w: {e}", file=sys.stderr)
+        return 2
+    except ModuleNotFoundError as e:
+        if (e.name or "").split(".")[0] in ("sklearn", "scipy", "torch", "sentence_transformers"):
+            print(f"shad0w: {e.name} is not installed; training needs: pip install \"shad0wllm[compile]\"", file=sys.stderr)
+            return 2
+        raise
+    except ImportError as e:
+        print(f"shad0w: {e}", file=sys.stderr)
+        return 2
+    except ValueError as e:
+        print(f"shad0w: {e}", file=sys.stderr)
+        return 2
+
+
+def _main(argv=None):
     from . import __version__
 
     ap = argparse.ArgumentParser(prog="shad0w", description="shad0w: certified microsecond decisions, compiled "
@@ -263,20 +451,34 @@ def main(argv=None):
     b.add_argument("--bundle", required=True)
     b.add_argument("--texts", required=True)
     s.add_argument("--cost-per-call", type=float)
+    s.add_argument("--llm-latency-ms", type=float, help="assumed LLM latency, to show time saved")
 
     px = sub.add_parser("proxy", help="OpenAI-compatible gateway: answers marked decisions from the table, forwards the rest")
     px.add_argument("--upstream", default="https://api.openai.com/v1", help="the real API base URL (OpenAI, Groq, Ollama, vLLM, ...)")
-    px.add_argument("--dir", default="shad0w", help="where logs and bundles live: <dir>/<question>/{log.jsonl,bundle/}")
+    px.add_argument("--dir", help="where logs and bundles live: <dir>/<question>/{log.jsonl,bundle/} (default shad0w)")
     px.add_argument("--model", help="upstream model for requests that use model='shad0w/<question>'")
     px.add_argument("--api-key-env", help="send this environment variable as the upstream key (default: forward the client's)")
     px.add_argument("--host", default="127.0.0.1")
     px.add_argument("--port", type=int, default=8010)
-    px.add_argument("--audit-rate", type=float, default=0.01)
+    px.add_argument("--audit-rate", type=float, help="share of decisions spot-checked against the LLM (default 0.01)")
     px.add_argument("--auto-train", type=int, help="retrain a question every N new LLM answers (needs shad0wllm[compile])")
-    px.add_argument("--alpha", type=float, default=0.05)
+    px.add_argument("--alpha", type=float, help="certified disagreement bound (default 0.05)")
+    px.add_argument("--delta", type=float, help="certificate failure probability (default 0.1)")
+    px.add_argument("--min-rows", type=int, help="logged answers needed before auto-train runs (default 1000)")
+    px.add_argument("--mode", choices=("serve", "shadow", "off"), help="serve (default), shadow (always return the LLM's answer), off")
+    px.add_argument("--canary", type=float, help="share of eligible traffic the table may answer, 0-1 (default 1)")
+    px.add_argument("--never-serve", help="comma-separated labels that always go to the LLM")
+    px.add_argument("--min-confidence", type=float, help="manual confidence floor on top of the certificate")
+    px.add_argument("--capture", action="append", help="how requests are recognised as decisions: header, model, tools, "
+                    "decisions, json_schema (repeatable; default header,model,tools,decisions)")
+    px.add_argument("--timeout", type=float, help="upstream timeout in seconds (default 120)")
+    px.add_argument("--trace", help="JSON Lines file receiving every decision")
+    px.add_argument("--bundle", action="append", metavar="Q=PATH", help="use a bundle at PATH for question Q (repeatable)")
     px.add_argument("--cost-per-call", type=float, help="cost of one LLM call, to show money saved")
+    px.add_argument("--llm-latency-ms", type=float, help="assumed LLM latency until measured, to show time saved")
     px.add_argument("--schema", help="optional schema.json naming each question's options")
     px.add_argument("--no-text", action="store_true", help="keep request text out of the dashboard")
+    px.add_argument("--config", help="path to a shad0w.toml (default ./shad0w.toml or $SHAD0W_CONFIG)")
 
     tr = sub.add_parser("train", help="compile + certify a bundle from logged LLM answers (auto-detects questions and options)")
     tr.add_argument("--log", help="JSON Lines log of your model's answers")
@@ -285,9 +487,24 @@ def main(argv=None):
     tr.add_argument("--question")
     tr.add_argument("--schema", help="optional schema.json (default: options = the answers seen in the log)")
     tr.add_argument("--teacher", default="unspecified")
-    tr.add_argument("--alpha", type=float, default=0.05)
-    tr.add_argument("--delta", type=float, default=0.1)
-    tr.add_argument("--min-rows", type=int, default=1000)
+    tr.add_argument("--alpha", type=float, help="certified disagreement bound (default 0.05)")
+    tr.add_argument("--delta", type=float, help="certificate failure probability (default 0.1)")
+    tr.add_argument("--min-rows", type=int, help="logged answers needed (default 1000; 100 is the hard minimum)")
+    tr.add_argument("--gate", action="store_true", help="keep the old bundle unless the new one certifies >= 80%% of its share")
+    tr.add_argument("--config", help="path to a shad0w.toml")
+
+    cf = sub.add_parser("config", help="print every effective setting and where it came from, or write a starter shad0w.toml")
+    cf.add_argument("--explain", action="store_true", help="(default) show the effective settings")
+    cf.add_argument("--question", help="also apply the [questions.<name>] section")
+    cf.add_argument("--config", help="path to a shad0w.toml")
+    cf.add_argument("--init", action="store_true", help="write a commented shad0w.toml with every setting")
+
+    dr = sub.add_parser("doctor", help="check Python, the C core, training deps, Node, config, keys, upstream and a bundle")
+    dr.add_argument("--bundle")
+    dr.add_argument("--log")
+    dr.add_argument("--upstream", help="an OpenAI-compatible base URL to probe")
+    dr.add_argument("--llm", help="provider/model whose API key should be set")
+    dr.add_argument("--config")
 
     ty = sub.add_parser("try", help="type messages and see what the table answers, how fast, and why")
     ty.add_argument("--bundle", required=True)
@@ -309,6 +526,10 @@ def main(argv=None):
 
     if a.cmd == "init":
         return _init(a.dir)
+    if a.cmd == "config":
+        return _config_cmd(a)
+    if a.cmd == "doctor":
+        return _doctor(a)
     if a.cmd == "train":
         return _train(a)
     if a.cmd == "try":
@@ -327,8 +548,14 @@ def main(argv=None):
         if a.api_key_env and not key:
             ap.error(f"{a.api_key_env} is not set")
         schema = json.load(open(a.schema, encoding="utf-8")) if a.schema else None
+        bundles = dict(b.split("=", 1) for b in (a.bundle or []) if "=" in b)
+        capture = [c for x in (a.capture or []) for c in x.split(",") if c] or None
+        never = [x.strip() for x in a.never_serve.split(",") if x.strip()] if a.never_serve else None
         srv = proxy(a.upstream, host=a.host, port=a.port, folder=a.dir, model=a.model, api_key=key, audit_rate=a.audit_rate,
-                    auto_train=a.auto_train, alpha=a.alpha, cost_per_call=a.cost_per_call, keep_text=not a.no_text, schema=schema)
+                    auto_train=a.auto_train, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows, mode=a.mode, canary=a.canary,
+                    never_serve=never, min_confidence=a.min_confidence, capture=capture, timeout=a.timeout, trace=a.trace,
+                    cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms, keep_text=not a.no_text, schema=schema,
+                    bundles=bundles, config=a.config)
         try:
             srv.serve_forever()
         except KeyboardInterrupt:
@@ -351,6 +578,7 @@ def main(argv=None):
         print(json.dumps(cert, indent=2))
     elif a.cmd == "report":
         from .shadow import read_certificate
+        _need_bundle(a.bundle)
         cert = read_certificate(a.bundle)
         print(json.dumps(cert, indent=2) if cert else "no certificate in this bundle (run shad0w shadow, shad0w certify or shad0w calibrate)")
     elif a.cmd == "compile":
@@ -362,18 +590,22 @@ def main(argv=None):
         m.save(a.out)
         print(f"compiled {list(m.questions)} in {time.time() - t:.1f}s -> {a.out}")
     elif a.cmd == "calibrate":
+        _need_bundle(a.bundle)
         m = api.load(a.bundle, native=False)
         _, by_q = _rows_by_question(a.data, m.questions)
         for q, (texts, labels) in by_q.items():
             print(q, json.dumps(m.calibrate(q, texts, labels, a.alpha)))
         m.save(a.bundle)
     elif a.cmd == "decide":
+        _need_bundle(a.bundle)
         print(json.dumps(api.load(a.bundle).decide(a.text, exposed=a.exposed), indent=2, ensure_ascii=False))
     elif a.cmd == "serve":
         from .observe import Metrics
         from .server import serve
-        serve(a.bundle, host=a.host, port=a.port, metrics=Metrics(cost_per_call=a.cost_per_call))
+        _need_bundle(a.bundle)
+        serve(a.bundle, host=a.host, port=a.port, metrics=Metrics(cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms))
     elif a.cmd == "bench":
+        _need_bundle(a.bundle)
         m = api.load(a.bundle)
         texts = [l.strip() for l in open(a.texts, encoding="utf-8") if l.strip()]
         for t in texts[:50]:

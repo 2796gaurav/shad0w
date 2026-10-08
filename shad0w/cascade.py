@@ -3,7 +3,7 @@
     import shad0w
 
     intent = shad0w.decision("intent", options={"refund": "wants money back", "lost_card": "card lost or stolen"},
-                             llm="openai/gpt-4o-mini")
+                             llm="openai/gpt-6-luna")
     intent("my card was stolen yesterday")    # Decision(answer='lost_card', source='teacher', ...)  logged
     intent.train()                            # once ~1,000 answers are logged: compile + certify, hot-swap
     intent("my card was stolen yesterday")    # Decision(answer='lost_card', source='table', latency_us=9, ...)
@@ -14,13 +14,19 @@ Day one, before any bundle exists, every call goes to your model and is logged. 
 `shad0w train` command), certified answers come from the table and the rest still go to your model, logged,
 so the next training run has more data.
 
-A small random share of certified answers (`audit_rate`, default 1%) is also sent to your model. These spot
-checks are logged with `"source": "audit"` and summarised by `stats()`, so you can watch live disagreement
-with your model, not only the calibration-time certificate.
+Spot checks: a small random share of decisions (`audit_rate`, default 1%) is also sent to your model. For a
+certified answer that happens in the background; for a deferred one the answer you got anyway is marked
+`"source": "audit"`. Together those rows are a uniform sample of live traffic: `stats()` turns the certified
+ones into a live disagreement bound, and `train()` certifies on all of them when there are enough.
+
+Rollout knobs (code > SHAD0W_* env > shad0w.toml > defaults; see shad0w.config): mode="shadow" computes the
+table's answer but always returns your model's; canary=0.1 lets the table answer 10% of what it could;
+never_serve=["fraud"] keeps some labels with your model; min_confidence raises the bar above the certificate.
 """
 from __future__ import annotations
 
 import asyncio
+import functools
 import inspect
 import json
 import math
@@ -28,24 +34,31 @@ import os
 import random
 import threading
 import time
+import typing
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from . import config as _config
 from .api import Model, load
 from .observe import Metrics, TraceWriter, emit_span, log, otel_enabled
 
-__all__ = ["Shadow", "Decision", "cascade", "decision"]
+__all__ = ["Shadow", "Decision", "cascade", "decision", "decide", "explain", "explain_model"]
+
+MIN_UNIFORM_CAL = 100  # audit rows needed before train() certifies on them instead of a random split
 
 
 @dataclass(frozen=True)
 class Decision:
     answer: Any  # the option name (choice) or a bool (yesno)
-    source: str  # "table" (certified, served locally) or "teacher" (deferred to your model)
+    source: str  # "table" (served locally) or "teacher" (deferred to your model)
     confidence: float | None  # the table's confidence; None when no table was consulted
     certified: bool
-    flag: str | None  # why the table deferred: low_confidence, low_radius, drift, uncalibrated, no_bundle
+    flag: str | None  # why the table deferred (or why a served answer is not certified); see explain()
     latency_us: float  # end-to-end time of this call
+    question: str = ""
+    threshold: float | None = None  # the certified confidence threshold of the loaded table
+    top: list[tuple[str, float]] | None = None  # options by probability, when probabilities were requested
 
     def __str__(self) -> str:
         return str(self.answer)
@@ -56,14 +69,32 @@ _FLAG_WORDS = {
     "no_bundle": "no trained table yet: asked your model",
     "low_confidence": "table not sure enough to stay inside the certified bound: asked your model",
     "low_radius": "input could be flipped by a few edits (exposed mode): asked your model",
-    "drift": "traffic looks different from calibration: asked your model until re-certified",
+    "drift": "traffic looks different from calibration: asked your model until the window recovers or you re-train",
     "uncalibrated": "table has no certificate: asked your model",
+    "min_confidence": "below your min_confidence floor (stricter than the certificate): asked your model",
+    "never_serve": "this label is on never_serve: asked your model",
+    "canary": "held back by the canary share: asked your model",
+    "shadow": "shadow mode: the table's answer was recorded, your model's was returned",
+    "off": "mode=off: the table was not consulted",
+    "manual_threshold": "served under force_threshold: NOT covered by the certificate",
 }
 
 
 def explain(flag: str | None) -> str:
     """The reason behind a decision, in plain words."""
     return _FLAG_WORDS.get(flag, flag or "")
+
+
+def explain_model(model: Model | None, name: str, text: str, exposed: bool = False) -> dict:
+    """What a table thinks of `text`, without calling any model and without touching the drift guard."""
+    if model is None or name not in model.questions:
+        return {"text": text, "question": name, "certified": False, "flag": "no_bundle", "why": explain("no_bundle")}
+    q = model.questions[name]
+    r = q.decide(text, exposed=exposed, observe=False)
+    top = sorted((r.get("probabilities") or {}).items(), key=lambda kv: -kv[1])[:3]
+    return {"text": text, "question": name, "answer": r.get("choice", r.get("answer")), "confidence": r["confidence"],
+            "threshold": q.threshold, "alpha": q.alpha, "certified": r["certified"], "flag": r["flag"],
+            "why": explain(r["flag"]), "top": top}
 
 
 class Shadow:
@@ -74,38 +105,46 @@ class Shadow:
     teacher      callable(text) -> answer, your existing model call (or `shad0w.llm_teacher(...)`)
     question     which question of the bundle to answer (default: the bundle's only question, or "decision")
     log          JSON Lines file that receives every teacher answer in the format `shad0w train` reads
-    audit_rate   share of certified answers also sent to the teacher as spot checks (0 disables)
-    exposed      treat inputs as adversarial: also defer answers with a small robustness radius
+    seed         random seed for spot checks and the canary
     schema       the question's options ({"type": "choice", "criteria": {...}}); taken from the teacher or the
                  bundle when omitted, else learned from the answers in the log at training time
     on_decision  callable(decision, text) run after every decision (send it to your tracing / analytics)
-    trace        JSON Lines file that receives EVERY decision (table and teacher), for debugging and dashboards
+    trace        JSON Lines file (or a shared `TraceWriter`) that receives EVERY decision, table and teacher
     metrics      a shared `shad0w.observe.Metrics` (default: a private one; see `stats()` and `metrics.prometheus()`)
-    auto_train   retrain in the background every N new teacher answers (needs `pip install "shad0wllm[compile]"`)
-    alpha        certified disagreement bound used by `train()` (default 0.05)
+    probabilities  fill `Decision.top` on every call (slower; default False)
+    config       path to a shad0w.toml (default: ./shad0w.toml or $SHAD0W_CONFIG)
+
+    Every other keyword is a setting (see `shad0w.config.DEFAULTS`): alpha, delta, min_rows, audit_rate,
+    auto_train, retrain, mode, canary, never_serve, min_confidence, force_threshold, drift_window, drift_margin,
+    exposed, cost_per_call, llm_latency_ms, cal_fraction, max_cal. Unset ones come from the environment, the
+    config file, then the defaults.
     """
 
     def __init__(self, bundle: str | Model | None, teacher: Callable[[str], Any] | None, question: str | None = None,
-                 log: str | None = None, audit_rate: float = 0.01, exposed: bool = False, seed: int | None = None,
-                 schema: dict | None = None, on_decision: Callable[[Decision, str], Any] | None = None,
-                 trace: str | None = None, metrics: Metrics | None = None, auto_train: int | None = None,
-                 alpha: float = 0.05):
+                 log: str | None = None, *, seed: int | None = None, schema: dict | None = None,
+                 on_decision: Callable[[Decision, str], Any] | None = None, trace: str | TraceWriter | None = None,
+                 metrics: Metrics | None = None, probabilities: bool = False, config: str | None = None,
+                 settings: _config.Settings | None = None, **kw):
         if teacher is not None and not callable(teacher):
             raise TypeError("teacher must be a callable: text -> answer")
-        if not 0.0 <= audit_rate <= 1.0:
-            raise ValueError("audit_rate must be in [0, 1]")
-        self.teacher, self.log, self.audit_rate, self.exposed = teacher, log, audit_rate, exposed
-        self.on_decision, self.alpha, self.auto_train = on_decision, alpha, auto_train
+        self.question = question if question is not None else getattr(teacher, "question", None)
+        self.settings = settings or _config.resolve(self.question or "decision", path=config, **kw)
+        s = self.settings
+        self.teacher, self.log = teacher, log
+        self.audit_rate, self.alpha, self.exposed = s.audit_rate, s.alpha, s.exposed
+        self.auto_train = s.auto_train or None
+        self.on_decision, self.probabilities = on_decision, probabilities
         self._rng = random.Random(seed)
         self._lock = threading.Lock()
         self._train_lock = threading.Lock()
-        self._counts = {"table": 0, "teacher": 0, "audits": 0, "audit_disagreements": 0}
+        self._counts = {"table": 0, "teacher": 0, "audits": 0, "audit_disagreements": 0, "would_serve": 0,
+                        "shadow_disagreements": 0}
         self._since_train = 0
         self._otel = otel_enabled()
-        self.metrics = metrics or Metrics()
-        self.trace = TraceWriter(trace) if trace else None
+        self.metrics = metrics or Metrics(cost_per_call=s.cost_per_call, llm_latency_ms=s.llm_latency_ms)
+        trace = trace if trace is not None else s.trace
+        self.trace = trace if isinstance(trace, TraceWriter) else (TraceWriter(trace) if trace else None)
         self.model: Model | None = None
-        self.question = question if question is not None else getattr(teacher, "question", None)
         self._audits: set = set()  # spot checks in flight (they run off the request path)
         if schema is None and hasattr(teacher, "criteria"):  # an llm_teacher knows the options
             schema = {"type": teacher.qtype, "criteria": dict(teacher.criteria)}
@@ -130,17 +169,78 @@ class Shadow:
             elif self.question not in model.questions:
                 raise ValueError(f"question {self.question!r} is not in the bundle ({names})")
             q = model.questions[self.question]
+            s = self.settings
+            if (s.drift_window, s.drift_margin) != (_config.DEFAULTS["drift_window"], _config.DEFAULTS["drift_margin"]):
+                q.guard.reconfigure(s.drift_window, s.drift_margin)
+            if s.force_threshold is not None and math.isfinite(q.threshold) and s.force_threshold < q.threshold:
+                log.warning("force_threshold=%s is below the certified threshold %.3f for %r: answers between them are "
+                            "served with certified=False", s.force_threshold, q.threshold, self.question)
             self.metrics.set_alpha(self.question, q.alpha)
             if self.schema is None:
                 self.schema = {"type": q.qtype, "criteria": {o: None for o in q.options}} if q.qtype == "choice" else {"type": "yesno"}
             log.info("loaded bundle for %r: %d options, alpha=%s, C core=%s", self.question, len(q.options), q.alpha,
                      model.native)
+            if self.auto_train and isinstance(bundle, (str, os.PathLike)):
+                from .shadow import read_certificate
+                cert = read_certificate(os.fspath(bundle)) or {}
+                cq = (cert.get("questions") or {}).get(self.question, {})
+                n_rec = cq.get("n_records")
+                if n_rec:
+                    if cq.get("calibration") == "uniform-audit":
+                        n_rec += cq.get("n_calibration", 0)
+                    self._since_train = max(0, self.log_rows() - int(n_rec))
         with self._lock:
             self.model = model
         return self
 
     # -- deciding ---------------------------------------------------------------------------------------------
-    def decide(self, text: str, teacher: Callable[[str], Any] | None = None) -> Decision:
+    def _table(self, text: str, probabilities: bool | None = None, observe: bool = True):
+        """(raw table result, local answer) for one text; the model must be loaded."""
+        name = self.question or "decision"
+        r = self.model.decide(text, exposed=self.exposed, questions={name: {}},
+                              probabilities=self.probabilities if probabilities is None else probabilities,
+                              observe=observe)["answers"][name]
+        return r, (r["choice"] if "choice" in r else r["answer"])
+
+    def _policy(self, r: dict, local) -> tuple[bool, bool, str | None]:
+        """(serve from the table?, certified?, flag) after the rollout knobs are applied."""
+        s = self.settings
+        if s.mode == "off":
+            return False, False, "off"
+        certified, flag = r["certified"], r["flag"]
+        if certified and s.min_confidence is not None and r["confidence"] < s.min_confidence:
+            certified, flag = False, "min_confidence"
+        if certified and s.never_serve and local in s.never_serve:
+            certified, flag = False, "never_serve"
+        if certified and s.canary < 1.0 and self._rng.random() >= s.canary:
+            certified, flag = False, "canary"
+        if not certified and flag == "low_confidence" and s.force_threshold is not None and r["confidence"] >= s.force_threshold:
+            return True, False, "manual_threshold"
+        if s.mode == "shadow":
+            return False, False, ("shadow" if certified else flag)
+        return certified, certified, flag
+
+    def _mk(self, answer, source: str, r: dict | None, certified: bool, flag: str | None, t0: float) -> Decision:
+        name = self.question or "decision"
+        top = None
+        if r is not None and "probabilities" in r:
+            top = sorted(r["probabilities"].items(), key=lambda kv: -kv[1])
+        thr = self.model.questions[name].threshold if self.model is not None else None
+        return Decision(answer, source, None if r is None else r["confidence"], certified, flag, _us(t0), name,
+                        None if thr is None or not math.isfinite(thr) else thr, top)
+
+    def _src(self) -> str:
+        """Label for a deferred row: "audit" with probability audit_rate, so audits sample all traffic uniformly."""
+        return "audit" if self.audit_rate and self._rng.random() < self.audit_rate else "teacher"
+
+    def _spot_check(self, teacher, text: str, name: str, local) -> None:
+        if self.audit_rate and teacher is not None and self._rng.random() < self.audit_rate:
+            th = threading.Thread(target=self._audit, args=(teacher, text, name, local), daemon=True, name="shad0w-audit")
+            with self._lock:
+                self._audits.add(th)
+            th.start()
+
+    def decide(self, text: str, teacher: Callable[[str], Any] | None = None, *, probabilities: bool | None = None) -> Decision:
         """The table's answer when certified, otherwise your model's (logged). `teacher` overrides the
         wrapper's teacher for this one call."""
         t0 = time.perf_counter()
@@ -149,31 +249,65 @@ class Shadow:
         teacher = teacher or self.teacher
         model = self.model
         if model is None:
-            answer, ts = self._ask(teacher, text, "teacher", name)
-            d = Decision(answer, "teacher", None, False, "no_bundle", _us(t0))
-            return self._done(d, text, name, ts, ns0)
-        r = model.decide(text, exposed=self.exposed, questions={name: {}}, probabilities=False)["answers"][name]
-        local = r["choice"] if "choice" in r else r["answer"]
-        if r["certified"]:
-            d = Decision(local, "table", r["confidence"], True, None, _us(t0))
-            if self.audit_rate and teacher is not None and self._rng.random() < self.audit_rate:
-                th = threading.Thread(target=self._audit, args=(teacher, text, name, local), daemon=True, name="shad0w-audit")
-                with self._lock:
-                    self._audits.add(th)
-                th.start()
+            answer, ts = self._ask(teacher, text, self._src(), name)
+            return self._done(self._mk(answer, "teacher", None, False, "no_bundle", t0), text, name, ts, ns0)
+        r, local = self._table(text, probabilities)
+        serve, certified, flag = self._policy(r, local)
+        if serve:
+            d = self._mk(local, "table", r, certified, flag, t0)
+            if certified:
+                self._spot_check(teacher, text, name, local)
             return self._done(d, text, name, None, ns0)
-        answer, ts = self._ask(teacher, text, "teacher", name)
-        d = Decision(answer, "teacher", r["confidence"], False, r["flag"], _us(t0))
-        return self._done(d, text, name, ts, ns0)
+        answer, ts = self._ask(teacher, text, self._src(), name)
+        self._shadow_count(flag, r, answer, local)
+        return self._done(self._mk(answer, "teacher", r, False, flag, t0), text, name, ts, ns0)
 
     __call__ = decide
+
+    def _shadow_count(self, flag, r, answer, local):
+        if self.settings.mode == "shadow":
+            with self._lock:
+                if flag == "shadow":
+                    self._counts["would_serve"] += 1
+                    self._counts["shadow_disagreements"] += int(_norm(answer) != _norm(local))
+
+    def peek(self, text: str, *, probabilities: bool | None = None) -> Decision | None:
+        """The table's answer when it would be served (counted and traced like any table decision), else None.
+        Never calls your model: integrations use it, then `record()` the answer they fetched themselves."""
+        if self.model is None:
+            return None
+        t0 = time.perf_counter()
+        name = self.question or "decision"
+        r, local = self._table(text, probabilities)
+        serve, certified, flag = self._policy(r, local)
+        if not serve:
+            return None
+        d = self._mk(local, "table", r, certified, flag, t0)
+        if certified:
+            self._spot_check(self.teacher, text, name, local)
+        return self._done(d, text, name, None, time.time_ns() if self._otel else 0)
+
+    def record(self, text: str, answer, *, teacher_s: float | None = None) -> Decision:
+        """Log an answer you obtained from your model yourself and count it as a teacher decision."""
+        t0 = time.perf_counter()
+        name = self.question or "decision"
+        self._record(text, self._src(), name, answer)
+        if self.model is None:
+            d = self._mk(answer, "teacher", None, False, "no_bundle", t0)
+        else:
+            r, local = self._table(text, observe=False)
+            flag = self._policy(r, local)[2]
+            self._shadow_count(flag, r, answer, local)
+            d = self._mk(answer, "teacher", r, False, flag, t0)
+        return self._done(d, text, name, teacher_s, time.time_ns() if self._otel else 0)
 
     def flush(self, timeout: float | None = None) -> None:
         """Wait for spot checks still in flight (they run in the background so they never slow an answer)."""
         with self._lock:
             pending = list(self._audits)
         for th in pending:
-            th.join(timeout)
+            if isinstance(th, threading.Thread):
+                th.join(timeout)
 
     async def adecide(self, text: str, teacher: Callable[[str], Any] | None = None) -> Decision:
         """`decide` for async code. The table path never leaves the event loop; an async teacher is awaited,
@@ -182,31 +316,31 @@ class Shadow:
         if not _is_async(teacher):
             model = self.model
             if model is not None:
-                name = self.question or "decision"
-                r = model.decide(text, exposed=self.exposed, questions={name: {}}, probabilities=False)["answers"][name]
-                if r["certified"]:
-                    return self.decide(text, teacher)  # microseconds; a sampled audit runs in a background thread
+                r, local = self._table(text, observe=False)
+                if self._policy(r, local)[0]:
+                    return self.decide(text, teacher)  # microseconds; observes the guard exactly once
             return await asyncio.to_thread(self.decide, text, teacher)
         t0 = time.perf_counter()
         name = self.question or "decision"
         model = self.model
-        flag, conf = "no_bundle", None
+        flag, r = "no_bundle", None
         if model is not None:
-            r = model.decide(text, exposed=self.exposed, questions={name: {}}, probabilities=False)["answers"][name]
-            local = r["choice"] if "choice" in r else r["answer"]
-            if r["certified"]:
-                d = Decision(local, "table", r["confidence"], True, None, _us(t0))
-                if self.audit_rate and self._rng.random() < self.audit_rate:
+            r, local = self._table(text)
+            serve, certified, flag = self._policy(r, local)
+            if serve:
+                d = self._mk(local, "table", r, certified, flag, t0)
+                if certified and self.audit_rate and self._rng.random() < self.audit_rate:
                     task = asyncio.ensure_future(self._aaudit(teacher, text, name, local))
                     self._audits.add(task)
                     task.add_done_callback(self._audits.discard)
                 return self._done(d, text, name, None, 0)
-            flag, conf = r["flag"], r["confidence"]
         t = time.perf_counter()
         answer = await teacher(text)
         took = time.perf_counter() - t
-        self._record(text, "teacher", name, answer)
-        return self._done(Decision(answer, "teacher", conf, False, flag, _us(t0)), text, name, took, 0)
+        self._record(text, self._src(), name, answer)
+        if r is not None:
+            self._shadow_count(flag, r, answer, local)
+        return self._done(self._mk(answer, "teacher", r, False, flag, t0), text, name, took, 0)
 
     async def _aaudit(self, teacher, text, name, local):
         try:
@@ -219,16 +353,14 @@ class Shadow:
 
     def explain(self, text: str) -> dict:
         """What the table thinks of `text`, without calling your model: top options, confidence, the
-        certified threshold and the reason in plain words."""
-        if self.model is None:
-            return {"text": text, "certified": False, "flag": "no_bundle", "why": explain("no_bundle")}
-        name = self.question or "decision"
-        q = self.model.questions[name]
-        r = q.decide(text, exposed=self.exposed)
-        top = sorted((r.get("probabilities") or {}).items(), key=lambda kv: -kv[1])[:3]
-        return {"text": text, "answer": r.get("choice", r.get("answer")), "confidence": r["confidence"],
-                "threshold": q.threshold, "alpha": q.alpha, "certified": r["certified"], "flag": r["flag"],
-                "why": explain(r["flag"]), "top": top}
+        certified threshold, the reason in plain words, and what the rollout knobs would do with it."""
+        out = explain_model(self.model, self.question or "decision", text, self.exposed)
+        if self.model is not None:
+            r = self.model.questions[self.question or "decision"].decide(text, exposed=self.exposed, observe=False)
+            local = r["choice"] if "choice" in r else r["answer"]
+            serve, certified, flag = self._policy(r, local)
+            out.update({"would_serve": serve, "policy_flag": flag, "mode": self.settings.mode})
+        return out
 
     def _audit(self, teacher, text, name, local):
         try:
@@ -286,6 +418,8 @@ class Shadow:
         q = self.metrics.snapshot(delta)["questions"].get(self.question or "decision", {})
         c.update({k: q.get(k) for k in ("table_p50_us", "table_p99_us", "llm_p50_ms", "llm_p99_ms", "flags")})
         c["alpha"] = self.model.questions[self.question].alpha if self.model is not None else None
+        c["threshold"] = self.model.questions[self.question].threshold if self.model is not None else None
+        c["mode"], c["canary"] = self.settings.mode, self.settings.canary
         c["log_rows"] = self.log_rows()
         return c
 
@@ -303,13 +437,16 @@ class Shadow:
         if self.log and answer is not None:
             row = json.dumps({"text": text, name: answer, "source": source, "ts": round(time.time(), 3)},
                              ensure_ascii=False, default=str)
+            due = False
             with self._lock, open(self.log, "a", encoding="utf-8") as f:
                 f.write(row + "\n")
-            if self.auto_train and source == "teacher":
-                self._since_train += 1
-                if self._since_train >= self.auto_train and not self._train_lock.locked():
+                if self.auto_train and source != "table":
+                    self._since_train += 1
+                    due = self._since_train >= self.auto_train
+            if due and not self._train_lock.locked():
+                with self._lock:
                     self._since_train = 0
-                    threading.Thread(target=self._train_quietly, daemon=True, name="shad0w-train").start()
+                threading.Thread(target=self._train_quietly, daemon=True, name="shad0w-train").start()
 
     # -- training ---------------------------------------------------------------------------------------------
     def log_rows(self) -> int:
@@ -318,39 +455,72 @@ class Shadow:
         with open(self.log, "rb") as f:
             return sum(1 for line in f if line.strip())
 
-    def train(self, out: str | None = None, alpha: float | None = None, delta: float = 0.1, min_rows: int = 1000) -> dict:
+    def train(self, out: str | None = None, alpha: float | None = None, delta: float | None = None,
+              min_rows: int | None = None, *, gate: bool = False) -> dict:
         """Compile and certify a bundle from this wrapper's log, save it and start serving from it.
-        Returns the certificate for this question. Needs `pip install "shad0wllm[compile]"`."""
-        from .shadow import read_jsonl, shadow_compile, write_certificate
+        Returns the certificate for this question (plus "accepted"). Needs `pip install "shad0wllm[compile]"`.
+
+        gate=True keeps the current bundle when the new one certifies less than 80% of its share (or nothing);
+        that is what auto_train does under retrain="gated"."""
+        from .shadow import read_certificate, read_jsonl, shadow_compile, write_certificate
+        s = self.settings
         out = out or self.bundle_path
         if not out:
             raise ValueError("pass out='bundle/' (where to save the trained bundle)")
         if not self.log or not os.path.exists(self.log):
             raise ValueError("nothing to train on: this Shadow has no log file yet")
         name = self.question or "decision"
+        alpha = s.alpha if alpha is None else alpha
+        delta = s.delta if delta is None else delta
+        min_rows = s.min_rows if min_rows is None else min_rows
         with self._train_lock:
             rows, schema = rows_for_training(read_jsonl(self.log), name, self.schema)
             if len(rows) < min_rows:
                 raise ValueError(f"{len(rows)} usable answers logged for {name!r}; need {min_rows} "
                                  f"(pass min_rows=... to try with fewer; 100 is the hard minimum)")
+            cal = [r for r in rows if r.get("source") == "audit"]
+            fit_rows, cal_rows = rows, None
+            if len(cal) >= MIN_UNIFORM_CAL:
+                fit_rows = [r for r in rows if r.get("source") != "audit"]
+                cal_rows = cal
+                log.info("certifying %r on %d uniform spot-check rows (fitting on the other %d)", name, len(cal), len(fit_rows))
+            else:
+                log.info("certifying %r on a random held-out split (%d spot-check rows, need %d for a uniform sample)",
+                         name, len(cal), MIN_UNIFORM_CAL)
             t = time.time()
-            a = self.alpha if alpha is None else alpha
-            model, cert = shadow_compile({name: schema}, rows, alpha=a, delta=delta,
-                                         teacher=getattr(self.teacher, "name", "unspecified"))
+            try:
+                model, cert = shadow_compile({name: schema}, fit_rows, alpha=alpha, delta=delta,
+                                             cal_fraction=s.cal_fraction, max_cal=s.max_cal,
+                                             teacher=getattr(self.teacher, "name", "unspecified"),
+                                             cal_records=cal_rows, drift_window=s.drift_window, drift_margin=s.drift_margin)
+            except ModuleNotFoundError as e:
+                if (e.name or "").split(".")[0] in ("sklearn", "scipy", "torch"):
+                    raise ImportError('training needs: pip install "shad0wllm[compile]" (scipy, scikit-learn)') from e
+                raise
+            q = cert["questions"][name]
+            old = (read_certificate(out) or {}).get("questions", {}).get(name) if gate else None
+            if old and old.get("threshold") is not None and self.model is not None:
+                new_share, old_share = q["certified_share_on_calibration"], old.get("certified_share_on_calibration", 0.0)
+                if q["threshold"] is None or new_share < 0.8 * old_share:
+                    reason = (f"new bundle certifies {new_share:.1%} of calibration traffic vs {old_share:.1%} before; "
+                              "kept the old one (retrain='always' to replace anyway)")
+                    log.warning("train %r rejected: %s", name, reason)
+                    return {**q, "accepted": False, "reason": reason}
             model.save(out)
             write_certificate(out, cert)
             with open(os.path.join(out, "schema.json"), "w", encoding="utf-8") as f:
                 json.dump({name: schema}, f, indent=2)
             self.bundle_path, self.schema = out, schema
             self.reload(out)
-            q = cert["questions"][name]
-            log.info("trained %r on %d answers in %.1fs: certified share %.1f%% at alpha=%s", name, len(rows),
-                     time.time() - t, 100 * q["certified_share_on_calibration"], a)
-            return q
+            with self._lock:
+                self._since_train = 0
+            log.info("trained %r on %d answers in %.1fs: certified share %.1f%% at alpha=%s (%s)", name, len(rows),
+                     time.time() - t, 100 * q["certified_share_on_calibration"], alpha, q.get("calibration"))
+            return {**q, "accepted": True}
 
     def _train_quietly(self):
         try:
-            self.train()
+            self.train(gate=(self.settings.retrain == "gated"))
         except Exception as e:
             log.warning("auto_train skipped: %s", e)
 
@@ -378,30 +548,39 @@ def rows_for_training(records: list[dict], name: str, schema: dict | None):
             raise ValueError(f"{name!r}: need at least 2 different answers to train, saw {sorted(opts)}")
         rows = [r for r in rows if str(r[name]) in opts]
         rows = [{**r, name: str(r[name])} for r in rows]
+    else:
+        from .api import to_bool
+        rows = [{**r, name: to_bool(r[name])} for r in rows]
     return rows, schema
+
+
+_TEACHER_KW = ("base_url", "api_key", "client", "system", "temperature", "timeout", "retries", "headers", "structured",
+               "max_tokens", "complete")
 
 
 def decision(name: str, options: Any = None, llm: str | Callable[[str], Any] | None = None, *,
              bundle: str | None = None, log: str | None = None, folder: str | None = None, **kw) -> Shadow:
     """One call from nothing to a certified cascade.
 
-        intent = shad0w.decision("intent", options={"refund": "wants money back", ...}, llm="openai/gpt-4o-mini")
+        intent = shad0w.decision("intent", options={"refund": "wants money back", ...}, llm="openai/gpt-6-luna")
         intent("my card was stolen")     # your LLM answers and is logged; later the table answers
         intent.train()                   # when ~1,000 answers are logged
 
     options  list of option names, {name: description}, or a schema entry; optional when the bundle exists
-    llm      "provider/model" (openai, anthropic, gemini, groq, ollama, ... see shad0w.llm.PROVIDERS) or any
-             callable(text) -> answer
-    folder   where the log and bundle live (default: ./shad0w/<name>/); bundle= and log= override each path
-    Other keywords go to `Shadow` (audit_rate, auto_train, on_decision, trace, alpha, ...) and, for a
-    "provider/model" string, to `llm_teacher` (base_url, api_key, client, system, temperature, ...)."""
+    llm      "provider/model" (openai, anthropic, gemini, groq, ollama, openai-decisions, systemone, ...; see
+             shad0w.llm.PROVIDERS) or any callable(text) -> answer
+    folder   where the log and bundle live (default: <settings.folder>/<name>/); bundle= and log= override each
+    Other keywords go to `Shadow` (audit_rate, auto_train, mode, canary, on_decision, trace, alpha, ...) and, for a
+    "provider/model" string, to `llm_teacher` (base_url, api_key, client, complete, system, temperature, ...)."""
     from .llm import LLMTeacher, normalize_options
-    folder = folder or os.path.join("shad0w", name)
+    llm_kw = {k: kw.pop(k) for k in list(kw) if k in _TEACHER_KW}
+    settings = _config.resolve(name, path=kw.get("config"), **{k: v for k, v in kw.items() if k in _config.DEFAULTS})
+    kw["settings"] = settings
+    if folder is None:
+        folder = os.path.join(settings.folder, name)
     bundle = bundle or os.path.join(folder, "bundle")
     log_path = log or os.path.join(folder, "log.jsonl")
     os.makedirs(os.path.dirname(os.path.abspath(log_path)), exist_ok=True)
-    llm_kw = {k: kw.pop(k) for k in list(kw) if k in ("base_url", "api_key", "client", "system", "temperature", "timeout",
-                                                       "retries", "headers", "structured", "max_tokens")}
     schema = None
     if options is not None:
         _, qtype, crit, instr = normalize_options(options, name)
@@ -417,11 +596,12 @@ def decision(name: str, options: Any = None, llm: str | Callable[[str], Any] | N
         teacher = LLMTeacher({name: schema}, llm, question=name, **llm_kw)
     else:
         teacher = llm
-    return Shadow(bundle, teacher=teacher, question=name, log=log_path, schema=schema, **kw)
+    shadow_kw = {k: v for k, v in kw.items() if k not in _config.DEFAULTS}
+    return Shadow(bundle, teacher=teacher, question=name, log=log_path, schema=schema, **shadow_kw)
 
 
 def cascade(bundle: str | Model | None, question: str | None = None, log: str | None = None,
-            audit_rate: float = 0.01, exposed: bool = False, **kw):
+            audit_rate: float | None = None, exposed: bool | None = None, **kw):
     """Decorator form of `Shadow`: wraps your model call and returns the answer.
 
         @shad0w.cascade("bundle/", log="teacher_log.jsonl")
@@ -432,14 +612,43 @@ def cascade(bundle: str | Model | None, question: str | None = None, log: str | 
     """
     def wrap(fn: Callable[[str], Any]):
         sh = Shadow(bundle, teacher=fn, question=question, log=log, audit_rate=audit_rate, exposed=exposed, **kw)
-
-        def call(text: str):
-            return sh.decide(text).answer
-
-        call.shadow = sh  # type: ignore[attr-defined]
-        call.__name__, call.__doc__, call.__wrapped__ = fn.__name__, fn.__doc__, fn  # type: ignore[attr-defined]
-        return call
+        return _wrapped(fn, sh)
     return wrap
+
+
+def decide(fn: Callable | None = None, /, *, name: str | None = None, folder: str | None = None, **kw):
+    """Decorator: the function's return annotation names the options, its body is the teacher.
+
+        @shad0w.decide()
+        def route(text) -> Literal["billing", "tech", "sales"]:
+            return ask_llm(text)
+
+        route("my invoice is wrong")     # "billing": from the table when certified, else from ask_llm (logged)
+        route.shadow.train()             # once ~1,000 answers are logged
+
+    A `-> bool` annotation makes a yes/no question. Files live in <folder>/<name>/ like `decision()`.
+    """
+    def wrap(f: Callable):
+        hints = typing.get_type_hints(f)
+        ret = hints.get("return")
+        if ret is bool:
+            options = {"type": "yesno"}
+        elif typing.get_origin(ret) is typing.Literal:
+            options = [str(v) for v in typing.get_args(ret)]
+        else:
+            raise TypeError(f"{f.__name__}: annotate the return type with Literal[...] (the options) or bool")
+        sh = decision(name or f.__name__, options=options, llm=f, folder=folder, **kw)
+        return _wrapped(f, sh)
+    return wrap(fn) if fn is not None else wrap
+
+
+def _wrapped(fn, sh: Shadow):
+    @functools.wraps(fn)
+    def call(text: str):
+        return sh.decide(text).answer
+
+    call.shadow = sh  # type: ignore[attr-defined]
+    return call
 
 
 def _is_async(fn) -> bool:

@@ -1,12 +1,14 @@
 """Turn any OpenAI-compatible chat model into a shad0w teacher in one line. Standard library only.
 
     teacher = shad0w.llm_teacher({"refund": "wants money back", "lost_card": "card lost or stolen"},
-                                 model="openai/gpt-4o-mini")
+                                 model="openai/gpt-6-luna")
     teacher("my card was stolen")          # -> "lost_card"
 
 `model` is "provider/model-name". The provider picks the base URL and the environment variable that holds
 the key. Any other OpenAI-compatible server works with base_url=... (and a model name without a prefix).
-Pass client=OpenAI(...) to reuse an openai SDK client (Azure, proxies, custom auth) instead of the built-in
+Decision models work too: "openai-decisions/gpt-6-luna" (OpenAI's Decisions API) or "systemone/kev-4b" with
+base_url="http://localhost:8009/v1" (Jev, Kev, Laya, Ollaya, llama.cpp). They answer with typed choices.
+Pass client=OpenAI(...) to reuse an openai SDK client (proxies, custom auth) instead of the built-in
 HTTP call, or complete=fn to use anything else (LiteLLM, LangChain, a local model): fn(messages) -> reply text.
 
 The model is asked for a JSON object whose one field is constrained to your options (structured outputs).
@@ -28,7 +30,6 @@ __all__ = ["llm_teacher", "LLMTeacher", "TeacherError", "PROVIDERS", "normalize_
 # provider -> (base URL, environment variable holding the API key; None for local servers)
 PROVIDERS: dict[str, tuple[str, str | None]] = {
     "openai": ("https://api.openai.com/v1", "OPENAI_API_KEY"),
-    "azure": ("", "AZURE_OPENAI_API_KEY"),  # needs base_url="https://<resource>.openai.azure.com/openai/v1"
     "anthropic": ("https://api.anthropic.com/v1", "ANTHROPIC_API_KEY"),
     "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai", "GEMINI_API_KEY"),
     "groq": ("https://api.groq.com/openai/v1", "GROQ_API_KEY"),
@@ -41,7 +42,11 @@ PROVIDERS: dict[str, tuple[str, str | None]] = {
     "ollama": ("http://localhost:11434/v1", None),
     "vllm": ("http://localhost:8000/v1", None),
     "lmstudio": ("http://localhost:1234/v1", None),
+    # decision models: typed answers instead of chat text (see shad0w.wire)
+    "openai-decisions": ("https://api.openai.com/v1", "OPENAI_API_KEY"),  # POST /v1/decisions, model gpt-6-luna
+    "systemone": ("", None),  # Jev / Kev / Laya / Ollaya / llama.cpp: POST /v1/systemone; needs base_url="http://host/v1"
 }
+DECISION_PROVIDERS = {"openai-decisions": "decisions", "systemone": "systemone"}
 
 
 class TeacherError(RuntimeError):
@@ -126,12 +131,13 @@ def _prompt(question: str, qtype: str, criteria: dict[str, str | None], instruct
 class LLMTeacher:
     """A callable teacher backed by an OpenAI-compatible chat completions endpoint. Thread-safe."""
 
-    def __init__(self, options: Any, model: str = "openai/gpt-4o-mini", *, question: str | None = None,
+    def __init__(self, options: Any, model: str = "openai/gpt-6-luna", *, question: str | None = None,
                  base_url: str | None = None, api_key: str | None = None, client: Any = None,
                  system: str | None = None, temperature: float = 0.0, timeout: float = 30.0, retries: int = 2,
                  headers: dict | None = None, structured: bool | None = None, max_tokens: int = 50,
                  complete: Any = None):
         self.question, self.qtype, self.criteria, instructions = normalize_options(options, question or "decision")
+        self.instructions = instructions
         self.options = list(self.criteria)
         self._complete = complete
         if complete is not None:
@@ -144,6 +150,8 @@ class LLMTeacher:
         self.base_url = (base_url or os.environ.get("SHAD0W_BASE_URL") or default_url).rstrip("/")
         if client is None and not self.base_url:
             raise ValueError(f"model {model!r}: unknown provider; pass base_url=... (known: {', '.join(PROVIDERS)})")
+        if provider == "systemone" and self.base_url and not self.base_url.endswith("/v1"):
+            self.base_url += "/v1"  # accept the server root too: http://host:8081 -> http://host:8081/v1
         self.api_key = api_key if api_key is not None else (os.environ.get(key_env) if key_env else None)
         if client is None and complete is None and key_env and not self.api_key:
             raise ValueError(f"{provider}: set {key_env} or pass api_key=...")
@@ -151,7 +159,8 @@ class LLMTeacher:
         self.headers = dict(headers or {})
         self.max_tokens = max_tokens
         self.system = system or _prompt(self.question, self.qtype, self.criteria, instructions)
-        self._structured = True if structured is None else structured
+        self.dialect = DECISION_PROVIDERS.get(self.provider)  # a decision-model endpoint instead of chat
+        self._structured = (True if structured is None else structured) and self.dialect is None
         self._dropped: set[str] = set()
         self.name = f"{self.provider}/{self.model}"
         self.calls = 0
@@ -228,12 +237,31 @@ class LLMTeacher:
                 raise _Retryable(str(e)) from None
         if self.client is not None:
             return self._send_sdk(body)
-        req = urllib.request.Request(self.base_url + "/chat/completions", data=json.dumps(body).encode(), method="POST")
+        if self.dialect:
+            return self._send_decisions(body)
+        data = self._post("/chat/completions", body)
+        try:
+            return data["choices"][0]["message"]["content"] or ""
+        except (KeyError, IndexError, TypeError):
+            raise TeacherError(f"{self.name}: unexpected response {str(data)[:300]}") from None
+
+    def _send_decisions(self, body: dict) -> str:
+        """Ask a decision-model endpoint (OpenAI Decisions API or System One) and return the answer as text."""
+        from . import wire
+        text = body["messages"][-1]["content"]
+        q = wire.WireQ(self.question, self.qtype, dict(self.criteria), self.instructions or self.system)
+        path, payload = wire.teacher_request(self.dialect, self.model, text, q)
+        data = self._post(path, payload)
+        ans = wire.teacher_answer(self.dialect, data, q)
+        if ans is None:
+            raise TeacherError(f"{self.name}: unexpected decision response {str(data)[:300]}")
+        return ("yes" if ans else "no") if isinstance(ans, bool) else str(ans)
+
+    def _post(self, path: str, body: dict) -> dict:
+        req = urllib.request.Request(self.base_url + path, data=json.dumps(body).encode(), method="POST")
         req.add_header("content-type", "application/json")
         if self.api_key:
             req.add_header("authorization", f"Bearer {self.api_key}")
-            if self.provider == "azure":
-                req.add_header("api-key", self.api_key)
         for k, v in self.headers.items():
             req.add_header(k, v)
         try:
@@ -249,10 +277,7 @@ class LLMTeacher:
             raise TeacherError(f"{self.name}: HTTP {e.code}: {detail}") from None
         except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
             raise _Retryable(f"cannot reach {self.base_url}: {e}") from None
-        try:
-            return data["choices"][0]["message"]["content"] or ""
-        except (KeyError, IndexError, TypeError):
-            raise TeacherError(f"{self.name}: unexpected response {str(data)[:300]}") from None
+        return data
 
     def _send_sdk(self, body: dict) -> str:
         kw = {k: v for k, v in body.items() if k != "messages"}
@@ -272,7 +297,7 @@ class LLMTeacher:
         return f"LLMTeacher({self.name!r}, question={self.question!r}, options={len(self.options)})"
 
 
-def llm_teacher(options: Any, model: str = "openai/gpt-4o-mini", **kw) -> LLMTeacher:
+def llm_teacher(options: Any, model: str = "openai/gpt-6-luna", **kw) -> LLMTeacher:
     """A teacher callable(text) -> option backed by any OpenAI-compatible LLM. See LLMTeacher for keywords."""
     return LLMTeacher(options, model, **kw)
 

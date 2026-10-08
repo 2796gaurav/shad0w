@@ -40,6 +40,9 @@ export function items(text: string): number[];
 export function words(text: string): Uint8Array[];
 export const TABLE_VERSION: number;
 
+export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
+  | "canary" | "never_serve" | "shadow" | "off" | null;
+
 /** One decision from a Shadow cascade. */
 export interface Decision<A = string | boolean> {
   answer: A;
@@ -48,9 +51,31 @@ export interface Decision<A = string | boolean> {
   confidence: number | null;
   certified: boolean;
   /** why the table deferred */
-  flag: "no_bundle" | "low_confidence" | "uncalibrated" | null;
+  flag: Flag;
   latencyUs: number;
+  question: string;
+  /** the certified confidence threshold of the bundle's question, or null without a bundle */
+  threshold: number | null;
+  /** per-option probabilities (table decisions from peek() only) */
+  probabilities?: Record<string, number> | null;
 }
+
+/** What the table thinks of a text, without calling your model. */
+export interface Explanation {
+  text: string;
+  answer: string | boolean | null;
+  confidence: number | null;
+  threshold: number | null;
+  certified: boolean;
+  flag: Flag;
+  /** the reason in plain words */
+  why: string;
+  /** the top options and their probabilities */
+  top: [string, number][];
+}
+export const FLAG_WORDS: Record<string, string>;
+/** The reason behind a flag, in plain words. */
+export function explainFlag(flag: Flag): string;
 export type Teacher = ((text: string) => Promise<string | boolean> | string | boolean) & { question?: string };
 export type LogSink = ((row: Record<string, unknown>) => unknown) | { write(line: string): unknown } | string;
 
@@ -67,14 +92,25 @@ export interface ShadowOptions {
 export class Shadow {
   constructor(bundle: Bundle | null, opts?: ShadowOptions);
   readonly question: string;
+  readonly bundle: Bundle | null;
+  readonly teacher: Teacher | null;
   decide(text: string, opts?: { teacher?: Teacher }): Promise<Decision>;
+  /** The table's decision when it would be served (counted like any table decision), else null. Never calls the teacher. */
+  peek(text: string, opts?: { teacher?: Teacher }): Promise<Decision | null>;
+  /** Log an answer you obtained from your model yourself; counts as a teacher decision. */
+  record(text: string, answer: string | boolean): Promise<Decision>;
+  /** What the table thinks of `text`, without calling your model. */
+  explain(text: string): Explanation;
+  /** the option names of this question (from the bundle, else the teacher), or null */
+  options(): string[] | null;
+  threshold(): number | null;
   stats(): { table: number; teacher: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null };
 }
 
 export interface TeacherOptions {
   /** option names, {name: description}, or a shad0w schema entry */
   options: string[] | Record<string, string | null> | Record<string, unknown>;
-  /** "provider/model", e.g. "openai/gpt-4o-mini", "groq/llama-3.1-8b-instant", "ollama/llama3.1"; or a bare name with baseURL */
+  /** "provider/model", e.g. "openai/gpt-6-luna", "groq/llama-3.1-8b-instant", "ollama/llama3.1"; or a bare name with baseURL */
   model?: string;
   question?: string;
   baseURL?: string;
@@ -87,15 +123,68 @@ export interface TeacherOptions {
   headers?: Record<string, string>;
   /** ask for JSON-schema structured output first (default true; falls back to plain text automatically) */
   structured?: boolean;
+  /** milliseconds per request (default 30000); a timed-out request is retried like a network error */
+  timeout?: number;
 }
 /** A teacher backed by any OpenAI-compatible chat endpoint. */
 export function openaiTeacher(opts: TeacherOptions): Teacher & { options: string[]; complete(text: string): Promise<string> };
 
-/** decision("intent", {options, llm: "openai/gpt-4o-mini", bundle: "intent.bundle", log: "intent.log.jsonl"}) */
+export interface DecisionTeacherOptions {
+  options: string[] | Record<string, string | null> | Record<string, unknown>;
+  question?: string;
+  /** the model name sent to the server (System One: e.g. "kev-0.8b"; Decisions API: default "gpt-6-luna") */
+  model?: string;
+  baseURL?: string;
+  apiKey?: string;
+  fetch?: typeof fetch;
+  headers?: Record<string, string>;
+  timeout?: number;
+  retries?: number;
+}
+/** A teacher that asks a System One server (TypeSafe wire format: Jev, Kev, Laya, Ollaya, llama.cpp) at baseURL/v1/systemone. */
+export function systemoneTeacher(opts: DecisionTeacherOptions & { baseURL: string }): Teacher & { options: string[] };
+/** A teacher that asks the OpenAI Decisions API (POST /v1/decisions) one choice or predicate question. */
+export function decisionsTeacher(opts: DecisionTeacherOptions): Teacher & { options: string[] };
+
+/**
+ * decision("intent", {options, llm: "openai/gpt-6-luna", bundle: "intent.bundle", log: "intent.log.jsonl"})
+ * llm may also be "systemone/<model>" (with baseURL) or "openai-decisions/gpt-6-luna".
+ * A bundle path that does not exist starts log-only; a corrupt or unsupported bundle throws.
+ */
 export function decision(name: string, opts: Partial<TeacherOptions> & ShadowOptions & {
   llm?: string | Teacher;
   bundle?: Bundle | string | null;
 }): Promise<Shadow>;
+
+/** Vercel AI SDK language-model middleware: wrapLanguageModel({ model, middleware: shad0wMiddleware(intent) }). */
+export interface MiddlewareOptions {
+  /** must match the installed `ai` major: ai 5 → "v2", ai 6 → "v3", ai 7 → "v4" (default "v3") */
+  specificationVersion?: "v2" | "v3" | "v4";
+  /** option names to match in the model's replies (default: the Shadow's options) */
+  options?: string[];
+  /** shapes the reply text for a table answer (default: the bare option) */
+  format?: (answer: string | boolean) => string;
+}
+export function shad0wMiddleware(shadow: Shadow, opts?: MiddlewareOptions): {
+  specificationVersion: string;
+  middlewareVersion: string;
+  wrapGenerate(args: { doGenerate: () => PromiseLike<any>; params: any }): Promise<any>;
+};
+
+/** AI SDK decision model (spec v4) for experimental_decide({ model: decisionModel(intent), state, questions }). */
+export interface DecisionModelLike {
+  specificationVersion: "v4";
+  provider: string;
+  modelId: string;
+  supportedQuestionTypes: readonly string[];
+  doDecide(options: { state: unknown; questions: Record<string, any>; abortSignal?: AbortSignal; headers?: Record<string, string>; providerOptions?: unknown }): PromiseLike<any>;
+}
+export function decisionModel(shadows: Shadow | Record<string, Shadow>, opts?: {
+  /** another decision model (e.g. openai.decisionModel("gpt-6-luna")) for questions the tables cannot certify; its answers are logged */
+  fallback?: DecisionModelLike;
+  name?: string;
+  provider?: string;
+}): DecisionModelLike;
 
 export function matchOption(reply: unknown, options: string[], field?: string): string | null;
 export const PROVIDERS: Record<string, [string, string | null]>;

@@ -125,3 +125,13 @@ def test_hook_errors_do_not_break_decisions(tmp_path):
 
     sh = shad0w.Shadow(None, teacher=classify, question="intent", on_decision=bad)
     assert sh.decide("refund me").answer == "refund"
+
+
+def test_llm_latency_default_feeds_time_saved():
+    m = Metrics(llm_latency_ms=300)
+    m.record("q", "table", "a", 2e-6)
+    s = m.snapshot()
+    assert s["llm_latency_assumed"] is True and abs(s["time_saved_s"] - 0.3) < 1e-9 and s["llm_mean_ms"] == 300.0
+    m.record("q", "teacher", "b", 0.5, teacher_s=0.5)
+    s = m.snapshot()
+    assert s["llm_latency_assumed"] is False and s["llm_mean_ms"] == 500.0

@@ -59,7 +59,7 @@ def test_presets_and_keys(monkeypatch):
     assert t.base_url == PROVIDERS["groq"][0] and t.model == "llama-3.1-8b-instant" and t.api_key == "g"
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     with pytest.raises(ValueError, match="OPENAI_API_KEY"):
-        shad0w.llm_teacher(["a", "b"], model="openai/gpt-4o-mini")
+        shad0w.llm_teacher(["a", "b"], model="openai/gpt-6-luna")
     assert shad0w.llm_teacher(["a", "b"], model="ollama/llama3.1").api_key is None
     t = shad0w.llm_teacher(["a", "b"], model="meta-llama/Llama-3-8b", base_url="http://x/v1")
     assert t.model == "meta-llama/Llama-3-8b"
@@ -99,8 +99,8 @@ def test_sdk_client_path():
         class chat:
             completions = Completions()
 
-    t = shad0w.llm_teacher(OPTIONS, model="gpt-4o-mini", client=Client())
-    assert t("money back please") == "refund" and calls[0]["model"] == "gpt-4o-mini"
+    t = shad0w.llm_teacher(OPTIONS, model="gpt-6-luna", client=Client())
+    assert t("money back please") == "refund" and calls[0]["model"] == "gpt-6-luna"
 
 
 def test_complete_hook_for_any_framework():
@@ -112,3 +112,34 @@ def test_complete_hook_for_any_framework():
 
     t = shad0w.llm_teacher(OPTIONS, model="anything", complete=complete)
     assert t("stolen card") == "lost_card" and seen[0][1] == {"role": "user", "content": "stolen card"}
+
+
+def test_openai_decisions_teacher(mock):
+    t = shad0w.llm_teacher(OPTIONS, model="openai-decisions/gpt-6-luna", base_url=mock.url, api_key="k")
+    assert t("someone stole my card, block my card") == "lost_card"
+    req = mock.requests[-1]
+    assert req["path"].endswith("/decisions") and req["body"]["model"] == "gpt-6-luna"
+    q = req["body"]["questions"][0]
+    assert q["type"] == "choice" and [c["value"] for c in q["choices"]] == list(OPTIONS) and q["name"] == "decision"
+    assert req["headers"]["authorization"] == "Bearer k" and "response_format" not in req["body"]
+    yn = shad0w.llm_teacher({"type": "yesno", "instructions": "Is it urgent?"}, model="openai-decisions/gpt-6-luna",
+                            base_url=mock.url, api_key="k", question="urgent")
+    assert yn("this is urgent") is True and yn("hello") is False
+    assert mock.requests[-1]["body"]["questions"][0]["type"] == "predicate"
+
+
+def test_systemone_teacher(mock):
+    with pytest.raises(ValueError, match="base_url"):
+        shad0w.llm_teacher(OPTIONS, model="systemone/kev-4b")
+    t = shad0w.llm_teacher(OPTIONS, model="systemone/kev-4b", base_url=mock.url)
+    assert t("i want a refund") == "refund"
+    req = mock.requests[-1]
+    assert req["path"].endswith("/systemone") and req["body"]["state"] == "i want a refund"
+    assert req["body"]["questions"]["decision"]["criteria"]["refund"] == "wants money back" and req["body"]["model"] == "kev-4b"
+
+
+def test_systemone_teacher_accepts_server_root(mock):
+    root = mock.url[:-3] if mock.url.endswith("/v1") else mock.url
+    t = shad0w.llm_teacher(OPTIONS, model="systemone/kev-4b", base_url=root)
+    assert t.base_url.endswith("/v1") and t("i want a refund") == "refund"
+    assert mock.requests[-1]["path"].endswith("/v1/systemone")
