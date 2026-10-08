@@ -9,6 +9,8 @@ from __future__ import annotations
 import ctypes
 import glob
 import os
+import sys
+from importlib.machinery import EXTENSION_SUFFIXES
 
 import numpy as np
 
@@ -19,11 +21,15 @@ def find_library() -> str | None:
     env = os.environ.get("SHAD0W_NATIVE_LIB")
     if env:
         return env
-    for pattern in ("_reflex*.so", "_reflex*.pyd", "_reflex*.dylib", "libreflex.*"):
-        hits = sorted(glob.glob(os.path.join(_HERE, pattern)))
-        if hits:
-            return hits[0]
-    return None
+    # the extension built for this interpreter first: a checkout shared between machines can also hold
+    # e.g. a macOS build next to the Linux one, and loading that fails
+    for suffix in EXTENSION_SUFFIXES:
+        p = os.path.join(_HERE, "_reflex" + suffix)
+        if os.path.exists(p):
+            return p
+    ext = {"win32": ".dll", "darwin": ".dylib"}.get(sys.platform, ".so")
+    hits = sorted(glob.glob(os.path.join(_HERE, "libreflex.*")), key=lambda p: not p.endswith(ext))  # `make` builds
+    return hits[0] if hits else None
 
 
 def available() -> bool:
