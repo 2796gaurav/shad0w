@@ -92,3 +92,12 @@ def test_calibrate_cli(trained, tmp_path):
     shutil.copytree(out, b)
     r = run("calibrate", "--bundle", str(b), "--data", str(data))
     assert r.returncode == 0 and "threshold" in r.stdout
+
+
+def test_output_survives_a_legacy_encoding(trained):
+    """A Windows pipe uses cp1252, which has no ✓ or →: the CLI must replace them, not crash."""
+    d, log, out = trained
+    env = {**os.environ, "PYTHONIOENCODING": "cp1252"}
+    r = subprocess.run([sys.executable, "-m", "shad0w", "try", "--bundle", str(out), "hi block my card thanks"],
+                       capture_output=True, encoding="cp1252", env=env, timeout=300)
+    assert r.returncode == 0 and "needs" in r.stdout, r.stderr

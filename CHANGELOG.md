@@ -34,6 +34,7 @@ Zero-code for the new decision APIs, every knob in one place, and retraining you
 - **`Shadow` policy arguments are keyword-only.** `audit_rate`, `exposed`, `auto_train`, `alpha` and the new knobs must be passed by keyword; defaults come from the settings layer.
 
 ### Fixed
+- **The CLI never crashes on output encoding.** On Windows, piped output uses cp1252, which has no `✓` or `→`. `shad0w try` crashed with `UnicodeEncodeError`; it now prints replacement characters instead.
 - **The C core loader picks this platform's build.** A source checkout holding builds for several platforms (say a macOS `_reflex*.so` next to the Linux one) could make Linux load the macOS binary. It now prefers this interpreter's extension suffix.
 - `decision(..., complete=fn)` raised `TypeError`.
 - Yes/no questions trained from string answers ("no") learned every label as "yes".

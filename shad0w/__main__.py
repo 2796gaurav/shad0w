@@ -377,7 +377,21 @@ def _doctor(a):
     return 1 if fails else 0
 
 
+def _safe_stdio():
+    """Never crash on output: a Windows pipe or a legacy console (cp1252) cannot encode ✓ → µ, so fall back
+    to replacement characters there instead of raising UnicodeEncodeError."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            "\u2713\u2192\u00b5".encode(getattr(stream, "encoding", None) or "ascii")
+        except (LookupError, UnicodeEncodeError):
+            try:
+                stream.reconfigure(errors="replace")
+            except (AttributeError, ValueError):
+                pass
+
+
 def main(argv=None):
+    _safe_stdio()
     try:
         return _main(argv)
     except FileNotFoundError as e:
