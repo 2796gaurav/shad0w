@@ -117,7 +117,7 @@ shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class
 <span class="p">)</span>
 </code></pre></div>
 
-<p>The key: by default the proxy forwards each client's own <code>Authorization</code> header, so nothing changes there either. To keep the key in the proxy instead, start it with <code>--api-key-env OPENAI_API_KEY</code> or <code>--api-key-file /run/secrets/openai</code>. See <a href="proxy.html#keys">The proxy</a>.</p>
+<p>The key: by default the proxy forwards each client's own <code>Authorization</code> header, so nothing changes there either. To keep the key in the proxy instead, start it with <code>--api-key-env OPENAI_API_KEY</code> or <code>--api-key-file /run/secrets/openai</code>, and when it listens on a network, give it an <a href="proxy.html#access">access token</a>. See <a href="proxy.html#keys">The proxy</a>.</p>
 <h2 id="system-one-servers-jev-kev-laya">System One servers (Jev, Kev, Laya, ...)<a class="headerlink" href="#system-one-servers-jev-kev-laya" title="Link to this section">#</a></h2>
 <p>Point the proxy at any server that implements <code>/v1/systemone</code>, then point your client at the proxy:</p>
 <div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>http://127.0.0.1:8081/v1<span class="w">         </span><span class="c1"># the System One server's base URL</span>

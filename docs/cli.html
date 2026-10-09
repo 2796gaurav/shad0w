@@ -729,7 +729,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 </table></div>
 <p>Prints <code>{"n", "p50_us", "p99_us", "questions"}</code> after a short warm-up.</p>
 <h3 id="serve">serve<a class="headerlink" href="#serve" title="Link to this section">#</a></h3>
-<p>HTTP decisions from a bundle, without an LLM: <code>POST /v1/decide</code>, <code>/v1/decisions</code>, <code>/v1/systemone</code>, <code>/v1/playground</code>, plus the dashboard at <code>/</code>, <code>/v1/stats</code>, <code>/metrics</code> and <code>/v1/health</code>. See <a href="http.html">HTTP</a>. No authentication: keep it on localhost or behind your own front end.</p>
+<p>HTTP decisions from a bundle, without an LLM: <code>POST /v1/decide</code>, <code>/v1/decisions</code>, <code>/v1/systemone</code>, <code>/v1/playground</code>, plus the dashboard at <code>/</code>, <code>/v1/stats</code>, <code>/metrics</code> and <code>/v1/health</code>. See <a href="http.html">HTTP</a>. Off this machine, set an access token (<code>$SHAD0W_PROXY_TOKEN</code>, <code>--token-env</code>, <code>--token-file</code>); see <a href="proxy.html#access">Access token</a>.</p>
 <div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
@@ -753,6 +753,11 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <td class="c-key"><code>--port</code></td>
 <td class="c-def"><code>8010</code></td>
 <td>Port</td>
+</tr>
+<tr>
+<td class="c-key"><code>--token-env NAME</code> / <code>--token-file PATH</code></td>
+<td class="c-def"><code>$SHAD0W_PROXY_TOKEN</code></td>
+<td>Access token every route but <code>/v1/health</code> needs</td>
 </tr>
 <tr>
 <td class="c-key"><code>--cost-per-call</code></td>
@@ -811,6 +816,16 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 <td class="c-key"><code>--port</code></td>
 <td class="c-def"><code>8010</code></td>
 <td>Port</td>
+</tr>
+<tr>
+<td class="c-key"><code>--token-env NAME</code> / <code>--token-file PATH</code></td>
+<td class="c-def"><code>$SHAD0W_PROXY_TOKEN</code></td>
+<td>Access token every route but <code>/v1/health</code> needs; see <a href="proxy.html#access">Access token</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--insecure-open</code></td>
+<td class="c-def">off</td>
+<td>Allow a non-local <code>--host</code> with the proxy's own key and no token</td>
 </tr>
 <tr>
 <td class="c-key"><code>--audit-rate</code></td>
@@ -905,7 +920,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w">
 </tbody>
 </table></div>
 <div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--api-key-env<span class="w"> </span>OPENAI_API_KEY<span class="w"> </span>--mode<span class="w"> </span>shadow
-shad0w<span class="w"> </span>proxy<span class="w"> </span>--api-key-file<span class="w"> </span>/run/secrets/openai<span class="w"> </span>--canary<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>--cost-per-call<span class="w"> </span><span class="m">0</span>.0006
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--api-key-file<span class="w"> </span>/run/secrets/openai<span class="w"> </span>--token-file<span class="w"> </span>/run/secrets/shad0w-token<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--canary<span class="w"> </span><span class="m">0</span>.1
 </code></pre></div>
 
 <p>On start it prints where the key comes from, masked: <code>upstream key: set via OPENAI_API_KEY (sk-…3f9a)</code>.</p>

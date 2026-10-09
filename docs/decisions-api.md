@@ -55,7 +55,7 @@ d = client.decisions.create(
 )
 ```
 
-The key: by default the proxy forwards each client's own `Authorization` header, so nothing changes there either. To keep the key in the proxy instead, start it with `--api-key-env OPENAI_API_KEY` or `--api-key-file /run/secrets/openai`. See [The proxy](proxy.html#keys).
+The key: by default the proxy forwards each client's own `Authorization` header, so nothing changes there either. To keep the key in the proxy instead, start it with `--api-key-env OPENAI_API_KEY` or `--api-key-file /run/secrets/openai`, and when it listens on a network, give it an [access token](proxy.html#access). See [The proxy](proxy.html#keys).
 
 ## System One servers (Jev, Kev, Laya, ...)
 

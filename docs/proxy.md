@@ -64,6 +64,27 @@ const client = new OpenAI({ baseURL: "http://localhost:8010/v1" });
 
 There is no flag that takes the key itself: it would show up in `ps` and shell history. The two flags cannot be combined. The startup banner says where the upstream key comes from, masked: `upstream key: set via OPENAI_API_KEY (sk-…3f9a)`.
 
+## Access token {#access}
+
+On its own machine (`--host 127.0.0.1`, the default) the proxy needs nothing more. As soon as it listens on a network (a container, `--host 0.0.0.0`, a LAN address), give it an access token, so only your apps can use it:
+
+```bash
+export SHAD0W_PROXY_TOKEN="$(openssl rand -hex 24)"    # or --token-env NAME, or --token-file /run/secrets/shad0w-token
+shad0w proxy --host 0.0.0.0 --api-key-file /run/secrets/openai
+```
+
+Every route except `GET /v1/health` then needs the token, sent one of three ways:
+
+| Client | How it sends the token |
+|---|---|
+| An OpenAI SDK, when the proxy holds the upstream key | as its API key: `OpenAI(base_url="http://shad0w:8010/v1", api_key=token)` |
+| Any client, including ones that send their own upstream key | the header `X-Shad0w-Token: <token>` (`default_headers={"X-Shad0w-Token": token}` in the OpenAI SDK) |
+| A browser, for the dashboard | it asks once; type anything as the user name and the token as the password |
+
+The header that carried the token is never sent upstream. A `--token-file` is re-read on every request, so a rotated secret needs no restart. Requests without the right token get a 401 and never reach your LLM.
+
+**Refused on purpose:** listening beyond this machine with the proxy's own key (`--api-key-env` / `--api-key-file`) and no token. Anyone who could reach the port could spend your key and read recent messages on the dashboard, so the proxy will not start. If the network itself is private and you accept that, pass `--insecure-open`. A non-local proxy without a token that forwards each client's own key starts with a warning.
+
 ## 3. Mark which calls are decisions {#mark}
 
 **Using the OpenAI Decisions API or a System One model (Jev, Kev, Laya)? Nothing to mark.** Requests to `/v1/decisions` and `/v1/systemone` already name each question and list its answers. See [Decisions API & System One](decisions-api.html).
@@ -154,7 +175,9 @@ Every flag can also come from `shad0w.toml` or a `SHAD0W_*` variable, and a `[qu
 | Flag | Type | Default | What it does | Change it when |
 |---|---|---|---|---|
 | `--upstream` | URL | `https://api.openai.com/v1` | the real API | you use another provider or a local server |
-| `--host`, `--port` | str, int | `127.0.0.1`, `8010` | where the proxy listens | it runs in a container (`--host 0.0.0.0`) or the port is taken |
+| `--host`, `--port` | str, int | `127.0.0.1`, `8010` | where the proxy listens | it runs in a container (`--host 0.0.0.0`, with an [access token](#access)) or the port is taken |
+| `--token-env NAME`, `--token-file PATH` | str, path | `$SHAD0W_PROXY_TOKEN` | the access token clients must send | it listens on a network; see [Access token](#access) |
+| `--insecure-open` | flag | | allow a non-local `--host` with the proxy's own key and no token | only on a network you fully trust |
 | `--dir` | path | `shad0w` | logs and tables live in `<dir>/<question>/` | several apps share a machine |
 | `--bundle Q=PATH` | repeatable | | use the table at PATH for question Q | the table was trained elsewhere |
 | `--model` | str | | upstream model for `model="shad0w/<question>"` | you use the model-name marking |
@@ -187,10 +210,10 @@ Every flag can also come from `shad0w.toml` or a `SHAD0W_*` variable, and a `[qu
 | `GET /` | live dashboard, with a **Playground** |
 | `GET /v1/stats` | JSON: counts, share answered, flags, latency, per-question settings and log sizes |
 | `GET /metrics` | Prometheus text format |
-| `GET /v1/health` | `{"ok": true, "upstream": ..., "questions": [...]}` |
+| `GET /v1/health` | `{"ok": true, "upstream": ..., "questions": [...]}`; the one route that never needs the access token |
 | `POST /v1/playground` | `{"question", "text", "ask_llm": false, "log": false}`: what the table thinks of a text, and with `ask_llm` (needs `--model`) what your LLM says |
 | anything else | forwarded untouched (embeddings, images, `GET /v1/models`, ...) |
 
 The dashboard's Playground uses that last route: type a text, pick a question, and see the table's answer, its confidence against the threshold, and why; with `--model` set, also ask the upstream LLM and compare the two side by side.
 
-<div class="callout warn">The proxy has no authentication of its own. Keep it on localhost or inside your network.</div>
+<div class="callout warn">Off this machine, set an <a href="#access">access token</a>. Without one, anyone who reaches the port can use the proxy and read the dashboard.</div>

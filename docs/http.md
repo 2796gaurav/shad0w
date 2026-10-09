@@ -28,7 +28,8 @@ Serve `choice` when `certified` is true; otherwise ask your LLM.
 | Flag | Default | What it does |
 |---|---|---|
 | `--bundle` | required | the trained table folder |
-| `--host` | `127.0.0.1` | where to listen; `0.0.0.0` inside a container |
+| `--host` | `127.0.0.1` | where to listen; `0.0.0.0` inside a container, with an access token |
+| `--token-env NAME` / `--token-file PATH` | `$SHAD0W_PROXY_TOKEN` | access token every route but `/v1/health` needs: `X-Shad0w-Token: <token>`, `Authorization: Bearer <token>`, or the browser's login prompt for the dashboard |
 | `--port` | `8010` | the port |
 | `--cost-per-call` | | what one LLM call costs you, for the dashboard's money-saved figure |
 | `--llm-latency-ms` | | your LLM's latency, for the dashboard's time-saved figure |
@@ -123,4 +124,4 @@ It returns what the table thinks without recording a decision: answer, confidenc
 
 - HTTP/1.1 keep-alive and one thread per connection; it adds about 0.17 ms per request on localhost.
 - Request bodies over 1 MiB get a 413. A malformed request gets a 400 with `{"error": "..."}`; an unknown route a 404.
-- No authentication: keep it on localhost or behind your own gateway.
+- Off this machine, set an access token (above); without one it starts with a warning.

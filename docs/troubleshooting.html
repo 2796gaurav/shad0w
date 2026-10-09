@@ -208,6 +208,14 @@
 <td>Pick one.</td>
 </tr>
 <tr>
+<td class="c-key"><code>refusing to listen on 0.0.0.0 with the proxy's own LLM key and no access token</code></td>
+<td>Set <code>SHAD0W_PROXY_TOKEN</code> (or <code>--token-env</code> / <code>--token-file</code>) and send it from your apps; see <a href="proxy.html#access">Access token</a>. <code>--insecure-open</code> skips the check on a network you trust.</td>
+</tr>
+<tr>
+<td class="c-key"><code>401 invalid_access_token</code></td>
+<td>The proxy has a token: send <code>X-Shad0w-Token: &lt;token&gt;</code>, or use the token as the OpenAI SDK's <code>api_key</code> when the proxy holds the upstream key. <code>/v1/health</code> never needs it.</td>
+</tr>
+<tr>
 <td class="c-key"><code>shad0w.toml exists; not overwriting</code></td>
 <td><code>config --init</code> never overwrites; delete the file or use <code>--config other.toml</code>.</td>
 </tr>

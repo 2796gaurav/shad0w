@@ -53,7 +53,7 @@
     <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
   </aside>
   <article class="prose" id="doc">
-    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Start<span class="rt">8 min read</span></div>
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Start<span class="rt">9 min read</span></div>
     <h1 id="the-proxy-zero-code-changes">The proxy: zero code changes<a class="headerlink" href="#the-proxy-zero-code-changes" title="Link to this section">#</a></h1>
 <p><code>shad0w proxy</code> sits between your app and any OpenAI-compatible API. Your code keeps using its OpenAI SDK; only the <code>base_url</code> changes. This page covers starting it, marking which calls are decisions, keys, what comes back, and every flag.</p>
 <h2 id="tldr">TL;DR<a class="headerlink" href="#tldr" title="Link to this section">#</a></h2>
@@ -121,6 +121,37 @@ shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class
 </tbody>
 </table></div>
 <p>There is no flag that takes the key itself: it would show up in <code>ps</code> and shell history. The two flags cannot be combined. The startup banner says where the upstream key comes from, masked: <code>upstream key: set via OPENAI_API_KEY (sk-…3f9a)</code>.</p>
+<h2 id="access">Access token<a class="headerlink" href="#access" title="Link to this section">#</a></h2>
+<p>On its own machine (<code>--host 127.0.0.1</code>, the default) the proxy needs nothing more. As soon as it listens on a network (a container, <code>--host 0.0.0.0</code>, a LAN address), give it an access token, so only your apps can use it:</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SHAD0W_PROXY_TOKEN</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>openssl<span class="w"> </span>rand<span class="w"> </span>-hex<span class="w"> </span><span class="m">24</span><span class="k">)</span><span class="s2">"</span><span class="w">    </span><span class="c1"># or --token-env NAME, or --token-file /run/secrets/shad0w-token</span>
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--api-key-file<span class="w"> </span>/run/secrets/openai
+</code></pre></div>
+
+<p>Every route except <code>GET /v1/health</code> then needs the token, sent one of three ways:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>Client</th>
+<th>How it sends the token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An OpenAI SDK, when the proxy holds the upstream key</td>
+<td>as its API key: <code>OpenAI(base_url="http://shad0w:8010/v1", api_key=token)</code></td>
+</tr>
+<tr>
+<td>Any client, including ones that send their own upstream key</td>
+<td>the header <code>X-Shad0w-Token: &lt;token&gt;</code> (<code>default_headers={"X-Shad0w-Token": token}</code> in the OpenAI SDK)</td>
+</tr>
+<tr>
+<td>A browser, for the dashboard</td>
+<td>it asks once; type anything as the user name and the token as the password</td>
+</tr>
+</tbody>
+</table></div>
+<p>The header that carried the token is never sent upstream. A <code>--token-file</code> is re-read on every request, so a rotated secret needs no restart. Requests without the right token get a 401 and never reach your LLM.</p>
+<p><strong>Refused on purpose:</strong> listening beyond this machine with the proxy's own key (<code>--api-key-env</code> / <code>--api-key-file</code>) and no token. Anyone who could reach the port could spend your key and read recent messages on the dashboard, so the proxy will not start. If the network itself is private and you accept that, pass <code>--insecure-open</code>. A non-local proxy without a token that forwards each client's own key starts with a warning.</p>
 <h2 id="mark">3. Mark which calls are decisions<a class="headerlink" href="#mark" title="Link to this section">#</a></h2>
 <p><strong>Using the OpenAI Decisions API or a System One model (Jev, Kev, Laya)? Nothing to mark.</strong> Requests to <code>/v1/decisions</code> and <code>/v1/systemone</code> already name each question and list its answers. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
 <p>For chat completions, pick whichever is easiest:</p>
@@ -291,7 +322,21 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w">
 <td class="c-type">str, int</td>
 <td class="c-def"><code>127.0.0.1</code>, <code>8010</code></td>
 <td>where the proxy listens</td>
-<td>it runs in a container (<code>--host 0.0.0.0</code>) or the port is taken</td>
+<td>it runs in a container (<code>--host 0.0.0.0</code>, with an <a href="#access">access token</a>) or the port is taken</td>
+</tr>
+<tr>
+<td class="c-key"><code>--token-env NAME</code>, <code>--token-file PATH</code></td>
+<td class="c-type">str, path</td>
+<td class="c-def"><code>$SHAD0W_PROXY_TOKEN</code></td>
+<td>the access token clients must send</td>
+<td>it listens on a network; see <a href="#access">Access token</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--insecure-open</code></td>
+<td class="c-type">flag</td>
+<td class="c-def"></td>
+<td>allow a non-local <code>--host</code> with the proxy's own key and no token</td>
+<td>only on a network you fully trust</td>
 </tr>
 <tr>
 <td class="c-key"><code>--dir</code></td>
@@ -480,7 +525,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w">
 </tr>
 <tr>
 <td><code>GET /v1/health</code></td>
-<td><code>{"ok": true, "upstream": ..., "questions": [...]}</code></td>
+<td><code>{"ok": true, "upstream": ..., "questions": [...]}</code>; the one route that never needs the access token</td>
 </tr>
 <tr>
 <td><code>POST /v1/playground</code></td>
@@ -494,7 +539,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w">
 </table></div>
 <p>The dashboard's Playground uses that last route: type a text, pick a question, and see the table's answer, its confidence against the threshold, and why; with <code>--model</code> set, also ask the upstream LLM and compare the two side by side.</p>
 <div class="callout warn">
-<p>The proxy has no authentication of its own. Keep it on localhost or inside your network.</p>
+<p>Off this machine, set an <a href="#access">access token</a>. Without one, anyone who reaches the port can use the proxy and read the dashboard.</p>
 </div>
     <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20The%20proxy&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/proxy.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="proxy.md">View as Markdown</a></div>
     <nav class="pager" aria-label="Previous and next page"><a href="connect-your-llm.html" rel="prev"><small>← Previous</small>Connect your LLM</a><a class="next" href="python.html" rel="next"><small>Next →</small>Python</a></nav>
@@ -505,6 +550,7 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w">
 <li><a href="#1-start-it">1. Start it</a></li>
 <li><a href="#2-point-your-client-at-it">2. Point your client at it</a></li>
 <li><a href="#keys">Keys</a></li>
+<li><a href="#access">Access token</a></li>
 <li><a href="#mark">3. Mark which calls are decisions</a></li>
 <li><a href="#what-happens-to-a-decision">What happens to a decision</a></li>
 <li><a href="#4-train">4. Train</a></li>

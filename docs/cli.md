@@ -286,13 +286,14 @@ Prints `{"n", "p50_us", "p99_us", "questions"}` after a short warm-up.
 
 ### serve
 
-HTTP decisions from a bundle, without an LLM: `POST /v1/decide`, `/v1/decisions`, `/v1/systemone`, `/v1/playground`, plus the dashboard at `/`, `/v1/stats`, `/metrics` and `/v1/health`. See [HTTP](http.html). No authentication: keep it on localhost or behind your own front end.
+HTTP decisions from a bundle, without an LLM: `POST /v1/decide`, `/v1/decisions`, `/v1/systemone`, `/v1/playground`, plus the dashboard at `/`, `/v1/stats`, `/metrics` and `/v1/health`. See [HTTP](http.html). Off this machine, set an access token (`$SHAD0W_PROXY_TOKEN`, `--token-env`, `--token-file`); see [Access token](proxy.html#access).
 
 | Flag | Default | What it does |
 |---|---|---|
 | `--bundle` | required | The bundle folder |
 | `--host` | `127.0.0.1` | Address to listen on |
 | `--port` | `8010` | Port |
+| `--token-env NAME` / `--token-file PATH` | `$SHAD0W_PROXY_TOKEN` | Access token every route but `/v1/health` needs |
 | `--cost-per-call` | — | Cost of one LLM call, for "money saved" |
 | `--llm-latency-ms` | — | Assumed LLM latency, for "time saved" |
 
@@ -309,6 +310,8 @@ An OpenAI-compatible gateway in front of your LLM. Requests marked as decisions 
 | `--api-key-file PATH` | forward each client's own key | Send the key in this file upstream, re-read on every request (Docker / Kubernetes secrets). Not with `--api-key-env` |
 | `--host` | `127.0.0.1` | Address to listen on |
 | `--port` | `8010` | Port |
+| `--token-env NAME` / `--token-file PATH` | `$SHAD0W_PROXY_TOKEN` | Access token every route but `/v1/health` needs; see [Access token](proxy.html#access) |
+| `--insecure-open` | off | Allow a non-local `--host` with the proxy's own key and no token |
 | `--audit-rate` | the `audit_rate` setting (`0.01`) | Share of decisions spot-checked against the LLM |
 | `--auto-train` | the `auto_train` setting (`0`, off) | Retrain a question every N new LLM answers |
 | `--alpha` | the `alpha` setting (`0.05`) | Most disagreement allowed |
@@ -330,7 +333,7 @@ An OpenAI-compatible gateway in front of your LLM. Requests marked as decisions 
 
 ```bash
 shad0w proxy --upstream https://api.openai.com/v1 --api-key-env OPENAI_API_KEY --mode shadow
-shad0w proxy --api-key-file /run/secrets/openai --canary 0.1 --cost-per-call 0.0006
+shad0w proxy --api-key-file /run/secrets/openai --token-file /run/secrets/shad0w-token --host 0.0.0.0 --canary 0.1
 ```
 
 On start it prints where the key comes from, masked: `upstream key: set via OPENAI_API_KEY (sk-…3f9a)`.

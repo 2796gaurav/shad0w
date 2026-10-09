@@ -54,6 +54,8 @@ The CLI prints one line starting with `shad0w:` instead of a traceback, and exit
 | `shad0w: --api-key-file X: no such file` / `... is empty` | `proxy --api-key-file` must point at a file holding the key. |
 | `shad0w: error: NAME is not set` | `proxy --api-key-env NAME`: that variable is empty in the proxy's environment. |
 | `pass --api-key-env or --api-key-file, not both` | Pick one. |
+| `refusing to listen on 0.0.0.0 with the proxy's own LLM key and no access token` | Set `SHAD0W_PROXY_TOKEN` (or `--token-env` / `--token-file`) and send it from your apps; see [Access token](proxy.html#access). `--insecure-open` skips the check on a network you trust. |
+| `401 invalid_access_token` | The proxy has a token: send `X-Shad0w-Token: <token>`, or use the token as the OpenAI SDK's `api_key` when the proxy holds the upstream key. `/v1/health` never needs it. |
 | `shad0w.toml exists; not overwriting` | `config --init` never overwrites; delete the file or use `--config other.toml`. |
 
 ## Errors in Python

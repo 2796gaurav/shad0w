@@ -86,7 +86,12 @@ curl<span class="w"> </span>-s<span class="w"> </span>localhost:8010/v1/decide<s
 <tr>
 <td class="c-key"><code>--host</code></td>
 <td class="c-def"><code>127.0.0.1</code></td>
-<td>where to listen; <code>0.0.0.0</code> inside a container</td>
+<td>where to listen; <code>0.0.0.0</code> inside a container, with an access token</td>
+</tr>
+<tr>
+<td class="c-key"><code>--token-env NAME</code> / <code>--token-file PATH</code></td>
+<td class="c-def"><code>$SHAD0W_PROXY_TOKEN</code></td>
+<td>access token every route but <code>/v1/health</code> needs: <code>X-Shad0w-Token: &lt;token&gt;</code>, <code>Authorization: Bearer &lt;token&gt;</code>, or the browser's login prompt for the dashboard</td>
 </tr>
 <tr>
 <td class="c-key"><code>--port</code></td>
@@ -275,7 +280,7 @@ curl<span class="w"> </span>-s<span class="w"> </span>localhost:8010/v1/decide<s
 <ul>
 <li>HTTP/1.1 keep-alive and one thread per connection; it adds about 0.17 ms per request on localhost.</li>
 <li>Request bodies over 1 MiB get a 413. A malformed request gets a 400 with <code>{"error": "..."}</code>; an unknown route a 404.</li>
-<li>No authentication: keep it on localhost or behind your own gateway.</li>
+<li>Off this machine, set an access token (above); without one it starts with a warning.</li>
 </ul>
     <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20HTTP&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/http.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="http.md">View as Markdown</a></div>
     <nav class="pager" aria-label="Previous and next page"><a href="javascript.html" rel="prev"><small>← Previous</small>JavaScript & TypeScript</a><a class="next" href="c.html" rel="next"><small>Next →</small>C & other languages</a></nav>
