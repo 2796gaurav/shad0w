@@ -153,7 +153,7 @@ def find_config(path: str | None = None) -> str | None:
 
 
 @functools.lru_cache(maxsize=16)
-def _load_toml_cached(path: str, mtime: float) -> dict:
+def _load_toml_cached(path: str, mtime_ns: int, size: int) -> dict:
     try:
         import tomllib  # 3.11+
     except ModuleNotFoundError:  # pragma: no cover - 3.10
@@ -169,7 +169,8 @@ def _load_toml_cached(path: str, mtime: float) -> dict:
 
 
 def load_toml(path: str) -> dict:
-    return _load_toml_cached(os.path.abspath(path), os.path.getmtime(path))
+    st = os.stat(path)  # size too: two quick edits can share a timestamp on coarse filesystems
+    return _load_toml_cached(os.path.abspath(path), st.st_mtime_ns, st.st_size)
 
 
 def _coerce(key: str, raw: str) -> Any:

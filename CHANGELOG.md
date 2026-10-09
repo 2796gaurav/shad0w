@@ -45,6 +45,7 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 - **Settings**: a bad `SHAD0W_*` value names the variable; `[questions] intent = 3` gives a clear error; `auto_train=True`, negative `auto_train` and non-positive `timeout` are refused; `exposed="no"` means False; `options` needs two distinct choices; `OPENAI_API_KEY = ...` (any `*api_key` line) in `shad0w.toml` is refused like `api_key`.
 - **Empty messages are never served** (flag `empty_input`, Python and JavaScript): the table would only have echoed its most common answer.
 - **`shad0w serve`** stops quietly on Ctrl-C; `POST /v1/decide` without `state` explains the body it needs.
+- **An edited `shad0w.toml` could be read stale.** The parsed file was cached by modification time alone, so two edits within the same timestamp tick (common on Windows) kept the first. It is now keyed by the nanosecond time and the file size.
 - **`shad0w proxy --bundle`** refuses entries without `QUESTION=` and paths with no bundle, instead of ignoring them.
 - **`shad0w.toml`**: unknown keys are reported with a suggestion (`alpah` → did you mean `alpha`), and a syntax error names the file.
 - **`shad0w try`** says "would ask your LLM; the table's guess" for answers it would defer; `shad0w status` also accepts `--dir`.

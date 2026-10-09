@@ -168,6 +168,7 @@ def test_decide_many_without_a_table(tmp_path):
 def run(*args, env=None, cwd=None):
     e = {k: v for k, v in os.environ.items() if k not in ("OPENAI_API_KEY", "SHAD0W_CONFIG", "SHAD0W_BASE_URL")}
     e.update(env or {})
+    e["PYTHONIOENCODING"] = "utf-8"  # a Windows pipe defaults to cp1252
     return subprocess.run([sys.executable, *args], capture_output=True, text=True, env=e, cwd=cwd, timeout=180,
                           encoding="utf-8")
 
@@ -257,7 +258,7 @@ const s = require(process.argv[1]);
 """
     try:
         r = subprocess.run(["node", "-e", script, os.path.join(ROOT, "js", "index.js"), mock.url], capture_output=True,
-                           text=True, timeout=60, env={**os.environ, "OPENAI_API_KEY": ""})
+                           text=True, encoding="utf-8", timeout=60, env={**os.environ, "OPENAI_API_KEY": ""})
         assert r.returncode == 0, r.stderr
         out = json.loads(r.stdout)
         auths = [q["headers"].get("authorization") for q in mock.requests]

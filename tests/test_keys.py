@@ -171,6 +171,7 @@ def test_secret_masking_and_redaction():
 def run_cli(*args, env=None, cwd=None):
     e = {k: v for k, v in os.environ.items() if k not in ("OPENAI_API_KEY", "SHAD0W_CONFIG")}
     e.update(env or {})
+    e["PYTHONIOENCODING"] = "utf-8"  # a Windows pipe defaults to cp1252
     return subprocess.run([sys.executable, "-m", "shad0w", *args], capture_output=True, text=True, env=e, cwd=cwd,
                           timeout=120, encoding="utf-8")
 
