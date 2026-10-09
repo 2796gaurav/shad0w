@@ -22,6 +22,8 @@
 <p align="center">
   <a href="https://2796gaurav.github.io/shad0w"><b>Website</b></a> ·
   <a href="https://2796gaurav.github.io/shad0w/demo/"><b>Try it in your browser</b></a> ·
+  <a href="https://2796gaurav.github.io/shad0w/pong/"><b>Play Pong against it</b></a> ·
+  <a href="https://2796gaurav.github.io/shad0w/arena/"><b>Snake arena</b></a> ·
   <a href="https://2796gaurav.github.io/shad0w/docs/"><b>Docs</b></a>
 </p>
 
