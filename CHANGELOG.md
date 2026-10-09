@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.3.2
+
+API keys you can see and pass anywhere, plus a faster start: enum options, `shad0w init` / `status` / `import`, warm starts and batches.
+
+### Security
+- **The proxy could send one client's API key on another client's behalf.** `Gateway.teacher_for` cached decision-model teachers by whether a key was present, not by which key, so the first client's forwarded key was reused for every later client on the same question and model. Teachers are now cached per key, by a SHA-256 id (never the raw key). Spot checks keep using the key of the request they check.
+
+### Added
+- **Explicit API keys.** `decision(..., api_key=..., api_key_env=..., base_url=...)` are named parameters (and on `Shadow`, which now builds the LLM teacher itself from `llm="provider/model"`, and on `LLMTeacher`). `api_key` may be a zero-argument function, called on every request, for rotating or vault keys. Order: `api_key` > `api_key_env` > `shad0w.configure()` > the `api_key_env` setting > the provider's variable.
+- **`shad0w.configure(llm=, api_key=, api_key_env=, base_url=, **settings)`**: process-wide defaults, ranked just below one call's keywords; `configure()` with no arguments clears them. JavaScript: `configure({ llm, apiKey, apiKeyEnv, baseURL })`.
+- **Keys never leak.** Keys are held in `shad0w.Secret`, which prints as `sk-…3f9a` and pickles without the key (an environment-variable name survives). `repr`, `vars()`, traces, logs, error messages (HTTP error bodies and `Bearer` tokens are redacted), `shad0w doctor` and `shad0w config` show only the mask and where the key came from.
+- **Settings `llm`, `base_url`, `api_key_env`** (`SHAD0W_LLM`, `SHAD0W_BASE_URL`, `SHAD0W_API_KEY_ENV`, `shad0w.toml`). An `api_key = ...` line in `shad0w.toml` is an error that says to store the variable's name instead.
+- **`shad0w proxy --api-key-file PATH`** for Docker / Kubernetes secrets, re-read on every request. The startup banner says where the upstream key comes from (masked).
+- **`shad0w doctor --llm`** prints `key: set via OPENAI_API_KEY (sk-…3f9a)`; without `--llm` it checks the `llm` from `shad0w.toml`.
+- **Enum options.** `options=MyEnum`, `options=Literal["a", "b"]` and `options=bool`. String enums use their values, other enums their names (string values become descriptions). `@shad0w.decide` with `-> MyEnum` returns enum members.
+- **`@shad0w.decide(llm="openai/gpt-6-luna", api_key=...)`** calls the LLM for you: the return annotation names the options and the function body is never run (`def route(text) -> Literal[...]: ...`).
+- **`shad0w init` writes a commented `shad0w.toml`** (with `api_key_env`) **and a runnable `app.py`** using `decision()`: `--name`, `--llm`, `--options a,b,c`. The old starter is `shad0w init --files`.
+- **`Shadow.warm_start(rows_or_path, text="text", label=...)`**: import answers or human labels you already have (list of dicts, `.jsonl`, `.json`, `.csv`) as `source="import"`, checked against the options, with counts.
+- **`shad0w import --from openai-chat|openai-decisions --file F --question Q`**: exported request/response JSON Lines (OpenAI Batch output too) into a decision's log.
+- **`shad0w status`**: one line per decision folder with rows vs `min_rows`, certified share at alpha, live agreement on spot checks since training, and the next step.
+- **`decide_many(texts, concurrency=8)` / `adecide_many`**: the table answers first; only deferred texts go to your LLM, in parallel; order kept. JavaScript: `shadow.decideMany(texts, { concurrency })`.
+- **`Decision.why`**: the reason for every decision in plain words (JavaScript decisions carry `why` too). A `TeacherError` raised during a decision says why the LLM was asked.
+- **`repr(shadow)` and a Jupyter view**: question, number of options, state (`logging 240/1,000` or the certified share at alpha), the LLM and where its key comes from.
+
+### Changed
+- **Clear errors instead of silent drops.** `api_key`, `base_url` or other LLM keywords with a function `llm` raise `TypeError` (they used to be ignored). An unknown keyword raises `TypeError` with a "did you mean" suggestion instead of a misleading missing-key error. The missing-key message names `api_key=`, `api_key_env=` and `shad0w.configure`.
+- `LLMTeacher.api_key` is a `Secret` (compare with `==`, read with `.get()`); `teacher.key_source` describes it.
+- `examples/quickstart.py` uses `decision()`, `decide_many()` and `train()` with an offline stand-in LLM.
+- The built-in dashboard uses the shad0w palette (black, Prussian blue, orange, alabaster, white); LLM bars are striped so table and LLM never differ by colour alone.
+
 ## 0.3.1
 
 Changing options safely, scale, running without an LLM, and a faster JavaScript runtime.

@@ -1,20 +1,22 @@
-"""Quickstart (no downloads, ~20 s): shadow-compile from a teacher's logged answers, certify, decide.
+"""Quickstart (offline, no key, ~20 s): decision() in front of "your LLM", log its answers, train, serve.
 
     python examples/quickstart.py
 
-In real use, `teacher_log` is what your existing model (an LLM, a decision API, an in-house classifier)
-answered on your traffic. Here a tiny synthetic stand-in is generated so the example runs anywhere.
+With a real model you would write llm="openai/gpt-6-luna", api_key=os.environ["OPENAI_API_KEY"] (or api_key_env=...).
+Here a small keyword function stands in for the LLM so the example runs anywhere: decision() accepts any
+callable(text) -> answer as `llm`. Training needs: pip install "shad0wllm[compile]".
 """
 import json
 import os
 import random
-import time
+import shutil
 
 import shad0w
-from shad0w.shadow import shadow_compile, write_certificate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-schema = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
+OUT = os.path.join(HERE, "out", "quickstart")
+shutil.rmtree(OUT, ignore_errors=True)  # start fresh on every run
+options = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))["intent"]["criteria"]
 
 phrases = {
     "refund": ["i want a refund", "money back please", "charged twice, reimburse me", "return my payment"],
@@ -22,33 +24,34 @@ phrases = {
     "balance": ["what is my balance", "how much money do i have", "show my account total", "funds available?"],
     "transfer": ["send money to my friend", "transfer 50 to savings", "wire money abroad", "move funds to account"],
 }
-openers = ["hi", "hello", "please", "can you help", "what do i do", "i need help", "quick question", ""]
-closers = ["", "thanks", "asap", "today", "what now", "is that possible", "on my account", "for my account"]
 rng = random.Random(0)
-teacher_log = []
-for _ in range(4000):
-    k = rng.choice(list(phrases))
-    text = f"{rng.choice(openers)} {rng.choice(phrases[k])} {rng.choice(closers)}".strip()
-    answer = k if rng.random() > 0.03 else rng.choice(list(phrases))   # real teachers are not perfect
-    teacher_log.append({"text": text, "intent": answer})
 
-t = time.time()
-model, cert = shadow_compile(schema, teacher_log, alpha=0.05, teacher="example-teacher")
-out = os.path.join(HERE, "out", "bundle")
-model.save(out)
-write_certificate(out, cert)
-q = cert["questions"]["intent"]
-print(f"compiled + certified in {time.time() - t:.1f}s -> {out}")
-print(f"agreement with teacher {q['agreement_with_teacher']:.1%}; certified share {q['certified_share_on_calibration']:.1%} at alpha=5%")
 
-m = shad0w.load(out)                                                # numpy-only (+ C core if built)
-for text in ["someone stole my card yesterday", "how much is in my account", "what's the weather"]:
-    a = m.decide(text)["answers"]["intent"]
-    route = a["choice"] if a["certified"] else "-> defer to your model"
-    print(f"{text!r:40} {a['choice']:10} conf={a['confidence']:.2f} certified={a['certified']}  {route}")
+def ask_llm(text: str) -> str:
+    """Stand-in for your LLM call: right ~98% of the time, like a real (imperfect) model."""
+    truth = next((k for k, ps in phrases.items() if any(p in text for p in ps)), "balance")
+    return truth if rng.random() > 0.02 else rng.choice(list(phrases))
 
-# In production, wrap the model you already call: certified answers come from the table, the rest from your model
-# (logged, so the next compile has more data), and 1% of certified answers are spot-checked against your model.
-sh = shad0w.Shadow(out, teacher=lambda text: "balance", log=os.path.join(HERE, "out", "teacher_log.jsonl"))
-d = sh.decide("please block my card, it was stolen")
-print(f"\nShadow wrapper: answer={d.answer!r} source={d.source} in {d.latency_us:.0f} us")
+
+def traffic(n: int) -> list[str]:
+    openers = ["hi", "hello", "please", "can you help", "what do i do", "i need help", "quick question", ""]
+    closers = ["", "thanks", "asap", "today", "what now", "is that possible", "on my account", "for my account"]
+    return [f"{rng.choice(openers)} {rng.choice(phrases[rng.choice(list(phrases))])} {rng.choice(closers)}".strip()
+            for _ in range(n)]
+
+
+intent = shad0w.decision("intent", options=options, llm=ask_llm, folder=OUT, audit_rate=0.0)
+print(intent)                                       # logging 0/1,000 answers (no table yet)
+
+# Day one: every call goes to "your LLM" and is logged. decide_many runs the LLM calls 8 at a time.
+intent.decide_many(traffic(4000))
+print(intent)                                       # logging 4,000/1,000 answers
+
+cert = intent.train()                               # compile + certify from the log, then hot-swap
+print(f"trained: the table certifies {cert['certified_share_on_calibration']:.1%} of traffic like this, "
+      f"disagreeing with your LLM on at most {intent.settings.alpha:.0%} of those")
+
+for text in ["someone stole my card yesterday, my card was stolen", "how much money do i have", "what's the weather"]:
+    d = intent(text)
+    print(f"{text!r:58} -> {d.answer:10} via {d.source:7} {d.latency_us:8.1f} us  ({d.why})")
+print(intent)

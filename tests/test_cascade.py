@@ -113,7 +113,7 @@ def test_corrupt_tables_are_refused(bundle, tmp_path, mutate):
 def test_cli_version_and_init(tmp_path):
     r = subprocess.run([sys.executable, "-m", "shad0w", "--version"], capture_output=True, text=True)
     assert r.stdout.strip() == f"shad0w {shad0w.__version__}"
-    r = subprocess.run([sys.executable, "-m", "shad0w", "init", "--dir", str(tmp_path)], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, "-m", "shad0w", "init", "--files", "--dir", str(tmp_path)], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
     assert json.loads((tmp_path / "schema.json").read_text())["intent"]["type"] == "choice"
     assert os.path.exists(tmp_path / "teacher_log.jsonl")

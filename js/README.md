@@ -16,6 +16,7 @@ import { decision } from "shad0wllm";
 const intent = await decision("intent", {
   options: { refund: "wants money back", lost_card: "card lost or stolen", balance: "asks about balance" },
   llm: "openai/gpt-6-luna",          // or anthropic/…, gemini/…, groq/…, ollama/llama3.1, or baseURL for any OpenAI-compatible server
+  apiKey: process.env.OPENAI_API_KEY, // or apiKeyEnv: "MY_KEY_VAR", or () => key (called on every request)
   bundle: "shad0w/intent/bundle",      // a trained table, if you have one yet (path in Node, URL in browsers/workers)
   log: "shad0w/intent/log.jsonl",      // where the LLM's answers go (a file path in Node, or a function / stream anywhere)
 });
@@ -83,7 +84,8 @@ const result = await experimental_decide({
 
 ## API
 
-- `decision(name?, { options, llm, bundle, log, fallback, rename, onNewOption, auditRate, onDecision, baseURL, apiKey, timeout })` → a `Shadow`. `name` defaults to `"decision"`; it names the question in the bundle and the log. `llm` is `"provider/model"`, `"systemone/<model>"`, `"openai-decisions/<model>"` or your own `async (text) => answer`. A bundle path that does not exist yet starts log-only; a corrupt bundle throws.
+- `configure({ llm, apiKey, apiKeyEnv, baseURL })` sets process-wide defaults (`configure()` clears them). Keys stay in closures and print as `sk-…3f9a` at most.
+- `decision(name?, { options, llm, apiKey, apiKeyEnv, baseURL, bundle, log, fallback, rename, onNewOption, auditRate, onDecision, timeout })` → a `Shadow` (`decide`, `decideMany(texts, { concurrency })`, `peek`, `record`, `explain`, `stats`; every decision has `why`). `name` defaults to `"decision"`; it names the question in the bundle and the log. `llm` is `"provider/model"`, `"systemone/<model>"`, `"openai-decisions/<model>"` or your own `async (text) => answer`. A bundle path that does not exist yet starts log-only; a corrupt bundle throws.
 - `new Shadow(bundle, { teacher, question, options, log, fallback, rename, onNewOption, auditRate, onDecision })`:
   - `await shadow.decide(text)` returns `{ answer, source, confidence, certified, flag, latencyUs, question, threshold }`;
   - `await shadow.peek(text)` returns the table's decision when it would be served, else `null` (never calls the teacher);
@@ -92,7 +94,7 @@ const result = await experimental_decide({
   - `shadow.stats()` returns offload and spot-check counts, plus `optionsAdded` / `optionsRemoved`.
 - **Changing options.** Give `options` with a bundle: options the bundle never learned make every decision go to the teacher (`flag: "options_changed"`) until you retrain (`onNewOption: "serve"` to keep serving the known ones); removed options are never served (`"option_removed"`); `rename: { old: "new" }` applies without retraining.
 - **No LLM.** Without a teacher, `fallback` (a value or `(text) => answer`) answers what the table is unsure about, with `source: "fallback"`; it is never logged.
-- `openaiTeacher({ options, model, baseURL, apiKey, timeout })` → `async (text) => option`. It works with any OpenAI-compatible chat API, uses structured outputs with a plain-text fallback, retries, and times out after 30 s by default.
+- `openaiTeacher({ options, model, baseURL, apiKey, apiKeyEnv, timeout })` → `async (text) => option`. It works with any OpenAI-compatible chat API, uses structured outputs with a plain-text fallback, retries, and times out after 30 s by default.
 - `systemoneTeacher({ options, model, baseURL })` and `decisionsTeacher({ options, model, apiKey })` ask a System One server or the OpenAI Decisions API instead of a chat model.
 - `shad0wMiddleware(shadow, { specificationVersion, format })` and `decisionModel(shadow | { [question]: shadow }, { fallback })` for the Vercel AI SDK (above).
 - `Bundle.load(dirOrUrl)`; `bundle.decide(text)` → `{ answers: { [question]: { choice | answer, confidence, certified, flag, probabilities } } }`. `bundle.decide(text, { probabilities: false })` is the fast path: same answers and confidences, without the per-option map.

@@ -1,6 +1,6 @@
 {
   "name": "shad0wllm",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Put a microsecond, certified table in front of your LLM or decision model: it learns the answers and serves the ones it is sure about. Node, browsers, edge workers. Zero dependencies.",
   "main": "./index.js",
   "module": "./index.mjs",

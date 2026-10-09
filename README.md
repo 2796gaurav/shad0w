@@ -49,6 +49,7 @@ Decision requests already name each question and list its answers, so nothing ne
 **2. Asking a chat model to pick one option? One line of Python.**
 
 ```python
+import os
 import shad0w
 
 intent = shad0w.decision(
@@ -56,6 +57,7 @@ intent = shad0w.decision(
     options={"refund": "wants money back", "lost_card": "card lost or stolen", "balance": "asks about balance",
              "other": "anything else"},   # always give it an "other": off-topic messages land there, not in a real intent
     llm="openai/gpt-6-luna",   # or anthropic/…, gemini/…, groq/…, ollama/llama3.1, systemone/kev, any OpenAI-compatible server
+    api_key=os.environ["OPENAI_API_KEY"],   # or api_key_env="MY_KEY_VAR", or a function that returns the key
 )
 
 intent("my card was stolen")    # day one: your LLM answers and shad0w writes the answer down
@@ -64,7 +66,7 @@ intent("my card was stolen")    # from then on: answered locally when certified
 # Decision(answer='lost_card', source='table', confidence=0.99, certified=True, flag=None, latency_us=..., question='intent', ...)
 ```
 
-Anything the table is unsure about still goes to your LLM and gets logged, so the table keeps learning. Have a function already? `@shad0w.decide()` on `def route(text) -> Literal["billing", "tech"]` does the same.
+Anything the table is unsure about still goes to your LLM and gets logged, so the table keeps learning. Have a function already? `@shad0w.decide()` on `def route(text) -> Literal["billing", "tech"]` (or `-> MyEnum`) does the same. Starting fresh? `shad0w init` writes a commented `shad0w.toml` and a runnable `app.py`; `shad0w status` tells you what each decision needs next.
 
 **3. Chat completions with no code change.** Run the same proxy and mark which calls are decisions:
 
@@ -151,7 +153,18 @@ shad0w doctor            # checks the C core, training deps, keys, upstream and 
 | **LangChain, LiteLLM, Vercel AI SDK** | — | `shad0w_runnable(sh, llm)`, `shad0w.integrations.litellm.completion(sh, ...)`, `shad0wMiddleware(sh)` |
 | **Your own function** | — | `@shad0w.decide()` on `def route(text) -> Literal[...]`, or `shad0w.Shadow("bundle/", teacher=my_classify, log="log.jsonl")` |
 
-Providers built in: `openai`, `anthropic`, `gemini`, `groq`, `together`, `openrouter`, `mistral`, `deepseek`, `fireworks`, `xai`, `ollama`, `vllm` and `lmstudio`, plus `openai-decisions` and `systemone` for decision models. Keys come from the usual environment variables (`OPENAI_API_KEY`, …). Any other OpenAI-compatible server works with `base_url=`. Recipes for each are in the [docs](https://2796gaurav.github.io/shad0w/docs/).
+Providers built in: `openai`, `anthropic`, `gemini`, `groq`, `together`, `openrouter`, `mistral`, `deepseek`, `fireworks`, `xai`, `ollama`, `vllm` and `lmstudio`, plus `openai-decisions` and `systemone` for decision models. Any other OpenAI-compatible server works with `base_url=`. Recipes for each are in the [docs](https://2796gaurav.github.io/shad0w/docs/).
+
+## API keys
+
+```python
+shad0w.decision("intent", options=[...], llm="openai/gpt-6-luna", api_key=os.environ["OPENAI_API_KEY"])  # the key
+shad0w.decision("intent", options=[...], llm="openai/gpt-6-luna", api_key_env="SUPPORT_BOT_KEY")       # where it lives
+shad0w.decision("intent", options=[...], llm="openai/gpt-6-luna", api_key=vault.current_key)           # called per request
+shad0w.configure(llm="openai/gpt-6-luna", api_key_env="OPENAI_API_KEY")                                 # once per process
+```
+
+Order: `api_key` > `api_key_env` > `shad0w.configure(...)` > `api_key_env` in `shad0w.toml` / `SHAD0W_API_KEY_ENV` > the provider's usual variable (`OPENAI_API_KEY`, …). The key never appears in `repr()`, logs, pickles, errors, `shad0w doctor` or `shad0w config`: at most `sk-…3f9a`. `shad0w.toml` holds the variable's name, never the key. The proxy forwards each client's own key, or sends one from `--api-key-env` / `--api-key-file`. JavaScript: `decision("intent", { options, llm, apiKey })`, where `apiKey` may be a function.
 
 ## See what it is doing
 

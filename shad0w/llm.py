@@ -11,21 +11,31 @@ base_url="http://localhost:8009/v1" (Jev, Kev, Laya, Ollaya, llama.cpp). They an
 Pass client=OpenAI(...) to reuse an openai SDK client (proxies, custom auth) instead of the built-in
 HTTP call, or complete=fn to use anything else (LiteLLM, LangChain, a local model): fn(messages) -> reply text.
 
+The key: api_key="sk-..." (or a zero-argument function, called on every request, for rotating or vault keys) >
+api_key_env="NAME" > shad0w.configure(api_key=... / api_key_env=...) > api_key_env in SHAD0W_API_KEY_ENV or
+shad0w.toml > the provider's usual variable (OPENAI_API_KEY, ...). It is held in a `Secret`, so it never shows up in
+repr(), logs, pickles or error messages ('sk-…3f9a' at most).
+
 The model is asked for a JSON object whose one field is constrained to your options (structured outputs).
 Servers that do not support that get the same prompt as plain text. Either way the reply is mapped back to
 exactly one of your options, or the call raises TeacherError, so nothing unexpected reaches your log.
 """
 from __future__ import annotations
 
+import enum
 import json
 import os
 import re
 import time
+import typing
 import urllib.error
 import urllib.request
 from typing import Any
 
-__all__ = ["llm_teacher", "LLMTeacher", "TeacherError", "PROVIDERS", "normalize_options", "match_option"]
+from . import config as _config
+from .config import Secret, redact
+
+__all__ = ["llm_teacher", "LLMTeacher", "TeacherError", "PROVIDERS", "normalize_options", "match_option", "resolve_key"]
 
 # provider -> (base URL, environment variable holding the API key; None for local servers)
 PROVIDERS: dict[str, tuple[str, str | None]] = {
@@ -53,9 +63,48 @@ class TeacherError(RuntimeError):
     """The LLM call failed, or its reply did not match any option. Nothing is logged for that input."""
 
 
+def resolve_key(provider_env: str | None, api_key: Any = None, api_key_env: str | None = None,
+                settings_key_env: str | None = None) -> Secret | None:
+    """Where the key comes from, highest first: api_key= (a string or a function) > api_key_env= >
+    shad0w.configure(api_key=...) > shad0w.configure(api_key_env=...) / SHAD0W_API_KEY_ENV / shad0w.toml api_key_env >
+    the provider's usual environment variable. None when nothing applies (local servers)."""
+    if api_key is not None:
+        return api_key if isinstance(api_key, Secret) else Secret(api_key)
+    if api_key_env:
+        return Secret(env=str(api_key_env))
+    ck = _config.configured_key()
+    if ck is not None:
+        return ck
+    env = _config._CONFIGURED.get("api_key_env") or settings_key_env
+    if env:
+        return Secret(env=str(env))
+    return Secret(env=provider_env) if provider_env else None
+
+
+def missing_key_message(name: str, looked: str | None) -> str:
+    where = f" ({looked} is not set)" if looked else ""
+    return (f"{name}: no API key{where}. Pass api_key=\"sk-...\" (or a function that returns the key), "
+            f"api_key_env=\"NAME_OF_YOUR_ENV_VAR\", or set it once for the process with "
+            f"shad0w.configure(api_key_env=\"...\").")
+
+
 def normalize_options(options: Any, question: str = "decision") -> tuple[str, str, dict[str, str | None], str | None]:
     """Accept a list of option names, {option: description}, one schema entry {"type":..,"criteria":..},
-    or a whole schema {question: entry}. Returns (question, qtype, criteria, instructions)."""
+    a whole schema {question: entry}, an Enum class, typing.Literal["a", "b"], or bool (a yes/no question).
+    Returns (question, qtype, criteria, instructions).
+
+    Enums: a string enum (StrEnum, or class X(str, Enum)) uses its VALUES as the options (they are what the member
+    equals); any other Enum uses member NAMES as the options, with string values as their descriptions:
+        class Intent(Enum):
+            refund = "wants money back"      # option "refund", described to the LLM as "wants money back"
+    """
+    if options is bool:
+        return question, "yesno", {"yes": None, "no": None}, None
+    crit = enum_options(options)
+    if crit is not None:
+        return question, "choice", crit, None
+    if typing.get_origin(options) is typing.Literal:
+        return question, "choice", {str(o): None for o in typing.get_args(options)}, None
     if isinstance(options, (list, tuple)):
         return question, "choice", {str(o): None for o in options}, None
     if not isinstance(options, dict) or not options:
@@ -72,6 +121,33 @@ def normalize_options(options: Any, question: str = "decision") -> tuple[str, st
     qtype = entry.get("type", "choice")
     crit = {"yes": None, "no": None} if qtype == "yesno" else {str(k): v for k, v in entry["criteria"].items()}
     return question, qtype, crit, entry.get("instructions")
+
+
+def _is_enum(options: Any) -> bool:
+    return isinstance(options, type) and issubclass(options, enum.Enum)
+
+
+def enum_options(options: Any) -> dict[str, str | None] | None:
+    """{option: description} for an Enum class (see normalize_options), else None."""
+    if not _is_enum(options):
+        return None
+    if issubclass(options, str):
+        return {str(m.value): None for m in options}
+    return {m.name: (m.value if isinstance(m.value, str) and m.value != m.name else None) for m in options}
+
+
+def enum_member(options: Any, answer: Any):
+    """The member of Enum class `options` that an option string names (identity when it is already a member)."""
+    if isinstance(answer, options) or answer is None:
+        return answer
+    return options(answer) if issubclass(options, str) else options[str(answer)]
+
+
+def enum_option(answer: Any) -> Any:
+    """The option string for an Enum member (value for string enums, name otherwise); anything else unchanged."""
+    if isinstance(answer, enum.Enum):
+        return str(answer.value) if isinstance(answer, str) else answer.name
+    return answer
 
 
 def _canon(s: str) -> str:
@@ -132,10 +208,10 @@ class LLMTeacher:
     """A callable teacher backed by an OpenAI-compatible chat completions endpoint. Thread-safe."""
 
     def __init__(self, options: Any, model: str = "openai/gpt-6-luna", *, question: str | None = None,
-                 base_url: str | None = None, api_key: str | None = None, client: Any = None,
+                 base_url: str | None = None, api_key: Any = None, api_key_env: str | None = None, client: Any = None,
                  system: str | None = None, temperature: float = 0.0, timeout: float = 30.0, retries: int = 2,
                  headers: dict | None = None, structured: bool | None = None, max_tokens: int = 50,
-                 complete: Any = None):
+                 complete: Any = None, settings_key_env: str | None = None):
         self.question, self.qtype, self.criteria, instructions = normalize_options(options, question or "decision")
         self.instructions = instructions
         self.options = list(self.criteria)
@@ -147,14 +223,15 @@ class LLMTeacher:
             provider, name = "", model
         self.provider, self.model = provider or "custom", name
         default_url, key_env = PROVIDERS.get(provider, ("", None))
-        self.base_url = (base_url or os.environ.get("SHAD0W_BASE_URL") or default_url).rstrip("/")
+        self.base_url = (base_url or _config._CONFIGURED.get("base_url") or os.environ.get("SHAD0W_BASE_URL")
+                         or default_url).rstrip("/")
         if client is None and not self.base_url:
             raise ValueError(f"model {model!r}: unknown provider; pass base_url=... (known: {', '.join(PROVIDERS)})")
         if provider == "systemone" and self.base_url and not self.base_url.endswith("/v1"):
             self.base_url += "/v1"  # accept the server root too: http://host:8081 -> http://host:8081/v1
-        self.api_key = api_key if api_key is not None else (os.environ.get(key_env) if key_env else None)
-        if client is None and complete is None and key_env and not self.api_key:
-            raise ValueError(f"{provider}: set {key_env} or pass api_key=...")
+        self._key = resolve_key(key_env, api_key, api_key_env, settings_key_env)
+        if client is None and complete is None and api_key is None and self._key is not None and not self._key:
+            raise ValueError(missing_key_message(model, self._key.env))
         self.client, self.temperature, self.timeout, self.retries = client, temperature, timeout, retries
         self.headers = dict(headers or {})
         self.max_tokens = max_tokens
@@ -165,6 +242,18 @@ class LLMTeacher:
         self.name = f"{self.provider}/{self.model}"
         self.calls = 0
         self.failures = 0
+
+    @property
+    def api_key(self) -> Secret | None:
+        """The key as a `Secret` (prints masked; compare with ==, read with .get()), or None."""
+        return self._key
+
+    @property
+    def key_source(self) -> str:
+        """Where the key comes from, masked: "set via OPENAI_API_KEY (sk-…3f9a)"."""
+        if self._complete is not None or self.client is not None:
+            return "handled by your client / complete function"
+        return self._key.describe() if self._key is not None else "no key (none needed)"
 
     @property
     def response_format(self) -> dict:
@@ -260,15 +349,16 @@ class LLMTeacher:
     def _post(self, path: str, body: dict) -> dict:
         req = urllib.request.Request(self.base_url + path, data=json.dumps(body).encode(), method="POST")
         req.add_header("content-type", "application/json")
-        if self.api_key:
-            req.add_header("authorization", f"Bearer {self.api_key}")
+        key = self._key.get() if self._key is not None else None
+        if key:
+            req.add_header("authorization", f"Bearer {key}")
         for k, v in self.headers.items():
             req.add_header(k, v)
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as r:
                 data = json.loads(r.read())
         except urllib.error.HTTPError as e:
-            detail = e.read()[:500].decode("utf-8", "replace")
+            detail = redact(e.read()[:500].decode("utf-8", "replace"), key)
             if e.code in (400, 422):
                 _classify_400(body, detail)
             if e.code == 429 or e.code >= 500:
@@ -276,7 +366,7 @@ class LLMTeacher:
                 raise _Retryable(f"HTTP {e.code}: {detail}", float(wait) if wait and wait.replace(".", "").isdigit() else None) from None
             raise TeacherError(f"{self.name}: HTTP {e.code}: {detail}") from None
         except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
-            raise _Retryable(f"cannot reach {self.base_url}: {e}") from None
+            raise _Retryable(redact(f"cannot reach {self.base_url}: {e}", key)) from None
         return data
 
     def _send_sdk(self, body: dict) -> str:
@@ -294,7 +384,8 @@ class LLMTeacher:
         return r.choices[0].message.content or ""
 
     def __repr__(self) -> str:
-        return f"LLMTeacher({self.name!r}, question={self.question!r}, options={len(self.options)})"
+        key = "" if self._key is None else f", key={self._key!r}"
+        return f"LLMTeacher({self.name!r}, question={self.question!r}, options={len(self.options)}{key})"
 
 
 def llm_teacher(options: Any, model: str = "openai/gpt-6-luna", **kw) -> LLMTeacher:

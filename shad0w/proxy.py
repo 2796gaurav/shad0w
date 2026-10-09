@@ -21,6 +21,10 @@ certified for this text, the proxy answers itself in microseconds with a normal 
 when the request used tools), plus a "shad0w" field and x-shad0w-* headers. Otherwise the request goes
 upstream as usual, the reply is returned untouched, and the answer is logged so the table can learn it.
 
+Keys: by default each client's own Authorization header is forwarded (and spot checks reuse that request's key, so
+two clients never borrow each other's key). --api-key-env NAME or --api-key-file PATH (a Docker / Kubernetes secret,
+re-read on every request so rotation needs no restart) makes the proxy send its own key instead.
+
 Everything lives under --dir (default ./shad0w):  <dir>/<question>/log.jsonl  and  <dir>/<question>/bundle/
 Train a question with `shad0w train --dir <dir> --question <q>` (the proxy reloads the new bundle on its own),
 or start the proxy with --auto-train N. Settings come from flags, SHAD0W_* variables or shad0w.toml, with
@@ -31,6 +35,7 @@ POST /v1/playground {"question", "text", "ask_llm": false, "log": false}  what t
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -44,6 +49,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from . import config as _config
 from . import wire
 from .cascade import Shadow
+from .config import Secret
 from .llm import LLMTeacher, match_option
 from .observe import Metrics, TraceWriter, dashboard_html, log
 
@@ -68,7 +74,7 @@ class Gateway:
     Keyword settings (alpha, audit_rate, auto_train, mode, canary, never_serve, capture, timeout, trace, ...) follow
     shad0w.config: a flag beats SHAD0W_* variables, which beat shad0w.toml, which beats the defaults."""
 
-    def __init__(self, upstream: str, folder: str | None = None, model: str | None = None, api_key: str | None = None,
+    def __init__(self, upstream: str, folder: str | None = None, model: str | None = None, api_key=None,
                  keep_text: bool = True, schema: dict | None = None, bundles: dict | None = None,
                  config: str | None = None, **settings):
         self.settings = _config.resolve(path=config, **settings)
@@ -77,7 +83,9 @@ class Gateway:
         s = self.settings
         self.upstream = upstream.rstrip("/")
         self.folder = folder or s.folder
-        self.model, self.api_key = model, api_key
+        self.model = model
+        # the proxy's own upstream key (a string, a function, or a Secret); None forwards each client's key
+        self.api_key = api_key if (api_key is None or isinstance(api_key, Secret)) else Secret(api_key)
         self.audit_rate, self.auto_train, self.alpha, self.timeout = s.audit_rate, s.auto_train, s.alpha, s.timeout
         self.capture = set(s.capture)
         self.schema = schema or {}
@@ -147,9 +155,14 @@ class Gateway:
             return ["yes", "no"]
         return options_of(req, headers)
 
+    def upstream_key(self) -> str | None:
+        """The proxy's own key for this request (re-read each time: env vars and secret files may rotate)."""
+        return self.api_key.get() if self.api_key is not None else None
+
     def teacher_for(self, q: str, sh: Shadow, dialect: str, model: str | None, api_key: str | None) -> LLMTeacher:
-        """A cached decision-model teacher for spot checks on the decisions / systemone paths."""
-        key = (q, dialect, model, bool(api_key))
+        """A cached decision-model teacher for spot checks on the decisions / systemone paths. Cached per key
+        (by a hash, never the key itself), so one client's forwarded key is never used for another client."""
+        key = (q, dialect, model, key_id(api_key))
         with self._lock:
             t = self._teachers.get(key)
             if t is None:
@@ -158,6 +171,13 @@ class Gateway:
                                                      f"{provider}/{model or 'default'}", question=q,
                                                      base_url=self.upstream, api_key=api_key or "", timeout=self.timeout)
             return t
+
+
+def key_id(api_key: str | None) -> str:
+    """A short, non-reversible id for a key, safe to use as a dict key or in logs."""
+    if not api_key:
+        return "-"
+    return hashlib.sha256(api_key.encode("utf-8")).hexdigest()[:16]
 
 
 def _existing_questions(folder: str) -> list[str]:
@@ -344,8 +364,9 @@ def make_handler(gw: Gateway):
                 if k.lower() not in HOP and not k.lower().startswith("x-shad0w"):
                     req.add_header(k, v)
             req.add_header("accept-encoding", "identity")
-            if gw.api_key:
-                req.add_header("authorization", f"Bearer {gw.api_key}")
+            own = gw.upstream_key()
+            if own:
+                req.add_header("authorization", f"Bearer {own}")
             try:
                 resp = urllib.request.urlopen(req, timeout=gw.timeout)
                 status = resp.status
@@ -621,8 +642,9 @@ def make_handler(gw: Gateway):
                     r = urllib.request.Request(url, data=json.dumps(sub).encode(), method="POST")
                     for k, v in headers.items():
                         r.add_header(k, v)
-                    if gw.api_key:
-                        r.add_header("authorization", f"Bearer {gw.api_key}")
+                    own = gw.upstream_key()
+                    if own:
+                        r.add_header("authorization", f"Bearer {own}")
                     with urllib.request.urlopen(r, timeout=gw.timeout) as resp:
                         v = wire.answer_value(q, wire.parse_answers(dialect, json.loads(resp.read())).get(q.name, {}))
                     if v is not None:
@@ -731,6 +753,7 @@ def proxy(upstream: str, host: str = "127.0.0.1", port: int = 8010, **kw):
     print(f"shad0w proxy on http://{host}:{port}/v1  ->  {gw.upstream}\n"
           f"  dashboard http://{host}:{port}/   metrics http://{host}:{port}/metrics   data {os.path.abspath(gw.folder)}\n"
           "  decisions API: POST /v1/decisions and /v1/systemone need no marking\n"
-          "  chat: mark a decision with header 'X-Shad0w-Question: <name>', model 'shad0w/<name>', or a forced tool", flush=True)
+          "  chat: mark a decision with header 'X-Shad0w-Question: <name>', model 'shad0w/<name>', or a forced tool\n"
+          f"  upstream key: {gw.api_key.describe() if gw.api_key is not None else 'each client sends its own'}", flush=True)
     srv.gateway = gw  # type: ignore[attr-defined]
     return srv

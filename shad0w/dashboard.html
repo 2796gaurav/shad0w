@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>shad0w · live</title>
 <style>
-:root{--bg:#0b0b12;--card:#13131d;--line:#24243a;--ink:#ecebff;--dim:#8d8ca8;--table:#3ef0b0;--llm:#ffb648;--bad:#ff5d7a;--acc:#8b7bff}
-@media (prefers-color-scheme: light){:root{--bg:#f6f5fb;--card:#fff;--line:#e3e1f0;--ink:#16152a;--dim:#6b6a85;--table:#0aa874;--llm:#d98500;--bad:#d4294b;--acc:#5b45ff}}
+/* palette: black #000000 · prussian blue #14213d · orange #fca311 · alabaster #e5e5e5 · white #ffffff (+ alpha / color-mix).
+   table answers = orange (solid); LLM = prussian tint #7f869a (striped), so the two never differ by colour alone. */
+:root{--prussian:#14213d;--orange:#fca311;--alab:#e5e5e5;
+ --bg:#000;--card:color-mix(in srgb,var(--prussian) 50%,#000);--line:color-mix(in srgb,var(--alab) 14%,transparent);
+ --ink:var(--alab);--strong:#fff;--dim:#a0a0a0;--table:var(--orange);--table-ink:var(--orange);--llm:#7f869a;--llm-ink:#7f869a;
+ --bad:#fff;--acc:var(--orange);--on-acc:#000;color-scheme:dark}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#fff;--card:color-mix(in srgb,var(--alab) 50%,#fff);
+ --line:color-mix(in srgb,var(--prussian) 14%,transparent);--ink:#000;--strong:var(--prussian);--dim:#5a6477;
+ --table:var(--orange);--table-ink:#7e5208;--llm:var(--prussian);--llm-ink:var(--prussian);--bad:#000;color-scheme:light}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{display:flex;align-items:center;gap:14px;padding:18px 24px;border-bottom:1px solid var(--line)}
-.logo{font-weight:800;font-size:20px;letter-spacing:-.5px}.logo b{color:var(--table)}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.5px}.logo b{color:var(--table-ink)}
 .pill{font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--dim)}
 .live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--table);margin-right:6px;animation:p 1.4s infinite}
 @keyframes p{50%{opacity:.25}}
@@ -19,19 +26,20 @@ main{padding:20px 24px;max-width:1280px;margin:auto}
 .k{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 .v{font-size:30px;font-weight:750;letter-spacing:-1px;margin-top:4px;font-variant-numeric:tabular-nums}
 .v small{font-size:14px;color:var(--dim);font-weight:500;margin-left:4px}
-.t{color:var(--table)}.l{color:var(--llm)}.b{color:var(--bad)}
+.t{color:var(--table-ink)}.l{color:var(--llm-ink)}.b{color:var(--bad);font-weight:700;text-decoration:underline}
+.llmfill{background:repeating-linear-gradient(90deg,var(--llm) 0 6px,color-mix(in srgb,var(--llm) 35%,transparent) 6px 9px)}
 h2{font-size:15px;margin:26px 0 10px;color:var(--dim);font-weight:600}
 .q{display:grid;grid-template-columns:1.1fr 1fr 1fr 1.2fr;gap:14px;align-items:center}
 @media (max-width:820px){.q{grid-template-columns:1fr 1fr}}
 .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;display:flex}
 .bar i{display:block;height:100%}
 .status{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px}
-.ok{background:color-mix(in srgb,var(--table) 18%,transparent);color:var(--table)}
-.warn{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.ok{background:color-mix(in srgb,var(--table) 16%,transparent);color:var(--table-ink)}
+.warn{background:color-mix(in srgb,var(--orange) 28%,transparent);color:var(--strong);outline:1px solid var(--orange)}
 .wait{background:var(--line);color:var(--dim)}
 table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{color:var(--dim);font-weight:500;font-size:12px}td.txt{white-space:normal;max-width:420px;color:var(--dim)}
-.src{font-weight:700;font-size:12px}.src.table{color:var(--table)}.src.teacher{color:var(--llm)}.src.deferred{color:var(--llm)}
+.src{font-weight:700;font-size:12px}.src.table{color:var(--table-ink)}.src.teacher{color:var(--llm-ink)}.src.deferred{color:var(--llm-ink)}
 svg{display:block;width:100%;height:60px}
 .empty{color:var(--dim);padding:30px;text-align:center}
 code{background:var(--line);padding:1px 6px;border-radius:6px;font-size:12px}
@@ -46,7 +54,7 @@ code{background:var(--line);padding:1px 6px;border-radius:6px;font-size:12px}
 <main>
   <div class="grid">
     <div class="card"><div class="k">answered by the table</div><div class="v t" id="off">–</div><svg id="spark" viewBox="0 0 300 60" preserveAspectRatio="none"></svg></div>
-    <div class="card"><div class="k">decisions</div><div class="v" id="dec">–</div><div class="k" style="margin-top:10px"><span class="t">■</span> table <span id="nt">0</span> &nbsp; <span class="l">■</span> LLM <span id="nl">0</span></div></div>
+    <div class="card"><div class="k">decisions</div><div class="v" id="dec">–</div><div class="k" style="margin-top:10px"><span class="t">■</span> table <span id="nt">0</span> &nbsp; <span class="l">▨</span> LLM <span id="nl">0</span></div></div>
     <div class="card"><div class="k">LLM calls saved</div><div class="v t" id="saved">–</div><div class="k" id="cost" style="margin-top:10px"></div></div>
     <div class="card"><div class="k">time saved</div><div class="v" id="time">–</div><div class="k" id="llmms" style="margin-top:10px"></div></div>
   </div>
@@ -57,7 +65,7 @@ code{background:var(--line);padding:1px 6px;border-radius:6px;font-size:12px}
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <select id="pgq" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"></select>
       <input id="pgt" placeholder="type a message and press Enter" style="flex:1;min-width:240px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">
-      <button id="pgb" style="padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--acc);color:#fff;cursor:pointer">Ask table</button>
+      <button id="pgb" style="padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--acc);color:var(--on-acc);font-weight:600;cursor:pointer">Ask table</button>
       <label class="k" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="pgllm"> also ask the LLM</label>
     </div>
     <div id="pgout" class="k" style="margin-top:12px">Try a message: the table answers in microseconds and shows its confidence against the certified threshold.</div>
@@ -78,11 +86,11 @@ function spark(){const W=300,H=60;if(hist.length<2){$('spark').innerHTML='';retu
 function qcard(name,q,trained,rows){
  const tot=q.decisions||0, a=q.alpha, up=q.audit_disagreement_upper;
  let st='<span class="status wait">collecting answers</span>';
- if(trained!==false&&a!=null){st=up==null?'<span class="status wait">no spot checks yet</span>':up<=a?`<span class="status ok">live bound ${pct(up)} ≤ α ${pct(a)}</span>`:`<span class="status warn">live bound ${pct(up)} &gt; α ${pct(a)}: re-train</span>`}
+ if(trained!==false&&a!=null){st=up==null?'<span class="status wait">no spot checks yet</span>':up<=a?`<span class="status ok">live bound ${pct(up)} ≤ α ${pct(a)}</span>`:`<span class="status warn">⚠ live bound ${pct(up)} &gt; α ${pct(a)}: re-train</span>`}
  const flags=Object.entries(q.flags||{}).map(([k,v])=>`${why[k]||k} ${v}`).join(' · ')||'–';
  return `<div class="card" style="margin-bottom:12px"><div class="q">
   <div><div style="font-weight:700;font-size:16px">${esc(name)}</div><div class="k" style="margin-top:4px">${n(tot)} decisions${rows!=null?' · '+n(rows)+' logged answers':''}</div></div>
-  <div><div class="k">table share</div><div class="v t" style="font-size:22px">${pct(q.offload)}</div><div class="bar"><i style="width:${100*q.offload}%;background:var(--table)"></i><i style="flex:1;background:var(--llm)"></i></div></div>
+  <div><div class="k">table share</div><div class="v t" style="font-size:22px">${pct(q.offload)}</div><div class="bar"><i style="width:${100*q.offload}%;background:var(--table)"></i><i class="llmfill" style="flex:1"></i></div></div>
   <div><div class="k">speed</div><div style="margin-top:4px"><span class="t">table ${lat(q.table_p50_us)}</span><br><span class="l">LLM ${q.llm_p50_ms==null?'–':q.llm_p50_ms+' ms'}</span></div></div>
   <div><div class="k">safety</div><div style="margin:6px 0">${st}</div><div class="k">${n(q.audits)} spot checks · LLM asked because: ${esc(flags)}</div></div>
  </div></div>`}
@@ -109,7 +117,7 @@ async function play(){
   const top=(e.top||[]).map(([k,v])=>`${esc(k)} <span class="k">${(100*v).toFixed(1)}%</span>`).join(' &nbsp; ');
   const llm=r.llm?(r.llm.error?`<div class="k" style="margin-top:8px">LLM error: ${esc(r.llm.error)}</div>`:`<div style="margin-top:10px"><span class="l">LLM (${esc(r.llm.model)})</span>: <b>${esc(r.llm.answer)}</b> <span class="k">${r.llm.latency_ms} ms · ${String(r.llm.answer)===String(e.answer)?'<span class="t">agrees</span>':'<span class="b">disagrees</span>'}</span></div>`):'';
   $('pgout').innerHTML=`<div><span class="${serve?'t':'l'}" style="font-weight:700">${serve?'✓ table':'→ your LLM'}</span> &nbsp; <b>${esc(e.answer??'–')}</b> <span class="k">confidence ${conf==null?'–':conf.toFixed(3)}${thr==null?'':' · needs '+thr.toFixed(3)}</span></div>
-   <div class="bar" style="margin:8px 0;position:relative"><i style="width:${100*(conf||0)}%;background:var(--${serve?'table':'llm'})"></i>${thr==null?'':`<span style="position:absolute;left:${100*thr}%;top:-3px;width:2px;height:16px;background:var(--ink)"></span>`}</div>
+   <div class="bar" style="margin:8px 0;position:relative"><i class="${serve?'':'llmfill'}" style="width:${100*(conf||0)}%;${serve?'background:var(--table)':''}"></i>${thr==null?'':`<span style="position:absolute;left:${100*thr}%;top:-3px;width:2px;height:16px;background:var(--ink)"></span>`}</div>
    <div class="k">${esc(e.why||'')}${e.policy_flag&&e.policy_flag!==e.flag?' · '+esc(why[e.policy_flag]||e.policy_flag):''}</div>
    <div style="margin-top:6px">${top}</div>${llm}`;
  }catch(err){$('pgout').textContent='playground unavailable: '+err}}

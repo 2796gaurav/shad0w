@@ -10,16 +10,25 @@ Precedence (highest first):
            alpha = 0.02
     4. the defaults below
 
+`shad0w.configure(...)` sets process-wide values from code: they sit just below the keywords of one call and above
+the environment. `shad0w.configure()` with no arguments clears them.
+
+API keys never go in a file or in these settings: `api_key_env` names the environment variable that holds the key
+(an `api_key =` line in shad0w.toml is an error). The key itself is wrapped in `Secret`, which prints as 'sk-…3f9a'.
+
 `shad0w config --explain` prints every effective value and where it came from. Standard library only.
 """
 from __future__ import annotations
 
+import difflib
 import functools
 import os
+import re
 from dataclasses import dataclass, fields
 from typing import Any
 
-__all__ = ["DEFAULTS", "Settings", "resolve", "explain", "find_config", "load_toml", "HELP"]
+__all__ = ["DEFAULTS", "Settings", "resolve", "explain", "find_config", "load_toml", "HELP", "configure", "Secret",
+           "did_you_mean"]
 
 DEFAULTS: dict[str, Any] = {
     "alpha": 0.05,              # certified disagreement bound used by train()
@@ -48,6 +57,9 @@ DEFAULTS: dict[str, Any] = {
                                 # your LLM until retrained (safe), or "serve" the options the table does know
     "max_mb": None,             # size budget per question's table in MB; keeps the most informative features (None = all)
     "rename": {},               # {"old_label": "new_label"}: rename options without retraining (logs follow at train)
+    "llm": None,                # default "provider/model" for decision() when llm= is not passed
+    "base_url": None,           # default base URL for that LLM (an OpenAI-compatible server)
+    "api_key_env": None,        # NAME of the environment variable holding the LLM key (never the key itself)
 }
 
 HELP = {
@@ -76,6 +88,9 @@ HELP = {
     "on_new_option": "Options added after training: 'defer' asks your LLM until you retrain; 'serve' keeps serving known ones.",
     "max_mb": "Size budget for each table in MB. Many options or a huge vocabulary? Cap it; the certificate is computed on the capped table.",
     "rename": "Rename labels without retraining, e.g. {lost_card = \"card_lost\"}. Applied to the table and, at the next train, to the log.",
+    "llm": "Default LLM for decision(), as \"provider/model\", e.g. \"openai/gpt-6-luna\".",
+    "base_url": "Base URL of an OpenAI-compatible server for that LLM (default: the provider's).",
+    "api_key_env": "Name of the environment variable that holds the LLM key, e.g. \"OPENAI_API_KEY\". Never the key itself.",
 }
 
 ENV_PREFIX = "SHAD0W_"
@@ -114,6 +129,9 @@ class Settings:
     on_new_option: str = "defer"
     max_mb: float | None = None
     rename: tuple = ()  # ((old, new), ...): hashable form of the rename map
+    llm: str | None = None
+    base_url: str | None = None
+    api_key_env: str | None = None
 
     @property
     def rename_map(self) -> dict[str, str]:
@@ -226,15 +244,40 @@ def _validate(s: dict) -> None:
                     "certificate (they carry certified=False, flag='manual_threshold')", s["force_threshold"])
 
 
+def did_you_mean(word: str, known) -> str:
+    """ " (did you mean 'api_key'?)" when a close match exists, else ""."""
+    m = difflib.get_close_matches(str(word), list(known), n=1, cutoff=0.6)
+    return f" (did you mean {m[0]!r}?)" if m else ""
+
+
+def unknown_keywords(names, known, where: str) -> TypeError:
+    """A TypeError naming the unknown keywords, with a suggestion for each."""
+    bad = sorted(names)
+    hints = "; ".join(f"{b!r}{did_you_mean(b, known)}" for b in bad)
+    return TypeError(f"{where} got unexpected keyword argument(s): {hints}")
+
+
+_KEY_LINE = ("{where}: found `api_key = ...`. Never put the key itself in a file: store the env var name in api_key_env, "
+             "not the key itself, e.g. api_key_env = \"OPENAI_API_KEY\"")
+
+
+def _check_no_key(doc: dict, cfg: str) -> None:
+    secs = [("", doc)] + [(f" [questions.{q}]", v) for q, v in (doc.get("questions") or {}).items() if isinstance(v, dict)]
+    for sec, d in secs:
+        if "api_key" in d or "apikey" in d:
+            raise ValueError(_KEY_LINE.format(where=f"{cfg}{sec}"))
+
+
 def _layers(question: str | None, path: str | None, overrides: dict) -> list[tuple[str, dict]]:
     """[(source, {key: value}), ...] from lowest to highest precedence."""
     unknown = set(overrides) - set(DEFAULTS)
     if unknown:
-        raise TypeError(f"unknown shad0w setting(s): {sorted(unknown)}; known: {sorted(DEFAULTS)}")
+        raise unknown_keywords(unknown, DEFAULTS, "shad0w settings")
     layers: list[tuple[str, dict]] = [("default", dict(DEFAULTS))]
     cfg = find_config(path)
     if cfg:
         doc = load_toml(cfg)
+        _check_no_key(doc, cfg)
         top = {k: v for k, v in doc.items() if k in DEFAULTS}
         layers.append((f"toml:{cfg}", top))
         qsec = (doc.get("questions") or {}).get(question or "", {}) if question else {}
@@ -247,6 +290,8 @@ def _layers(question: str | None, path: str | None, overrides: dict) -> list[tup
             env[k] = _coerce(k, raw)
     if env:
         layers.append(("env", env))
+    if _CONFIGURED:
+        layers.append(("configure()", dict(_CONFIGURED)))
     code = {k: v for k, v in overrides.items() if v is not None}
     if code:
         layers.append(("code", code))
@@ -268,3 +313,131 @@ def resolve(question: str | None = None, path: str | None = None, **overrides) -
     s = {k: v for k, v, _ in explain(question, path, **overrides)}
     _validate(s)
     return Settings(**s)
+
+
+# -- API keys and process-wide defaults ------------------------------------------------------------------------------
+
+class Secret:
+    """An API key that never prints. Holds a string, a zero-arg callable (a rotating or vault key, called on every
+    request) or the NAME of an environment variable (read on every request). repr/str show 'sk-…3f9a' at most; pickling
+    keeps only the variable name, never a literal key."""
+
+    __slots__ = ("_value", "env", "source")
+
+    def __init__(self, value=None, *, env: str | None = None, source: str = ""):
+        if value is not None and not (isinstance(value, str) or callable(value)):
+            raise TypeError("api_key must be a string or a zero-argument function that returns one")
+        self._value, self.env = value, env
+        self.source = source or (f"env {env}" if env else ("api_key=<function>" if callable(value) else "api_key="))
+
+    def get(self) -> str | None:
+        """The key, now (a callable is called; an environment variable is read)."""
+        v = self._value
+        if callable(v):
+            v = v()
+        elif v is None and self.env:
+            v = os.environ.get(self.env)
+        return None if v is None else str(v).strip()
+
+    @property
+    def is_callable(self) -> bool:
+        return callable(self._value)
+
+    def hint(self) -> str:
+        """'sk-…3f9a': the prefix and the last 4 characters, enough to tell keys apart, never enough to use one."""
+        if self.is_callable:
+            return "<function>"
+        return mask(self.get())
+
+    def describe(self) -> str:
+        """'set via OPENAI_API_KEY (sk-…3f9a)' / 'not set (OPENAI_API_KEY is empty)'."""
+        where = self.env if self.env and self._value is None else self.source
+        if self.is_callable:
+            return f"set via {where} (called on every request)"
+        v = self.get()
+        return f"set via {where} ({mask(v)})" if v else f"not set ({where} is empty)"
+
+    def __repr__(self) -> str:
+        return repr(self.hint())
+
+    __str__ = __repr__
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Secret):
+            return self.get() == other.get()
+        return isinstance(other, str) and not self.is_callable and self.get() == other
+
+    __hash__ = None  # type: ignore[assignment]
+
+    def __bool__(self) -> bool:
+        return self.is_callable or bool(self.get())
+
+    def __reduce__(self):  # never pickle a literal key; an environment variable name is safe
+        return (_unpickle_secret, (self.env, self.source))
+
+    def __getstate__(self):
+        return None
+
+
+def _unpickle_secret(env, source):
+    return Secret(env=env, source=source) if env else Secret("", source=source + " (dropped when pickled)")
+
+
+def mask(v: str | None) -> str:
+    if not v:
+        return "<empty>"
+    m = re.match(r"^([A-Za-z]{1,8}[-_])", v)
+    head = m.group(1) if m and len(v) > len(m.group(1)) + 8 else ""
+    return f"{head}…{v[-4:]}" if len(v) >= 12 else "…"
+
+
+def redact(text: str, *secrets) -> str:
+    """`text` with every known key value replaced by its mask (for error messages)."""
+    for s in secrets:
+        if isinstance(s, Secret) and not s.is_callable:
+            v = s.get()
+        else:
+            v = s if isinstance(s, str) else None
+        if v and len(v) >= 6:
+            text = text.replace(v, mask(v))
+    return re.sub(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]{8,}", lambda m: m.group(1) + "…", text)
+
+
+_CONFIGURED: dict[str, Any] = {}
+_CONFIGURED_KEY: list = [None]  # [Secret | None]
+
+
+def configure(*, llm: str | None = None, api_key=None, api_key_env: str | None = None, base_url: str | None = None,
+              **settings) -> dict:
+    """Process-wide defaults, set once from code (for example at app start-up):
+
+        shad0w.configure(llm="openai/gpt-6-luna", api_key_env="OPENAI_API_KEY", alpha=0.02)
+
+    Every decision() created afterwards uses them unless it passes its own. They rank below the keywords of a single
+    call and above SHAD0W_* variables and shad0w.toml. api_key may be a string or a zero-argument function (called
+    on every request). Calling configure() with no arguments clears everything set before. Returns the current
+    defaults, with the key masked."""
+    unknown = set(settings) - set(DEFAULTS)
+    if unknown:
+        raise unknown_keywords(unknown, list(DEFAULTS) + ["api_key"], "shad0w.configure()")
+    given = {"llm": llm, "api_key_env": api_key_env, "base_url": base_url, **settings}
+    given = {k: v for k, v in given.items() if v is not None}
+    if not given and api_key is None:
+        _CONFIGURED.clear()
+        _CONFIGURED_KEY[0] = None
+        return {}
+    trial = {**_CONFIGURED, **given}
+    s = {k: _norm(k, v) for k, v in {**DEFAULTS, **trial}.items()}
+    _validate(s)
+    _CONFIGURED.clear()
+    _CONFIGURED.update(trial)
+    if api_key is not None:
+        _CONFIGURED_KEY[0] = Secret(api_key, source="shad0w.configure(api_key=...)")
+    out = dict(_CONFIGURED)
+    if _CONFIGURED_KEY[0] is not None:
+        out["api_key"] = _CONFIGURED_KEY[0]
+    return out
+
+
+def configured_key() -> Secret | None:
+    return _CONFIGURED_KEY[0]

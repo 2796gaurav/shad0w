@@ -8,6 +8,9 @@
     intent.train()                            # once ~1,000 answers are logged: compile + certify, hot-swap
     intent("my card was stolen yesterday")    # Decision(answer='lost_card', source='table', latency_us=9, ...)
 
+The key is yours to pass: `api_key="sk-..."` (or a function that returns it), `api_key_env="MY_KEY_VAR"`, or once for
+the process with `shad0w.configure(api_key_env=...)`; otherwise the provider's usual variable (OPENAI_API_KEY, ...).
+
 Or wrap any function you already have: `shad0w.Shadow("bundle/", teacher=ask_llm, log="teacher_log.jsonl")`.
 
 Day one, before any bundle exists, every call goes to your model and is logged. After `train()` (or the
@@ -45,6 +48,9 @@ from .observe import Metrics, TraceWriter, emit_span, log, otel_enabled
 
 __all__ = ["Shadow", "Decision", "cascade", "decision", "decide", "explain", "explain_model"]
 
+_TEACHER_KW = ("base_url", "api_key", "api_key_env", "client", "system", "temperature", "timeout", "retries", "headers",
+               "structured", "max_tokens", "complete")
+
 _NO_FALLBACK = object()  # sentinel: no fallback configured (decide() needs a teacher for what the table defers)
 MIN_UNIFORM_CAL = 100  # audit rows needed before train() certifies on them instead of a random split
 
@@ -63,6 +69,18 @@ class Decision:
 
     def __str__(self) -> str:
         return str(self.answer)
+
+    @property
+    def why(self) -> str:
+        """Why this answer came from where it did, in plain words."""
+        w = explain(self.flag)
+        if self.source == "fallback":
+            w = w.replace("asked your model", "used your fallback (no LLM configured)")
+            if self.flag == "no_bundle":
+                w = "no trained table yet: used your fallback (no LLM configured)"
+        elif self.source == "audit":
+            w += " (also a spot check)"
+        return w
 
 
 _FLAG_WORDS = {
@@ -119,6 +137,11 @@ class Shadow:
     fallback     what to answer when the table defers and there is no teacher (running without an LLM): a value such
                  as "needs_review", or callable(text) -> answer (rules, a queue). Fallback answers are never logged
                  as training data and come back with source="fallback".
+    llm          instead of teacher=: a "provider/model" string (Shadow builds the LLM teacher itself; needs the
+                 options via schema= or an existing bundle) or a callable(text) -> answer
+    api_key      the LLM key: a string or a zero-argument function (called on every request). Never printed.
+    api_key_env  the NAME of the environment variable that holds the key
+    base_url     an OpenAI-compatible server for the llm string
 
     Every other keyword is a setting (see `shad0w.config.DEFAULTS`): alpha, delta, min_rows, audit_rate,
     auto_train, retrain, mode, canary, never_serve, min_confidence, force_threshold, drift_window, drift_margin,
@@ -126,11 +149,28 @@ class Shadow:
     config file, then the defaults.
     """
 
-    def __init__(self, bundle: str | Model | None, teacher: Callable[[str], Any] | None, question: str | None = None,
-                 log: str | None = None, *, seed: int | None = None, schema: dict | None = None,
-                 on_decision: Callable[[Decision, str], Any] | None = None, trace: str | TraceWriter | None = None,
-                 metrics: Metrics | None = None, probabilities: bool = False, config: str | None = None,
-                 settings: _config.Settings | None = None, fallback: Any = _NO_FALLBACK, **kw):
+    def __init__(self, bundle: str | Model | None, teacher: Callable[[str], Any] | None = None, question: str | None = None,
+                 log: str | None = None, *, llm: str | Callable[[str], Any] | None = None, api_key: Any = None,
+                 api_key_env: str | None = None, base_url: str | None = None, seed: int | None = None,
+                 schema: dict | None = None, on_decision: Callable[[Decision, str], Any] | None = None,
+                 trace: str | TraceWriter | None = None, metrics: Metrics | None = None, probabilities: bool = False,
+                 config: str | None = None, settings: _config.Settings | None = None, fallback: Any = _NO_FALLBACK, **kw):
+        llm_kw = {k: kw.pop(k) for k in list(kw) if k in _TEACHER_KW}
+        unknown = set(kw) - set(_config.DEFAULTS)
+        if unknown or (settings is not None and kw):
+            known = set(_config.DEFAULTS) | set(_TEACHER_KW) | _SHADOW_PARAMS
+            raise _config.unknown_keywords(set(kw) if settings is not None else unknown, known, "Shadow()")
+        llm_kw.update({k: v for k, v in (("api_key", api_key), ("api_key_env", api_key_env), ("base_url", base_url))
+                       if v is not None})
+        if llm is not None and teacher is not None:
+            raise TypeError("pass teacher= or llm=, not both")
+        if callable(llm):
+            teacher, llm = llm, None
+        if llm_kw and llm is None:
+            raise TypeError(f"{sorted(llm_kw)} only apply when llm is a \"provider/model\" string; your LLM is a "
+                            "function, so it holds its own key and URL (pass them where you build that function)")
+        if llm is not None and not isinstance(llm, str):
+            raise TypeError('llm must be a "provider/model" string or a callable(text) -> answer')
         if teacher is not None and not callable(teacher):
             raise TypeError("teacher must be a callable: text -> answer")
         self.question = question if question is not None else getattr(teacher, "question", None)
@@ -156,9 +196,23 @@ class Shadow:
         if schema is None and hasattr(teacher, "criteria"):  # an llm_teacher knows the options
             schema = {"type": teacher.qtype, "criteria": dict(teacher.criteria)}
         self.schema = schema
+        self._cert: dict = {}
         self.bundle_path = os.fspath(bundle) if isinstance(bundle, (str, os.PathLike)) else None
         exists = self.bundle_path is None or os.path.exists(os.path.join(self.bundle_path, "manifest.json"))
         self.reload(bundle if exists else None)
+        if llm is not None:
+            self.teacher = self._llm_teacher(llm, llm_kw)
+
+    def _llm_teacher(self, llm: str, llm_kw: dict):
+        """Build the LLM teacher for a "provider/model" string from the options and the key settings."""
+        from .llm import LLMTeacher
+        name = self.question or "decision"
+        if not self.schema:
+            raise ValueError(f"llm={llm!r} needs the options: pass options=... (decision) or schema=... (Shadow)")
+        s = self.settings
+        kw = dict(llm_kw)
+        kw.setdefault("base_url", s.base_url)
+        return LLMTeacher({name: self.schema}, llm, question=name, settings_key_env=s.api_key_env, **kw)
 
     # -- options ----------------------------------------------------------------------------------------------
     @property
@@ -221,6 +275,9 @@ class Shadow:
                 self.schema = {"type": q.qtype, "criteria": {o: None for o in q.options}} if q.qtype == "choice" else {"type": "yesno"}
             log.info("loaded bundle for %r: %d options, alpha=%s, C core=%s", self.question, len(q.options), q.alpha,
                      model.native)
+            if isinstance(bundle, (str, os.PathLike)):
+                from .shadow import read_certificate
+                self._cert = ((read_certificate(os.fspath(bundle)) or {}).get("questions") or {}).get(self.question, {})
             if self.auto_train and isinstance(bundle, (str, os.PathLike)):
                 from .shadow import read_certificate
                 cert = read_certificate(os.fspath(bundle)) or {}
@@ -321,7 +378,11 @@ class Shadow:
         if teacher is None and self.fallback is not _NO_FALLBACK:
             answer = self.fallback(text) if callable(self.fallback) else self.fallback
             return self._done(self._mk(answer, "fallback", r, False, flag, t0), text, name, None, ns0)
-        answer, ts = self._ask(teacher, text, self._src(), name)
+        try:
+            answer, ts = self._ask(teacher, text, self._src(), name)
+        except Exception as e:
+            _add_why(e, flag)
+            raise
         if r is not None:
             self._shadow_count(flag, r, answer, local)
         return self._done(self._mk(answer, "teacher", r, False, flag, t0), text, name, ts, ns0)
@@ -377,23 +438,31 @@ class Shadow:
         """`decide` for async code. The table path never leaves the event loop; an async teacher is awaited,
         a sync teacher runs in a worker thread."""
         teacher = teacher or self.teacher
-        if not _is_async(teacher):
-            pre = None
-            if self.model is not None:  # the table runs on the event loop (microseconds), once
-                t0 = time.perf_counter()
-                r, local = self._table(text)
-                serve, certified, flag = self._policy(r, local)
-                pre = (t0, r, local, serve, certified, flag)
-                if serve or (teacher is None and self.fallback is not _NO_FALLBACK):
-                    return self._decide_with(text, teacher, None, pre)
-            return await asyncio.to_thread(self._decide_with, text, teacher, None, pre)
+        return await self._adecide_pre(text, teacher, self._pre(text))
+
+    def _pre(self, text: str):
+        """The table's part of a decision, computed once: (t0, r, local, serve, certified, flag), or None."""
+        if self.model is None:
+            return None
         t0 = time.perf_counter()
+        r, local = self._table(text)
+        serve, certified, flag = self._policy(r, local)
+        return (t0, r, local, serve, certified, flag)
+
+    def _served(self, pre, teacher) -> bool:
+        """True when the decision finishes without calling the teacher (table answer or fallback)."""
+        return pre is not None and (pre[3] or (teacher is None and self.fallback is not _NO_FALLBACK))
+
+    async def _adecide_pre(self, text: str, teacher, pre) -> Decision:
+        if not _is_async(teacher):
+            if self._served(pre, teacher):  # the table ran on the event loop (microseconds), once
+                return self._decide_with(text, teacher, None, pre)
+            return await asyncio.to_thread(self._decide_with, text, teacher, None, pre)
         name = self.question or "decision"
-        model = self.model
-        flag, r = "no_bundle", None
-        if model is not None:
-            r, local = self._table(text)
-            serve, certified, flag = self._policy(r, local)
+        flag, r, local = "no_bundle", None, None
+        t0 = time.perf_counter()
+        if pre is not None:
+            t0, r, local, serve, certified, flag = pre
             if serve:
                 d = self._mk(local, "table", r, certified, flag, t0)
                 if certified and self.audit_rate and self._rng.random() < self.audit_rate:
@@ -402,7 +471,11 @@ class Shadow:
                     task.add_done_callback(self._audits.discard)
                 return self._done(d, text, name, None, 0)
         t = time.perf_counter()
-        answer = await teacher(text)
+        try:
+            answer = await teacher(text)
+        except Exception as e:
+            _add_why(e, flag)
+            raise
         took = time.perf_counter() - t
         self._record(text, self._src(), name, answer)
         if r is not None:
@@ -417,6 +490,136 @@ class Shadow:
             return
         self._record(text, "audit", name, truth)
         self._audit_result(name, local, truth, text)
+
+    def decide_many(self, texts, concurrency: int = 8, teacher: Callable[[str], Any] | None = None) -> list[Decision]:
+        """Decide a batch, in order. The table answers first (microseconds each, no threads); only the texts it
+        defers go to your LLM, `concurrency` at a time in worker threads. The first LLM error is raised."""
+        texts = list(texts)
+        teacher = teacher or self.teacher
+        pres = [self._pre(t) for t in texts]
+        out: list[Decision | None] = [None] * len(texts)
+        todo = []
+        for i, (t, pre) in enumerate(zip(texts, pres)):
+            if self._served(pre, teacher):
+                out[i] = self._decide_with(t, teacher, None, pre)
+            else:
+                todo.append(i)
+        if todo:
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=max(1, min(int(concurrency), len(todo))),
+                                    thread_name_prefix="shad0w-batch") as pool:
+                futs = {i: pool.submit(self._decide_with, texts[i], teacher, None, pres[i]) for i in todo}
+                for i, f in futs.items():
+                    out[i] = f.result()
+        return out  # type: ignore[return-value]
+
+    async def adecide_many(self, texts, concurrency: int = 8,
+                           teacher: Callable[[str], Any] | None = None) -> list[Decision]:
+        """`decide_many` for async code: table answers on the event loop, deferred texts as tasks (at most
+        `concurrency` LLM calls in flight). Order is preserved."""
+        texts = list(texts)
+        teacher = teacher or self.teacher
+        pres = [self._pre(t) for t in texts]
+        sem = asyncio.Semaphore(max(1, int(concurrency)))
+
+        async def one(t, pre):
+            if self._served(pre, teacher):
+                return await self._adecide_pre(t, teacher, pre)
+            async with sem:
+                return await self._adecide_pre(t, teacher, pre)
+        return list(await asyncio.gather(*(one(t, p) for t, p in zip(texts, pres))))
+
+    def warm_start(self, rows_or_path, text: str = "text", label: str | None = None, *, source: str = "import") -> dict:
+        """Import answers you already have (an old LLM's log, human labels) into this decision's log, so `train()`
+        can start from them instead of from zero.
+
+        rows_or_path  a list of dicts, or a .jsonl / .json / .csv file
+        text, label   the field names holding the text and the answer (label defaults to the decision's name)
+
+        Labels are checked against the options: rows with an unknown label (or no text) are skipped and counted.
+        Rows are written with source="import". Returns the counts."""
+        if not self.log:
+            raise ValueError("warm_start needs a log file: pass log=... (decision() sets one up for you)")
+        name = self.question or "decision"
+        label = label or name
+        rows = _read_rows(rows_or_path)
+        schema = self.schema or {}
+        yesno = schema.get("type") == "yesno"
+        opts = list(schema.get("criteria") or {}) if schema and not yesno else None
+        ren = self.settings.rename_map
+        from .llm import enum_option, match_option
+        good, unknown, empty = [], {}, 0
+        for r in rows:
+            t, y = r.get(text), r.get(label)
+            if not isinstance(t, str) or not t.strip() or y is None or (isinstance(y, str) and not y.strip()):
+                empty += 1
+                continue
+            y = enum_option(y)
+            if yesno:
+                v = match_option(y if isinstance(y, (str, bool)) else str(y), ["yes", "no"])
+                if v is None:
+                    unknown[str(y)] = unknown.get(str(y), 0) + 1
+                    continue
+                y = v == "yes"
+            elif opts is not None:
+                y = ren.get(str(y), str(y))
+                v = y if y in opts else match_option(y, opts)
+                if v is None:
+                    unknown[y] = unknown.get(y, 0) + 1
+                    continue
+                y = v
+            good.append(json.dumps({"text": t, name: y, "source": source, "ts": round(time.time(), 3)},
+                                   ensure_ascii=False, default=str))
+        if good:
+            with self._lock, open(self.log, "a", encoding="utf-8") as f:
+                f.write("\n".join(good) + "\n")
+        total = self.log_rows()
+        out = {"imported": len(good), "skipped_unknown_label": sum(unknown.values()), "skipped_no_text": empty,
+               "unknown_labels": dict(sorted(unknown.items(), key=lambda kv: -kv[1])[:10]), "log_rows": total,
+               "min_rows": self.settings.min_rows, "ready_to_train": total >= self.settings.min_rows}
+        log.info("warm_start %r: imported %d rows (%d unknown labels, %d without text); log has %d of %d needed",
+                 name, len(good), out["skipped_unknown_label"], empty, total, self.settings.min_rows)
+        return out
+
+    # -- what it is -------------------------------------------------------------------------------------------
+    def _state(self) -> dict:
+        name = self.question or "decision"
+        n_opts = None
+        if self.schema and self.schema.get("type", "choice") == "choice":
+            n_opts = len(self.schema.get("criteria") or {})
+        elif self.schema:
+            n_opts = 2
+        st = {"question": name, "options": n_opts, "mode": self.settings.mode}
+        if self.model is None:
+            st["state"] = f"logging {self.log_rows():,}/{self.settings.min_rows:,} answers (no table yet)"
+        else:
+            q = self.model.questions[name]
+            share = self._cert.get("certified_share_on_calibration")
+            st["state"] = (f"serving: certifies {share:.1%} at alpha={q.alpha}" if share is not None
+                           else f"serving at alpha={q.alpha}")
+        t = self.teacher
+        st["llm"] = None if t is None else (getattr(t, "name", None) or getattr(t, "__name__", None) or type(t).__name__)
+        st["key"] = getattr(t, "key_source", None) if t is not None else None
+        return st
+
+    def __repr__(self) -> str:
+        st = self._state()
+        parts = [f"{st['question']!r}", f"options={st['options']}", st["state"]]
+        parts.append(f"llm={st['llm']}" if st["llm"] else "llm=None")
+        if st["key"]:
+            parts.append(f"key: {st['key']}")
+        if st["mode"] != "serve":
+            parts.append(f"mode={st['mode']}")
+        return "Shadow(" + ", ".join(parts) + ")"
+
+    def _repr_html_(self) -> str:
+        import html
+        st = self._state()
+        rows = [("question", st["question"]), ("options", st["options"]), ("state", st["state"]),
+                ("LLM", st["llm"] or "none"), ("key", st["key"] or "-"), ("mode", st["mode"])]
+        body = "".join(f"<tr><th style='text-align:left;padding-right:1em'>{html.escape(str(k))}</th>"
+                       f"<td>{html.escape(str(v))}</td></tr>" for k, v in rows)
+        return f"<table><caption style='text-align:left'><b>shad0w.Shadow</b></caption>{body}</table>"
 
     def explain(self, text: str) -> dict:
         """What the table thinks of `text`, without calling your model: top options, confidence, the
@@ -631,32 +834,52 @@ def rows_for_training(records: list[dict], name: str, schema: dict | None, renam
     return rows, schema
 
 
-_TEACHER_KW = ("base_url", "api_key", "client", "system", "temperature", "timeout", "retries", "headers", "structured",
-               "max_tokens", "complete")
+_SHADOW_PARAMS = {"seed", "schema", "on_decision", "trace", "metrics", "probabilities", "config", "settings", "fallback",
+                  "llm", "api_key", "api_key_env", "base_url", "question", "teacher", "log", "bundle", "folder", "options",
+                  "name"}
 
 
 def decision(name: str = "decision", options: Any = None, llm: str | Callable[[str], Any] | None = None, *,
+             api_key: Any = None, api_key_env: str | None = None, base_url: str | None = None,
              bundle: str | None = None, log: str | None = None, folder: str | None = None, **kw) -> Shadow:
     """One call from nothing to a certified cascade.
 
-        intent = shad0w.decision("intent", options={"refund": "wants money back", ...}, llm="openai/gpt-6-luna")
+        intent = shad0w.decision("intent", options={"refund": "wants money back", ...},
+                                 llm="openai/gpt-6-luna", api_key=os.environ["OPENAI_API_KEY"])
         intent("my card was stolen")     # your LLM answers and is logged; later the table answers
         intent.train()                   # when ~1,000 answers are logged
 
-    name     what this decision is called (default "decision"). It names the folder (shad0w/<name>/), the field in
-             the log, the question inside the bundle, the dashboard and metrics label, and the question name on the
-             Decisions API, so several decisions can live side by side: decision("intent"), decision("urgent").
-
-    options  list of option names, {name: description}, or a schema entry; optional when the bundle exists
-    llm      "provider/model" (openai, anthropic, gemini, groq, ollama, openai-decisions, systemone, ...; see
-             shad0w.llm.PROVIDERS) or any callable(text) -> answer
-    folder   where the log and bundle live (default: <settings.folder>/<name>/); bundle= and log= override each
-    Other keywords go to `Shadow` (audit_rate, auto_train, mode, canary, on_decision, trace, alpha, ...) and, for a
-    "provider/model" string, to `llm_teacher` (base_url, api_key, client, complete, system, temperature, ...)."""
-    from .llm import LLMTeacher, normalize_options
-    llm_kw = {k: kw.pop(k) for k in list(kw) if k in _TEACHER_KW}
-    settings = _config.resolve(name, path=kw.get("config"), **{k: v for k, v in kw.items() if k in _config.DEFAULTS})
-    kw["settings"] = settings
+    name         what this decision is called (default "decision"). It names the folder (shad0w/<name>/), the field
+                 in the log, the question inside the bundle, the dashboard and metrics label, and the question name on
+                 the Decisions API, so several decisions can live side by side: decision("intent"), decision("urgent").
+    options      list of option names, {name: description}, an Enum class, Literal["a", "b"], bool (yes/no), or a
+                 schema entry; optional when the bundle exists
+    llm          "provider/model" (openai, anthropic, gemini, groq, ollama, openai-decisions, systemone, ...; see
+                 shad0w.llm.PROVIDERS) or any callable(text) -> answer. Default: shad0w.configure(llm=...), then
+                 SHAD0W_LLM / `llm` in shad0w.toml.
+    api_key      the key for that LLM: a string, or a zero-argument function called on every request (rotating or
+                 vault keys). It is never printed, logged or pickled ('sk-…3f9a' at most).
+    api_key_env  the NAME of the environment variable holding the key (e.g. "OPENAI_API_KEY"). Key precedence:
+                 api_key > api_key_env > shad0w.configure(...) > SHAD0W_API_KEY_ENV / shad0w.toml > the provider's
+                 usual variable.
+    base_url     an OpenAI-compatible server (default: configure(), SHAD0W_BASE_URL / shad0w.toml, the provider's)
+    bundle, log  where the trained table and the log live (default: <folder>/bundle and <folder>/log.jsonl)
+    folder       default: <settings.folder>/<name>/
+    Other keywords go to `Shadow` (audit_rate, auto_train, mode, canary, on_decision, trace, fallback, alpha, ...) and,
+    for a "provider/model" string, to `LLMTeacher` (client, complete, system, temperature, timeout, retries, headers).
+    api_key, base_url and the other LLM keywords with a function llm raise TypeError: the function holds its own."""
+    from .llm import normalize_options
+    known = set(_config.DEFAULTS) | set(_TEACHER_KW) | _SHADOW_PARAMS
+    unknown = set(kw) - known
+    if unknown:
+        raise _config.unknown_keywords(unknown, known, "decision()")
+    if "settings" in kw:
+        raise TypeError("decision() resolves its own settings; pass them as keywords (alpha=..., mode=...)")
+    settings = _config.resolve(name, path=kw.get("config"), **{k: v for k, v in kw.items()
+                                                              if k in _config.DEFAULTS and k not in _TEACHER_KW})
+    kw = {k: v for k, v in kw.items() if k not in _config.DEFAULTS or k in _TEACHER_KW}
+    if llm is None and settings.llm:
+        llm = settings.llm
     if folder is None:
         folder = os.path.join(settings.folder, name)
     bundle = bundle or os.path.join(folder, "bundle")
@@ -671,14 +894,10 @@ def decision(name: str = "decision", options: Any = None, llm: str | Callable[[s
     elif os.path.exists(os.path.join(bundle, "schema.json")):
         with open(os.path.join(bundle, "schema.json"), encoding="utf-8") as f:
             schema = json.load(f).get(name)
-    if isinstance(llm, str):
-        if schema is None:
-            raise ValueError("pass options=... so the LLM knows what to choose from")
-        teacher = LLMTeacher({name: schema}, llm, question=name, **llm_kw)
-    else:
-        teacher = llm
-    shadow_kw = {k: v for k, v in kw.items() if k not in _config.DEFAULTS}
-    return Shadow(bundle, teacher=teacher, question=name, log=log_path, schema=schema, **shadow_kw)
+    if isinstance(llm, str) and schema is None:
+        raise ValueError("pass options=... so the LLM knows what to choose from")
+    return Shadow(bundle, question=name, log=log_path, schema=schema, settings=settings, llm=llm, api_key=api_key,
+                  api_key_env=api_key_env, base_url=base_url, **kw)
 
 
 def cascade(bundle: str | Model | None, question: str | None = None, log: str | None = None,
@@ -708,28 +927,66 @@ def decide(fn: Callable | None = None, /, *, name: str | None = None, folder: st
         route.shadow.train()             # once ~1,000 answers are logged
 
     A `-> bool` annotation makes a yes/no question. Files live in <folder>/<name>/ like `decision()`.
+    Or let shad0w call the LLM for you; then the body is never run:
+
+        @shad0w.decide(llm="openai/gpt-6-luna", api_key=os.environ["OPENAI_API_KEY"])
+        def route(text) -> Literal["billing", "tech", "sales"]: ...
     """
+    llm = kw.pop("llm", None)
+
     def wrap(f: Callable):
+        from .llm import _is_enum, enum_member, enum_option
         hints = typing.get_type_hints(f)
         ret = hints.get("return")
         if ret is bool:
             options = {"type": "yesno"}
         elif typing.get_origin(ret) is typing.Literal:
             options = [str(v) for v in typing.get_args(ret)]
+        elif _is_enum(ret):
+            options = ret
         else:
-            raise TypeError(f"{f.__name__}: annotate the return type with Literal[...] (the options) or bool")
-        sh = decision(name or f.__name__, options=options, llm=f, folder=folder, **kw)
+            raise TypeError(f"{f.__name__}: annotate the return type with Literal[...], an Enum (the options) or bool")
+        body = llm if llm is not None else f
+        if _is_enum(ret):
+            teacher = body if isinstance(body, str) else functools.wraps(body)(lambda text: enum_option(body(text)))
+            sh = decision(name or f.__name__, options=options, llm=teacher, folder=folder, **kw)
+            return _wrapped(f, sh, lambda a: enum_member(ret, a))
+        sh = decision(name or f.__name__, options=options, llm=body, folder=folder, **kw)
         return _wrapped(f, sh)
     return wrap(fn) if fn is not None else wrap
 
 
-def _wrapped(fn, sh: Shadow):
+def _wrapped(fn, sh: Shadow, convert=None):
     @functools.wraps(fn)
     def call(text: str):
-        return sh.decide(text).answer
+        a = sh.decide(text).answer
+        return convert(a) if convert is not None else a
 
     call.shadow = sh  # type: ignore[attr-defined]
     return call
+
+
+def _add_why(e: Exception, flag) -> None:
+    """Say why the LLM was asked in a TeacherError, so a failure reads as a sentence."""
+    from .llm import TeacherError
+    if isinstance(e, TeacherError) and e.args and "why your LLM was asked" not in str(e.args[0]):
+        e.args = (f"{e.args[0]} (why your LLM was asked: {explain(flag)})", *e.args[1:])
+
+
+def _read_rows(src) -> list[dict]:
+    """Rows from a list of dicts or a .jsonl / .json / .csv file."""
+    if isinstance(src, (str, os.PathLike)):
+        p = os.fspath(src)
+        if p.lower().endswith(".csv"):
+            import csv
+            with open(p, encoding="utf-8-sig", newline="") as f:
+                return list(csv.DictReader(f))
+        with open(p, encoding="utf-8") as f:
+            if p.lower().endswith(".json"):
+                data = json.load(f)
+                return data if isinstance(data, list) else data.get("rows", [])
+            return [json.loads(line) for line in f if line.strip()]
+    return [dict(r) for r in src]
 
 
 def _is_async(fn) -> bool:

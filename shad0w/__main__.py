@@ -1,7 +1,9 @@
 """shad0w command line.
 
 Start:
-  shad0w init                                                                       # starter schema.json + example log
+  shad0w init [--name intent] [--llm openai/gpt-6-luna] [--options a,b,c]          # shad0w.toml + a runnable app.py
+  shad0w status [--folder shad0w]                                                   # every decision: rows, certificate, next step
+  shad0w import --from openai-chat --file export.jsonl --question intent           # start from answers you already have
   shad0w doctor [--bundle B] [--upstream URL] [--llm provider/model]                # is everything in place?
   shad0w config [--question Q] [--init]                                             # effective settings and their source
   shad0w proxy --upstream https://api.openai.com/v1                                 # OpenAI-compatible gateway, zero code
@@ -54,7 +56,8 @@ _LOG = [{"text": "my card was stolen yesterday", "intent": "lost_card"},
         {"text": "how much is left in my account", "intent": "balance"}]
 
 
-def _init(d):
+def _init_files(d):
+    """The pre-0.3.2 starter (`shad0w init --files`): schema.json + teacher_log.jsonl for `shad0w shadow`."""
     import os
     os.makedirs(d, exist_ok=True)
     wrote = []
@@ -70,6 +73,108 @@ def _init(d):
     print("wrote " + ", ".join(wrote) if wrote else "nothing to write")
     print("next: log your model's answers into teacher_log.jsonl (1,000+ lines), then\n"
           "  shad0w shadow --schema schema.json --data teacher_log.jsonl --teacher my-model --out bundle/")
+    return 0
+
+
+_TOML = """\
+# shad0w settings for this folder. Precedence: code > shad0w.configure() > SHAD0W_* environment > this file > defaults.
+# `shad0w config` shows every effective value and where it came from.
+
+# The LLM that answers until the table is trained (and whatever the table is unsure about afterwards).
+llm = {llm}
+
+# The NAME of the environment variable that holds your key. Never put the key itself in this file
+# (an `api_key = ...` line is refused). In code you can also pass api_key=... or api_key_env=... to decision().
+api_key_env = {key_env}
+
+# An OpenAI-compatible server instead of the provider's default (vLLM, Ollama, a gateway, ...):
+# base_url = "http://localhost:8000/v1"
+
+# Where logs and tables live: <folder>/<name>/log.jsonl and <folder>/<name>/bundle/
+folder = "shad0w"
+
+# Train once this many answers are logged (100 is the hard minimum).
+# min_rows = 1000
+
+# Max share of table answers that may differ from your LLM (lower = safer, fewer calls saved).
+# alpha = 0.05
+
+# Retrain in the background every N new answers (0 = off; needs pip install "shad0wllm[compile]").
+# auto_train = 0
+
+# [questions.{name}]
+# alpha = 0.02
+"""
+
+_APP = '''\
+"""A shad0w decision. Your LLM answers first (and every answer is logged); once enough are logged, train() and a
+certified table answers what it is sure about in microseconds. Run from this folder:
+
+    python app.py "my card was stolen yesterday"
+
+Settings (llm, api_key_env, folder, ...) come from shad0w.toml next to this file.
+"""
+import sys
+
+import shad0w
+
+{name} = shad0w.decision(
+    "{name}",
+    options={options},
+    # llm="openai/gpt-6-luna",                 # or `llm` in shad0w.toml
+    # api_key=os.environ["OPENAI_API_KEY"],    # or api_key_env="..." / `api_key_env` in shad0w.toml
+)
+
+if __name__ == "__main__":
+    for text in sys.argv[1:] or {examples}:
+        d = {name}(text)
+        print(f"{{text!r}} -> {{d.answer}}  via {{d.source}}: {{d.why}}")
+    print({name})
+    # Once enough answers are logged:  {name}.train()   (or: shad0w train --dir shad0w --question {name})
+'''
+
+
+def _init(a):
+    import os
+    import re
+
+    if a.files:
+        return _init_files(a.dir)
+    name = a.name
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", name):
+        print(f"--name {name!r}: use letters, digits and _ (it becomes a Python variable and a folder)", file=sys.stderr)
+        return 2
+    if a.options:
+        opts = [o.strip() for o in a.options.split(",") if o.strip()]
+        if len(opts) < 2:
+            print("--options needs at least two names, e.g. --options refund,lost_card,other", file=sys.stderr)
+            return 2
+        options = json.dumps(opts)
+    else:
+        crit = _SCHEMA["intent"]["criteria"]
+        options = "{\n" + "".join(f"        {json.dumps(k)}: {json.dumps(v) if v else 'None'},\n"
+                                     for k, v in crit.items()) + "    }"
+    from .llm import PROVIDERS
+    provider = a.llm.split("/", 1)[0] if "/" in a.llm else ""
+    key_env = (PROVIDERS.get(provider) or ("", None))[1]
+    os.makedirs(a.dir, exist_ok=True)
+    files = {"shad0w.toml": _TOML.format(llm=json.dumps(a.llm), name=name,
+                                         key_env=json.dumps(key_env) if key_env else '""  # this provider needs no key'),
+             "app.py": _APP.format(name=name, options=options,
+                                   examples=json.dumps(["my card was stolen yesterday", "how much money do I have"]))}
+    wrote = []
+    for fn, body in files.items():
+        p = os.path.join(a.dir, fn)
+        if os.path.exists(p) and not a.force:
+            print(f"kept existing {p} (--force to overwrite)")
+            continue
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(body)
+        wrote.append(p)
+    print("wrote " + ", ".join(wrote) if wrote else "nothing to write")
+    env_line = f"  export {key_env}=sk-...      # your key; shad0w.toml names this variable\n" if key_env else ""
+    where = "" if os.path.abspath(a.dir) == os.getcwd() else f"  cd {a.dir}\n"
+    print(f"next:\n{where}{env_line}  python app.py \"my card was stolen\"\n  shad0w status")
     return 0
 
 
@@ -271,7 +376,167 @@ def _config_cmd(a):
         print(f"{k:<{w}}  {json.dumps(list(v) if isinstance(v, tuple) else v):<28}  {src}")
     cfg = _config.find_config(a.config)
     print(f"\nconfig file: {cfg or 'none (create one with: shad0w config --init)'}")
+    eff = {k: v for k, v, _ in rows}
+    if eff.get("llm"):
+        from .llm import PROVIDERS, resolve_key
+        env = (PROVIDERS.get(eff["llm"].split("/", 1)[0]) or ("", None))[1]
+        secret = resolve_key(env, settings_key_env=eff.get("api_key_env"))
+        print(f"llm key: {secret.describe() if secret is not None else 'none needed'}")
     return 0
+
+
+def _exchanges(path):
+    """(request, response) pairs from a JSON Lines export. Accepts {"request": ..., "response": ...} lines (also
+    "input"/"output"), OpenAI Batch output lines ({"response": {"body": ...}} with the request in "request" or "body"),
+    and a response's own body nested under "body"."""
+    with open(path, encoding="utf-8") as f:
+        for n, line in enumerate(f, 1):
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except ValueError:
+                print(f"  line {n}: not JSON, skipped", file=sys.stderr)
+                continue
+            req = row.get("request") or row.get("input") or {}
+            resp = row.get("response") or row.get("output") or {}
+            if isinstance(req, dict) and "body" in req and isinstance(req["body"], dict):
+                req = req["body"]
+            if isinstance(resp, dict) and "body" in resp and isinstance(resp["body"], dict):
+                resp = resp["body"]
+            yield req, resp
+
+
+def _import(a):
+    """Turn exported request/response pairs into log rows for one decision (source "import")."""
+    import os
+
+    from . import wire
+    from .cascade import Shadow
+    from .proxy import _answer_field, _parse, _reply_text, last_user_text, options_of
+    options = [o.strip() for o in (a.options or "").split(",") if o.strip()] or None
+    rows, skipped = [], 0
+    for req, resp in _exchanges(a.file):
+        if a.source == "openai-chat":
+            text = last_user_text(req) if isinstance(req, dict) else None
+            opts = options or (options_of(req) if isinstance(req, dict) else None)
+            ans = _parse(_reply_text(json.dumps(resp).encode()), opts, _answer_field(req) or "answer") if text else None
+        else:
+            try:
+                text, qs = wire.parse("decisions", req)
+            except (ValueError, KeyError, TypeError, AttributeError):
+                text, qs = None, []
+            q = next((q for q in qs if q.name == a.question), None)
+            ans = wire.answer_value(q, wire.parse_answers("decisions", resp).get(q.name, {})) if q and text else None
+            if q is not None and options is None and q.qtype == "choice":
+                options = list(q.criteria)
+        if not text or ans is None:
+            skipped += 1
+            continue
+        rows.append({"text": text, a.question: ans})
+    folder = a.dir
+    log_path = os.path.join(folder, a.question, "log.jsonl")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    schema = {"type": "choice", "criteria": {o: None for o in options}} if options else None
+    sh = Shadow(None, teacher=None, question=a.question, log=log_path, schema=schema, config=a.config)
+    rep = sh.warm_start(rows)
+    print(f"{a.file}: {rep['imported']:,} answers imported into {log_path} "
+          f"({skipped:,} exchanges without a usable answer, {rep['skipped_unknown_label']:,} with an unknown option)")
+    left = rep["min_rows"] - rep["log_rows"]
+    print(f"next: shad0w train --dir {folder} --question {a.question}" if left <= 0
+          else f"next: log {left:,} more answers before training (shad0w status shows progress)")
+    return 0
+
+
+def _status(a):
+    """One line per decision folder: rows logged vs min_rows, certificate, live agreement, and the next step."""
+    import os
+
+    from . import config as _config
+    from .shadow import read_certificate
+    folder = a.folder or _config.resolve(path=a.config).folder
+    names = []
+    if os.path.isdir(folder):
+        names = sorted(d for d in os.listdir(folder) if os.path.exists(os.path.join(folder, d, "log.jsonl"))
+                       or os.path.exists(os.path.join(folder, d, "bundle", "manifest.json")))
+    if not names:
+        print(f"no decisions logged in {folder}/ yet: run your app (`shad0w init` writes a starter app.py) or "
+              f"create one with shad0w.decision(\"name\", ...)")
+        return 0
+    w = max(len(n) for n in names)
+    for q in names:
+        print(_status_line(q, os.path.join(folder, q), folder, w, _config.resolve(q, path=a.config), read_certificate))
+    return 0
+
+
+def _status_line(q, d, folder, w, st, read_certificate):
+    import os
+    log_path, bundle = os.path.join(d, "log.jsonl"), os.path.join(d, "bundle")
+    rows = []
+    if os.path.exists(log_path):
+        with open(log_path, encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        rows.append(json.loads(line))
+                    except ValueError:
+                        continue
+    usable = [r for r in rows if r.get(q) is not None and r.get("text") and r.get("source") != "table"]
+    n = len(usable)
+    train = f"shad0w train --dir {folder} --question {q}"
+    parts = [f"{q:<{w}}", f"{n:>7,}/{st.min_rows:,} rows"]
+    if not os.path.exists(os.path.join(bundle, "manifest.json")):
+        parts.append("no table yet")
+        nxt = f"log {st.min_rows - n:,} more answers" if n < st.min_rows else f"run: {train}"
+        return "  ".join(parts) + f"  -> {nxt}"
+    full = read_certificate(bundle) or {}
+    cq = (full.get("questions") or {}).get(q, {})
+    share = cq.get("certified_share_on_calibration")
+    alpha = cq.get("alpha", full.get("alpha", st.alpha))
+    thr = cq.get("threshold")
+    cert = f"certified {share:.1%} at alpha={alpha}" if share is not None else "no certificate"
+    if isinstance(thr, (int, float)):
+        cert += f" (threshold {thr:.3f})"
+    parts.append(cert)
+    parts.append(_live_agreement(q, bundle, usable) or "live: no spot checks yet")
+    n_rec = int(cq.get("n_records") or 0) + (int(cq.get("n_calibration") or 0)
+                                               if cq.get("calibration") == "uniform-audit" else 0)
+    new = max(0, n - n_rec) if n_rec else 0
+    if not share:
+        nxt = f"certifies nothing yet: log more answers, then {train}"
+    elif n_rec and new >= max(200, n_rec // 5):
+        nxt = f"serving; {new:,} new answers since training: {train}"
+    else:
+        nxt = "serving"
+    return "  ".join(parts) + f"  -> {nxt}"
+
+
+def _live_agreement(q, bundle, rows):
+    """Agreement between the table and your LLM on spot checks logged after the table was trained."""
+    import os
+
+    from .api import load, to_bool
+    since = os.path.getmtime(os.path.join(bundle, "manifest.json"))
+    audits = [r for r in rows if r.get("source") == "audit" and float(r.get("ts") or 0) >= since]
+    if not audits:
+        return None
+    try:
+        m = load(bundle, native=False)
+    except Exception:
+        return None
+    if q not in m.questions:
+        return None
+    served = agree = 0
+    for r in audits:
+        res = m.questions[q].decide(r["text"], observe=False)
+        if not res.get("certified"):
+            continue
+        local = res["choice"] if "choice" in res else res["answer"]
+        served += 1
+        agree += int(bool(local) == to_bool(r[q]) if isinstance(local, bool) else str(local) == str(r[q]))
+    if not served:
+        return f"live: {len(audits)} spot checks, none on served answers"
+    return f"live agreement {agree / served:.1%} (n={served})"
 
 
 def _doctor(a):
@@ -335,15 +600,24 @@ def _doctor(a):
         ok("config", f"{cfg or 'defaults'}; mode={st.mode} alpha={st.alpha} audit_rate={st.audit_rate} canary={st.canary}")
     except Exception as e:
         fail("config", str(e))
-    if a.llm:
-        provider = a.llm.split("/", 1)[0]
+    try:
+        eff = _config.resolve(path=a.config)
+    except Exception:
+        eff = None
+    llm = a.llm or (eff.llm if eff else None)
+    if llm:
+        from .llm import resolve_key
+        provider = llm.split("/", 1)[0]
         env = PROVIDERS.get(provider, ("", None))[1] if provider in PROVIDERS else None
-        if provider not in PROVIDERS:
+        secret = resolve_key(env, settings_key_env=eff.api_key_env if eff else None)
+        if provider not in PROVIDERS and secret is None:
             warn(f"provider {provider!r}", "unknown preset; pass base_url= in code")
-        elif env and not os.environ.get(env):
-            fail(f"{provider} API key", f"{env} is not set")
+        elif secret is None:
+            ok(f"{provider} API key", "key: none needed (local server)")
+        elif not secret:
+            fail(f"{provider} API key", f"key: {secret.describe()}; set it, or pass api_key= / api_key_env= in code")
         else:
-            ok(f"{provider} API key", env or "no key needed")
+            ok(f"{provider} API key", f"key: {secret.describe()}")
     if a.upstream:
         try:
             req = urllib.request.Request(a.upstream.rstrip("/") + "/models")
@@ -375,6 +649,22 @@ def _doctor(a):
         print(f"[{mark}] {label:<{w}}  {detail}")
     print("\nall good" if not fails else f"\n{fails} problem(s); fix the [!!] lines")
     return 1 if fails else 0
+
+
+def _key_file(path):
+    """A Secret that reads the key from a file on every request (secret mounts rotate in place)."""
+    import os
+
+    from .config import Secret
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"--api-key-file {path}: no such file")
+
+    def read():
+        with open(path, encoding="utf-8") as f:
+            return f.read().strip()
+    if not read():
+        raise ValueError(f"--api-key-file {path} is empty")
+    return Secret(read, source=f"file {path}")
 
 
 def _safe_stdio():
@@ -418,8 +708,28 @@ def _main(argv=None):
     ap.add_argument("--version", action="version", version=f"shad0w {__version__}")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    it = sub.add_parser("init", help="write a starter schema.json and an example teacher_log.jsonl")
+    it = sub.add_parser("init", help="write a commented shad0w.toml and a runnable app.py that uses decision()")
     it.add_argument("--dir", default=".")
+    it.add_argument("--name", default="intent", help="the decision's name (default intent)")
+    it.add_argument("--llm", default="openai/gpt-6-luna", help="provider/model (default openai/gpt-6-luna)")
+    it.add_argument("--options", help="comma-separated option names (default: a card-support example)")
+    it.add_argument("--force", action="store_true", help="overwrite existing files")
+    it.add_argument("--files", action="store_true",
+                    help="write the older starter instead: schema.json + teacher_log.jsonl for `shad0w shadow`")
+
+    im = sub.add_parser("import", help="turn exported LLM request/response JSON Lines into a decision's log")
+    im.add_argument("--from", dest="source", required=True, choices=("openai-chat", "openai-decisions"),
+                    help="openai-chat: chat.completions request + response; openai-decisions: /v1/decisions request + response")
+    im.add_argument("--file", required=True, help='JSON Lines, one {"request": ..., "response": ...} per line '
+                    "(OpenAI Batch output works too)")
+    im.add_argument("--question", required=True, help="the decision's name (its folder and log field)")
+    im.add_argument("--options", help="comma-separated options (default: the request's enum, or the answers seen)")
+    im.add_argument("--dir", default="shad0w", help="decisions folder (default shad0w)")
+    im.add_argument("--config")
+
+    stt = sub.add_parser("status", help="one line per decision folder: rows, certificate, live agreement, next step")
+    stt.add_argument("--folder", help="the decisions folder (default: the `folder` setting, shad0w)")
+    stt.add_argument("--config")
 
     sh = sub.add_parser("shadow", help="compile from a teacher's logged answers and certify agreement with it")
     sh.add_argument("--schema", required=True)
@@ -471,7 +781,10 @@ def _main(argv=None):
     px.add_argument("--upstream", default="https://api.openai.com/v1", help="the real API base URL (OpenAI, Groq, Ollama, vLLM, ...)")
     px.add_argument("--dir", help="where logs and bundles live: <dir>/<question>/{log.jsonl,bundle/} (default shad0w)")
     px.add_argument("--model", help="upstream model for requests that use model='shad0w/<question>'")
-    px.add_argument("--api-key-env", help="send this environment variable as the upstream key (default: forward the client's)")
+    px.add_argument("--api-key-env", metavar="NAME",
+                    help="send the key in this environment variable upstream (default: forward each client's own key)")
+    px.add_argument("--api-key-file", metavar="PATH",
+                    help="send the key in this file upstream (a Docker / Kubernetes secret; re-read on every request)")
     px.add_argument("--host", default="127.0.0.1")
     px.add_argument("--port", type=int, default=8010)
     px.add_argument("--audit-rate", type=float, help="share of decisions spot-checked against the LLM (default 0.01)")
@@ -541,7 +854,11 @@ def _main(argv=None):
     from . import api
 
     if a.cmd == "init":
-        return _init(a.dir)
+        return _init(a)
+    if a.cmd == "status":
+        return _status(a)
+    if a.cmd == "import":
+        return _import(a)
     if a.cmd == "config":
         return _config_cmd(a)
     if a.cmd == "doctor":
@@ -557,12 +874,17 @@ def _main(argv=None):
     if a.cmd == "watch":
         return _watch(a)
     if a.cmd == "proxy":
-        import os
-
         from .proxy import proxy
-        key = os.environ.get(a.api_key_env) if a.api_key_env else None
-        if a.api_key_env and not key:
-            ap.error(f"{a.api_key_env} is not set")
+        key = None
+        if a.api_key_env and a.api_key_file:
+            ap.error("pass --api-key-env or --api-key-file, not both")
+        if a.api_key_env:
+            from .config import Secret
+            key = Secret(env=a.api_key_env)
+            if not key:
+                ap.error(f"{a.api_key_env} is not set")
+        elif a.api_key_file:
+            key = _key_file(a.api_key_file)
         schema = json.load(open(a.schema, encoding="utf-8")) if a.schema else None
         bundles = dict(b.split("=", 1) for b in (a.bundle or []) if "=" in b)
         capture = [c for x in (a.capture or []) for c in x.split(",") if c] or None

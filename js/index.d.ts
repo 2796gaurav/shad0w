@@ -58,6 +58,8 @@ export interface Decision<A = string | boolean> {
   threshold: number | null;
   /** per-option probabilities (table decisions from peek() only) */
   probabilities?: Record<string, number> | null;
+  /** why this answer came from where it did, in plain words */
+  why: string;
 }
 
 /** What the table thinks of a text, without calling your model. */
@@ -76,7 +78,13 @@ export interface Explanation {
 export const FLAG_WORDS: Record<string, string>;
 /** The reason behind a flag, in plain words. */
 export function explainFlag(flag: Flag): string;
-export type Teacher = ((text: string) => Promise<string | boolean> | string | boolean) & { question?: string };
+export type Teacher = ((text: string) => Promise<string | boolean> | string | boolean) & { question?: string; keySource?: string };
+/** An API key: a string, or a function called on every request (rotating or vault keys). Never logged or printed. */
+export type ApiKey = string | (() => string | Promise<string>);
+/** Process-wide defaults for decision() and the teachers. configure() with no argument clears them; the result masks the key. */
+export function configure(opts?: { llm?: string; apiKey?: ApiKey; apiKeyEnv?: string; baseURL?: string }): Record<string, unknown>;
+/** "sk-…3f9a": a key's prefix and last 4 characters. */
+export function maskKey(key: string | null | undefined): string;
 export type LogSink = ((row: Record<string, unknown>) => unknown) | { write(line: string): unknown } | string;
 
 export interface ShadowOptions {
@@ -115,6 +123,10 @@ export class Shadow {
   /** options added / removed since the bundle was trained (see ShadowOptions.options) */
   readonly optionsAdded: string[];
   readonly optionsRemoved: string[];
+  /** Decide a batch in order: table answers first, only deferred texts go to the teacher, `concurrency` (default 8) at a time. */
+  decideMany(texts: Iterable<string>, opts?: { concurrency?: number; teacher?: Teacher }): Promise<Decision[]>;
+  /** question, options, state, teacher and where its key comes from (masked) */
+  toString(): string;
   stats(): { table: number; teacher: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null;
              optionsAdded: string[]; optionsRemoved: string[] };
 }
@@ -126,7 +138,10 @@ export interface TeacherOptions {
   model?: string;
   question?: string;
   baseURL?: string;
-  apiKey?: string;
+  /** the key: a string or a function called on every request. Default: apiKeyEnv, configure(), then the provider's variable */
+  apiKey?: ApiKey;
+  /** the NAME of the environment variable holding the key */
+  apiKeyEnv?: string;
   fetch?: typeof fetch;
   system?: string;
   temperature?: number;
@@ -147,7 +162,8 @@ export interface DecisionTeacherOptions {
   /** the model name sent to the server (System One: e.g. "kev-0.8b"; Decisions API: default "gpt-6-luna") */
   model?: string;
   baseURL?: string;
-  apiKey?: string;
+  apiKey?: ApiKey;
+  apiKeyEnv?: string;
   fetch?: typeof fetch;
   headers?: Record<string, string>;
   timeout?: number;
@@ -159,7 +175,8 @@ export function systemoneTeacher(opts: DecisionTeacherOptions & { baseURL: strin
 export function decisionsTeacher(opts: DecisionTeacherOptions): Teacher & { options: string[] };
 
 /**
- * decision("intent", {options, llm: "openai/gpt-6-luna", bundle: "intent.bundle", log: "intent.log.jsonl"})
+ * decision("intent", {options, llm: "openai/gpt-6-luna", apiKey: process.env.OPENAI_API_KEY, bundle: "intent.bundle", log: "intent.log.jsonl"})
+ * apiKey / apiKeyEnv / baseURL with a function llm throw a TypeError (the function holds its own key); unknown options throw too.
  * llm may also be "systemone/<model>" (with baseURL) or "openai-decisions/gpt-6-luna".
  * A bundle path that does not exist starts log-only; a corrupt or unsupported bundle throws.
  */
