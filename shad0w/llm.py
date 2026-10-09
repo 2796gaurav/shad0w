@@ -106,7 +106,10 @@ def normalize_options(options: Any, question: str = "decision") -> tuple[str, st
     if typing.get_origin(options) is typing.Literal:
         return question, "choice", {str(o): None for o in typing.get_args(options)}, None
     if isinstance(options, (list, tuple)):
-        return question, "choice", {str(o): None for o in options}, None
+        crit = {str(o): None for o in options}
+        if len(crit) < 2:
+            raise ValueError(f"options needs at least two distinct choices, got {list(options)!r} (for yes/no, pass options=bool)")
+        return question, "choice", crit, None
     if not isinstance(options, dict) or not options:
         raise TypeError("options must be a list of names, a {name: description} dict or a shad0w schema")
     if "criteria" in options or options.get("type") in ("choice", "yesno"):
@@ -280,7 +283,7 @@ class LLMTeacher:
         ans = self.parse(content)
         if ans is None:
             self.failures += 1
-            raise TeacherError(f"{self.name} replied {content[:200]!r}, which matches none of {self.options}")
+            raise TeacherError(f"{self.name} replied {redact(content[:200], self._key)!r}, which matches none of {self.options}")
         return ans
 
     def complete(self, text: str) -> str:
@@ -390,8 +393,10 @@ class LLMTeacher:
         return f"LLMTeacher({self.name!r}, question={self.question!r}, options={len(self.options)}{key})"
 
 
-def llm_teacher(options: Any, model: str = "openai/gpt-6-luna", **kw) -> LLMTeacher:
-    """A teacher callable(text) -> option backed by any OpenAI-compatible LLM. See LLMTeacher for keywords."""
+def llm_teacher(options: Any, model: str | None = None, **kw) -> LLMTeacher:
+    """A teacher callable(text) -> option backed by any OpenAI-compatible LLM. See LLMTeacher for keywords.
+    model defaults to shad0w.configure(llm=...), then SHAD0W_LLM, then "openai/gpt-6-luna"."""
+    model = model or _config._CONFIGURED.get("llm") or os.environ.get("SHAD0W_LLM") or "openai/gpt-6-luna"
     return LLMTeacher(options, model, **kw)
 
 

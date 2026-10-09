@@ -41,7 +41,7 @@ export function words(text: string): Uint8Array[];
 export const TABLE_VERSION: number;
 
 export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
-  | "canary" | "never_serve" | "shadow" | "off" | "options_changed" | "option_removed" | null;
+  | "canary" | "never_serve" | "shadow" | "off" | "options_changed" | "option_removed" | "new_options_served" | null;
 
 /** One decision from a Shadow cascade. */
 export interface Decision<A = string | boolean> {
@@ -127,7 +127,7 @@ export class Shadow {
   decideMany(texts: Iterable<string>, opts?: { concurrency?: number; teacher?: Teacher }): Promise<Decision[]>;
   /** question, options, state, teacher and where its key comes from (masked) */
   toString(): string;
-  stats(): { table: number; teacher: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null;
+  stats(): { table: number; teacher: number; fallback: number; audits: number; auditDisagreements: number; offload: number; auditDisagreement: number | null;
              optionsAdded: string[]; optionsRemoved: string[] };
 }
 
@@ -221,3 +221,12 @@ export function decisionModel(shadows: Shadow | Record<string, Shadow>, opts?: {
 
 export function matchOption(reply: unknown, options: string[], field?: string): string | null;
 export const PROVIDERS: Record<string, [string, string | null]>;
+
+declare const shad0w: {
+  Table: typeof Table; Bundle: typeof Bundle; Shadow: typeof Shadow; openaiTeacher: typeof openaiTeacher;
+  systemoneTeacher: typeof systemoneTeacher; decisionsTeacher: typeof decisionsTeacher; decision: typeof decision;
+  shad0wMiddleware: typeof shad0wMiddleware; decisionModel: typeof decisionModel; configure: typeof configure;
+  maskKey: typeof maskKey; explainFlag: typeof explainFlag; FLAG_WORDS: typeof FLAG_WORDS; matchOption: typeof matchOption;
+  PROVIDERS: typeof PROVIDERS; items: typeof items; words: typeof words; TABLE_VERSION: typeof TABLE_VERSION;
+};
+export default shad0w;

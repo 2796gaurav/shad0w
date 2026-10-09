@@ -27,7 +27,7 @@ def fnv1a(data: bytes) -> int:
 
 
 def _words(text: str) -> list[bytes]:
-    b = text.encode("utf-8").lower()  # bytes.lower() is ASCII-only, matching C
+    b = text.encode("utf-8", "replace").lower()  # bytes.lower() is ASCII-only, matching C; lone surrogates become "?"
     words, cur = [], bytearray()
     for ch in b:
         if (48 <= ch <= 57) or (97 <= ch <= 122) or ch >= 0x80:

@@ -55,6 +55,14 @@ _NO_FALLBACK = object()  # sentinel: no fallback configured (decide() needs a te
 MIN_UNIFORM_CAL = 100  # audit rows needed before train() certifies on them instead of a random split
 
 
+def _named(answer, names) -> bool:
+    """Is `answer` one of `names`? A yes/no answer (bool) matches "yes"/"true"/"1" or "no"/"false"/"0" too."""
+    if isinstance(answer, bool):
+        words = ("yes", "true", "1") if answer else ("no", "false", "0")
+        return any(n is answer or str(n).strip().lower() in words for n in names)
+    return answer in names
+
+
 @dataclass(frozen=True)
 class Decision:
     answer: Any  # the option name (choice) or a bool (yesno)
@@ -95,6 +103,7 @@ _FLAG_WORDS = {
     "off": "mode=off: the table was not consulted",
     "manual_threshold": "served under force_threshold: NOT covered by the certificate",
     "options_changed": "your options include ones the table never learned: asked your model until you retrain",
+    "new_options_served": "served although you added options the table never learned (on_new_option=\"serve\"): NOT covered by the certificate",
     "option_removed": "the table picked an option you removed: asked your model",
 }
 
@@ -317,7 +326,7 @@ class Shadow:
         certified, flag = r["certified"], r["flag"]
         if certified and s.min_confidence is not None and r["confidence"] < s.min_confidence:
             certified, flag = False, "min_confidence"
-        if certified and s.never_serve and local in s.never_serve:
+        if certified and s.never_serve and _named(local, s.never_serve):
             certified, flag = False, "never_serve"
         if certified and s.canary < 1.0 and self._rng.random() >= s.canary:
             certified, flag = False, "canary"
@@ -327,6 +336,8 @@ class Shadow:
             return False, False, ("shadow" if certified or forced else flag)
         if forced:
             return True, False, "manual_threshold"
+        if certified and self.options_added:  # on_new_option="serve": served, but the certificate never saw the new options
+            return True, False, "new_options_served"
         return certified, certified, flag
 
     def _mk(self, answer, source: str, r: dict | None, certified: bool, flag: str | None, t0: float) -> Decision:
@@ -416,7 +427,9 @@ class Shadow:
         """Log an answer you obtained from your model yourself and count it as a teacher decision."""
         t0 = time.perf_counter()
         name = self.question or "decision"
-        self._record(text, self._src(), name, answer)
+        # an "audit" row must be a uniform sample of ALL traffic: only true when served answers are spot-checked too,
+        # which needs a teacher on this Shadow (peek() + record() integrations often have none)
+        self._record(text, self._src() if self.teacher is not None else "teacher", name, answer)
         if self.model is None:
             d = self._mk(answer, "teacher", None, False, "no_bundle", t0)
         else:
@@ -702,11 +715,35 @@ class Shadow:
         t = time.perf_counter()
         answer = teacher(text)
         took = time.perf_counter() - t
+        if inspect.isawaitable(answer):
+            getattr(answer, "close", lambda: None)()
+            raise TypeError("this llm is async: call `await shadow.adecide(text)` (or adecide_many) instead of decide()")
         self._record(text, source, name, answer)
         return answer, took
 
+    def _loggable(self, answer):
+        """The answer as it belongs in the log: an option name (Enum members by value/name) or a bool for yes/no.
+        None when it matches no option, so a stray answer never becomes training data."""
+        from .llm import enum_option, match_option
+        answer = enum_option(answer)
+        schema = self.schema or {}
+        if schema.get("type") == "yesno" or isinstance(answer, bool):
+            if isinstance(answer, bool):
+                return answer
+            v = match_option(str(answer), ["yes", "no"])
+            return None if v is None else v == "yes"
+        opts = list(schema.get("criteria") or {}) or (list(self.model.questions[self.question].options)
+                                                       if self.model is not None and self.question in self.model.questions else [])
+        if not opts or answer in opts:
+            return answer
+        return match_option(answer if isinstance(answer, str) else str(answer), opts)
+
     def _record(self, text: str, source: str, name: str, answer) -> None:
         """Append one teacher answer to the log (the training data) and trigger auto_train when due."""
+        if answer is not None:
+            raw, answer = answer, self._loggable(answer)
+            if answer is None:
+                log.warning("%s: answer %r matches no option; not logged", name, raw)
         if self.log and answer is not None:
             row = json.dumps({"text": text, name: answer, "source": source, "ts": round(time.time(), 3)},
                              ensure_ascii=False, default=str)
@@ -982,11 +1019,12 @@ def _read_rows(src) -> list[dict]:
             import csv
             with open(p, encoding="utf-8-sig", newline="") as f:
                 return list(csv.DictReader(f))
-        with open(p, encoding="utf-8") as f:
-            if p.lower().endswith(".json"):
+        if p.lower().endswith(".json"):
+            with open(p, encoding="utf-8") as f:
                 data = json.load(f)
-                return data if isinstance(data, list) else data.get("rows", [])
-            return [json.loads(line) for line in f if line.strip()]
+            return data if isinstance(data, list) else data.get("rows", [])
+        from .shadow import read_jsonl
+        return read_jsonl(p)
     return [dict(r) for r in src]
 
 

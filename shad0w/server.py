@@ -91,6 +91,8 @@ def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metri
                 return self._send(404, {"error": "not found"})
             try:
                 n = int(self.headers.get("content-length", 0))
+                if n < 0:
+                    return self._send(400, {"error": "invalid content-length"})
                 if n > MAX_BODY:
                     return self._send(413, {"error": f"request body over {MAX_BODY} bytes"})
                 req = json.loads(self.rfile.read(n))

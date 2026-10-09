@@ -18,10 +18,10 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-14, windows-latest]
     steps:
       - uses: actions/checkout@v7
-      - uses: pypa/cibuildwheel@v2.22
+      - uses: pypa/cibuildwheel@v3.4.1
         env:
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
-          CIBW_SKIP: "*-musllinux_* *-win32 *-manylinux_i686"
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux_i686"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_TEST_REQUIRES: numpy
@@ -61,6 +61,7 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
 
   npm:
+    needs: [pypi]   # publish to npm only after the Python release went out
     # npm Trusted Publishing (OIDC): no token is stored. Configure it once on npmjs.com:
     # package shad0wllm -> Settings -> Trusted Publisher -> GitHub Actions, repo 2796gaurav/shad0w, workflow release.yml
     if: startsWith(github.ref, 'refs/tags/v')

@@ -202,6 +202,10 @@ def _norm(key: str, v: Any) -> Any:
         return tuple(sorted((str(a).strip(), str(b).strip()) for a, b in (v or ())))
     if key == "auto_train" and (v is None or v is False):
         return 0
+    if key == "auto_train" and v is True:
+        raise ValueError("auto_train takes a number of new answers between retrains (e.g. 1000), not True")
+    if isinstance(DEFAULTS.get(key), bool) and isinstance(v, str):  # "no" / "false" from code means False
+        return v.strip().lower() in ("1", "true", "yes", "on")
     if key == "trace" and v is not None and not isinstance(v, str):
         return v  # a TraceWriter passed in code
     return v
@@ -231,6 +235,10 @@ def _validate(s: dict) -> None:
         raise ValueError(f"rename must map distinct non-empty labels to different non-empty labels, got {dict(s['rename'])}")
     if s["retrain"] not in RETRAIN:
         raise ValueError(f"retrain must be one of {RETRAIN}, got {s['retrain']!r}")
+    if int(s["auto_train"]) < 0:
+        raise ValueError(f"auto_train must be 0 (off) or a positive number of answers, got {s['auto_train']!r}")
+    if not (isinstance(s["timeout"], (int, float)) and s["timeout"] > 0):
+        raise ValueError(f"timeout must be a positive number of seconds, got {s['timeout']!r}")
     if int(s["min_rows"]) < 100:
         raise ValueError("min_rows must be at least 100")
     if int(s["drift_window"]) < 10:
@@ -262,9 +270,10 @@ _KEY_LINE = ("{where}: found `api_key = ...`. Never put the key itself in a file
 
 
 def _check_no_key(doc: dict, cfg: str) -> None:
-    secs = [("", doc)] + [(f" [questions.{q}]", v) for q, v in (doc.get("questions") or {}).items() if isinstance(v, dict)]
+    secs = [("", doc)] + [(f" [questions.{q}]", v) for q, v in (doc.get("questions") if isinstance(doc.get("questions"), dict) else {}).items()
+                                    if isinstance(v, dict)]
     for sec, d in secs:
-        if "api_key" in d or "apikey" in d:
+        if any(str(k).lower().replace("-", "_").endswith(("api_key", "apikey")) for k in d):
             raise ValueError(_KEY_LINE.format(where=f"{cfg}{sec}"))
 
 
@@ -280,14 +289,22 @@ def _layers(question: str | None, path: str | None, overrides: dict) -> list[tup
         _check_no_key(doc, cfg)
         top = {k: v for k, v in doc.items() if k in DEFAULTS}
         layers.append((f"toml:{cfg}", top))
-        qsec = (doc.get("questions") or {}).get(question or "", {}) if question else {}
+        qs = doc.get("questions") or {}
+        if not isinstance(qs, dict):
+            raise ValueError(f"{cfg}: `questions` must be a table ([questions.<name>] sections), got {qs!r}")
+        qsec = qs.get(question or "", {}) if question else {}
+        if qsec and not isinstance(qsec, dict):
+            raise ValueError(f"{cfg}: [questions.{question}] must be a table of settings, got {qsec!r}")
         if qsec:
             layers.append((f"toml:{cfg} [questions.{question}]", {k: v for k, v in qsec.items() if k in DEFAULTS}))
     env = {}
     for k in DEFAULTS:
         raw = os.environ.get(ENV_PREFIX + k.upper())
         if raw is not None:
-            env[k] = _coerce(k, raw)
+            try:
+                env[k] = _coerce(k, raw)
+            except ValueError as e:
+                raise ValueError(f"{ENV_PREFIX + k.upper()}={raw!r}: {e}") from None
     if env:
         layers.append(("env", env))
     if _CONFIGURED:

@@ -195,7 +195,7 @@ class Bundle {
       const full = opts.probabilities !== false;
       const d = table.decide(text, full);
       const thr = spec.threshold === null || spec.threshold === undefined ? Infinity : spec.threshold;
-      const flag = spec.calibrated === false ? "uncalibrated" : d.confidence < thr ? "low_confidence" : null;
+      const flag = spec.calibrated === false ? "uncalibrated" : !(d.confidence >= thr) ? "low_confidence" : null;  // fail closed on NaN
       const out = { confidence: d.confidence, certified: flag === null, flag };
       if (spec.type === "yesno") { out.answer = d.index === 1; out.probability = full ? d.probabilities[1] : d.p1; }
       else {
@@ -453,6 +453,7 @@ const FLAG_WORDS = {
   shadow: "shadow mode: the table's answer was recorded, your model's was returned",
   off: "mode=off: the table was not consulted",
   options_changed: "your options include ones the table never learned: asked your model until you retrain",
+  new_options_served: "served although you added options the table never learned (onNewOption \"serve\"): NOT covered by the certificate",
   option_removed: "the table picked an option you removed: asked your model",
 };
 const explainFlag = (flag) => FLAG_WORDS[flag === null || flag === undefined ? "null" : flag] || String(flag || "");
@@ -523,6 +524,7 @@ class Shadow {
       if (a.probabilities) a.probabilities = Object.fromEntries(Object.entries(a.probabilities).map(([k, v]) => [r(k), v]));
     }
     if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
+    else if (this.optionsAdded.length && a.certified) a = { ...a, uncovered: true };  // onNewOption "serve": served, not covered
     else if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };
     return a;
   }
@@ -573,8 +575,8 @@ class Shadow {
     const a = this._table(text, opts.probabilities !== false);
     if (!a || !a.certified) return null;
     const local = "choice" in a ? a.choice : a.answer;
-    const d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null,
-      probabilities: a.probabilities || null };
+    const d = { answer: local, source: "table", confidence: a.confidence, certified: !a.uncovered,
+      flag: a.uncovered ? "new_options_served" : null, probabilities: a.probabilities || null };
     this._audit(text, local, opts.teacher || this.teacher);
     return this._done(d, text, t0);
   }
@@ -617,7 +619,8 @@ class Shadow {
     } else {
       const local = "choice" in a ? a.choice : a.answer;
       if (a.certified) {
-        d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null };
+        d = { answer: local, source: "table", confidence: a.confidence, certified: !a.uncovered,
+          flag: a.uncovered ? "new_options_served" : null };
         this._audit(text, local, teacher);
       } else {
         const answer = await this._ask(text, "teacher", teacher);

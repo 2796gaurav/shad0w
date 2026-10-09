@@ -109,7 +109,7 @@ def shadow_compile(schema: dict, records: list[dict], alpha: float = 0.05, delta
             how = "uniform-audit"
         else:
             perm = rng.permutation(len(texts))
-            n_cal = int(min(max_cal, max(100, cal_fraction * len(texts))))
+            n_cal = int(min(max_cal, max(100, cal_fraction * len(texts)), len(texts) // 2))  # always leave rows to fit on
             cal, fit = perm[:n_cal], perm[n_cal:]
             cal_texts, cal_y = [texts[i] for i in cal], y[cal]
             how = "held-out-split"
@@ -144,7 +144,7 @@ def certify_bundle(bundle: str, records: list[dict], alpha: float | None = None,
         y = _encode_labels(q.qtype, q.options, [r[name] for r in rows])
         cert["questions"][name] = {"type": q.qtype, "options": q.options, "n_records": len(texts),
                                    "data_sha256": _hash_records(texts, [r[name] for r in rows]),
-                                   **_certify(q, texts, y, alpha, delta)}
+                                   **_certify(q, texts, y, alpha, delta, q.guard.window, q.guard.margin)}
     m.save(bundle)
     write_certificate(bundle, cert)
     return cert
@@ -178,5 +178,22 @@ def read_certificate(bundle: str):
 
 
 def read_jsonl(path: str) -> list[dict]:
+    """Rows of a JSON Lines file. A malformed line (say, half-written when a process was killed) is skipped with a
+    warning naming its line number, so one bad line never blocks training."""
+    rows, bad = [], []
     with open(path, encoding="utf-8") as f:
-        return [json.loads(line) for line in f if line.strip()]
+        for i, line in enumerate(f, 1):
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except ValueError:
+                bad.append(i)
+                continue
+            if isinstance(row, dict):
+                rows.append(row)
+            else:
+                bad.append(i)
+    if bad:
+        _log.warning("%s: skipped %d malformed line(s): %s", path, len(bad), ", ".join(map(str, bad[:10])) + (" ..." if len(bad) > 10 else ""))
+    return rows

@@ -7,7 +7,7 @@ Teacher = a frozen open sentence encoder used zero-shot (option-name similarity)
 already run". The demo logs the teacher's answers on the train split (shadow), compiles and certifies the table
 against the teacher on a held-out slice, then measures on the official test split:
 agreement with the teacher, the share answered locally, realised disagreement, and cascade accuracy vs gold.
-Numbers differ by teacher; the published table in docs/BENCHMARKS.md used EmbeddingGemma-300m and Kev-0.8B.
+Numbers differ by teacher; the published tables are on https://2796gaurav.github.io/shad0w/docs/benchmarks.html
 """
 import argparse
 import time

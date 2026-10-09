@@ -117,6 +117,12 @@ BONFERRONI_LEVELS = (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.
 PROCEDURES = ("auto", "fixed-sequence", "bonferroni")
 
 
+def _served(c_sorted, k):
+    """How many calibration rows a threshold at the k-th confidence actually serves: rows tied with it are served
+    too, so they must be counted in the test (otherwise tied confidences would serve answers the bound never saw)."""
+    return int(np.searchsorted(-c_sorted, -c_sorted[k - 1], side="right"))
+
+
 class SelectiveRiskController:
     """Pick the lowest confidence threshold whose certified selective error <= alpha, with probability >= 1 - delta.
 
@@ -163,6 +169,7 @@ class SelectiveRiskController:
         n_min = max(n_min, math.ceil(0.05 * n), min(50, n), min(_tolerant_start(self.alpha, delta, n), n))
         thr = np.inf
         for k in np.unique(np.linspace(min(n_min, n), n, grid).astype(int)):  # strict -> lenient, stop at failure
+            k = _served(c_sorted, k)
             if binom_ucb(int(errs[k - 1]), int(k), delta) > self.alpha:
                 break
             thr = c_sorted[k - 1]
@@ -173,6 +180,7 @@ class SelectiveRiskController:
         ks = sorted({max(1, int(round(level * n))) for level in BONFERRONI_LEVELS}) if n else []
         thr = np.inf
         for k in ks:
+            k = _served(c_sorted, k)
             if binom_ucb(int(errs[k - 1]), k, delta / len(ks)) <= self.alpha:
                 thr = min(thr, c_sorted[k - 1])  # the most lenient level that passes
         return thr

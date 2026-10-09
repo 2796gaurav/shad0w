@@ -354,13 +354,19 @@ def make_handler(gw: Gateway):
                 path = path[3:]
             return gw.upstream + path
 
-        def _forward(self, body: bytes | None, relay: bool = True, rewrite_model: dict | None = None):
+        def _snapshot(self):
+            """URL, method and headers of the request being handled, frozen. Background work (spot checks) must use
+            this: on a keep-alive connection the handler's own fields already describe the NEXT request."""
+            return self._upstream_url(), self.command, list(self.headers.items())
+
+        def _forward(self, body: bytes | None, relay: bool = True, rewrite_model: dict | None = None, snap=None):
             """Send this request upstream. relay=True streams the response straight to the client and returns
             (status, collected bytes); relay=False returns (status, headers, bytes) without writing anything."""
             if rewrite_model is not None:
                 body = json.dumps(rewrite_model).encode()
-            req = urllib.request.Request(self._upstream_url(), data=body, method=self.command)
-            for k, v in self.headers.items():
+            url, method, hdrs = snap or self._snapshot()
+            req = urllib.request.Request(url, data=body, method=method)
+            for k, v in hdrs:
                 if k.lower() not in HOP and not k.lower().startswith("x-shad0w"):
                     req.add_header(k, v)
             req.add_header("accept-encoding", "identity")
@@ -450,7 +456,12 @@ def make_handler(gw: Gateway):
             self._forward(None)
 
         def do_POST(self):
-            n = int(self.headers.get("content-length", 0) or 0)
+            try:
+                n = int(self.headers.get("content-length", 0) or 0)
+            except ValueError:
+                n = -1
+            if n < 0:
+                return self._json(400, {"error": {"message": "invalid content-length"}})
             if n > MAX_BODY:
                 return self._json(413, {"error": {"message": f"request body over {MAX_BODY} bytes"}})
             body = self.rfile.read(n) if n else b""
@@ -482,9 +493,9 @@ def make_handler(gw: Gateway):
                 self._decide(q, req, text)
             except Upstream as u:
                 self._relay_upstream(u)
-            except ValueError as e:
+            except (ValueError, TypeError, AttributeError, KeyError) as e:  # malformed request shapes get a 400
                 gw.metrics.errors += 1
-                self._json(400, {"error": {"message": str(e), "type": "invalid_request_error"}})
+                self._json(400, {"error": {"message": f"shad0w proxy: malformed request: {e}", "type": "invalid_request_error"}})
 
         # -- chat completions marked as decisions ---------------------------------------------------------------
         def _decide(self, q, req, text):
@@ -503,6 +514,7 @@ def make_handler(gw: Gateway):
             yesno = bool(sh.schema) and sh.schema.get("type") == "yesno"
             sent = {}
             me = threading.current_thread()
+            snap = self._snapshot()  # spot checks run later, possibly while this connection serves another request
 
             def finish(ans):
                 if yesno and isinstance(ans, str):
@@ -511,7 +523,8 @@ def make_handler(gw: Gateway):
 
             def via_upstream(_text):
                 if threading.current_thread() is not me:  # a background spot check: never touches the client
-                    status, _, data = self._forward(None, relay=False, rewrite_model={**upstream_req, "stream": False})
+                    status, _, data = self._forward(None, relay=False, rewrite_model={**upstream_req, "stream": False},
+                                                   snap=snap)
                     if status != 200:
                         raise Upstream(status, [], data)
                     return finish(_parse(_reply_text(data), opts, field))

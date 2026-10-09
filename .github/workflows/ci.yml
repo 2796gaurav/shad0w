@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["3.10", "3.13"]
+        python: ["3.10", "3.14"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -37,14 +37,14 @@ jobs:
       - name: Quickstart
         run: python examples/quickstart.py
       - name: Node example
-        run: node examples/node_decide.js examples/out/bundle "my card was stolen"
+        run: node examples/node_decide.js examples/out/quickstart/bundle "my card was stolen"
       - name: Runtime imports only numpy
         shell: bash
         run: |
           python -m venv rt
           RT=$( [ -f rt/bin/python ] && echo rt/bin/python || echo rt/Scripts/python )
           $RT -m pip install -q numpy
-          $RT -c "import sys; sys.path.insert(0, '.'); import shad0w; m = shad0w.load('examples/out/bundle', native=False); print(m.decide('my card was stolen')['answers']['intent']['choice']); bad = [k for k in sys.modules if k.split('.')[0] in ('torch', 'sklearn', 'scipy', 'sentence_transformers')]; assert not bad, bad"
+          $RT -c "import sys; sys.path.insert(0, '.'); import shad0w; m = shad0w.load('examples/out/quickstart/bundle', native=False); print(m.decide('my card was stolen')['answers']['intent']['choice']); bad = [k for k in sys.modules if k.split('.')[0] in ('torch', 'sklearn', 'scipy', 'sentence_transformers')]; assert not bad, bad"
 
   package:
     runs-on: ubuntu-latest

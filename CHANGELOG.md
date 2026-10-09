@@ -6,6 +6,7 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 
 ### Security
 - **The proxy could send one client's API key on another client's behalf.** `Gateway.teacher_for` cached decision-model teachers by whether a key was present, not by which key, so the first client's forwarded key was reused for every later client on the same question and model. Teachers are now cached per key, by a SHA-256 id (never the raw key). Spot checks keep using the key of the request they check.
+- **A chat spot check on a keep-alive connection could carry the next request's key.** The background re-ask read the handler's headers when it ran, by which time the connection could already be serving another client's request. It now uses a snapshot of the URL, method and headers of the request it checks.
 
 ### Added
 - **Explicit API keys.** `decision(..., api_key=..., api_key_env=..., base_url=...)` are named parameters (and on `Shadow`, which now builds the LLM teacher itself from `llm="provider/model"`, and on `LLMTeacher`). `api_key` may be a zero-argument function, called on every request, for rotating or vault keys. Order: `api_key` > `api_key_env` > `shad0w.configure()` > the `api_key_env` setting > the provider's variable.
@@ -25,6 +26,22 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 - **`repr(shadow)` and a Jupyter view**: question, number of options, state (`logging 240/1,000` or the certified share at alpha), the LLM and where its key comes from.
 
 ### Fixed
+- **Tied confidences could serve more than the certificate covered.** The threshold search tested the top *k* calibration answers but then served every answer tied with the *k*-th one. With many identical confidences (repeated messages), realised disagreement could exceed α. Each candidate is now tested on exactly the answers it would serve, in both procedures.
+- **Narrowed options could turn an uncertain answer into a certified one.** Asking for a subset of the options renormalised the confidence before comparing it with the threshold. Certification is now judged on the full-option answer; a narrowed request that changes the answer, or names no known option, is never certified.
+- **A table file with non-finite weights is refused** by both the C and the Python loader (it used to serve NaN confidences as certified), and every threshold check fails closed on NaN (Python and JavaScript).
+- **Answers that match no option are never logged**, also from function teachers; Enum members are logged by name/value; an async `llm` passed to the sync `decide()` raises a clear `TypeError` instead of logging a coroutine.
+- **`never_serve` works for yes/no questions** (`never_serve = ["yes"]`).
+- **`on_new_option = "serve"`** answers are now reported as `certified=False` with flag `new_options_served`.
+- **`record()` without a teacher** no longer tags rows as spot checks (they would have claimed a uniform sample that was not one).
+- **`shad0w serve` / proxy**: malformed request shapes get a 400 instead of a dropped connection; a negative `Content-Length` is refused.
+- **`shad0w certify` / `calibrate`** refuse fewer than 100 rows unless `--force` (one row used to silently stop the table from serving).
+- **`shadow_compile` with 100–120 rows** no longer crashes (it always leaves rows to fit on); re-certifying keeps the drift settings.
+- **Lone UTF-16 surrogates** in a message no longer crash `decide`.
+- **One malformed line in a log** is skipped with a warning naming its line number instead of blocking `train`.
+- **Settings**: a bad `SHAD0W_*` value names the variable; `[questions] intent = 3` gives a clear error; `auto_train=True`, negative `auto_train` and non-positive `timeout` are refused; `exposed="no"` means False; `options` needs two distinct choices; `OPENAI_API_KEY = ...` (any `*api_key` line) in `shad0w.toml` is refused like `api_key`.
+- **`llm_teacher()`** takes its model from `shad0w.configure(llm=...)` / `SHAD0W_LLM` when none is passed.
+- **Python 3.10**: `tomli` is now a dependency there (`shad0w init` writes a `shad0w.toml`); the test suite runs on 3.10.
+- **CLI**: unreachable servers, busy ports and similar OS errors print one line and exit 2; `decide`, `serve` and `bench` have help text; the generated `app.py` imports `os`.
 - `shad0w calibrate` updated the threshold in `manifest.json` but not in `certificate.json`, so `shad0w report` showed a stale certificate.
 - `certify_bundle` dropped questions with no fresh records from the certificate while they kept serving on their old threshold; their previous entry is now kept and marked `recertified: false`, with a warning.
 - A spot check whose LLM call failed stayed in the pending list forever (a small leak).
@@ -40,6 +57,7 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 - TypeScript: `Flag` includes `options_changed` and `option_removed`; `Table.decide` and `Bundle.decide` accept `probabilities`.
 
 ### Changed
+- **Wheels for Python 3.14 and musllinux (Alpine)**; release builds use cibuildwheel 3.4, npm publishes only after PyPI. The sdist now includes the test suite's mock LLM and the JavaScript sources, so `pytest` runs from it.
 - **Clear errors instead of silent drops.** `api_key`, `base_url` or other LLM keywords with a function `llm` raise `TypeError` (they used to be ignored). An unknown keyword raises `TypeError` with a "did you mean" suggestion instead of a misleading missing-key error. The missing-key message names `api_key=`, `api_key_env=` and `shad0w.configure`.
 - `LLMTeacher.api_key` is a `Secret` (compare with `==`, read with `.get()`); `teacher.key_source` describes it.
 - `examples/quickstart.py` uses `decision()`, `decide_many()` and `train()` with an offline stand-in LLM.

@@ -63,12 +63,12 @@ class NativeReflex:
 
     def decide(self, text: str):
         """Not thread-safe per instance (shared output buffers); Model guards it with a lock."""
-        b = text.encode("utf-8")
+        b = text.encode("utf-8", "replace")
         y = self.lib.s0_decide(self.m, b, len(b), self._p, ctypes.byref(self._r))
         return y, np.array(self._p, dtype=np.float32), self._r.value
 
     def bench(self, texts: list[str], reps: int = 5):
-        enc = [t.encode("utf-8") for t in texts]
+        enc = [t.encode("utf-8", "replace") for t in texts]
         arr = (ctypes.c_char_p * len(enc))(*enc)
         lens = (ctypes.c_int * len(enc))(*[len(e) for e in enc])
         per = (ctypes.c_double * len(enc))()

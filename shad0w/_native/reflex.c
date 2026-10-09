@@ -86,6 +86,10 @@ S0_API S0Reflex *s0_load(const char *path) {
   for (uint32_t r = 1; r < m->F; r++)  // keys must be strictly increasing 22-bit bucket ids
     if (m->keys[r] <= m->keys[r - 1]) goto fail;
   if (m->keys[m->F - 1] > MASK) goto fail;
+  for (uint32_t k = 0; k < m->K; k++)  // non-finite weights would turn every confidence into NaN
+    if (!isfinite(m->scale[k]) || !isfinite(m->bias[k])) goto fail;
+  for (size_t k = 0; k < (size_t)m->K * m->K; k++)
+    if (!isfinite(m->G[k])) goto fail;
   m->cap = 1;
   while (m->cap < 2 * m->F) m->cap <<= 1;
   m->slot_key = calloc(m->cap, 4);

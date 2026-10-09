@@ -65,6 +65,10 @@ def _load_reflex(path) -> Reflex:
     G = np.frombuffer(data, "<f4", K * K, o).reshape(K, K).copy()
     if F_ > 1 and not bool(np.all(keys[1:] > keys[:-1])):
         raise ValueError(f"{path}: table keys are not sorted")
+    if F_ and int(keys[-1]) >= (1 << 22):
+        raise ValueError(f"{path}: table key out of range")
+    if not (np.isfinite(scale).all() and np.isfinite(bias).all() and np.isfinite(G).all()):
+        raise ValueError(f"{path}: table has non-finite weights")
     return Reflex(keys, T, scale, bias, temp, [], G)
 
 
@@ -149,26 +153,35 @@ class Question:
             its = items(text) if its is None else its
             p = softmax(self.rx.logits(its))
             y, r = int(np.argmax(p)), self.rx.radius(its)
-        if options and self.qtype == "choice":
+        # The certificate covers the table's own answer at its full-option confidence. A narrowed request may pick
+        # a different option or renormalise the confidence upwards; neither is covered, so certification is always
+        # judged on the full-option answer and confidence.
+        y_full = y
+        conf = float(p[y])
+        unknown = False
+        if options is not None and self.qtype == "choice":  # [] = none of the requested options is known
             idx = [self.options.index(o) for o in options if o in self.options]
+            unknown = not idx
             if idx and len(idx) < len(self.options):
                 sub = np.asarray(p)[idx]
                 tot = float(sub.sum())  # renormalise even when the subset's mass is tiny (no clamp)
                 sub = sub / tot if tot > 0 else np.full(len(idx), 1.0 / len(idx))
                 p = np.zeros_like(np.asarray(p)); p[idx] = sub
                 y = int(idx[int(np.argmax(sub))])
-        conf = float(p[y])
         drift = self.guard.update(conf) if observe else self.guard.raised
         flag = None
         if not self.calibrated:
             flag = "uncalibrated"
-        elif conf < self.threshold:
+        elif unknown:
+            flag = "options_changed"
+        elif y != y_full or not (conf >= self.threshold):  # fail closed on NaN
+            flag = "low_confidence"
             flag = "low_confidence"
         elif exposed and r < self.r_min:
             flag = "low_radius"
         elif drift:
             flag = "drift"
-        out = {"confidence": conf, "certified": flag is None, "flag": flag,
+        out = {"confidence": conf if y == y_full else float(p[y]), "certified": flag is None, "flag": flag,
                "radius": None if math.isinf(r) else int(r)}
         if self.qtype == "yesno":
             out["probability"] = float(p[1])

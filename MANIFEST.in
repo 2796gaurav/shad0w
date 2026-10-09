@@ -1,0 +1,5 @@
+# The sdist carries the runnable test suite (with its mock LLM) next to the package.
+include tests/__init__.py tests/mock_llm.py
+prune tests/__pycache__
+# The JavaScript sources, so the cross-language parity tests run from the sdist too.
+include js/index.js js/index.mjs js/index.d.ts js/bench.js js/build.mjs js/package.json

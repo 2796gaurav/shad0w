@@ -46,7 +46,7 @@ def trained(tmp_path_factory):
 
 # -- enums ------------------------------------------------------------------------------------------------------------
 
-class Intent(enum.StrEnum):
+class Intent(str, enum.Enum):  # enum.StrEnum needs 3.11
     REFUND = "refund"
     LOST_CARD = "lost_card"
     BALANCE = "balance"

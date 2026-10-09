@@ -48,6 +48,7 @@ def _rows_by_question(path, schema_questions):
     return rows, out
 
 
+MIN_CERT_ROWS = 100  # certify / calibrate refuse smaller sets without --force
 _SCHEMA = {"intent": {"type": "choice", "criteria": {
     "refund": "the customer wants money back", "lost_card": "a card is lost or stolen",
     "balance": "the customer asks about their balance", "other": None}}}
@@ -114,6 +115,7 @@ certified table answers what it is sure about in microseconds. Run from this fol
 
 Settings (llm, api_key_env, folder, ...) come from shad0w.toml next to this file.
 """
+import os  # noqa: F401  (for api_key=os.environ[...] below)
 import sys
 
 import shad0w
@@ -699,6 +701,9 @@ def main(argv=None):
     except FileNotFoundError as e:
         print(f"shad0w: {e}", file=sys.stderr)
         return 2
+    except OSError as e:  # unreachable server, port in use, a folder where a file was expected, permissions
+        print(f"shad0w: {e}", file=sys.stderr)
+        return 2
     except ModuleNotFoundError as e:
         if (e.name or "").split(".")[0] in ("sklearn", "scipy", "torch", "sentence_transformers"):
             print(f"shad0w: {e.name} is not installed; training needs: pip install \"shad0wllm[compile]\"", file=sys.stderr)
@@ -757,6 +762,7 @@ def _main(argv=None):
     ce.add_argument("--alpha", type=float)
     ce.add_argument("--delta", type=float, default=0.1)
     ce.add_argument("--teacher")
+    ce.add_argument("--force", action="store_true", help="certify even with fewer than 100 rows (usually stops serving)")
 
     rp = sub.add_parser("report", help="print the bundle's certificate")
     rp.add_argument("--bundle", required=True)
@@ -774,16 +780,17 @@ def _main(argv=None):
     k.add_argument("--bundle", required=True)
     k.add_argument("--data", required=True)
     k.add_argument("--alpha", type=float)
+    k.add_argument("--force", action="store_true", help="calibrate even with fewer than 100 labels per question")
 
-    d = sub.add_parser("decide")
+    d = sub.add_parser("decide", help="answer one message from a trained bundle (prints JSON)")
     d.add_argument("--bundle", required=True)
     d.add_argument("text")
     d.add_argument("--exposed", action="store_true")
-    s = sub.add_parser("serve")
+    s = sub.add_parser("serve", help="serve a bundle over HTTP (/v1/decide, /v1/decisions, /v1/systemone, dashboard)")
     s.add_argument("--bundle", required=True)
     s.add_argument("--host", default="127.0.0.1")
     s.add_argument("--port", type=int, default=8010)
-    b = sub.add_parser("bench")
+    b = sub.add_parser("bench", help="time decisions per call on this machine")
     b.add_argument("--bundle", required=True)
     b.add_argument("--texts", required=True)
     s.add_argument("--cost-per-call", type=float)
@@ -926,7 +933,12 @@ def _main(argv=None):
                   f"{s_['certified_share_on_calibration']:.1%} at alpha={a.alpha}")
     elif a.cmd == "certify":
         from .shadow import certify_bundle, read_jsonl
-        cert = certify_bundle(a.bundle, read_jsonl(a.data), alpha=a.alpha, delta=a.delta, teacher=a.teacher)
+        rows = read_jsonl(a.data)
+        if len(rows) < MIN_CERT_ROWS and not a.force:
+            print(f"shad0w: only {len(rows)} rows in {a.data}; a certificate needs at least {MIN_CERT_ROWS} "
+                  "(fewer would usually stop the table from serving). Pass --force to do it anyway.", file=sys.stderr)
+            return 2
+        cert = certify_bundle(a.bundle, rows, alpha=a.alpha, delta=a.delta, teacher=a.teacher)
         print(json.dumps(cert, indent=2))
     elif a.cmd == "report":
         from .shadow import read_certificate
@@ -956,6 +968,11 @@ def _main(argv=None):
         _, by_q = _rows_by_question(a.data, m.questions)
         from .shadow import read_certificate, write_certificate
         cert = read_certificate(a.bundle)
+        few = {q: len(t) for q, (t, _) in by_q.items() if len(t) < MIN_CERT_ROWS}
+        if few and not a.force:
+            print(f"shad0w: too few labels to calibrate {few}; at least {MIN_CERT_ROWS} per question "
+                  "(~300 recommended). Pass --force to do it anyway.", file=sys.stderr)
+            return 2
         for q, (texts, labels) in by_q.items():
             res = m.calibrate(q, texts, labels, a.alpha)
             print(q, json.dumps(res))

@@ -1,4 +1,4 @@
-// node examples/node_decide.js examples/out/bundle "my card was stolen"
+// node examples/node_decide.js examples/out/quickstart/bundle "my card was stolen"
 // Certified answers are served from the table; everything else would go to your model.
 const { Bundle } = require("../js/index.js");
 
