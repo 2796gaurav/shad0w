@@ -130,21 +130,23 @@ def test_why_repr_and_html(trained):
 
 def test_decide_many_keeps_order_and_only_sends_deferred_texts(trained):
     d, *_ = trained
-    calls = []
+    calls, live, peak = [], [0], [0]
     lock = threading.Lock()
 
     def slow_llm(text):
         with lock:
             calls.append(text)
+            live[0] += 1
+            peak[0] = max(peak[0], live[0])
         time.sleep(0.05)
+        with lock:
+            live[0] -= 1
         return "balance"
     texts = [f"zebra lettuce {i}" if i % 2 else "hi block my card thanks" for i in range(16)]
-    t = time.perf_counter()
     out = d.decide_many(texts, concurrency=8, teacher=slow_llm)
-    took = time.perf_counter() - t
     assert [o.source for o in out] == ["table" if i % 2 == 0 else "teacher" for i in range(16)]
     assert [o.answer for o in out] == ["lost_card" if i % 2 == 0 else "balance" for i in range(16)]
-    assert sorted(calls) == sorted(texts[1::2]) and took < 0.3  # 8 slow calls in parallel, not 0.4 s in a row
+    assert sorted(calls) == sorted(texts[1::2]) and peak[0] > 1  # the slow calls overlap (not timed: CI runners vary)
 
     async def allm(text):
         await asyncio.sleep(0.05)
