@@ -240,7 +240,7 @@ const now = () => (typeof performance !== "undefined" ? performance.now() : Date
 const CONFIG = {};
 
 /**
- * Process-wide defaults for decision() and the teachers: configure({ llm, apiKey, apiKeyEnv, baseURL }).
+ * Process-wide defaults for decision() and the teachers: configure({ llm, apiKey, apiKeyEnv, baseURL, auditRate }).
  * Call configure() with no argument to clear them. Returns the current defaults with the key masked.
  */
 function configure(opts) {
@@ -678,6 +678,7 @@ async function decision(name, opts = {}) {
     "temperature", "maxTokens", "structured", "model"];
   for (const k of Object.keys(opts)) if (!known.includes(k)) throw new TypeError(`decision: unknown option "${k}"${didYouMean(k, known)}`);
   if (opts.llm === undefined && CONFIG.llm !== undefined) opts = { ...opts, llm: CONFIG.llm };
+  if (opts.auditRate === undefined && CONFIG.auditRate !== undefined) opts = { ...opts, auditRate: CONFIG.auditRate };
   if (typeof opts.llm === "function") {
     const llmOnly = ["apiKey", "apiKeyEnv", "baseURL"].filter((k) => opts[k] !== undefined);
     if (llmOnly.length) throw new TypeError(`${llmOnly.join(", ")} only apply when llm is a "provider/model" string; your llm is a function, so it holds its own key and URL`);

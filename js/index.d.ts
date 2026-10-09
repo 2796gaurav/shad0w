@@ -9,7 +9,7 @@ export class Table {
   constructor(buffer: ArrayBuffer | ArrayBufferView, labels?: string[]);
   readonly F: number;
   readonly K: number;
-  decide(text: string): TableDecision;
+  decide(text: string, probabilities?: boolean): TableDecision;
 }
 
 export interface Answer {
@@ -34,14 +34,14 @@ export class Bundle {
   /** Node: a directory path. Browsers and workers: a URL. */
   static load(base: string): Promise<Bundle>;
   readonly manifest: Manifest;
-  decide(text: string, opts?: { questions?: string[] }): { answers: Record<string, Answer> };
+  decide(text: string, opts?: { questions?: string[]; probabilities?: boolean }): { answers: Record<string, Answer> };
 }
 export function items(text: string): number[];
 export function words(text: string): Uint8Array[];
 export const TABLE_VERSION: number;
 
 export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
-  | "canary" | "never_serve" | "shadow" | "off" | null;
+  | "canary" | "never_serve" | "shadow" | "off" | "options_changed" | "option_removed" | null;
 
 /** One decision from a Shadow cascade. */
 export interface Decision<A = string | boolean> {

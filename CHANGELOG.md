@@ -24,6 +24,21 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 - **`Decision.why`**: the reason for every decision in plain words (JavaScript decisions carry `why` too). A `TeacherError` raised during a decision says why the LLM was asked.
 - **`repr(shadow)` and a Jupyter view**: question, number of options, state (`logging 240/1,000` or the certified share at alpha), the LLM and where its key comes from.
 
+### Fixed
+- `shad0w calibrate` updated the threshold in `manifest.json` but not in `certificate.json`, so `shad0w report` showed a stale certificate.
+- `certify_bundle` dropped questions with no fresh records from the certificate while they kept serving on their old threshold; their previous entry is now kept and marked `recertified: false`, with a warning.
+- A spot check whose LLM call failed stayed in the pending list forever (a small leak).
+- `adecide()` gains the `probabilities=` keyword that `decide()` has.
+- **`mode="shadow"` with `force_threshold` served table answers to users.** Shadow mode now never serves; forced answers count as `would_serve`.
+- `shad0w train --rename OLD=NEW` without `--schema` reused the old `schema.json` and dropped every renamed row; the old schema is now renamed too.
+- `shad0w config` printed invalid values (say `SHAD0W_MODE=on`) without complaint; it now reports them and exits 2.
+- `shad0w shadow` and `shad0w compile` ignored `alpha` from `shad0w.toml` / `SHAD0W_ALPHA` (they defaulted to 0.05).
+- `shad0w compile` with a label that is not in the schema printed a raw `'x' is not in list`.
+- JavaScript `configure({ auditRate })` was accepted but ignored.
+- A subset of options with almost no probability mass was not renormalised (confidence ~1e-33 instead of probabilities that sum to 1).
+- A teacher built with `complete=` reported itself as the default model in errors; it is now named after the function.
+- TypeScript: `Flag` includes `options_changed` and `option_removed`; `Table.decide` and `Bundle.decide` accept `probabilities`.
+
 ### Changed
 - **Clear errors instead of silent drops.** `api_key`, `base_url` or other LLM keywords with a function `llm` raise `TypeError` (they used to be ignored). An unknown keyword raises `TypeError` with a "did you mean" suggestion instead of a misleading missing-key error. The missing-key message names `api_key=`, `api_key_env=` and `shad0w.configure`.
 - `LLMTeacher.api_key` is a `Secret` (compare with `==`, read with `.get()`); `teacher.key_source` describes it.

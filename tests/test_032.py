@@ -328,3 +328,51 @@ def test_decide_decorator_can_call_an_llm_for_you(tmp_path):
     def route(text) -> Route: ...
 
     assert route("it crashed") is Route.tech
+
+
+def test_failed_spot_check_is_not_left_running(trained):
+    d = trained[0]
+    def broken(text):
+        raise RuntimeError("upstream down")
+    d.audit_rate = 1.0
+    try:
+        for text in ["block my card please", "refund my order", "what is my balance"]:
+            d.decide(text, teacher=broken)
+        d.flush(5)
+        assert not [t for t in d._audits if getattr(t, "is_alive", lambda: False)()]
+        assert len(d._audits) == 0
+    finally:
+        d.audit_rate = 0
+
+
+def test_adecide_accepts_probabilities(trained):
+    d = trained[0]
+    out = asyncio.run(d.adecide("hi block my card thanks", probabilities=True))
+    assert out.top is not None or out.source != "table"
+
+
+def test_recertify_keeps_entry_for_questions_without_fresh_rows(trained, tmp_path):
+    from shad0w.shadow import certify_bundle, read_certificate
+    folder = trained[1]
+    src = os.path.join(str(folder), "intent", "bundle")
+    dst = str(tmp_path / "b")
+    shutil.copytree(src, dst)
+    cert = certify_bundle(dst, [{"text": "x", "other_question": "a"}])
+    assert cert["questions"]["intent"]["recertified"] is False
+    assert read_certificate(dst)["questions"]["intent"]["threshold"] == cert["questions"]["intent"]["threshold"]
+
+
+def test_shadow_mode_never_serves_even_with_force_threshold(trained, tmp_path):
+    d = trained[0]
+    sh = shad0w.Shadow(d.bundle_path if hasattr(d, "bundle_path") else os.path.join(str(trained[1]), "intent", "bundle"),
+                       teacher=lambda t: "refund", question="intent", log=str(tmp_path / "l.jsonl"),
+                       mode="shadow", force_threshold=0.0, audit_rate=0)
+    outs = [sh.decide(t) for t in ["block my card", "refund please", "zzz qqq"]]
+    assert all(o.source == "teacher" for o in outs)
+
+
+def test_config_reports_invalid_settings(tmp_path, monkeypatch):
+    monkeypatch.setenv("SHAD0W_MODE", "on")
+    r = subprocess.run([sys.executable, "-c", "import sys; from shad0w.__main__ import main; sys.exit(main(['config']))"],
+                       cwd=str(tmp_path), capture_output=True, text=True)
+    assert r.returncode == 2 and "invalid setting" in r.stderr

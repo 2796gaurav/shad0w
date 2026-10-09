@@ -206,6 +206,11 @@ def _train(a):
     old = os.path.join(out, "schema.json")
     if not full and os.path.exists(old):
         full = json.load(open(old, encoding="utf-8"))
+        if st.rename_map:  # the old schema still lists the old names: rename them so renamed rows are kept
+            for q, sch in full.items():
+                crit = sch.get("criteria") if isinstance(sch, dict) else None
+                if isinstance(crit, dict):
+                    sch["criteria"] = {st.rename_map.get(k, k): v for k, v in crit.items()}
     schema, rows_all = {}, []
     for n in names:
         rows, sch = rows_for_training(records, n, full.get(n), rename=st.rename_map)
@@ -355,7 +360,7 @@ def _config_cmd(a):
         if os.path.exists(p):
             print(f"{p} exists; not overwriting", file=sys.stderr)
             return 2
-        lines = ["# shad0w settings. Precedence: code / flags > SHAD0W_* environment > this file > defaults.",
+        lines = ["# shad0w settings. Precedence: code / flags > shad0w.configure() > SHAD0W_* environment > this file > defaults.",
                  "# Every key is optional. Per-question overrides go under [questions.<name>].", ""]
         for k, v in _config.DEFAULTS.items():
             if k in ("trace", "folder", "capture", "timeout"):
@@ -371,6 +376,13 @@ def _config_cmd(a):
         print(f"wrote {p}")
         return 0
     rows = _config.explain(a.question, path=a.config)
+    try:
+        _config.resolve(a.question, path=a.config)
+    except ValueError as e:
+        print(f"shad0w: invalid setting: {e}", file=sys.stderr)
+        bad = 2
+    else:
+        bad = 0
     w = max(len(k) for k, _, _ in rows)
     for k, v, src in rows:
         print(f"{k:<{w}}  {json.dumps(list(v) if isinstance(v, tuple) else v):<28}  {src}")
@@ -382,7 +394,7 @@ def _config_cmd(a):
         env = (PROVIDERS.get(eff["llm"].split("/", 1)[0]) or ("", None))[1]
         secret = resolve_key(env, settings_key_env=eff.get("api_key_env"))
         print(f"llm key: {secret.describe() if secret is not None else 'none needed'}")
-    return 0
+    return bad
 
 
 def _exchanges(path):
@@ -735,7 +747,7 @@ def _main(argv=None):
     sh.add_argument("--schema", required=True)
     sh.add_argument("--data", required=True, help="jsonl: text + one field per question holding the teacher's answer")
     sh.add_argument("--teacher", default="unspecified", help="name/version of the model whose answers were logged")
-    sh.add_argument("--alpha", type=float, default=0.05, help="certified disagreement bound (0.01-0.10)")
+    sh.add_argument("--alpha", type=float, help="certified disagreement bound (0.01-0.10; default: settings, 0.05)")
     sh.add_argument("--delta", type=float, default=0.1, help="certificate failure probability")
     sh.add_argument("--out", required=True)
 
@@ -756,7 +768,7 @@ def _main(argv=None):
     c.add_argument("--encoder", default="bge-small",
                    help="compile-time encoder for label-free mode (shad0w/compiler/encoders.py key or a sentence-transformers name)")
     c.add_argument("--out", required=True)
-    c.add_argument("--alpha", type=float, default=0.05)
+    c.add_argument("--alpha", type=float, help="default: settings (0.05)")
 
     k = sub.add_parser("calibrate", help="certificate against REAL labels (~300 per question)")
     k.add_argument("--bundle", required=True)
@@ -903,6 +915,8 @@ def _main(argv=None):
         from .shadow import read_jsonl, shadow_compile, write_certificate
         schema = json.load(open(a.schema, encoding="utf-8"))
         t = time.time()
+        from . import config as _config
+        a.alpha = _config.resolve(path=getattr(a, "config", None), alpha=a.alpha).alpha
         m, cert = shadow_compile(schema, read_jsonl(a.data), alpha=a.alpha, delta=a.delta, teacher=a.teacher)
         m.save(a.out)
         write_certificate(a.out, cert)
@@ -924,16 +938,34 @@ def _main(argv=None):
         labeled = _rows_by_question(a.data, schema)[1] if a.data else {}
         unl = [l.strip() for l in open(a.unlabeled, encoding="utf-8") if l.strip()] if a.unlabeled else None
         t = time.time()
-        m = api.compile(schema, labeled=labeled or None, unlabeled=unl, alpha=a.alpha, encoder=a.encoder)
+        from . import config as _config
+        alpha = _config.resolve(path=getattr(a, "config", None), alpha=a.alpha).alpha
+        try:
+            m = api.compile(schema, labeled=labeled or None, unlabeled=unl, alpha=alpha, encoder=a.encoder)
+        except ValueError as e:
+            if "is not in list" not in str(e):
+                raise
+            print(f"shad0w: a label in {a.data} is not an option in {a.schema} ({e}); fix the label or add the option",
+                  file=sys.stderr)
+            return 2
         m.save(a.out)
         print(f"compiled {list(m.questions)} in {time.time() - t:.1f}s -> {a.out}")
     elif a.cmd == "calibrate":
         _need_bundle(a.bundle)
         m = api.load(a.bundle, native=False)
         _, by_q = _rows_by_question(a.data, m.questions)
+        from .shadow import read_certificate, write_certificate
+        cert = read_certificate(a.bundle)
         for q, (texts, labels) in by_q.items():
-            print(q, json.dumps(m.calibrate(q, texts, labels, a.alpha)))
+            res = m.calibrate(q, texts, labels, a.alpha)
+            print(q, json.dumps(res))
+            if cert is not None:  # keep certificate.json in step with the new threshold (shad0w report reads it)
+                cert.setdefault("questions", {}).setdefault(q, {}).update(
+                    {"threshold": res["threshold"], "alpha": m.questions[q].alpha, "n_records": res["n"],
+                     "certified_share": res["certified_share"], "calibration": "labelled"})
         m.save(a.bundle)
+        if cert is not None:
+            write_certificate(a.bundle, cert)
     elif a.cmd == "decide":
         _need_bundle(a.bundle)
         print(json.dumps(api.load(a.bundle).decide(a.text, exposed=a.exposed), indent=2, ensure_ascii=False))

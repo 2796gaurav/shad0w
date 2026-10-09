@@ -240,6 +240,8 @@ class LLMTeacher:
         self._structured = (True if structured is None else structured) and self.dialect is None
         self._dropped: set[str] = set()
         self.name = f"{self.provider}/{self.model}"
+        if complete is not None:  # the model string is not what answers: name the function instead
+            self.name = f"complete:{getattr(complete, '__qualname__', None) or type(complete).__name__}"
         self.calls = 0
         self.failures = 0
 

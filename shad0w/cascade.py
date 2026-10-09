@@ -78,8 +78,6 @@ class Decision:
             w = w.replace("asked your model", "used your fallback (no LLM configured)")
             if self.flag == "no_bundle":
                 w = "no trained table yet: used your fallback (no LLM configured)"
-        elif self.source == "audit":
-            w += " (also a spot check)"
         return w
 
 
@@ -323,10 +321,12 @@ class Shadow:
             certified, flag = False, "never_serve"
         if certified and s.canary < 1.0 and self._rng.random() >= s.canary:
             certified, flag = False, "canary"
-        if not certified and flag == "low_confidence" and s.force_threshold is not None and r["confidence"] >= s.force_threshold:
+        forced = (not certified and flag == "low_confidence" and s.force_threshold is not None
+                  and r["confidence"] >= s.force_threshold)
+        if s.mode == "shadow":  # shadow mode never serves, not even a forced threshold
+            return False, False, ("shadow" if certified or forced else flag)
+        if forced:
             return True, False, "manual_threshold"
-        if s.mode == "shadow":
-            return False, False, ("shadow" if certified else flag)
         return certified, certified, flag
 
     def _mk(self, answer, source: str, r: dict | None, certified: bool, flag: str | None, t0: float) -> Decision:
@@ -434,18 +434,19 @@ class Shadow:
             if isinstance(th, threading.Thread):
                 th.join(timeout)
 
-    async def adecide(self, text: str, teacher: Callable[[str], Any] | None = None) -> Decision:
+    async def adecide(self, text: str, teacher: Callable[[str], Any] | None = None, *,
+                      probabilities: bool | None = None) -> Decision:
         """`decide` for async code. The table path never leaves the event loop; an async teacher is awaited,
         a sync teacher runs in a worker thread."""
         teacher = teacher or self.teacher
-        return await self._adecide_pre(text, teacher, self._pre(text))
+        return await self._adecide_pre(text, teacher, self._pre(text, probabilities))
 
-    def _pre(self, text: str):
+    def _pre(self, text: str, probabilities: bool | None = None):
         """The table's part of a decision, computed once: (t0, r, local, serve, certified, flag), or None."""
         if self.model is None:
             return None
         t0 = time.perf_counter()
-        r, local = self._table(text)
+        r, local = self._table(text, probabilities)
         serve, certified, flag = self._policy(r, local)
         return (t0, r, local, serve, certified, flag)
 
@@ -635,12 +636,12 @@ class Shadow:
     def _audit(self, teacher, text, name, local):
         try:
             truth, _ = self._ask(teacher, text, "audit", name)
+            self._audit_result(name, local, truth, text)
         except Exception as e:  # a failing spot check must not fail a certified answer
             log.warning("audit call failed for %r: %s", name, e)
-            return
-        self._audit_result(name, local, truth, text)
-        with self._lock:
-            self._audits.discard(threading.current_thread())
+        finally:
+            with self._lock:
+                self._audits.discard(threading.current_thread())
 
     def _audit_result(self, name, local, truth, text):
         if truth is None:

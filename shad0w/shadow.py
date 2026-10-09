@@ -5,7 +5,8 @@ how often the compiled table disagrees with that teacher. No human labels.
     model, cert = shadow_compile(schema, records, alpha=0.05, teacher="my-llm-v3")
     model.save("bundle/"); write_certificate("bundle/", cert)
 
-The certificate (Learn-then-Test, fixed-sequence over confidence thresholds, Clopper-Pearson, level delta):
+The certificate (Learn-then-Test over confidence thresholds with Clopper-Pearson bounds; the default procedure "auto"
+runs fixed-sequence and Bonferroni at delta/2 each and keeps the lower threshold):
     on inputs drawn like the calibration slice, among answers the table serves itself (certified=True),
     the rate of disagreement with the teacher is at most alpha, with probability at least 1 - delta.
 It is a bound against the TEACHER, not against the truth, and it is marginal over the calibration distribution:
@@ -16,6 +17,7 @@ from __future__ import annotations
 import datetime as _dt
 import hashlib
 import json
+import logging
 import os
 
 import numpy as np
@@ -26,6 +28,8 @@ from .mathutil import softmax
 
 CERT_FILE = "certificate.json"
 
+
+_log = logging.getLogger("shad0w")
 
 def _hash_records(texts, labels) -> str:
     h = hashlib.sha256()
@@ -131,7 +135,10 @@ def certify_bundle(bundle: str, records: list[dict], alpha: float | None = None,
     cert.setdefault("format", "shad0w-certificate/1"); cert.setdefault("certified_against", "teacher")
     for name, q in m.questions.items():
         rows = [r for r in records if name in r and r.get("text")]
-        if not rows:
+        if not rows:  # it keeps serving on its old threshold, so keep (and mark) its old certificate entry
+            if name in old.get("questions", {}):
+                cert["questions"][name] = {**old["questions"][name], "recertified": False}
+                _log.warning("certify_bundle: no fresh records for %r; it keeps its previous certificate", name)
             continue
         texts = [r["text"] for r in rows]
         y = _encode_labels(q.qtype, q.options, [r[name] for r in rows])

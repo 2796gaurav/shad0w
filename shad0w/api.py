@@ -153,7 +153,8 @@ class Question:
             idx = [self.options.index(o) for o in options if o in self.options]
             if idx and len(idx) < len(self.options):
                 sub = np.asarray(p)[idx]
-                sub = sub / max(float(sub.sum()), 1e-12)
+                tot = float(sub.sum())  # renormalise even when the subset's mass is tiny (no clamp)
+                sub = sub / tot if tot > 0 else np.full(len(idx), 1.0 / len(idx))
                 p = np.zeros_like(np.asarray(p)); p[idx] = sub
                 y = int(idx[int(np.argmax(sub))])
         conf = float(p[y])
