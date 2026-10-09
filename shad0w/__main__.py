@@ -669,6 +669,17 @@ def _doctor(a):
     return 1 if fails else 0
 
 
+def _token(ap, a):
+    """The access token from --token-env / --token-file (or $SHAD0W_PROXY_TOKEN), or None."""
+    from .access import token_secret
+    if a.token_env and a.token_file:
+        ap.error("pass --token-env or --token-file, not both")
+    try:
+        return token_secret(env=a.token_env, file=a.token_file)
+    except (ValueError, OSError) as e:
+        ap.error(str(e))
+
+
 def _key_file(path):
     """A Secret that reads the key from a file on every request (secret mounts rotate in place)."""
     import os
@@ -800,6 +811,9 @@ def _main(argv=None):
     s.add_argument("--bundle", required=True)
     s.add_argument("--host", default="127.0.0.1")
     s.add_argument("--port", type=int, default=8010)
+    s.add_argument("--token-env", metavar="NAME", help="environment variable holding an access token clients must send "
+                                                       "(default: $SHAD0W_PROXY_TOKEN when set)")
+    s.add_argument("--token-file", metavar="PATH", help="file holding the access token (re-read on every request)")
     b = sub.add_parser("bench", help="time decisions per call on this machine")
     b.add_argument("--bundle", required=True)
     b.add_argument("--texts", required=True)
@@ -816,6 +830,11 @@ def _main(argv=None):
                     help="send the key in this file upstream (a Docker / Kubernetes secret; re-read on every request)")
     px.add_argument("--host", default="127.0.0.1")
     px.add_argument("--port", type=int, default=8010)
+    px.add_argument("--token-env", metavar="NAME", help="environment variable holding an access token clients must send "
+                                                        "(default: $SHAD0W_PROXY_TOKEN when set)")
+    px.add_argument("--token-file", metavar="PATH", help="file holding the access token (re-read on every request)")
+    px.add_argument("--insecure-open", action="store_true",
+                    help="allow a non-local --host with the proxy's own key and no token (only on a network you trust)")
     px.add_argument("--audit-rate", type=float, help="share of decisions spot-checked against the LLM (default 0.01)")
     px.add_argument("--auto-train", type=int, help="retrain a question every N new LLM answers (needs shad0wllm[compile])")
     px.add_argument("--alpha", type=float, help="certified disagreement bound (default 0.05)")
@@ -925,7 +944,9 @@ def _main(argv=None):
             bundles[qn] = path
         capture = [c for x in (a.capture or []) for c in x.split(",") if c] or None
         never = [x.strip() for x in a.never_serve.split(",") if x.strip()] if a.never_serve else None
-        srv = proxy(a.upstream, host=a.host, port=a.port, folder=a.dir, model=a.model, api_key=key, audit_rate=a.audit_rate,
+        token = _token(ap, a)
+        srv = proxy(a.upstream, host=a.host, port=a.port, access_token=token, allow_open=a.insecure_open, folder=a.dir,
+                    model=a.model, api_key=key, audit_rate=a.audit_rate,
                     auto_train=a.auto_train, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows, mode=a.mode, canary=a.canary,
                     never_serve=never, min_confidence=a.min_confidence, capture=capture, timeout=a.timeout, trace=a.trace,
                     cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms, keep_text=not a.no_text, schema=schema,
@@ -1007,7 +1028,8 @@ def _main(argv=None):
         from .observe import Metrics
         from .server import serve
         _need_bundle(a.bundle)
-        serve(a.bundle, host=a.host, port=a.port, metrics=Metrics(cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms))
+        serve(a.bundle, host=a.host, port=a.port, metrics=Metrics(cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms),
+              access_token=_token(ap, a))
     elif a.cmd == "bench":
         _need_bundle(a.bundle)
         m = api.load(a.bundle)

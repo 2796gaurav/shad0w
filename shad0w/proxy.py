@@ -31,6 +31,9 @@ or start the proxy with --auto-train N. Settings come from flags, SHAD0W_* varia
 [questions.<name>] sections applying per question.
 
 GET /  live dashboard (with a playground) · GET /v1/stats  JSON · GET /metrics  Prometheus · GET /v1/health
+
+Access: set an access token ($SHAD0W_PROXY_TOKEN, --token-env, --token-file) and every route but /v1/health needs it
+(see shad0w.access). Listening beyond localhost with the proxy's own key and no token is refused.
 POST /v1/playground {"question", "text", "ask_llm": false, "log": false}  what the table thinks (and your LLM)
 """
 from __future__ import annotations
@@ -46,8 +49,8 @@ import urllib.request
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from . import access, wire
 from . import config as _config
-from . import wire
 from .cascade import Shadow
 from .config import Secret
 from .llm import LLMTeacher, match_option
@@ -86,6 +89,7 @@ class Gateway:
         self.model = model
         # the proxy's own upstream key (a string, a function, or a Secret); None forwards each client's key
         self.api_key = api_key if (api_key is None or isinstance(api_key, Secret)) else Secret(api_key)
+        self.token: Secret | None = None  # the access token clients must send (set by proxy(); see shad0w.access)
         self.audit_rate, self.auto_train, self.alpha, self.timeout = s.audit_rate, s.auto_train, s.alpha, s.timeout
         self.capture = set(s.capture)
         self.schema = schema or {}
@@ -358,6 +362,22 @@ def make_handler(gw: Gateway):
         def _json(self, code, obj, extra=None):
             self._send(code, json.dumps(obj, default=str).encode(), extra=extra)
 
+        def _gate(self) -> bool:
+            """Check the access token. False means a 401 was sent and the handler must stop."""
+            ok, self._token_header = access.authorize(self.headers, self.path.split("?", 1)[0], gw.token)
+            if ok:
+                return True
+            gw.metrics.errors += 1
+            self.close_connection = True  # the body (if any) was not read
+            self._json(401, access.DENIED, access.CHALLENGE)
+            return False
+
+        def _client_headers(self):
+            """The client's headers that may go upstream: no hop-by-hop, no x-shad0w-*, not the one carrying our token."""
+            drop = getattr(self, "_token_header", None)
+            return [(k, v) for k, v in self.headers.items()
+                    if k.lower() not in HOP and not k.lower().startswith("x-shad0w") and k.lower() != drop]
+
         def _upstream_url(self):
             path = self.path
             if path.startswith("/v1/"):
@@ -367,7 +387,7 @@ def make_handler(gw: Gateway):
         def _snapshot(self):
             """URL, method and headers of the request being handled, frozen. Background work (spot checks) must use
             this: on a keep-alive connection the handler's own fields already describe the NEXT request."""
-            return self._upstream_url(), self.command, list(self.headers.items())
+            return self._upstream_url(), self.command, self._client_headers()
 
         def _forward(self, body: bytes | None, relay: bool = True, rewrite_model: dict | None = None, snap=None):
             """Send this request upstream. relay=True streams the response straight to the client and returns
@@ -377,8 +397,7 @@ def make_handler(gw: Gateway):
             url, method, hdrs = snap or self._snapshot()
             req = urllib.request.Request(url, data=body, method=method)
             for k, v in hdrs:
-                if k.lower() not in HOP and not k.lower().startswith("x-shad0w"):
-                    req.add_header(k, v)
+                req.add_header(k, v)
             req.add_header("accept-encoding", "identity")
             own = gw.upstream_key()
             if own:
@@ -445,6 +464,8 @@ def make_handler(gw: Gateway):
 
         # -- routes -------------------------------------------------------------------------------------------
         def do_GET(self):
+            if not self._gate():
+                return
             p = self.path.split("?", 1)[0]
             if p in ("/", "/dashboard"):
                 return self._send(200, dashboard_html(), "text/html; charset=utf-8")
@@ -462,10 +483,14 @@ def make_handler(gw: Gateway):
             self._forward(None)
 
         def do_DELETE(self):
+            if not self._gate():
+                return
             gw.metrics.passthrough += 1
             self._forward(None)
 
         def do_POST(self):
+            if not self._gate():
+                return
             try:
                 n = int(self.headers.get("content-length", 0) or 0)
             except ValueError:
@@ -662,7 +687,7 @@ def make_handler(gw: Gateway):
             """Re-ask the upstream decision model for a served answer, in the background, at audit_rate."""
             if sh._rng.random() >= sh.audit_rate:
                 return
-            headers = {k: v for k, v in self.headers.items() if k.lower() not in HOP and not k.lower().startswith("x-shad0w")}
+            headers = dict(self._client_headers())
             sub = wire.subset(dialect, req, [q.name])
             url = self._upstream_url()
 
@@ -770,8 +795,13 @@ def _parse(content: str, options: list[str] | None, field: str):
     return s if s and len(s) <= 64 and "\n" not in s else None
 
 
-def proxy(upstream: str, host: str = "127.0.0.1", port: int = 8010, **kw):
+def proxy(upstream: str, host: str = "127.0.0.1", port: int = 8010, access_token=None, allow_open: bool = False, **kw):
+    """Start the gateway (call serve_forever() on the result). access_token: a string, function or Secret every client
+    must send (default $SHAD0W_PROXY_TOKEN); allow_open=True permits a non-local host with the proxy's own key and no
+    token (only on a network you trust)."""
     gw = Gateway(upstream, **kw)
+    gw.token = access.token_secret(access_token)
+    access.check_exposure(host, gw.token, gw.api_key is not None, allow_open)
 
     class S(ThreadingHTTPServer):
         daemon_threads = True
@@ -783,6 +813,7 @@ def proxy(upstream: str, host: str = "127.0.0.1", port: int = 8010, **kw):
           f"  dashboard http://{host}:{port}/   metrics http://{host}:{port}/metrics   data {os.path.abspath(gw.folder)}\n"
           "  decisions API: POST /v1/decisions and /v1/systemone need no marking\n"
           "  chat: mark a decision with header 'X-Shad0w-Question: <name>', model 'shad0w/<name>', or a forced tool\n"
-          f"  upstream key: {gw.api_key.describe() if gw.api_key is not None else 'each client sends its own'}", flush=True)
+          f"  upstream key: {gw.api_key.describe() if gw.api_key is not None else 'each client sends its own'}\n"
+          f"  access token: {gw.token.describe() if gw.token is not None else 'none (anyone who can reach the port)'}", flush=True)
     srv.gateway = gw  # type: ignore[attr-defined]
     return srv

@@ -78,7 +78,7 @@ client.chat.completions.create(model="gpt-6-luna", messages=msgs,
                                extra_headers={"X-Shad0w-Question": "intent"})   # or a forced tool with one enum parameter
 ```
 
-Unmarked calls (chat, embeddings, streaming) pass straight through.
+Unmarked calls (chat, embeddings, streaming) pass straight through. Running the proxy on a network (a container, `--host 0.0.0.0`)? Set `SHAD0W_PROXY_TOKEN` so only your apps can use it: [Access token](https://2796gaurav.github.io/shad0w/docs/proxy.html#access).
 
 ## Is it for me?
 

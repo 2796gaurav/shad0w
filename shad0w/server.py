@@ -8,7 +8,8 @@
   GET  /v1/stats      JSON counters (offload, flags, latency)      GET /metrics  Prometheus      GET /  dashboard
 
 Questions a bundle does not know (and score questions) come back with shad0w.flag = "unsupported".
-No authentication: keep it on localhost or behind your own front end.
+Access: with a token ($SHAD0W_PROXY_TOKEN or access_token=) every route but /v1/health needs it (see shad0w.access);
+without one, keep it on localhost or behind your own front end (a non-local host prints a warning).
 """
 
 from __future__ import annotations
@@ -17,7 +18,7 @@ import json
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from . import wire
+from . import access, wire
 from .api import Model, load
 from .cascade import explain_model
 from .observe import Metrics, dashboard_html
@@ -54,8 +55,11 @@ def decision_answers(model: Model, dialect: str, text: str, qs: list[wire.WireQ]
     return answers, out
 
 
-def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metrics | None = None, run: bool = True):
+def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metrics | None = None, run: bool = True,
+          access_token=None):
     model = load(bundle)
+    token = access.token_secret(access_token)
+    access.check_exposure(host, token, own_key=False, allow_open=True, what="serve")
     metrics = metrics or Metrics()
     for n, q in model.questions.items():
         metrics.set_alpha(n, q.alpha)
@@ -64,15 +68,27 @@ def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metri
         protocol_version = "HTTP/1.1"  # keep-alive: one TCP connection per client, not per request
         disable_nagle_algorithm = True  # headers and body go out as separate writes: without this, +40 ms per reply
 
-        def _send(self, code, obj, ctype="application/json"):
+        def _send(self, code, obj, ctype="application/json", extra=None):
             body = obj if isinstance(obj, bytes) else json.dumps(obj).encode()
             self.send_response(code)
             self.send_header("content-type", ctype)
             self.send_header("content-length", str(len(body)))
+            for k, v in (extra or {}).items():
+                self.send_header(k, v)
             self.end_headers()
             self.wfile.write(body)
 
+        def _gate(self) -> bool:
+            if access.authorize(self.headers, self.path.split("?", 1)[0], token)[0]:
+                return True
+            metrics.errors += 1
+            self.close_connection = True
+            self._send(401, access.DENIED, extra=access.CHALLENGE)
+            return False
+
         def do_GET(self):
+            if not self._gate():
+                return
             p = self.path.split("?", 1)[0]
             if p == "/v1/health":
                 return self._send(200, {"ok": True, "questions": list(model.questions)})
@@ -85,6 +101,8 @@ def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metri
             self._send(404, {"error": "not found"})
 
         def do_POST(self):
+            if not self._gate():
+                return
             p = self.path.split("?", 1)[0]
             dialect = wire.dialect_of(p)
             if p not in ("/v1/decide", "/v1/playground") and dialect is None:

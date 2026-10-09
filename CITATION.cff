@@ -4,7 +4,7 @@ title: "shad0w: certified microsecond decisions compiled from the model you alre
 authors:
   - family-names: Chauhan
     given-names: Gaurav
-version: 0.3.2
+version: 0.3.3
 date-released: 2026-10-09
 license: Apache-2.0
 repository-code: "https://github.com/2796gaurav/shad0w"
