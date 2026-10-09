@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 460" width="1280" height="460" role="img" aria-label="shad0w: requests flow in; the certified table answers most in microseconds, the rest go to your LLM.">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07070c"/><stop offset="1" stop-color="#11111e"/></linearGradient>
-<radialGradient id="au1" cx=".75" cy=".2" r=".6"><stop offset="0" stop-color="#3ef0b0" stop-opacity=".22"/><stop offset="1" stop-color="#3ef0b0" stop-opacity="0"/></radialGradient>
-<radialGradient id="au2" cx=".95" cy=".9" r=".5"><stop offset="0" stop-color="#8b7bff" stop-opacity=".25"/><stop offset="1" stop-color="#8b7bff" stop-opacity="0"/></radialGradient>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#000000"/><stop offset="1" stop-color="#14213d"/></linearGradient>
+<radialGradient id="au1" cx=".78" cy=".22" r=".45"><stop offset="0" stop-color="#fca311" stop-opacity=".16"/><stop offset="1" stop-color="#fca311" stop-opacity="0"/></radialGradient>
+<radialGradient id="au2" cx=".95" cy=".9" r=".5"><stop offset="0" stop-color="#14213d" stop-opacity=".6"/><stop offset="1" stop-color="#14213d" stop-opacity="0"/></radialGradient>
 <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#2a2a44" stroke-opacity=".35"/></pattern>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#14213d" stroke-opacity=".35"/></pattern>
 <path id="pin" d="M 700 230 C 740 230, 760 230, 790 230"/>
 <path id="pt" d="M 860 230 C 920 230, 930 120, 1010 120 L 1110 120"/>
 <path id="pl" d="M 860 230 C 920 230, 920 345, 985 345"/>
@@ -12,74 +12,74 @@
 <rect width="1280" height="460" rx="28" fill="url(#bg)"/>
 <rect width="1280" height="460" rx="28" fill="url(#grid)"/>
 <rect width="1280" height="460" rx="28" fill="url(#au1)"/><rect width="1280" height="460" rx="28" fill="url(#au2)"/>
-<text x="64" y="190" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#f3f2ff" letter-spacing="-2">shad</text><circle cx="348.3" cy="153.0" r="30.2" fill="none" stroke="#3ef0b0" stroke-width="9.5" filter="url(#glow)"/><circle cx="348.3" cy="153.0" r="6.2" fill="#3ef0b0"/><text x="384.1" y="190" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#f3f2ff" letter-spacing="-2">w</text>
-<text x="68" y="252" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#f3f2ff">your LLM's answers, served in <tspan fill="#3ef0b0">2.4 µs</tspan>.</text>
-<text x="68" y="300" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#a09fbd">Learns what your LLM decides. Answers what it's certified on.</text>
-<text x="68" y="328" font-family="'Space Grotesk','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#a09fbd">Sends the rest to your LLM, and keeps learning.</text>
-<g font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700">
-<rect x="68" y="366" width="226" height="40" rx="12" fill="#ffffff" fill-opacity=".04" stroke="#2a2a44"/><text x="86" y="392" fill="#3ef0b0">$ <tspan fill="#f3f2ff">pip install shad0wllm</tspan></text>
-<rect x="306" y="366" width="190" height="40" rx="12" fill="#ffffff" fill-opacity=".04" stroke="#2a2a44"/><text x="324" y="392" fill="#3ef0b0">$ <tspan fill="#f3f2ff">npm i shad0wllm</tspan></text>
+<text x="64" y="190" font-family="'Geist','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#ffffff" letter-spacing="-2">shad</text><circle cx="348.3" cy="153.0" r="30.2" fill="#fca311"/><circle cx="353.1" cy="157.9" r="24.2" fill="#000000" stroke="#14213d" stroke-width="1.5"/><text x="384.1" y="190" font-family="'Geist','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="700" font-size="112" fill="#ffffff" letter-spacing="-2">w</text>
+<text x="68" y="252" font-family="'Geist','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" fill="#ffffff">your LLM's answers, served in <tspan fill="#fca311">2.4 µs</tspan>.</text>
+<text x="68" y="300" font-family="'Geist','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#e5e5e5">Learns what your LLM decides. Answers what it's certified on.</text>
+<text x="68" y="328" font-family="'Geist','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" fill="#e5e5e5">Sends the rest to your LLM, and keeps learning.</text>
+<g font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700">
+<rect x="68" y="366" width="226" height="40" rx="12" fill="#ffffff" fill-opacity=".04" stroke="#14213d"/><text x="86" y="392" fill="#fca311">$ <tspan fill="#ffffff">pip install shad0wllm</tspan></text>
+<rect x="306" y="366" width="190" height="40" rx="12" fill="#ffffff" fill-opacity=".04" stroke="#14213d"/><text x="324" y="392" fill="#fca311">$ <tspan fill="#ffffff">npm i shad0wllm</tspan></text>
 </g>
-<use href="#pin" fill="none" stroke="#2a2a44" stroke-width="2" stroke-dasharray="4 7"/>
-<use href="#pt" fill="none" stroke="#3ef0b0" stroke-opacity=".55" stroke-width="3"/>
-<use href="#pl" fill="none" stroke="#ffb648" stroke-opacity=".5" stroke-width="3" stroke-dasharray="7 7"/>
-<g font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700"><text x="900" y="76" fill="#3ef0b0">certified → table · 2.4 µs</text><text x="880" y="420" fill="#ffb648">not sure → your LLM · 1416 ms</text></g>
-<g transform="translate(830 230)"><circle r="46" fill="#11111e" stroke="#2a2a44" stroke-width="2"/>
-<circle r="29" fill="none" stroke="#3ef0b0" stroke-width="8" filter="url(#glow)"><animate attributeName="stroke-width" values="8;12;8" dur="1s" repeatCount="indefinite"/></circle><circle r="6" fill="#3ef0b0"/></g>
-<g transform="translate(1128 86)"><rect width="124" height="70" rx="16" fill="#3ef0b0" fill-opacity=".1" stroke="#3ef0b0" stroke-opacity=".6"/>
-<text x="62" y="30" text-anchor="middle" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">ANSWERED</text>
-<text x="62" y="54" text-anchor="middle" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">in your process</text></g>
-<g transform="translate(985 305)"><rect width="140" height="80" rx="16" fill="#ffb648" fill-opacity=".08" stroke="#ffb648" stroke-opacity=".7"/>
-<text x="70" y="28" text-anchor="middle" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#ffb648">YOUR LLM</text>
-<circle cx="70" cy="52" r="13" fill="none" stroke="#2a2a44" stroke-width="4"/>
-<circle cx="70" cy="52" r="13" fill="none" stroke="#ffb648" stroke-width="4" stroke-dasharray="26 60" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 70 52" to="360 70 52" dur="1.2s" repeatCount="indefinite"/></circle></g>
+<use href="#pin" fill="none" stroke="#14213d" stroke-width="2" stroke-dasharray="4 7"/>
+<use href="#pt" fill="none" stroke="#fca311" stroke-opacity=".55" stroke-width="3"/>
+<use href="#pl" fill="none" stroke="#e5e5e5" stroke-opacity=".5" stroke-width="3" stroke-dasharray="7 7"/>
+<g font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700"><text x="900" y="76" fill="#fca311">certified → table · 2.4 µs</text><text x="880" y="420" fill="#e5e5e5">not sure → your LLM · 1416 ms</text></g>
+<g transform="translate(830 230)"><circle r="46" fill="#14213d" stroke="#14213d" stroke-width="2"/>
+<circle r="29" fill="none" stroke="#fca311" stroke-width="8" filter="url(#glow)"><animate attributeName="stroke-width" values="8;12;8" dur="1s" repeatCount="indefinite"/></circle><circle r="6" fill="#fca311"/></g>
+<g transform="translate(1128 86)"><rect width="124" height="70" rx="16" fill="#fca311" fill-opacity=".1" stroke="#fca311" stroke-opacity=".6"/>
+<text x="62" y="30" text-anchor="middle" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">ANSWERED</text>
+<text x="62" y="54" text-anchor="middle" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">in your process</text></g>
+<g transform="translate(985 305)"><rect width="140" height="80" rx="16" fill="#e5e5e5" fill-opacity=".08" stroke="#e5e5e5" stroke-opacity=".7"/>
+<text x="70" y="28" text-anchor="middle" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#e5e5e5">YOUR LLM</text>
+<circle cx="70" cy="52" r="13" fill="none" stroke="#14213d" stroke-width="4"/>
+<circle cx="70" cy="52" r="13" fill="none" stroke="#e5e5e5" stroke-width="4" stroke-dasharray="26 60" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 70 52" to="360 70 52" dur="1.2s" repeatCount="indefinite"/></circle></g>
 
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="0.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="0.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">block my card</text></g>
+<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">block my card</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="0.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="0.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 2.4µs</text></g>
+<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ lost_card · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="1.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="1.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-56" y="-15" width="112" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">refund pls</text></g>
+<rect x="-56" y="-15" width="112" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">refund pls</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="1.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="1.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ refund · 2.4µs</text></g>
+<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ refund · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="2.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="2.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">is it raining?</text></g>
+<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">is it raining?</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.32;.33;1" dur="8.0s" begin="2.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="2.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.32;1" calcMode="linear"><mpath href="#pl"/></animateMotion>
-<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#ffb648" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffb648">is it raining?</text></g>
+<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#14213d" stroke="#e5e5e5" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#e5e5e5">is it raining?</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="3.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="3.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">send 50 to mom</text></g>
+<rect x="-73" y="-15" width="146" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">send 50 to mom</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="3.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="3.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-90" y="-15" width="181" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ transfer · 2.4µs</text></g>
+<rect x="-90" y="-15" width="181" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ transfer · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="4.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="4.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-56" y="-15" width="112" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">pin locked</text></g>
+<rect x="-56" y="-15" width="112" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">pin locked</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="4.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="4.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-103" y="-15" width="207" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ pin_blocked · 2.4µs</text></g>
+<rect x="-103" y="-15" width="207" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ pin_blocked · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="5.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="5.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">umm the thing</text></g>
+<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">umm the thing</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.32;.33;1" dur="8.0s" begin="5.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="5.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.32;1" calcMode="linear"><mpath href="#pl"/></animateMotion>
-<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#ffb648" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffb648">umm the thing</text></g>
+<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#14213d" stroke="#e5e5e5" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#e5e5e5">umm the thing</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="6.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="6.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">card stolen!!</text></g>
+<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">card stolen!!</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="6.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="6.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ lost_card · 2.4µs</text></g>
+<rect x="-95" y="-15" width="189" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ lost_card · 2.4µs</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.13;.14;1" dur="8.0s" begin="7.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="7.00s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.14;1" calcMode="linear"><mpath href="#pin"/></animateMotion>
-<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#11111e" stroke="#6c6b88"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#f3f2ff">top up failed</text></g>
+<rect x="-69" y="-15" width="138" height="30" rx="15" fill="#14213d" stroke="#e5e5e5"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#ffffff">top up failed</text></g>
 <g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.14;.15;.21;.22;1" dur="8.0s" begin="7.00s" repeatCount="indefinite"/>
 <animateMotion dur="8.0s" begin="7.00s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.14;.21;1" calcMode="linear"><mpath href="#pt"/></animateMotion>
-<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#11111e" stroke="#3ef0b0" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'JetBrains Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#3ef0b0">→ top_up · 2.4µs</text></g>
+<rect x="-82" y="-15" width="164" height="30" rx="15" fill="#14213d" stroke="#fca311" stroke-width="2"/><text text-anchor="middle" y="5" font-family="'Geist Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="13" font-weight="700" fill="#fca311">→ top_up · 2.4µs</text></g>
 </svg>

@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>The proxy (zero code changes) · shad0w</title>
 <meta name="description" content="An OpenAI-compatible gateway. Point base_url at it, mark which calls are decisions, and shad0w does the rest.">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -16,59 +17,120 @@
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The proxy (zero code changes) · shad0w">
 <meta name="twitter:description" content="An OpenAI-compatible gateway. Point base_url at it, mark which calls are decisions, and shad0w does the rest."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "The proxy (zero code changes)", "description": "An OpenAI-compatible gateway. Point base_url at it, mark which calls are decisions, and shad0w does the rest.", "url": "https://2796gaurav.github.io/shad0w/docs/proxy.html", "dateModified": "2026-10-09", "proficiencyLevel": "Beginner", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "The proxy", "item": "https://2796gaurav.github.io/shad0w/docs/proxy.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/proxy.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · The proxy</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html" class=active>The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="the-proxy-zero-code-changes">The proxy: zero code changes<a class="headerlink" href="#the-proxy-zero-code-changes" title="Permanent link">#</a></h1>
-<p><code>shad0w proxy</code> sits between your app and any OpenAI-compatible API. Your code keeps using its OpenAI SDK. Only the <code>base_url</code> changes.</p>
-<h2 id="1-start-it">1. Start it<a class="headerlink" href="#1-start-it" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm
-shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">The proxy</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html" class=active aria-current=page>The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Start<span class="rt">8 min read</span></div>
+    <h1 id="the-proxy-zero-code-changes">The proxy: zero code changes<a class="headerlink" href="#the-proxy-zero-code-changes" title="Link to this section">#</a></h1>
+<p><code>shad0w proxy</code> sits between your app and any OpenAI-compatible API. Your code keeps using its OpenAI SDK; only the <code>base_url</code> changes. This page covers starting it, marking which calls are decisions, keys, what comes back, and every flag.</p>
+<h2 id="tldr">TL;DR<a class="headerlink" href="#tldr" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span>
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--auto-train<span class="w"> </span><span class="m">1000</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code>shad0w proxy on http://127.0.0.1:8010/v1  -&gt;  https://api.openai.com/v1
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:8010/v1"</span><span class="p">)</span>             <span class="c1"># 1. the only change to your client</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"my card was stolen"</span><span class="p">}],</span>
+    <span class="n">extra_headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-Shad0w-Question"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">,</span> <span class="s2">"X-Shad0w-Options"</span><span class="p">:</span> <span class="s2">"refund,lost_card,balance,other"</span><span class="p">})</span>  <span class="c1"># 2. mark it</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>                                   <span class="c1"># lost_card</span>
+</code></pre></div>
+
+<p>At first every marked call goes to the upstream LLM and its answer is logged. With <code>--auto-train 1000</code>, the proxy trains a table (shad0w's small learned model) after 1,000 answers. From then on it answers the calls it is <strong>certified</strong> on by itself, in microseconds. ("Certified" = tested on answers it never trained on, and allowed to answer only where it disagrees with your LLM on at most α of them; α = 5% by default.) Everything that is not a marked decision is forwarded untouched.</p>
+<div class="viz" data-viz="proxy">Your app (OpenAI SDK, base_url changed) sends every request to the shad0w proxy. Marked chat completions (a header, a shad0w/ model name or a forced enum tool) and Decisions API / System One requests are decisions: the table answers the certified ones locally; the rest go to the upstream LLM and their answers are logged. Unmarked requests are forwarded untouched.</div>
+
+<h2 id="1-start-it">1. Start it<a class="headerlink" href="#1-start-it" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1
+</code></pre></div>
+
+<div class="codehilite" data-lang="text"><pre><span></span><code>shad0w proxy on http://127.0.0.1:8010/v1  -&gt;  https://api.openai.com/v1
   dashboard http://127.0.0.1:8010/   metrics http://127.0.0.1:8010/metrics   data /home/you/app/shad0w
+  decisions API: POST /v1/decisions and /v1/systemone need no marking
+  chat: mark a decision with header 'X-Shad0w-Question: &lt;name&gt;', model 'shad0w/&lt;name&gt;', or a forced tool
+  upstream key: each client sends its own
 </code></pre></div>
 
-<p>The upstream can be OpenAI, Groq, Together, OpenRouter, Mistral, a LiteLLM proxy, Ollama (<code>http://localhost:11434/v1</code>), vLLM or anything else that speaks the chat completions API.</p>
-<h2 id="2-point-your-client-at-it">2. Point your client at it<a class="headerlink" href="#2-point-your-client-at-it" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<p>The upstream can be OpenAI, Groq, Together, OpenRouter, Mistral, a LiteLLM proxy, Ollama (<code>http://localhost:11434/v1</code>), vLLM, or anything else that speaks the chat completions API.</p>
+<h2 id="2-point-your-client-at-it">2. Point your client at it<a class="headerlink" href="#2-point-your-client-at-it" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:8010/v1"</span><span class="p">)</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">OpenAI</span><span class="p">({</span><span class="w"> </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="s2">"http://localhost:8010/v1"</span><span class="w"> </span><span class="p">});</span>
+<div class="codehilite" data-lang="javascript"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">OpenAI</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"openai"</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">OpenAI</span><span class="p">({</span><span class="w"> </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="s2">"http://localhost:8010/v1"</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div>
 
-<p>Your API key is forwarded to the upstream as usual. To keep the key in the proxy instead, use <code>--api-key-env OPENAI_API_KEY</code>.</p>
-<h2 id="3-mark-which-calls-are-decisions">3. Mark which calls are decisions<a class="headerlink" href="#3-mark-which-calls-are-decisions" title="Permanent link">#</a></h2>
-<p><strong>Using the OpenAI Decisions API or a System One model (Jev, Kev, Laya)? Nothing to mark.</strong> Requests to <code>/v1/decisions</code> and <code>/v1/systemone</code> already name each question and list its answers, so the proxy recognises them as they are. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
+<h2 id="keys">Keys<a class="headerlink" href="#keys" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>How</th>
+<th>Flag</th>
+<th>Use it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forward each client's own key (default)</td>
+<td>none</td>
+<td>clients already hold their keys. Each client's key is used for its own requests and for the spot checks on them, so two clients never borrow each other's key.</td>
+</tr>
+<tr>
+<td>The proxy's key, from an environment variable</td>
+<td><code>--api-key-env OPENAI_API_KEY</code></td>
+<td>the key lives with the proxy, not the clients</td>
+</tr>
+<tr>
+<td>The proxy's key, from a file</td>
+<td><code>--api-key-file /run/secrets/openai</code></td>
+<td>a Docker or Kubernetes secret. The file is re-read on every request, so a rotated secret needs no restart.</td>
+</tr>
+</tbody>
+</table></div>
+<p>There is no flag that takes the key itself: it would show up in <code>ps</code> and shell history. The two flags cannot be combined. The startup banner says where the upstream key comes from, masked: <code>upstream key: set via OPENAI_API_KEY (sk-…3f9a)</code>.</p>
+<h2 id="mark">3. Mark which calls are decisions<a class="headerlink" href="#mark" title="Link to this section">#</a></h2>
+<p><strong>Using the OpenAI Decisions API or a System One model (Jev, Kev, Laya)? Nothing to mark.</strong> Requests to <code>/v1/decisions</code> and <code>/v1/systemone</code> already name each question and list its answers. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
 <p>For chat completions, pick whichever is easiest:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># a header</span>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="n">msgs</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Classify the support message."</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"my card was stolen"</span><span class="p">}]</span>
+
+<span class="c1"># a header</span>
 <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">msgs</span><span class="p">,</span> <span class="n">extra_headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-Shad0w-Question"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">})</span>
 
-<span class="c1"># a model name: "shad0w/&lt;question&gt;" (the upstream model comes from --model, or "shad0w/intent@gpt-6-luna")</span>
+<span class="c1"># a model name: "shad0w/&lt;question&gt;@&lt;upstream model&gt;" (or "shad0w/&lt;question&gt;" with --model on the proxy)</span>
 <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"shad0w/intent@gpt-6-luna"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">msgs</span><span class="p">)</span>
 
 <span class="c1"># a forced tool whose parameters hold exactly one enum: the tool's name is the question</span>
@@ -78,49 +140,49 @@ shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class
     <span class="n">tool_choice</span><span class="o">=</span><span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"function"</span><span class="p">,</span> <span class="s2">"function"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">}})</span>
 </code></pre></div>
 
-<p>How each request shape is recognised is set by <code>--capture</code> (or <code>capture</code> in <a href="configuration.html">Configuration</a>):</p>
-<table>
+<p>Which shapes count as decisions is set by <code>--capture</code> (or <code>capture</code> in <a href="configuration.html">Configuration</a>):</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Capture</th>
+<th class="c-key">Capture</th>
 <th>Recognises</th>
-<th>Default</th>
+<th class="c-def">Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>header</code></td>
-<td>the <code>X-Shad0w-Question: &lt;name&gt;</code> header</td>
-<td>on</td>
+<td class="c-key"><code>header</code></td>
+<td>the <code>X-Shad0w-Question: &lt;name&gt;</code> request header</td>
+<td class="c-def">on</td>
 </tr>
 <tr>
-<td><code>model</code></td>
+<td class="c-key"><code>model</code></td>
 <td><code>model="shad0w/&lt;name&gt;"</code> or <code>"shad0w/&lt;name&gt;@&lt;upstream model&gt;"</code></td>
-<td>on</td>
+<td class="c-def">on</td>
 </tr>
 <tr>
-<td><code>tools</code></td>
-<td>a forced tool (or the only tool) with exactly one enum parameter; the table answer comes back as a <code>tool_calls</code> message</td>
-<td>on</td>
+<td class="c-key"><code>tools</code></td>
+<td>a forced tool (or the only tool) with exactly one enum parameter; the table's answer comes back as a <code>tool_calls</code> message</td>
+<td class="c-def">on</td>
 </tr>
 <tr>
-<td><code>decisions</code></td>
+<td class="c-key"><code>decisions</code></td>
 <td><code>POST /v1/decisions</code> and <code>POST /v1/systemone</code></td>
-<td>on</td>
+<td class="c-def">on</td>
 </tr>
 <tr>
-<td><code>json_schema</code></td>
-<td>any <code>response_format</code> JSON schema with a <code>name</code>; the name is the question</td>
-<td><strong>off</strong>: turn on with <code>--capture json_schema</code></td>
+<td class="c-key"><code>json_schema</code></td>
+<td>a <code>response_format</code> JSON schema with a <code>name</code>; the name is the question</td>
+<td class="c-def"><strong>off</strong>: turn on with <code>--capture json_schema</code></td>
 </tr>
 </tbody>
-</table>
-<p><code>json_schema</code> is off by default because many apps use named schemas for things that are not decisions. Turning it on means every such request is treated as one.</p>
-<p>Where the options come from, in order: a trained table, <code>--schema</code>, the request's own enum (JSON schema or tool parameter), or an <code>X-Shad0w-Options: refund,lost_card,balance,other</code> header.</p>
-<p>The text shad0w learns from is the <strong>last user message</strong>. Put the thing to classify there and keep instructions in the system message.</p>
-<p>Everything else (unmarked chat, embeddings, image calls) is forwarded untouched.</p>
-<h2 id="what-happens-to-a-decision">What happens to a decision<a class="headerlink" href="#what-happens-to-a-decision" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<p><code>json_schema</code> is off by default because many apps use named schemas for things that are not decisions. Turning it on treats every such request as one. <code>--capture</code> takes a comma-separated list and can be repeated; it replaces the default list.</p>
+<p><strong>Where the options come from</strong>, first match wins: the request's own enum (JSON schema or tool parameter), the <code>X-Shad0w-Options: refund,lost_card,balance,other</code> header, <code>--schema</code>, then a trained table. Without any of these the proxy learns the option set from the short answers your LLM gives.</p>
+<p><strong>The text shad0w learns from is the last user message.</strong> Put the thing to classify there and keep instructions in the system message.</p>
+<p><code>model="shad0w/&lt;name&gt;"</code> with no <code>@&lt;model&gt;</code> and no <code>--model</code> flag is refused with a 400, because the proxy would not know which upstream model to call.</p>
+<h2 id="what-happens-to-a-decision">What happens to a decision<a class="headerlink" href="#what-happens-to-a-decision" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Situation</th>
@@ -130,185 +192,338 @@ shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class
 <tbody>
 <tr>
 <td>No trained table yet</td>
-<td>Forwards to the upstream, returns its reply untouched, logs the answer to <code>shad0w/&lt;question&gt;/log.jsonl</code></td>
+<td>forwards to the upstream, returns its reply untouched, logs the answer to <code>shad0w/&lt;question&gt;/log.jsonl</code></td>
 </tr>
 <tr>
 <td>Table certified for this text</td>
-<td>Answers itself in microseconds with a normal <code>chat.completion</code></td>
+<td>answers itself in microseconds with a normal <code>chat.completion</code></td>
 </tr>
 <tr>
 <td>Table not sure</td>
-<td>Forwards, returns the reply, logs the answer (training data for next time)</td>
+<td>forwards, returns the reply, logs the answer (training data for next time)</td>
+</tr>
+<tr>
+<td><code>--mode shadow</code></td>
+<td>always forwards and returns the LLM's reply; counts what the table would have answered</td>
 </tr>
 <tr>
 <td>Upstream error</td>
-<td>Returns the upstream's error as-is</td>
+<td>returns the upstream's error as-is</td>
 </tr>
 </tbody>
-</table>
-<p>A table answer is shaped like the request asked:</p>
+</table></div>
+<p>A table answer is shaped like the request asked for:</p>
 <ul>
 <li>plain text: the option name;</li>
 <li>JSON object mode: <code>{"intent": "lost_card"}</code>;</li>
-<li>your JSON schema: your field name;</li>
+<li>your JSON schema: <code>{"&lt;your field&gt;": "lost_card"}</code>;</li>
 <li>a forced tool: a <code>tool_calls</code> message with <code>finish_reason: "tool_calls"</code>;</li>
 <li><code>stream: true</code>: server-sent events, for text and tool calls;</li>
-<li><code>/v1/decisions</code> and <code>/v1/systemone</code>: the same JSON shape the upstream would return.</li>
+<li><code>/v1/decisions</code> and <code>/v1/systemone</code>: the same JSON shape the upstream would return (<a href="decisions-api.html#what-comes-back">details</a>).</li>
 </ul>
-<p>It carries an extra <code>shad0w</code> field, plus the headers <code>x-shad0w-source: table</code> (or <code>mixed</code> / <code>teacher</code> on the decision endpoints), <code>x-shad0w-confidence</code> and <code>x-shad0w-latency-us</code>.</p>
-<h2 id="4-train">4. Train<a class="headerlink" href="#4-train" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w">        </span><span class="c1"># ready yet?</span>
-shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">       </span><span class="c1"># the running proxy picks the new table up within a second</span>
-</code></pre></div>
-
-<p>Or let the proxy do it: <code>shad0w proxy --upstream ... --auto-train 1000</code> retrains every 1,000 new answers. Training needs <code>pip install "shad0wllm[compile]"</code>.</p>
-<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h2>
-<p>Every flag can also come from <code>shad0w.toml</code> or a <code>SHAD0W_*</code> variable; see <a href="configuration.html">Configuration</a>. A <code>[questions.&lt;name&gt;]</code> section sets values for one question.</p>
-<table>
+<p>Its <code>usage</code> is all zeros, and it carries an extra <code>shad0w</code> object: <code>question</code>, <code>source</code>, <code>answer</code>, <code>confidence</code>, <code>certified</code>, <code>flag</code>, <code>latency_us</code>.</p>
+<p><strong>Response headers</strong> on a marked chat completion:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Flag</th>
-<th>Default</th>
+<th class="c-key">Header</th>
+<th>When</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>x-shad0w-source</code></td>
+<td>always</td>
+<td><code>table</code> (answered locally) or <code>teacher</code> (your LLM answered)</td>
+</tr>
+<tr>
+<td class="c-key"><code>x-shad0w-question</code></td>
+<td>always</td>
+<td>the question name</td>
+</tr>
+<tr>
+<td class="c-key"><code>x-shad0w-latency-us</code></td>
+<td>always</td>
+<td>time spent in the proxy, in microseconds</td>
+</tr>
+<tr>
+<td class="c-key"><code>x-shad0w-confidence</code></td>
+<td>table answers</td>
+<td>the table's confidence, 0 to 1</td>
+</tr>
+<tr>
+<td class="c-key"><code>x-shad0w-certified</code></td>
+<td>table answers</td>
+<td><code>1</code> or <code>0</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>On <code>/v1/decisions</code> and <code>/v1/systemone</code>, <code>x-shad0w-source</code> is <code>table</code>, <code>mixed</code> or <code>teacher</code>. Request headers starting with <code>X-Shad0w-</code> are never forwarded upstream.</p>
+<h2 id="4-train">4. Train<a class="headerlink" href="#4-train" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w">        </span><span class="c1"># how many answers, which options, ready yet?</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">       </span><span class="c1"># the running proxy picks up the new table within a second</span>
+</code></pre></div>
+
+<p>Or let the proxy do it: <code>--auto-train 1000</code> retrains a question every 1,000 new answers. By default (<code>retrain = "gated"</code>) the new table replaces the old one only if it certifies at least four fifths (0.8) of the old one's share. Training needs <code>pip install "shad0wllm[compile]"</code>. See <a href="training.html">Training</a>.</p>
+<h2 id="flags">Flags<a class="headerlink" href="#flags" title="Link to this section">#</a></h2>
+<p>Every flag can also come from <code>shad0w.toml</code> or a <code>SHAD0W_*</code> variable, and a <code>[questions.&lt;name&gt;]</code> section sets values for one question; see <a href="configuration.html">Configuration</a>. A flag beats both.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-type">Type</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+<th>Change it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--upstream</code></td>
+<td class="c-type">URL</td>
+<td class="c-def"><code>https://api.openai.com/v1</code></td>
+<td>the real API</td>
+<td>you use another provider or a local server</td>
+</tr>
+<tr>
+<td class="c-key"><code>--host</code>, <code>--port</code></td>
+<td class="c-type">str, int</td>
+<td class="c-def"><code>127.0.0.1</code>, <code>8010</code></td>
+<td>where the proxy listens</td>
+<td>it runs in a container (<code>--host 0.0.0.0</code>) or the port is taken</td>
+</tr>
+<tr>
+<td class="c-key"><code>--dir</code></td>
+<td class="c-type">path</td>
+<td class="c-def"><code>shad0w</code></td>
+<td>logs and tables live in <code>&lt;dir&gt;/&lt;question&gt;/</code></td>
+<td>several apps share a machine</td>
+</tr>
+<tr>
+<td class="c-key"><code>--bundle Q=PATH</code></td>
+<td class="c-type">repeatable</td>
+<td class="c-def"></td>
+<td>use the table at PATH for question Q</td>
+<td>the table was trained elsewhere</td>
+</tr>
+<tr>
+<td class="c-key"><code>--model</code></td>
+<td class="c-type">str</td>
+<td class="c-def"></td>
+<td>upstream model for <code>model="shad0w/&lt;question&gt;"</code></td>
+<td>you use the model-name marking</td>
+</tr>
+<tr>
+<td class="c-key"><code>--schema</code></td>
+<td class="c-type">path</td>
+<td class="c-def"></td>
+<td>a <code>schema.json</code> naming each question's options</td>
+<td>requests do not list the options</td>
+</tr>
+<tr>
+<td class="c-key"><code>--api-key-env NAME</code></td>
+<td class="c-type">str</td>
+<td class="c-def"></td>
+<td>send the key held in this variable upstream, instead of the client's</td>
+<td>see <a href="#keys">Keys</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--api-key-file PATH</code></td>
+<td class="c-type">path</td>
+<td class="c-def"></td>
+<td>send the key held in this file upstream, re-read on every request</td>
+<td>see <a href="#keys">Keys</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--capture</code></td>
+<td class="c-type">list</td>
+<td class="c-def"><code>header,model,tools,decisions</code></td>
+<td>which request shapes count as decisions</td>
+<td>see <a href="#mark">above</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--mode</code></td>
+<td class="c-type"><code>serve</code> / <code>shadow</code> / <code>off</code></td>
+<td class="c-def"><code>serve</code></td>
+<td><code>shadow</code>: always return the LLM's answer, count what the table would have done; <code>off</code>: never consult the table</td>
+<td>rolling out; see <a href="rollout.html">Rollout</a></td>
+</tr>
+<tr>
+<td class="c-key"><code>--canary</code></td>
+<td class="c-type">0 to 1</td>
+<td class="c-def"><code>1</code></td>
+<td>share of certified answers the table may serve</td>
+<td>rolling out gradually, e.g. <code>0.1</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--never-serve</code></td>
+<td class="c-type">comma list</td>
+<td class="c-def"></td>
+<td>labels that always go upstream</td>
+<td>sensitive labels such as <code>fraud</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--min-confidence</code></td>
+<td class="c-type">0 to 1</td>
+<td class="c-def"></td>
+<td>a confidence floor on top of the certificate (only makes serving stricter)</td>
+<td>you want extra margin</td>
+</tr>
+<tr>
+<td class="c-key"><code>--audit-rate</code></td>
+<td class="c-type">0 to 1</td>
+<td class="c-def"><code>0.01</code></td>
+<td>share of decisions spot-checked against the upstream in the background</td>
+<td>more (or less) live measurement</td>
+</tr>
+<tr>
+<td class="c-key"><code>--auto-train</code></td>
+<td class="c-type">int</td>
+<td class="c-def"><code>0</code> (off)</td>
+<td>retrain a question every N new answers</td>
+<td>you want it hands-off</td>
+</tr>
+<tr>
+<td class="c-key"><code>--min-rows</code></td>
+<td class="c-type">int</td>
+<td class="c-def"><code>1000</code></td>
+<td>logged answers needed before auto-train runs (100 at least)</td>
+<td>few options, clean data</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-type">0 to 1</td>
+<td class="c-def"><code>0.05</code></td>
+<td>most disagreement with your LLM allowed among table answers (α)</td>
+<td>stricter (<code>0.02</code>) or looser (<code>0.1</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--delta</code></td>
+<td class="c-type">0 to 1</td>
+<td class="c-def"><code>0.1</code></td>
+<td>chance the certificate is wrong because of an unlucky sample (δ; <code>0.1</code> = 90% confidence)</td>
+<td>rarely</td>
+</tr>
+<tr>
+<td class="c-key"><code>--timeout</code></td>
+<td class="c-type">seconds</td>
+<td class="c-def"><code>120</code></td>
+<td>upstream timeout</td>
+<td>slow models</td>
+</tr>
+<tr>
+<td class="c-key"><code>--trace</code></td>
+<td class="c-type">path</td>
+<td class="c-def"></td>
+<td>JSON Lines file receiving every decision</td>
+<td>auditing, offline analysis</td>
+</tr>
+<tr>
+<td class="c-key"><code>--cost-per-call</code></td>
+<td class="c-type">float</td>
+<td class="c-def"></td>
+<td>your cost per LLM call, to show money saved on the dashboard</td>
+<td>you want the dashboard figure</td>
+</tr>
+<tr>
+<td class="c-key"><code>--llm-latency-ms</code></td>
+<td class="c-type">float</td>
+<td class="c-def"></td>
+<td>LLM latency to assume until one is measured, to show time saved</td>
+<td>you want the dashboard figure</td>
+</tr>
+<tr>
+<td class="c-key"><code>--no-text</code></td>
+<td class="c-type">flag</td>
+<td class="c-def"></td>
+<td>keep request text off the dashboard</td>
+<td>texts are sensitive</td>
+</tr>
+<tr>
+<td class="c-key"><code>--config</code></td>
+<td class="c-type">path</td>
+<td class="c-def"><code>./shad0w.toml</code> (or <code>$SHAD0W_CONFIG</code>)</td>
+<td>the config file to read</td>
+<td>it lives elsewhere</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="routes">Routes<a class="headerlink" href="#routes" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>Route</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>--upstream</code></td>
-<td><code>https://api.openai.com/v1</code></td>
-<td>the real API</td>
+<td><code>POST /v1/chat/completions</code></td>
+<td>decisions when marked (above); otherwise forwarded</td>
 </tr>
 <tr>
-<td><code>--dir</code></td>
-<td><code>shad0w</code></td>
-<td>logs and tables live in <code>&lt;dir&gt;/&lt;question&gt;/</code></td>
+<td><code>POST /v1/decisions</code>, <code>POST /v1/systemone</code></td>
+<td>decision-model formats, no marking needed</td>
 </tr>
 <tr>
-<td><code>--bundle Q=PATH</code></td>
-<td></td>
-<td>use the table at PATH for question Q (repeatable)</td>
+<td><code>GET /</code></td>
+<td>live dashboard, with a <strong>Playground</strong></td>
 </tr>
 <tr>
-<td><code>--model</code></td>
-<td></td>
-<td>upstream model for <code>model="shad0w/&lt;question&gt;"</code></td>
+<td><code>GET /v1/stats</code></td>
+<td>JSON: counts, share answered, flags, latency, per-question settings and log sizes</td>
 </tr>
 <tr>
-<td><code>--api-key-env</code></td>
-<td></td>
-<td>send this env var as the upstream key instead of the client's</td>
+<td><code>GET /metrics</code></td>
+<td>Prometheus text format</td>
 </tr>
 <tr>
-<td><code>--capture</code></td>
-<td><code>header,model,tools,decisions</code></td>
-<td>which request shapes count as decisions (see above)</td>
+<td><code>GET /v1/health</code></td>
+<td><code>{"ok": true, "upstream": ..., "questions": [...]}</code></td>
 </tr>
 <tr>
-<td><code>--mode</code></td>
-<td><code>serve</code></td>
-<td><code>serve</code>, <code>shadow</code> (always return the LLM's answer, count what the table would have done), <code>off</code></td>
+<td><code>POST /v1/playground</code></td>
+<td><code>{"question", "text", "ask_llm": false, "log": false}</code>: what the table thinks of a text, and with <code>ask_llm</code> (needs <code>--model</code>) what your LLM says</td>
 </tr>
 <tr>
-<td><code>--canary</code></td>
-<td><code>1</code></td>
-<td>share of certified answers the table may serve, 0 to 1</td>
-</tr>
-<tr>
-<td><code>--never-serve</code></td>
-<td></td>
-<td>comma-separated labels that always go upstream</td>
-</tr>
-<tr>
-<td><code>--min-confidence</code></td>
-<td></td>
-<td>a confidence floor on top of the certificate (only makes serving stricter)</td>
-</tr>
-<tr>
-<td><code>--audit-rate</code></td>
-<td><code>0.01</code></td>
-<td>share of decisions spot-checked against the upstream in the background</td>
-</tr>
-<tr>
-<td><code>--auto-train</code></td>
-<td>off</td>
-<td>retrain a question every N new answers</td>
-</tr>
-<tr>
-<td><code>--alpha</code></td>
-<td><code>0.05</code></td>
-<td>certified disagreement bound for training</td>
-</tr>
-<tr>
-<td><code>--delta</code></td>
-<td><code>0.1</code></td>
-<td>certificate failure probability</td>
-</tr>
-<tr>
-<td><code>--min-rows</code></td>
-<td><code>1000</code></td>
-<td>logged answers needed before auto-train runs</td>
-</tr>
-<tr>
-<td><code>--timeout</code></td>
-<td><code>120</code></td>
-<td>upstream timeout in seconds</td>
-</tr>
-<tr>
-<td><code>--trace</code></td>
-<td></td>
-<td>JSON Lines file receiving every decision</td>
-</tr>
-<tr>
-<td><code>--cost-per-call</code></td>
-<td></td>
-<td>your cost per LLM call, to show money saved on the dashboard</td>
-</tr>
-<tr>
-<td><code>--llm-latency-ms</code></td>
-<td></td>
-<td>LLM latency to assume until one is measured, to show time saved</td>
-</tr>
-<tr>
-<td><code>--schema</code></td>
-<td></td>
-<td>a <code>schema.json</code> naming each question's options</td>
-</tr>
-<tr>
-<td><code>--no-text</code></td>
-<td></td>
-<td>keep request text off the dashboard</td>
-</tr>
-<tr>
-<td><code>--config</code></td>
-<td><code>./shad0w.toml</code></td>
-<td>path to a config file</td>
-</tr>
-<tr>
-<td><code>--host</code>, <code>--port</code></td>
-<td><code>127.0.0.1</code>, <code>8010</code></td>
-<td>where the proxy listens</td>
+<td>anything else</td>
+<td>forwarded untouched (embeddings, images, <code>GET /v1/models</code>, ...)</td>
 </tr>
 </tbody>
-</table>
-<p>The dashboard at <code>/</code> includes a <strong>Playground</strong>: type a text, pick a question, and see the table's answer, its confidence against the threshold, and why; with <code>--model</code> set, also ask the upstream LLM for the same text and compare the two answers side by side.</p>
+</table></div>
+<p>The dashboard's Playground uses that last route: type a text, pick a question, and see the table's answer, its confidence against the threshold, and why; with <code>--model</code> set, also ask the upstream LLM and compare the two side by side.</p>
+<div class="callout warn">
 <p>The proxy has no authentication of its own. Keep it on localhost or inside your network.</p>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="connect-your-llm.html"><small>← previous</small>Connect your LLM</a><a class="next" href="python.html"><small>next →</small>Python</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+</div>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20The%20proxy&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/proxy.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="proxy.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="connect-your-llm.html" rel="prev"><small>← Previous</small>Connect your LLM</a><a class="next" href="python.html" rel="next"><small>Next →</small>Python</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
+<li><a href="#tldr">TL;DR</a></li>
 <li><a href="#1-start-it">1. Start it</a></li>
 <li><a href="#2-point-your-client-at-it">2. Point your client at it</a></li>
-<li><a href="#3-mark-which-calls-are-decisions">3. Mark which calls are decisions</a></li>
+<li><a href="#keys">Keys</a></li>
+<li><a href="#mark">3. Mark which calls are decisions</a></li>
 <li><a href="#what-happens-to-a-decision">What happens to a decision</a></li>
 <li><a href="#4-train">4. Train</a></li>
-<li><a href="#options">Options</a></li>
+<li><a href="#flags">Flags</a></li>
+<li><a href="#routes">Routes</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20The%20proxy&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/proxy.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

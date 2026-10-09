@@ -3,52 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>Troubleshooting · shad0w</title>
-<meta name="description" content="What to do when the table certifies nothing, the teacher errors, drift fires, or the proxy forwards everything.">
+<meta name="description" content="The real error messages shad0w prints, what each one means and how to fix it, plus what to do when the table answers nothing, drift fires or the proxy forwards everything.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/troubleshooting.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Troubleshooting · shad0w">
-<meta property="og:description" content="What to do when the table certifies nothing, the teacher errors, drift fires, or the proxy forwards everything."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/troubleshooting.html">
+<meta property="og:description" content="The real error messages shad0w prints, what each one means and how to fix it, plus what to do when the table answers nothing, drift fires or the proxy forwards everything."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/troubleshooting.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Troubleshooting · shad0w">
-<meta name="twitter:description" content="What to do when the table certifies nothing, the teacher errors, drift fires, or the proxy forwards everything."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="The real error messages shad0w prints, what each one means and how to fix it, plus what to do when the table answers nothing, drift fires or the proxy forwards everything."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Troubleshooting", "description": "The real error messages shad0w prints, what each one means and how to fix it, plus what to do when the table answers nothing, drift fires or the proxy forwards everything.", "url": "https://2796gaurav.github.io/shad0w/docs/troubleshooting.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Troubleshooting", "item": "https://2796gaurav.github.io/shad0w/docs/troubleshooting.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/troubleshooting.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Troubleshooting</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html" class=active>Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h1>
-<p>Start with <code>shad0w doctor</code>. It checks the things that most often go wrong and prints one line each:</p>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>doctor<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w"> </span>--llm<span class="w"> </span>openai/gpt-6-luna<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Troubleshooting</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html" class=active aria-current=page>Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">9 min read</span></div>
+    <h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this section">#</a></h1>
+<p class="lead">Find the message you see on this page, and the fix next to it. Every message here is copied from the code. If the table simply answers less than you hoped, jump to <a href="#the-table-answers-nothing-or-very-little">The table answers nothing</a>.</p>
+
+<p><strong>TL;DR</strong>: start with <code>shad0w doctor</code>. It checks what most often goes wrong and prints one line each.</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>doctor<span class="w"> </span>--llm<span class="w"> </span>openai/gpt-6-luna<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl
 </code></pre></div>
 
-<p><code>[ok]</code> is fine, <code>[--]</code> is a warning, <code>[!!]</code> is a problem. It exits 1 when any <code>[!!]</code> line is printed, so it also works in CI.</p>
-<h2 id="what-each-doctor-line-means">What each doctor line means<a class="headerlink" href="#what-each-doctor-line-means" title="Permanent link">#</a></h2>
-<table>
+<p><code>[ok]</code> is fine, <code>[--]</code> is a warning, <code>[!!]</code> is a problem. It exits 1 when any <code>[!!]</code> line is printed, so it also works in CI. <code>SHAD0W_LOG=debug</code> prints one line per decision if you need to see more.</p>
+<p>Words used on this page. <strong>The table</strong>: the small model shad0w trains from your LLM's answers. <strong>Certified</strong>: tested on answers it never trained on and allowed to serve only where it differs from your LLM on at most α. <strong>Defer</strong>: send to your LLM. <strong>Drift</strong>: live traffic no longer looks like the traffic the table was tested on.</p>
+<h2 id="what-each-doctor-line-means">What each doctor line means<a class="headerlink" href="#what-each-doctor-line-means" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Line</th>
@@ -59,154 +75,246 @@
 <tbody>
 <tr>
 <td><strong>Python</strong></td>
-<td>—</td>
-<td>shad0w supports Python 3.10 to 3.13.</td>
+<td><code>[!!]</code> below 3.10</td>
+<td>shad0w needs Python 3.10 or newer.</td>
 </tr>
 <tr>
 <td><strong>C core</strong></td>
-<td><code>numpy fallback (same answers, slower)</code></td>
-<td>Install from a wheel (<code>pip install shad0wllm</code>), or build it from source with a C compiler (<code>xcode-select --install</code> on macOS, <code>build-essential</code> on Linux). Answers are identical either way.</td>
+<td><code>[--] numpy fallback (same answers, slower)</code></td>
+<td>Answers are identical. For speed, install from a wheel (<code>pip install shad0wllm</code>) or build with a C compiler (<code>xcode-select --install</code> on macOS, <code>build-essential</code> on Linux).</td>
 </tr>
 <tr>
 <td><strong>training deps (scipy, scikit-learn)</strong></td>
-<td><code>missing [...]</code></td>
-<td><code>pip install "shad0wllm[compile]"</code>. Serving needs only numpy; training needs these. Add <code>[torch]</code> for faster training on large logs.</td>
+<td><code>[--] missing ['scipy', 'sklearn']: pip install "shad0wllm[compile]"</code></td>
+<td>Serving needs only numpy; training needs these.</td>
 </tr>
 <tr>
 <td><strong>torch (optional, faster training)</strong></td>
-<td><code>[--]</code></td>
-<td>Optional. Training falls back to scipy, which is slower on large logs. <code>pip install "shad0wllm[torch]"</code> to add it.</td>
+<td><code>[--] not installed: scipy solver is used</code></td>
+<td>Optional. <code>pip install "shad0wllm[torch]"</code> trains large logs faster.</td>
 </tr>
 <tr>
 <td><strong>TOML config reader</strong></td>
-<td><code>pip install tomli</code></td>
+<td><code>[--] pip install tomli (needed to read shad0w.toml on 3.10)</code></td>
 <td>Only on Python 3.10, and only if you use <code>shad0w.toml</code>.</td>
 </tr>
 <tr>
 <td><strong>Node (JavaScript package)</strong></td>
-<td><code>not found</code></td>
-<td>Only needed for the npm package and its tests.</td>
+<td><code>[--] not found; only needed for the npm package and its tests</code></td>
+<td>Ignore unless you use the npm package.</td>
 </tr>
 <tr>
 <td><strong>config</strong></td>
-<td><code>[!!]</code> with a message</td>
-<td><code>shad0w.toml</code> or a <code>SHAD0W_*</code> variable has an invalid value, for example <code>mode = "on"</code>. The message names the setting. <code>shad0w config</code> shows every value and where it came from.</td>
+<td><code>[!!]</code> and a message, e.g. <code>mode must be one of ('serve', 'shadow', 'off'), got 'on'</code></td>
+<td><code>shad0w.toml</code> or a <code>SHAD0W_*</code> variable has an invalid value; the message names it. <code>shad0w config</code> shows each value and where it came from.</td>
 </tr>
 <tr>
-<td><strong>provider API key</strong></td>
-<td><code>[!!] ... is not set</code></td>
-<td>Export the variable it names (for example <code>OPENAI_API_KEY</code>), or pass <code>api_key=</code> in code. Local providers (<code>ollama</code>, <code>vllm</code>, <code>lmstudio</code>, <code>systemone</code>) need none.</td>
+<td><strong><code>&lt;provider&gt;</code> API key</strong></td>
+<td><code>[!!] key: not set (OPENAI_API_KEY is empty); set it, or pass api_key= / api_key_env= in code</code></td>
+<td>Export the variable it names, or set <code>api_key_env</code> to the variable that holds your key. <code>[ok] key: none needed (local server)</code> is normal for <code>ollama</code>, <code>vllm</code>, <code>lmstudio</code> and <code>systemone</code>.</td>
+</tr>
+<tr>
+<td><strong>provider <code>'name'</code></strong></td>
+<td><code>[--] unknown preset; pass base_url= in code</code></td>
+<td>Not a built-in provider: pass <code>base_url=</code> for any OpenAI-compatible server.</td>
 </tr>
 <tr>
 <td><strong>upstream reachable</strong></td>
-<td><code>[!!]</code></td>
-<td>The proxy's <code>--upstream</code> URL cannot be reached. Check the URL ends in <code>/v1</code> and the server is running. An HTTP error such as 401 still counts as reachable.</td>
+<td><code>[!!] &lt;url&gt;: &lt;error&gt;</code></td>
+<td><code>--upstream</code> cannot be reached. Check that the URL ends in <code>/v1</code> and the server runs. An HTTP error such as 401 still counts as reachable.</td>
 </tr>
 <tr>
 <td><strong>bundle question</strong></td>
-<td><code>certifies nothing (threshold inf)</code></td>
-<td>The table never reached α on held-out answers, so it serves nothing. See "The table answers nothing" below.</td>
+<td><code>[--] certifies nothing (threshold inf)</code></td>
+<td>The table never stayed within α on held-out answers, so it serves nothing. See <a href="#the-table-answers-nothing-or-very-little">below</a>.</td>
 </tr>
 <tr>
 <td><strong>certificate.json</strong></td>
-<td><code>missing</code></td>
-<td>The bundle was copied without its certificate, or built by hand. Run <code>shad0w train</code> (or <code>shad0w certify</code>) again.</td>
+<td><code>[--] missing: run shad0w train / shadow / certify</code></td>
+<td>The bundle was copied without its certificate. Train or certify again.</td>
+</tr>
+<tr>
+<td><strong>bundle</strong></td>
+<td><code>[!!] &lt;path&gt;: &lt;error&gt;</code></td>
+<td>The folder is not a readable bundle. Point <code>--bundle</code> at the folder holding <code>manifest.json</code>.</td>
 </tr>
 <tr>
 <td><strong>log</strong></td>
-<td><code>need 1,000</code></td>
-<td>Not enough logged answers yet. Keep running, or lower <code>min_rows</code> for an experiment (100 is the hard minimum).</td>
+<td><code>[--] 640 rows (need 1,000)</code></td>
+<td>Not enough logged answers yet. Keep running, or lower <code>min_rows</code> for an experiment (100 is the minimum).</td>
 </tr>
 </tbody>
-</table>
-<h2 id="messages-from-the-command-line">Messages from the command line<a class="headerlink" href="#messages-from-the-command-line" title="Permanent link">#</a></h2>
-<p>The CLI prints one line starting with <code>shad0w:</code> instead of a traceback, and exits with code 2.</p>
-<table>
+</table></div>
+<h2 id="messages-from-the-command-line">Messages from the command line<a class="headerlink" href="#messages-from-the-command-line" title="Link to this section">#</a></h2>
+<p>The CLI prints one line starting with <code>shad0w:</code> instead of a traceback, and exits with code 2 (1 and 3 where noted).</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Message</th>
-<th>Meaning</th>
+<th class="c-key">Message</th>
+<th>Meaning and fix</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>no bundle at ... (expected manifest.json; run shad0w train first)</code></td>
-<td>The path is wrong, or nothing has been trained yet.</td>
+<td class="c-key"><code>shad0w: no bundle at X (expected manifest.json; run `shad0w train` first)</code></td>
+<td>Wrong path, or nothing trained yet.</td>
 </tr>
 <tr>
-<td><code>nothing logged yet at ...</code></td>
-<td><code>shad0w stats</code> / <code>train</code> found no log file. With <code>decision()</code> the default log is <code>shad0w/&lt;question&gt;/log.jsonl</code>, relative to where your program runs.</td>
+<td class="c-key"><code>shad0w: nothing logged yet at X</code></td>
+<td><code>shad0w stats</code> found no log. With <code>decision()</code> the log is <code>shad0w/&lt;question&gt;/log.jsonl</code>, relative to where your program runs.</td>
 </tr>
 <tr>
-<td><code>sklearn is not installed; training needs: pip install "shad0wllm[compile]"</code></td>
-<td>Training dependencies are missing.</td>
+<td class="c-key"><code>shad0w: sklearn is not installed; training needs: pip install "shad0wllm[compile]"</code></td>
+<td>Install the training extras.</td>
 </tr>
 <tr>
-<td><code>not enough yet: need 1,000 (--min-rows to override; 100 is the hard minimum)</code></td>
-<td><code>shad0w train</code> exits 1 with this.</td>
+<td class="c-key"><code>not enough yet: need 1,000 (--min-rows to override; 100 is the hard minimum)</code></td>
+<td><code>train</code> exits 1. Log more, or pass <code>--min-rows</code> to experiment.</td>
 </tr>
 <tr>
-<td><code>...kept the old bundle (drop --gate to replace)</code></td>
-<td><code>shad0w train --gate</code> found the new table worse than the current one (under 80% of its certified share) and kept the old one. Exit code 3.</td>
+<td class="c-key"><code>intent: new bundle certifies 40.0% of calibration traffic vs 62.0% before; kept the old one (retrain='always' or no --gate to replace anyway)</code></td>
+<td><code>train --gate</code> found the new table worse (under 80% of the current certified share) and kept the old one. Exit 3.</td>
 </tr>
 <tr>
-<td><code>config file ... not found</code></td>
+<td class="c-key"><code>--dir shad0w holds questions ['intent', 'urgent']; pick one with --question</code></td>
+<td>Add <code>--question</code>.</td>
+</tr>
+<tr>
+<td class="c-key"><code>give --log and --out (or --dir [--question])</code></td>
+<td><code>train</code> needs to know where to read and write.</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w: config file X not found</code></td>
 <td><code>SHAD0W_CONFIG</code> or <code>--config</code> points at a missing file.</td>
 </tr>
 <tr>
-<td><code>mode must be one of ('serve', 'shadow', 'off')</code> and similar</td>
-<td>An invalid setting; the message names it.</td>
+<td class="c-key"><code>shad0w: mode must be one of ('serve', 'shadow', 'off'), got 'on'</code> (and similar)</td>
+<td>An invalid setting; the message names it and the allowed values.</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w: shad0w.toml: found `api_key = ...`. Never put the key itself in a file: ...</code></td>
+<td>Remove the key from the file. Put the variable's <strong>name</strong> in <code>api_key_env</code> instead.</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w: --api-key-file X: no such file</code> / <code>... is empty</code></td>
+<td><code>proxy --api-key-file</code> must point at a file holding the key.</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w: error: NAME is not set</code></td>
+<td><code>proxy --api-key-env NAME</code>: that variable is empty in the proxy's environment.</td>
+</tr>
+<tr>
+<td class="c-key"><code>pass --api-key-env or --api-key-file, not both</code></td>
+<td>Pick one.</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w.toml exists; not overwriting</code></td>
+<td><code>config --init</code> never overwrites; delete the file or use <code>--config other.toml</code>.</td>
 </tr>
 </tbody>
-</table>
-<h2 id="the-table-answers-nothing-or-very-little">The table answers nothing, or very little<a class="headerlink" href="#the-table-answers-nothing-or-very-little" title="Permanent link">#</a></h2>
-<p>The certificate only lets the table serve answers it is sure enough of to stay within α. A low share is the certificate doing its job. Common causes:</p>
-<ul>
-<li><strong>Too few answers.</strong> Below about 1,000 per question, the threshold has to be strict. Log more and retrain; the share usually grows with the log.</li>
-<li><strong>Too many options for the data.</strong> With 150 labels and 1,000 rows, most labels have a handful of examples. Log more, or merge rare labels into <code>other</code>.</li>
-<li><strong>The decision depends on meaning the words don't carry.</strong> Sentiment, sarcasm and anything needing reasoning or world knowledge stay hard for a word-level table. shad0w then correctly sends nearly everything to your LLM. See <a href="limits.html">Limits</a>.</li>
-<li><strong>Your LLM is inconsistent.</strong> If it gives different answers to near-identical inputs, no table can agree with it reliably. Check with <code>temperature=0</code> and a fixed prompt.</li>
-<li><strong>α is very strict.</strong> Try <code>shad0w train --alpha 0.05</code> and compare the printed share with α 0.02.</li>
-</ul>
-<p><code>shad0w try --bundle ... "some text"</code> shows the table's answer, its confidence, the threshold, and why it deferred.</p>
-<h2 id="the-teacher-fails">The teacher fails<a class="headerlink" href="#the-teacher-fails" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<h2 id="errors-in-python">Errors in Python<a class="headerlink" href="#errors-in-python" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Error</th>
+<th>Meaning and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TypeError: decision() got unexpected keyword argument(s): 'alpah' (did you mean 'alpha'?)</code></td>
+<td>A misspelt setting.</td>
+</tr>
+<tr>
+<td><code>ValueError: openai/gpt-6-luna: no API key (OPENAI_API_KEY is not set). Pass api_key="sk-..." ...</code></td>
+<td>Export the key, pass <code>api_key=</code> / <code>api_key_env=</code>, or call <code>shad0w.configure(api_key_env=...)</code> once. See <a href="connect-your-llm.html#api-keys">API keys</a>.</td>
+</tr>
+<tr>
+<td><code>ValueError: model 'x/y': unknown provider; pass base_url=... (known: openai, anthropic, ...)</code></td>
+<td>Use a built-in provider name, or pass <code>base_url=</code> for any OpenAI-compatible server.</td>
+</tr>
+<tr>
+<td><code>ValueError: pass options=... so the LLM knows what to choose from</code></td>
+<td>A <code>"provider/model"</code> LLM needs <code>options=</code> (a function LLM does not).</td>
+</tr>
+<tr>
+<td><code>TypeError: ['api_key'] only apply when llm is a "provider/model" string; ...</code></td>
+<td>Your LLM is a function: it holds its own key and URL.</td>
+</tr>
+<tr>
+<td><code>RuntimeError: the table did not answer and this Shadow has no teacher: pass teacher=... (or llm=...), or fallback=... to run without an LLM</code></td>
+<td>Give it an LLM, or a <code>fallback</code> (<a href="without-llm.html">Running without an LLM</a>).</td>
+</tr>
+<tr>
+<td><code>ValueError: 812 usable answers logged for 'intent'; need 1000 (pass min_rows=... to try with fewer; 100 is the hard minimum)</code></td>
+<td><code>train()</code> was called too early.</td>
+</tr>
+<tr>
+<td><code>ValueError: min_rows must be at least 100</code></td>
+<td>100 is the hard minimum.</td>
+</tr>
+<tr>
+<td><code>ImportError: training needs: pip install "shad0wllm[compile]" (scipy, scikit-learn)</code></td>
+<td>Install the training extras.</td>
+</tr>
+<tr>
+<td><code>ValueError: question 'x' is not in the bundle ([...])</code></td>
+<td>The bundle was trained for another question name.</td>
+</tr>
+<tr>
+<td><code>train()</code> returns <code>{"accepted": False, "reason": "new bundle certifies ..."}</code></td>
+<td>Not an error: <code>gate=True</code> (or <code>auto_train</code> with <code>retrain = "gated"</code>) kept the current table.</td>
+</tr>
+<tr>
+<td>warning <code>auto_train skipped: ...</code></td>
+<td>A background retrain could not run (too few rows, missing training extras). The current table keeps serving.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="your-llm-fails">Your LLM fails<a class="headerlink" href="#your-llm-fails" title="Link to this section">#</a></h2>
+<p><code>TeacherError</code> means the call to your LLM failed after retries, or its reply matched none of your options. Nothing is logged for that message. The error ends with why the LLM was asked, for example <code>(why your LLM was asked: no trained table yet: asked your model)</code>.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Error</th>
 <th>Fix</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>TeacherError: ... replied '...', which matches none of [...]</code></td>
-<td>The LLM answered outside your options. Nothing is logged for that call. A few are normal; many mean the prompt or model needs attention: add an <code>other</code> option, describe each option, or use a larger model.</td>
+<td class="c-key"><code>TeacherError: openai/gpt-6-luna replied '...', which matches none of [...]</code></td>
+<td>The LLM answered outside your options. A few are normal. Many mean the prompt or model needs attention: add an <code>other</code> option, describe each option, or use a larger model.</td>
 </tr>
 <tr>
-<td><code>TeacherError: ... HTTP 401</code> / <code>403</code></td>
-<td>Wrong or missing API key.</td>
+<td class="c-key"><code>TeacherError: openai/gpt-6-luna: HTTP 401: ...</code> / <code>HTTP 403</code></td>
+<td>Wrong or missing API key. <code>shad0w config</code> shows where the key comes from (masked).</td>
 </tr>
 <tr>
-<td><code>TeacherError: ... HTTP 404</code></td>
-<td>Wrong <code>base_url</code> or model name. For <code>systemone/</code>, the server must implement <code>/v1/systemone</code>; for <code>openai-decisions/</code>, <code>/v1/decisions</code>.</td>
+<td class="c-key"><code>TeacherError: openai/gpt-6-luna: HTTP 404: ...</code></td>
+<td>Wrong <code>base_url</code> or model name. For <code>systemone/...</code> the server must implement <code>/v1/systemone</code>; for <code>openai-decisions/...</code>, <code>/v1/decisions</code>.</td>
 </tr>
 <tr>
-<td><code>cannot reach http://...</code></td>
-<td>The server is down or the URL is wrong. Retries with back-off come first; this is the final error.</td>
-</tr>
-<tr>
-<td><code>unknown provider; pass base_url=...</code></td>
-<td><code>llm="name/model"</code> where <code>name</code> is not a built-in preset. Pass <code>base_url=</code> for any OpenAI-compatible server.</td>
+<td class="c-key"><code>TeacherError: openai/gpt-6-luna: cannot reach http://...: ...</code></td>
+<td>The server is down or the URL is wrong. Network errors, 429 and 5xx are retried with back-off first; this is the final error.</td>
 </tr>
 </tbody>
-</table>
-<h2 id="drift">Drift<a class="headerlink" href="#drift" title="Permanent link">#</a></h2>
-<p>Answers flagged <code>drift</code> go to your LLM. The drift guard compares how often the table is unsure on recent traffic (the last <code>drift_window</code> decisions) with how often it was unsure at calibration. When the gap exceeds <code>drift_margin</code>, it raises the flag. It clears by itself when traffic looks familiar again. If it stays raised, your traffic changed: retrain on the new log. Adjust <code>drift_window</code> and <code>drift_margin</code> in <a href="configuration.html">Configuration</a> if it is too sensitive for your traffic.</p>
-<p>Bursty traffic can trip it even when the overall mix is unchanged. A long run of one hard intent (for example many "card not working" messages during an outage) fills the window with low-confidence answers. In our BANKING77 test the guard stayed silent on shuffled traffic but raised during a long run of one intent, then cleared. If your traffic comes in bursts like that and you prefer to keep serving, raise <code>drift_window</code> (say to 2000) so one burst is a smaller part of the window.</p>
-<h2 id="yesno-questions">Yes/no questions<a class="headerlink" href="#yesno-questions" title="Permanent link">#</a></h2>
-<p>Yes/no answers are stored as booleans. Logs written by shad0w 0.2 through the proxy may hold the strings <code>"yes"</code> and <code>"no"</code>; 0.3 reads them correctly (0.2 learned every one of them as "yes": retrain any yes/no bundle made with 0.2 through the proxy).</p>
-<h2 id="the-proxy-forwards-everything">The proxy forwards everything<a class="headerlink" href="#the-proxy-forwards-everything" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<h2 id="the-table-answers-nothing-or-very-little">The table answers nothing, or very little<a class="headerlink" href="#the-table-answers-nothing-or-very-little" title="Link to this section">#</a></h2>
+<p>The certificate lets the table serve only what it is sure enough of to stay within α. A low share is the certificate doing its job. Common causes:</p>
+<ul>
+<li><strong>Too few answers.</strong> Below about 1,000 per question, the cutoff has to be strict. Log more and retrain; the share usually grows with the log.</li>
+<li><strong>Too many options for the data.</strong> With 150 options and 1,000 rows, most options have a handful of examples. Log more, or merge rare options into <code>other</code>.</li>
+<li><strong>The decision depends on meaning the words don't carry.</strong> Sentiment, sarcasm and anything needing reasoning stay hard for a word-level table, and shad0w correctly sends nearly everything to your LLM. See <a href="limits.html">Limits</a>.</li>
+<li><strong>Your LLM is inconsistent.</strong> If it answers near-identical messages differently, no table can agree with it reliably. Use temperature 0 and a fixed prompt.</li>
+<li><strong>α is very strict.</strong> Compare <code>shad0w train --out /tmp/a05 --alpha 0.05</code> with your current α (<a href="tuning.html#alpha">Tuning</a>).</li>
+</ul>
+<p><code>shad0w try --bundle shad0w/intent/bundle "some text"</code> shows the table's answer, its confidence, the cutoff it needs, and why it deferred.</p>
+<h2 id="drift">Drift<a class="headerlink" href="#drift" title="Link to this section">#</a></h2>
+<p>Answers flagged <code>drift</code> go to your LLM. The drift guard compares how often the table is unsure on recent traffic (the last <code>drift_window</code> decisions, default 500) with how often it was unsure at calibration. When the gap exceeds <code>drift_margin</code> (default 0.03), it raises the flag. It clears by itself when traffic looks familiar again. If it stays raised, your traffic changed: retrain on the new log.</p>
+<p>Bursty traffic can trip it even when the overall mix is unchanged. A long run of one hard message type (for example many "card not working" messages during an outage) fills the window with unsure answers. In our BANKING77 test the guard stayed silent on shuffled traffic but raised during a long run of one intent, then cleared. If your traffic comes in bursts and you prefer to keep serving, raise <code>drift_window</code> (say to <code>2000</code>) so one burst is a smaller part of the window.</p>
+<h2 id="the-proxy-forwards-everything">The proxy forwards everything<a class="headerlink" href="#the-proxy-forwards-everything" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Symptom</th>
@@ -215,53 +323,72 @@
 </thead>
 <tbody>
 <tr>
-<td>Calls carry no <code>x-shad0w-source</code> header</td>
-<td>The proxy did not see a decision. Mark it with the <code>X-Shad0w-Question</code> header, a <code>shad0w/&lt;question&gt;</code> model name, a forced tool with one enum parameter, or use <code>/v1/decisions</code> / <code>/v1/systemone</code>. A plain named <code>json_schema</code> is no longer captured by default: add <code>--capture json_schema</code>.</td>
+<td>Responses carry no <code>x-shad0w-source</code> header</td>
+<td>The proxy did not see a decision. Mark it with the <code>X-Shad0w-Question</code> header, a <code>shad0w/&lt;question&gt;</code> model name, a forced tool with one enum parameter, or use <code>/v1/decisions</code> / <code>/v1/systemone</code>. A plain named <code>json_schema</code> is captured only with <code>--capture json_schema</code>.</td>
 </tr>
 <tr>
 <td><code>x-shad0w-source: teacher</code> on every call</td>
-<td>No bundle yet for that question, or it certifies nothing. <code>shad0w stats --url http://localhost:8010</code> shows each question's state; <code>shad0w train --dir shad0w</code> builds bundles from the proxy's logs, and the proxy picks them up within a second.</td>
+<td>No table yet for that question, or it certifies nothing. <code>shad0w status</code> shows each question's state; <code>shad0w train --dir shad0w --question &lt;q&gt;</code> builds it, and the proxy picks it up within a second.</td>
+</tr>
+<tr>
+<td><code>model 'shad0w/&lt;question&gt;' needs `shad0w proxy --model &lt;upstream model&gt;`</code></td>
+<td>Start the proxy with <code>--model</code>, or send <code>shad0w/&lt;question&gt;@&lt;model&gt;</code>.</td>
+</tr>
+<tr>
+<td>HTTP 502 <code>shad0w proxy: cannot reach upstream ...</code></td>
+<td><code>--upstream</code> is down or wrong; <code>shad0w doctor --upstream URL</code> checks it.</td>
 </tr>
 <tr>
 <td>A tool call comes back as text</td>
 <td>The request offered several tools without forcing one, or the tool's parameters hold more than one enum. Force the tool with <code>tool_choice</code>, or use the header.</td>
 </tr>
 <tr>
-<td>Multi-question <code>/v1/decisions</code> calls still reach OpenAI</td>
+<td>Multi-question <code>/v1/decisions</code> calls still reach the upstream</td>
 <td>Only the questions the table can answer are removed from the upstream request; <code>score</code> questions always go upstream.</td>
 </tr>
 </tbody>
-</table>
-<h2 id="cannot-import-name-version-from-shad0w">"cannot import name '<strong>version</strong>' from 'shad0w'"<a class="headerlink" href="#cannot-import-name-version-from-shad0w" title="Permanent link">#</a></h2>
-<p>You ran <code>python -m shad0w ...</code> from a folder that holds the <code>shad0w/</code> data folder (where <code>shad0w.decision()</code> keeps its logs and tables by default), with shad0w installed in editable mode (<code>pip install -e</code>). Python then imports the data folder instead of the package. Use the <code>shad0w</code> command instead of <code>python -m shad0w</code>, run from another folder, or pick another data folder with <code>folder=</code> or <code>SHAD0W_FOLDER</code>. A normal <code>pip install shad0wllm</code> is not affected.</p>
-<h2 id="pip-times-out">pip times out<a class="headerlink" href="#pip-times-out" title="Permanent link">#</a></h2>
+</table></div>
+<h2 id="module-shad0w-has-no-attribute-decision-or-cannot-import-name-version-from-shad0w">"module 'shad0w' has no attribute 'decision'" or "cannot import name '<strong>version</strong>' from 'shad0w'"<a class="headerlink" href="#module-shad0w-has-no-attribute-decision-or-cannot-import-name-version-from-shad0w" title="Link to this section">#</a></h2>
+<p>You ran Python from a folder that holds the <code>shad0w/</code> <strong>data</strong> folder (where <code>decision()</code> keeps logs and tables by default), with shad0w installed in editable mode (<code>pip install -e</code>). Python then imports the data folder instead of the package. Run from another folder, use the <code>shad0w</code> command instead of <code>python -m shad0w</code>, or pick another data folder with <code>folder=</code> or <code>SHAD0W_FOLDER</code>. A normal <code>pip install shad0wllm</code> is not affected.</p>
+<h2 id="yesno-questions-from-02">Yes/no questions from 0.2<a class="headerlink" href="#yesno-questions-from-02" title="Link to this section">#</a></h2>
+<p>Yes/no answers are stored as booleans. Logs written by shad0w 0.2 through the proxy may hold the strings <code>"yes"</code> and <code>"no"</code>; 0.3 reads them correctly, but 0.2 learned every one of them as "yes". Retrain any yes/no bundle made with 0.2 through the proxy.</p>
+<h2 id="pip-times-out">pip times out<a class="headerlink" href="#pip-times-out" title="Link to this section">#</a></h2>
 <p>Some company networks point pip at an internal mirror that is slow or incomplete. Install from the public index for this one command:</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">PIP_INDEX_URL</span><span class="o">=</span>https://pypi.org/simple<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span>
+<div class="codehilite" data-lang="shell"><pre><span></span><code><span class="nv">PIP_INDEX_URL</span><span class="o">=</span>https://pypi.org/simple<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span>
 </code></pre></div>
 
-<h2 id="still-stuck">Still stuck<a class="headerlink" href="#still-stuck" title="Permanent link">#</a></h2>
+<h2 id="still-stuck">Still stuck<a class="headerlink" href="#still-stuck" title="Link to this section">#</a></h2>
 <p>Run with <code>SHAD0W_LOG=debug</code> to print one line per decision (question, answer, source, confidence, flag, latency), and open an issue with that output and <code>shad0w doctor</code>'s.</p>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="cli.html"><small>← previous</small>Command line</a><a class="next" href="guarantee.html"><small>next →</small>The guarantee</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Troubleshooting&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/troubleshooting.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="troubleshooting.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="cli.html" rel="prev"><small>← Previous</small>Command line</a><a class="next" href="guarantee.html" rel="next"><small>Next →</small>The guarantee</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
 <li><a href="#what-each-doctor-line-means">What each doctor line means</a></li>
 <li><a href="#messages-from-the-command-line">Messages from the command line</a></li>
+<li><a href="#errors-in-python">Errors in Python</a></li>
+<li><a href="#your-llm-fails">Your LLM fails</a></li>
 <li><a href="#the-table-answers-nothing-or-very-little">The table answers nothing, or very little</a></li>
-<li><a href="#the-teacher-fails">The teacher fails</a></li>
 <li><a href="#drift">Drift</a></li>
-<li><a href="#yesno-questions">Yes/no questions</a></li>
 <li><a href="#the-proxy-forwards-everything">The proxy forwards everything</a></li>
-<li><a href="#cannot-import-name-version-from-shad0w">"cannot import name 'version' from 'shad0w'"</a></li>
+<li><a href="#module-shad0w-has-no-attribute-decision-or-cannot-import-name-version-from-shad0w">"module 'shad0w' has no attribute 'decision'" or "cannot import name 'version' from 'shad0w'"</a></li>
+<li><a href="#yesno-questions-from-02">Yes/no questions from 0.2</a></li>
 <li><a href="#pip-times-out">pip times out</a></li>
 <li><a href="#still-stuck">Still stuck</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Troubleshooting&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/troubleshooting.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

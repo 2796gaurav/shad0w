@@ -3,99 +3,262 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>The guarantee · shad0w</title>
-<meta name="description" content="What &quot;certified&quot; means in plain words, what it assumes, and the math behind it.">
+<meta name="description" content="What &quot;certified&quot; means in plain words, what can break it, how the certificate is computed (Learn-then-Test with Clopper–Pearson bounds), and how to read certificate.json.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/guarantee.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="The guarantee · shad0w">
-<meta property="og:description" content="What &quot;certified&quot; means in plain words, what it assumes, and the math behind it."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/guarantee.html">
+<meta property="og:description" content="What &quot;certified&quot; means in plain words, what can break it, how the certificate is computed (Learn-then-Test with Clopper–Pearson bounds), and how to read certificate.json."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/guarantee.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The guarantee · shad0w">
-<meta name="twitter:description" content="What &quot;certified&quot; means in plain words, what it assumes, and the math behind it."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="What &quot;certified&quot; means in plain words, what can break it, how the certificate is computed (Learn-then-Test with Clopper–Pearson bounds), and how to read certificate.json."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "The guarantee", "description": "What \"certified\" means in plain words, what can break it, how the certificate is computed (Learn-then-Test with Clopper–Pearson bounds), and how to read certificate.json.", "url": "https://2796gaurav.github.io/shad0w/docs/guarantee.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "The guarantee", "item": "https://2796gaurav.github.io/shad0w/docs/guarantee.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/guarantee.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · The guarantee</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html" class=active>The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="the-guarantee">The guarantee<a class="headerlink" href="#the-guarantee" title="Permanent link">#</a></h1>
-<h2 id="in-plain-words">In plain words<a class="headerlink" href="#in-plain-words" title="Permanent link">#</a></h2>
-<p>Before the table answers anything, shad0w tests it on answers from your LLM that the table <strong>never trained on</strong>. It looks for a confidence level with this property: whenever the table is at least that confident, it disagrees with your LLM on at most α of the answers it serves (α = 5% by default), with 90% confidence. It allows for bad luck in which answers happened to be held out; that bad luck is what δ measures, so in up to 10% of certifications the realised rate can land above α. In our earlier runs it did on 2 of 7 tasks (3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)); the live spot checks are there to catch that.</p>
-<p>That gives you one sentence you can show a reviewer:</p>
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">The guarantee</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html" class=active aria-current=page>The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Understand<span class="rt">9 min read</span></div>
+    <h1 id="the-guarantee">The guarantee<a class="headerlink" href="#the-guarantee" title="Link to this section">#</a></h1>
+<p>This page explains the one promise shad0w makes: what it says, what it is measured against, what can break it, and the math behind it. Read the first two sections before you go to production. The rest is for reviewers.</p>
+<p>A few words used throughout:</p>
+<ul>
+<li><strong>The table</strong>: shad0w's small learned model. It is trained on your LLM's logged answers.</li>
+<li><strong>α (alpha)</strong>: the most disagreement you allow. The default, 5%, means 1 answer in 20.</li>
+<li><strong>δ (delta)</strong>: the chance that the certificate itself is wrong because of an unlucky sample. The default is 0.1, which means 90% confidence.</li>
+<li><strong>Certified</strong>: tested on answers the table never trained on, and passed.</li>
+<li><strong>Defer</strong>: the table does not answer, so the message goes to your LLM.</li>
+</ul>
+<h2 id="in-plain-words">In plain words<a class="headerlink" href="#in-plain-words" title="Link to this section">#</a></h2>
+<p>Before the table answers anything, shad0w tests it on LLM answers it <strong>never trained on</strong>. From that test it picks a confidence threshold. When the table is at least that confident, it answers. Below it, your LLM answers.</p>
+<p>The promise is about the answers the table gives:</p>
 <blockquote>
-<p>On traffic like the calibration traffic, among the answers the table serves, it disagrees with your LLM <strong>at most α</strong> of the time. This statement is wrong with probability at most <strong>δ</strong> (10% by default).</p>
+<p>On traffic like the calibration traffic, the table's answers differ from your LLM's on <strong>at most α</strong> of them (5% by default). There is at most a <strong>δ</strong> chance (10% by default) that this is false because the test sample was unlucky.</p>
 </blockquote>
-<p>Below that confidence level, the table does not answer. Your LLM does.</p>
-<h2 id="what-it-is-not">What it is not<a class="headerlink" href="#what-it-is-not" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>Not a bound against the truth.</strong> It compares the table with your LLM. If your LLM is wrong, the table is wrong the same way. For a bound against the truth, calibrate with ~300 human labels (<code>shad0w calibrate</code>).</li>
-<li><strong>Not valid under any traffic change.</strong> It holds for traffic drawn like the calibration traffic. The drift guard, live spot checks and retraining are there for when traffic moves.</li>
-<li><strong>Not a per-request promise.</strong> It is a rate over served answers.</li>
-</ul>
-<h2 id="how-we-keep-you-honest-at-runtime">How we keep you honest at runtime<a class="headerlink" href="#how-we-keep-you-honest-at-runtime" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>Spot checks.</strong> 1% of table answers (<code>audit_rate</code>) are re-asked to your LLM in the background. The dashboard and <code>stats()</code> show the observed disagreement and its 90% upper bound next to α.</li>
-<li><strong>Drift guard.</strong> It needs no labels. shad0w tracks how often confidence falls below a level set at calibration, and when that share rises by 3 points over a 500-decision window, it flags <code>drift</code> and defers until you retrain.</li>
-</ul>
-<h2 id="formally">Formally<a class="headerlink" href="#formally" title="Permanent link">#</a></h2>
-<blockquote>
-<p><strong>Setting.</strong> The calibration slice has <em>n</em> texts never used for fitting, with your LLM's answers <em>tᵢ</em>, the table's answers <em>ŷᵢ</em> and confidences <em>cᵢ</em>. Disagreement is <em>eᵢ</em> = 1[<em>ŷᵢ</em> ≠ <em>tᵢ</em>].</p>
-<p><strong>Procedure</strong> (Learn-then-Test). Sort by confidence. Run two valid tests, each at level δ/2, and keep the more lenient certified threshold. By the union bound, the result is valid at δ.</p>
+<p>Three things to notice:</p>
 <ol>
-<li><em>Fixed-sequence:</em> test growing accepted sets from strict to lenient, and stop at the first whose Clopper–Pearson upper bound exceeds α.</li>
-<li><em>Bonferroni:</em> test 12 coverage levels fixed in advance (5% … 100%), each at δ/24.</li>
+<li><strong>It is against your LLM, not against the truth.</strong> The table copies your LLM. If your LLM is wrong, the table is wrong the same way. To bound errors against the truth, certify with about 300 human labels (<code>shad0w calibrate</code>, see <a href="training.html">training</a>).</li>
+<li><strong>It is a rate, not a per-message promise.</strong> Any single answer can still differ. Over many served answers, the share that differs stays at or below α.</li>
+<li><strong>It holds for traffic like the test traffic.</strong> If what users send changes a lot, the promise no longer covers it. The next section lists what breaks it.</li>
 </ol>
-<p><strong>Guarantee.</strong> With probability ≥ 1 − δ over the calibration sample, P( ŷ(x) ≠ teacher(x) | c(x) ≥ τ* ) ≤ α, for x drawn exchangeably with the calibration data.</p>
-<p><strong>Against the truth.</strong> If your LLM is right with probability q on served inputs, the served error against the truth is at most α + (1 − q).</p>
+<p>In our runs the realised disagreement on fresh traffic was 3.0–6.0% at α = 5% (<a href="benchmarks.html">benchmarks</a>).</p>
+<h2 id="what-can-break-it">What can break it<a class="headerlink" href="#what-can-break-it" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>What happens</th>
+<th>Why the promise stops covering it</th>
+<th>What shad0w does</th>
+<th>What you do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Traffic shifts</strong> (a launch, a new channel, many more off-topic messages)</td>
+<td>The certificate describes the old mix</td>
+<td>The drift guard sees more low-confidence messages than in calibration, flags <code>drift</code> and defers to your LLM. Spot checks show live disagreement.</td>
+<td>Retrain on fresh logs. See <a href="limits.html">limits</a>.</td>
+</tr>
+<tr>
+<td><strong>Your LLM changes</strong> (new model, new prompt)</td>
+<td>The certificate compares the table with the <em>old</em> LLM</td>
+<td>Nothing automatic: shad0w cannot tell your prompt changed</td>
+<td>Rotate the log, let the new LLM answer for a while, retrain</td>
+</tr>
+<tr>
+<td><strong>Your options change</strong></td>
+<td>The table was certified on a different list of answers</td>
+<td>Flags <code>options_changed</code> or <code>option_removed</code> and defers</td>
+<td>Retrain. See <a href="options.html">changing your options</a>.</td>
+</tr>
+<tr>
+<td><strong>You force a lower threshold</strong> (<code>force_threshold</code>)</td>
+<td>Answers below the certified threshold were never tested</td>
+<td>Marks them <code>certified=False</code>, flag <code>manual_threshold</code></td>
+<td>Use <code>min_confidence</code> (stricter) instead</td>
+</tr>
+<tr>
+<td><strong>Bad luck</strong></td>
+<td>δ allows it in up to 10% of certifications</td>
+<td>Spot checks measure live disagreement</td>
+<td>Watch the spot-check bound; retrain if it sits above α</td>
+</tr>
+</tbody>
+</table></div>
+<p>Bad luck is not hypothetical. In earlier runs the realised rate landed above α on 2 of 7 tasks (3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%)). In the current runs, CLINC150 went above α because of a traffic shift (<a href="benchmarks.html#where-shad0w-loses">where shad0w loses</a>).</p>
+<h2 id="choosing">Choosing α<a class="headerlink" href="#choosing" title="Link to this section">#</a></h2>
+<p>A lower α is safer: the table answers less and your LLM answers more. A higher α saves more calls and allows more disagreement. Pick the figure on the selector to see the trade-off on the demo table.</p>
+<div class="viz" data-viz="alpha">Lower α means the table answers less and agrees more. Measured on BANKING77 with gpt-4.1-mini as the LLM: at α = 2% the table answered 20% of fresh traffic with 0.4% disagreement; at α = 5%, 61% with 3.0%; at α = 10%, 80% with 7.4%.</div>
+
+<p>The figure uses the demo table. The measured run behind the numbers above:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>α (max disagreement)</th>
+<th>answered by the table</th>
+<th>realised disagreement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1%</td>
+<td>0%</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>2%</td>
+<td>20%</td>
+<td>0.4%</td>
+</tr>
+<tr>
+<td>5%</td>
+<td>61%</td>
+<td>3.0%</td>
+</tr>
+<tr>
+<td>10%</td>
+<td>80%</td>
+<td>7.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>BANKING77. Lower α = safer, fewer calls saved.</em> Source: <code>results/evidence.json cmp.banking77.openai.shad0w</code>.</p>
+<p>Set α per question with <code>alpha=</code> in code, <code>SHAD0W_ALPHA</code>, or <code>shad0w.toml</code> (<a href="configuration.html">configuration</a>). It takes effect at the next <code>train()</code>.</p>
+<h2 id="how-a-certificate-is-made">How a certificate is made<a class="headerlink" href="#how-a-certificate-is-made" title="Link to this section">#</a></h2>
+<p><code>train()</code> runs these steps for each question:</p>
+<ol>
+<li><strong>Set aside calibration answers.</strong> These are LLM answers the table never trains on. Once the log holds at least 100 spot-check rows, shad0w uses those: they are a uniform random sample of live traffic. Before that, it holds out a random <code>cal_fraction</code> of the log (default 0.3, at least 100 rows, at most <code>max_cal</code> = 3000).</li>
+<li><strong>Score them.</strong> For each calibration message, record the table's answer, its confidence, and whether it matches your LLM's answer.</li>
+<li><strong>Sort by confidence</strong> and find the lowest threshold at which a conservative upper bound on disagreement is still at most α (details below).</li>
+<li><strong>Save it.</strong> The threshold goes into <code>manifest.json</code>. The full record goes into <code>certificate.json</code> next to it.</li>
+</ol>
+<p>If no threshold passes, the threshold is <code>null</code> and the table answers nothing. That is the safe outcome, not an error.</p>
+<p>Try it offline. A keyword function stands in for your LLM:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">KEYWORDS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"refund"</span><span class="p">:</span> <span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">:</span> <span class="s2">"stolen"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"weather"</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>  <span class="c1"># a stand-in for your LLM, so this runs offline</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">label</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">KEYWORDS</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="p">),</span> <span class="s2">"other"</span><span class="p">)</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">fillers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"please"</span><span class="p">,</span> <span class="s2">"today"</span><span class="p">,</span> <span class="s2">"my"</span><span class="p">,</span> <span class="s2">"the"</span><span class="p">,</span> <span class="s2">"help"</span><span class="p">,</span> <span class="s2">"now"</span><span class="p">,</span> <span class="s2">"account"</span><span class="p">,</span> <span class="s2">"app"</span><span class="p">,</span> <span class="s2">"urgent"</span><span class="p">,</span> <span class="s2">"hi"</span><span class="p">]</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fillers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"stolen"</span><span class="p">,</span> <span class="s2">"weather"</span><span class="p">])])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1200</span><span class="p">)]</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+    <span class="n">intent</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>                      <span class="c1"># your LLM answers; shad0w logs it</span>
+
+<span class="n">cert</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>              <span class="c1"># compile, certify, start serving</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">cert</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"n_calibration"</span><span class="p">,</span> <span class="s2">"certified_share_on_calibration"</span><span class="p">,</span>
+                                       <span class="s2">"disagreement_on_certified_calibration"</span><span class="p">,</span> <span class="s2">"procedure"</span><span class="p">)},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shad0w</span><span class="o">.</span><span class="n">read_certificate</span><span class="p">(</span><span class="s2">"shad0w/intent/bundle"</span><span class="p">)[</span><span class="s2">"statement"</span><span class="p">])</span>
+</code></pre></div>
+
+<p>On the command line, <code>shad0w report --bundle shad0w/intent/bundle</code> prints the same certificate. Every field is listed in the <a href="reference.html#certificatejson">reference</a>.</p>
+<h2 id="how-it-stays-honest-at-runtime">How it stays honest at runtime<a class="headerlink" href="#how-it-stays-honest-at-runtime" title="Link to this section">#</a></h2>
+<p>The certificate is computed once, at training time. Two checks run on live traffic:</p>
+<ul>
+<li><strong>Spot checks.</strong> A share of decisions (<code>audit_rate</code>, default 1%) is also sent to your LLM, chosen at random across all traffic. For table answers this happens in the background, so it never slows a reply. <code>stats()</code> and the dashboard show the observed disagreement and its 90% upper bound next to α. The next <code>train()</code> certifies on these rows once there are at least 100.</li>
+<li><strong>Drift guard.</strong> It needs no labels. At calibration it picks a confidence level below which about as many messages fall as the table got wrong. Live, it tracks the share of messages below that level over the last <code>drift_window</code> decisions (default 500). If that share rises more than <code>drift_margin</code> (default 0.03) above the calibration share, every answer is flagged <code>drift</code> and deferred until the share falls back or you retrain. It starts checking once half the window is full.</li>
+</ul>
+<p>See <a href="observability.html">observability</a> for where these numbers show up.</p>
+<h2 id="formally">Formally<a class="headerlink" href="#formally" title="Link to this section">#</a></h2>
+<blockquote>
+<p><strong>Setting.</strong> The calibration set has <em>n</em> texts never used for fitting. For each one: your LLM's answer <em>tᵢ</em>, the table's answer <em>ŷᵢ</em> and its confidence <em>cᵢ</em> (the top softmax probability). Disagreement is <em>eᵢ</em> = 1[<em>ŷᵢ</em> ≠ <em>tᵢ</em>].</p>
+<p><strong>Candidates.</strong> Sort the calibration set by confidence, highest first. Candidate <em>k</em> serves the top <em>k</em> texts, so its threshold is <em>τₖ</em> = <em>c₍ₖ₎</em> (the <em>k</em>-th highest confidence). Let <em>Eₖ</em> be the number of disagreements among those <em>k</em>.</p>
+<p><strong>Test.</strong> Candidate <em>k</em> passes at level <em>δ′</em> when the one-sided Clopper–Pearson upper bound is at most α: <em>U</em>(<em>Eₖ</em>, <em>k</em>, <em>δ′</em>) = Beta⁻¹(1 − <em>δ′</em>; <em>Eₖ</em> + 1, <em>k</em> − <em>Eₖ</em>) ≤ α (and <em>U</em> = 1 when <em>Eₖ</em> = <em>k</em>).</p>
+<p><strong>Procedure</strong> (Learn-then-Test, the default <code>auto</code>). Run two valid procedures, each at <em>δ</em>/2, and keep the lower (more lenient) of the two thresholds. By the union bound, the result holds at <em>δ</em>.</p>
+<ol>
+<li><em>Fixed sequence.</em> Walk <em>k</em> from strict to lenient over 50 evenly spaced steps, starting at <em>k</em>₀, and stop at the first candidate that fails. Keep the last one that passed. <em>k</em>₀ depends only on <em>n</em>, α and <em>δ</em>/2, never on the data: it is the largest of ⌈log(<em>δ</em>/2) / log(1 − α)⌉, ⌈0.05 <em>n</em>⌉, min(50, <em>n</em>), and the smallest <em>k</em> at which ⌊α<em>k</em>/2⌋ disagreements would still pass. No multiplicity penalty, so it is tight when disagreement rises as confidence falls.</li>
+<li><em>Bonferroni.</em> Test 12 coverage levels fixed in advance (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, … 0.9 and 1.0 times <em>n</em>), each at (<em>δ</em>/2)/12 = <em>δ</em>/24, and keep the most lenient one that passes. It is robust when your LLM makes random mistakes regardless of the input, which can stop the fixed sequence early.</li>
+</ol>
+<p><strong>Guarantee.</strong> With probability at least 1 − <em>δ</em> over the calibration sample, P( <em>ŷ</em>(<em>x</em>) ≠ teacher(<em>x</em>) | <em>c</em>(<em>x</em>) ≥ <em>τ</em>* ) ≤ α, for <em>x</em> drawn exchangeably with the calibration data.</p>
+<p><strong>Against the truth.</strong> If your LLM is right with probability <em>q</em> on the inputs the table serves, the table's error against the truth on those inputs is at most α + (1 − <em>q</em>).</p>
 </blockquote>
-<p>A simulation in the test suite draws hundreds of calibration sets from a known population. It checks that the share of runs whose true disagreement exceeds α stays at or below δ, both when disagreement rises as confidence falls and when an LLM-like teacher is wrong a few percent of the time at random.</p>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
+<p>Two honest notes on the proof:</p>
+<ul>
+<li>The candidate thresholds are read off the calibration sample at positions fixed in advance (as in Geifman and El-Yaniv's selective-guaranteed-risk method), not from a grid of confidence values chosen before seeing data. That is why the test suite also checks validity by simulation.</li>
+<li>Exchangeability is the real assumption. A random held-out split of the log meets it for traffic like the log. Once the table serves, the log mostly holds the messages it deferred, which are harder than average. That is why retraining switches to the spot-check rows, a uniform sample of all traffic, as soon as there are 100 of them.</li>
+</ul>
+<p><strong>Simulation.</strong> Benchmark 8 draws 1,000 calibration sets per setting from known populations (<code>tests/test_certificate_validity.py</code> runs a smaller version with the test suite). It counts how often a certificate's true disagreement exceeds α, for each procedure, for disagreement that rises as confidence falls and for flat LLM-like noise. Result: 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%). The full table is on the <a href="benchmarks.html#certificate-validity-by-simulation">benchmarks page</a>.</p>
+<p>The code is in <code>shad0w/reliability.py</code> (<code>SelectiveRiskController</code>, <code>binom_ucb</code>) and <code>shad0w/shadow.py</code> (<code>_certify</code>).</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this section">#</a></h2>
 <ul>
 <li>Angelopoulos et al., <em>Learn then Test</em>, 2021. <a href="https://arxiv.org/abs/2110.01052">arXiv:2110.01052</a></li>
+<li>Geifman and El-Yaniv, <em>Selective Classification for Deep Neural Networks</em>, NeurIPS 2017. <a href="https://arxiv.org/abs/1705.08500">arXiv:1705.08500</a></li>
 <li>Jung et al., <em>Trust or Escalate</em>, ICLR 2025. <a href="https://arxiv.org/abs/2407.18370">arXiv:2407.18370</a></li>
 <li>Zeighami et al., <em>BARGAIN</em>, 2025. <a href="https://arxiv.org/abs/2509.02896">arXiv:2509.02896</a></li>
 <li>Garg et al., <em>Leveraging Unlabeled Data to Predict Out-of-Distribution Performance</em>, ICLR 2022. <a href="https://arxiv.org/abs/2201.04234">arXiv:2201.04234</a></li>
+<li>Nie et al., <em>Online Cascade Learning for Efficient Inference over Streams</em>, ICML 2024. <a href="https://proceedings.mlr.press/v235/nie24a.html">PMLR</a> (the closest prior work: a small model learns online from an LLM and defers when unsure; shad0w adds the finite-sample certificate, a µs runtime and the zero-code proxy)</li>
+<li>Schroeder et al., <em>vCache: Verified Semantic Prompt Caching</em>, ICLR 2026. <a href="https://arxiv.org/abs/2502.03771">arXiv:2502.03771</a> (a cache with a user-set error bound; it replays past answers, shad0w generalises to new wording)</li>
+<li>Chen et al., <em>FrugalGPT</em>, 2023. <a href="https://arxiv.org/abs/2305.05176">arXiv:2305.05176</a></li>
 <li>Joulin et al., <em>Bag of Tricks for Efficient Text Classification</em>, 2016. <a href="https://arxiv.org/abs/1607.01759">arXiv:1607.01759</a></li>
 </ul>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="troubleshooting.html"><small>← previous</small>Troubleshooting</a><a class="next" href="scale.html"><small>next →</small>Scale: options, size, speed</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20The%20guarantee&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/guarantee.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="guarantee.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="troubleshooting.html" rel="prev"><small>← Previous</small>Troubleshooting</a><a class="next" href="scale.html" rel="next"><small>Next →</small>Scale: options, size, speed</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
 <li><a href="#in-plain-words">In plain words</a></li>
-<li><a href="#what-it-is-not">What it is not</a></li>
-<li><a href="#how-we-keep-you-honest-at-runtime">How we keep you honest at runtime</a></li>
+<li><a href="#what-can-break-it">What can break it</a></li>
+<li><a href="#choosing">Choosing α</a></li>
+<li><a href="#how-a-certificate-is-made">How a certificate is made</a></li>
+<li><a href="#how-it-stays-honest-at-runtime">How it stays honest at runtime</a></li>
 <li><a href="#formally">Formally</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20The%20guarantee&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/guarantee.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Snake at 120 moves a second: System 0 vs System One models, at game speed · shad0w</title>
+<meta name="description" content="shad0w learned snake and Pong from an LLM&#x27;s answers. Then it raced three System One decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/game-speed.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="Snake at 120 moves a second: System 0 vs System One models, at game speed · shad0w">
+<meta property="og:description" content="shad0w learned snake and Pong from an LLM&#x27;s answers. Then it raced three System One decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/game-speed.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Snake at 120 moves a second: System 0 vs System One models, at game speed · shad0w">
+<meta name="twitter:description" content="shad0w learned snake and Pong from an LLM&#x27;s answers. Then it raced three System One decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Snake at 120 moves a second: System 0 vs System One models, at game speed", "description": "shad0w learned snake and Pong from an LLM's answers. Then it raced three System One decision models on an Apple M5 Pro's GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play.", "datePublished": "2026-10-09", "dateModified": "2026-10-09", "url": "https://2796gaurav.github.io/shad0w/blog/game-speed.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "benchmarks, games, latency, system one", "wordCount": 646, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/game-speed.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "Snake at 120 moves a second: System 0 vs System One models, at game speed", "item": "https://2796gaurav.github.io/shad0w/blog/game-speed.html"}]}</script><meta property="article:published_time" content="2026-10-09"><meta property="article:author" content="Gaurav Chauhan"><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/blog/game-speed.md">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>Snake at 120 moves a second: System 0 vs System One models, at game speed</h1><p class="lead">shad0w learned snake and Pong from an LLM&#x27;s answers. Then it raced three System One decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-09</span><span>3 min read</span><span class="tag">benchmarks</span><span class="tag">games</span><span class="tag">latency</span><span class="tag">system one</span></div></header>
+  <article class="prose"><p>Decision models (the "System One" family) are fast: tens of milliseconds where a chat LLM takes about a second. Is that fast enough? Give a decision a hard deadline, like a game frame, and you find out.</p>
+<h2 id="the-setup">The setup<a class="headerlink" href="#the-setup" title="Permanent link">#</a></h2>
+<p><strong>The game.</strong> Snake on a 16 by 16 board. Every tick, the snake asks one question in plain words: <em>"Food is 3 ahead and 2 to the left. Straight is free, left is a wall, right is free. Turn left, go straight, or turn right?"</em> Each lane gets the same question, in the same words.</p>
+<p><strong>The clock.</strong> A lane asks for a move. The move lands on the first tick after its answer arrives; until then the snake keeps going straight. So a slow answer is not wrong, it is <em>late</em>, and late moves crash snakes.</p>
+<p><strong>The lanes.</strong></p>
+<ul>
+<li><strong>shad0w</strong>: a 2 KB table, trained on the hosted LLM's logged answers and certified at α = 5%.</li>
+<li><strong>Laya, Kev-0.8B and Kev-4B.</strong> Open System One decision models, run in llama.cpp on the Apple M5 Pro's 16-core GPU, one at a time.</li>
+<li><strong>The hosted LLM</strong> that shad0w learned from.</li>
+</ul>
+<h2 id="what-happened">What happened<a class="headerlink" href="#what-happened" title="Permanent link">#</a></h2>
+<p>Without a clock, the LLM is the best player of the four models (the decision models were given no examples, and play their own way). Its copy, shad0w, plays as well (over 8 games each). Then the clock starts:</p>
+<ul>
+<li><strong>shad0w scored 28.0 at every speed</strong>, from one move a second to 120. It decided in about 1.6 µs per move, in-process on the CPU, so every move landed in its own tick.</li>
+<li><strong>The hosted LLM dropped from 25.9 to 0.1</strong> at 10 moves a second. At about 912 ms per answer, its first answer lands around the ninth tick, and most snakes hit the wall before its second.</li>
+<li><strong>The small decision models are quick but play less well</strong>: Laya at about 16 ms and Kev-0.8B at about 23 ms per move make most frames up to 30 moves a second, so their low scores come from how they play, not from time (see the no-clock column). Kev-4B, at about 145 ms, falls behind from 5 moves a second.</li>
+</ul>
+<p>The <a href="../arena/">arena page</a> replays every recorded game, move for move, with charts of score against speed, time per decision against frame budgets, and memory and model size for each lane.</p>
+<h2 id="then-we-made-it-playable">Then we made it playable<a class="headerlink" href="#then-we-made-it-playable" title="Permanent link">#</a></h2>
+<p>Snake shows the race; Pong lets you feel it. A shad0w learned Pong from 3,000 of an LLM's answers ("a ball reaches your side in 12 frames, 0.8 paddle-heights above your paddle's centre": up, stay or down). The whole paddle brain is a 6 KB table that agrees with the LLM on 99.8% of moves it never trained on. It runs in your browser and decides every frame in about 1.5 µs (measured in Node on the Apple M5 Pro); the panel on the page measures your own browser live.</p>
+<p><a href="../pong/">Play it</a>. Add six balls, shrink the paddles, and watch the panel: the decisions still take a sliver of each 16.7 ms frame.</p>
+<h2 id="what-this-does-and-does-not-show">What this does and does not show<a class="headerlink" href="#what-this-does-and-does-not-show" title="Permanent link">#</a></h2>
+<ul>
+<li>shad0w plays like the LLM it learned from, at table speed. It does not invent a better strategy, and it can lose.</li>
+<li>The decision models were not fine-tuned for snake; with examples they would play better. The point of the race is time, and the no-clock column separates play from time.</li>
+<li>Every lane's numbers were recorded on one machine (Apple M5 Pro: 15-core CPU, 16-core GPU, 24 GB unified memory) on one day. The arena page lists exactly how, including what was not measured.</li>
+</ul>
+<p>If your app makes decisions inside a loop (a game, a trading rule, a robot, a UI that reacts per keystroke), the frame budget is the question to ask of any model. <a href="../docs/">Getting started</a> shows how to put shad0w under your own decisions.</p>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="decisions-api-proxy.html"><small>2026-10-09 · 5 min</small><b>Zero-code System Zero for the OpenAI Decisions API</b></a><a class="post-card" href="honest-numbers.html"><small>2026-10-09 · 5 min</small><b>94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM</b></a><a class="post-card" href="adding-a-category.html"><small>2026-10-08 · 2 min</small><b>Adding a category without breaking production</b></a></aside>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+</body>
+</html>

@@ -3,58 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-<title>Tuning &amp; fine-tuning · shad0w</title>
-<meta name="description" content="Recipes to get more traffic answered, make serving stricter, make the table smaller, and keep it right as your LLM and your traffic change.">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Tuning · shad0w</title>
+<meta name="description" content="What each knob does in plain words (α, δ, min_rows, audit_rate, min_confidence, force_threshold, canary, never_serve), why the defaults tune themselves, and recipes for common goals.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/tuning.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
-<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Tuning &amp; fine-tuning · shad0w">
-<meta property="og:description" content="Recipes to get more traffic answered, make serving stricter, make the table smaller, and keep it right as your LLM and your traffic change."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/tuning.html">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Tuning · shad0w">
+<meta property="og:description" content="What each knob does in plain words (α, δ, min_rows, audit_rate, min_confidence, force_threshold, canary, never_serve), why the defaults tune themselves, and recipes for common goals."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/tuning.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Tuning &amp; fine-tuning · shad0w">
-<meta name="twitter:description" content="Recipes to get more traffic answered, make serving stricter, make the table smaller, and keep it right as your LLM and your traffic change."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Tuning · shad0w">
+<meta name="twitter:description" content="What each knob does in plain words (α, δ, min_rows, audit_rate, min_confidence, force_threshold, canary, never_serve), why the defaults tune themselves, and recipes for common goals."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Tuning", "description": "What each knob does in plain words (α, δ, min_rows, audit_rate, min_confidence, force_threshold, canary, never_serve), why the defaults tune themselves, and recipes for common goals.", "url": "https://2796gaurav.github.io/shad0w/docs/tuning.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Tuning & fine-tuning", "item": "https://2796gaurav.github.io/shad0w/docs/tuning.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/tuning.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Tuning & fine-tuning</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html" class=active>Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="tuning-fine-tuning">Tuning &amp; fine-tuning<a class="headerlink" href="#tuning-fine-tuning" title="Permanent link">#</a></h1>
-<p>shad0w has one number that decides safety (<code>alpha</code>) and a handful of knobs that decide how much it answers. This page is a set of recipes. Every setting can be passed in code, as a <code>SHAD0W_*</code> variable, or in <code>shad0w.toml</code> (<a href="configuration.html">Configuration</a>).</p>
-<h2 id="it-answers-too-little">"It answers too little"<a class="headerlink" href="#it-answers-too-little" title="Permanent link">#</a></h2>
-<p>The share the table answers comes from how <strong>consistent</strong> your teacher is and how <strong>much</strong> of your traffic it has seen. In order of impact:</p>
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Tuning &amp; fine-tuning</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html" class=active aria-current=page>Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">8 min read</span></div>
+    <h1 id="tuning">Tuning<a class="headerlink" href="#tuning" title="Link to this section">#</a></h1>
+<p class="lead">shad0w has one number that sets safety (α) and a few knobs that decide how much it answers and how carefully it rolls out. This page explains each in plain words, why you usually don't need to touch them, and what to change for common goals.</p>
+
+<p><strong>TL;DR.</strong> Keep the defaults. Pick α once for how costly a wrong answer is, roll out with <code>mode</code> and <code>canary</code>, and keep spot checks on. Everything else adjusts itself.</p>
+<div class="codehilite" data-lang="toml"><pre><span></span><code><span class="c1"># shad0w.toml: the only lines most teams ever write</span>
+<span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">          </span><span class="c1"># at most 1 in 20 table answers may differ from your LLM</span>
+<span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="w">     </span><span class="c1"># 1 in 100 decisions is double-checked against your LLM</span>
+<span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serve"</span><span class="w">        </span><span class="c1"># "shadow" while you watch, then "serve"</span>
+</code></pre></div>
+
+<p>Words used on this page. <strong>The table</strong>: the small model shad0w trains from your LLM's logged answers. <strong>Certified</strong>: tested on logged answers it never trained on, and allowed to serve only where it is expected to differ from your LLM on at most α of them. <strong>Defer</strong>: send this one to your LLM. <strong>Spot check</strong>: a decision also re-asked to your LLM, to measure live agreement. <strong>Drift</strong>: live traffic no longer looks like the traffic the table was tested on.</p>
+<h2 id="why-you-dont-need-to-fine-tune">Why you don't need to fine-tune<a class="headerlink" href="#why-you-dont-need-to-fine-tune" title="Link to this section">#</a></h2>
+<p>Most systems that put a cheap model in front of an expensive one ask you to pick a confidence cutoff and keep re-picking it. shad0w does that part for you, and checks its own work:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>What would normally be tuned by hand</th>
+<th>What shad0w does instead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The confidence cutoff above which the cheap model answers</td>
+<td><strong>The certifier picks it.</strong> At every training run it tests the new table on held-out answers and chooses the lowest cutoff that keeps disagreement within α (at 90% confidence). You set α, not the cutoff.</td>
+</tr>
+<tr>
+<td>Deciding whether a retrained model is better</td>
+<td><strong>Gated retraining.</strong> With <code>retrain = "gated"</code> (default), a new table replaces the current one only if it certifies at least 80% of the current one's share. A bad run never lands.</td>
+</tr>
+<tr>
+<td>Remembering to retrain</td>
+<td><strong><code>auto_train</code></strong> retrains in the background every N new answers. It is <strong>off by default</strong> (<code>0</code>): turn it on when you want it, e.g. <code>auto_train = 2000</code>.</td>
+</tr>
+<tr>
+<td>Checking that it is still right in production</td>
+<td><strong>Spot checks</strong> (<code>audit_rate</code>, default 1%) re-ask your LLM on a random sample and compute a live upper bound on disagreement, shown on the dashboard.</td>
+</tr>
+<tr>
+<td>Noticing that traffic changed</td>
+<td><strong>The drift guard</strong> watches how often the table is unsure on recent traffic. When that rises, it sends answers to your LLM until traffic looks familiar again or you retrain.</td>
+</tr>
+</tbody>
+</table></div>
+<p>So the knobs below are for <strong>policy</strong> (how strict, how fast to roll out, which labels are off-limits), not for keeping the table accurate.</p>
+<h2 id="the-knobs-in-plain-words">The knobs, in plain words<a class="headerlink" href="#the-knobs-in-plain-words" title="Link to this section">#</a></h2>
+<h3 id="alpha">α: how much disagreement you accept<a class="headerlink" href="#alpha" title="Link to this section">#</a></h3>
+<p><code>alpha</code> (default <code>0.05</code>) is the most the table may disagree with your LLM, counted over the answers it serves. <code>0.05</code> means at most 1 in 20.</p>
+<p>A smaller α makes the certifier pick a higher confidence cutoff, so the table answers fewer messages but agrees more often. A larger α does the opposite. Click through the values below: the figure shows the real certifier output on the demo table.</p>
+<div class="viz" data-viz="alpha">On the demo table (BANKING77, 77 intents), a stricter α means the table answers a smaller share of traffic: lower α moves the confidence cutoff up, and only the answers above it are served. Realised disagreement stays near or below α.</div>
+
+<p>On a 77-intent task with gpt-4.1-mini (OpenAI) as the teacher, the table answered 0% of traffic at α = 1%, 20% at 2%, 61% at 5% and 80% at 10%. Realised disagreement was 0.4%, 3.0% and 7.4% for the last three.</p>
+<p>How to pick:</p>
+<ul>
+<li><strong>5%</strong> suits routing and triage, where a wrong answer costs a retry or a hand-off.</li>
+<li><strong>1–2%</strong> where a wrong answer is expensive (refunds, compliance).</li>
+<li><strong>10%</strong> only when a wrong answer costs almost nothing.</li>
+</ul>
+<p>Try several on your own log before deciding. Training into a scratch folder leaves the live table alone:</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w"> </span>--out<span class="w"> </span>/tmp/a02<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.02
+shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w"> </span>--out<span class="w"> </span>/tmp/a05<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.05
+</code></pre></div>
+
+<p>Each prints the share the table would answer at that α.</p>
+<p><strong>There is one α per question, not per label.</strong> The certificate controls a single number: disagreement over everything the table serves. For a label that must be stricter, use <code>never_serve</code>, or give that question its own section with a lower <code>alpha</code> (<a href="configuration.html#where-a-setting-can-come-from">Configuration</a>).</p>
+<h3 id="how-sure-the-certificate-is">δ: how sure the certificate is<a class="headerlink" href="#how-sure-the-certificate-is" title="Link to this section">#</a></h3>
+<p><code>delta</code> (default <code>0.1</code>) is the chance that the certificate itself is wrong because the held-out answers happened to be unusually easy. <code>0.1</code> means 90% confidence. You rarely change it: <code>0.05</code> (95%) makes the cutoff a little stricter and the share answered a little smaller.</p>
+<h3 id="min_rows-when-training-may-start">min_rows: when training may start<a class="headerlink" href="#min_rows-when-training-may-start" title="Link to this section">#</a></h3>
+<p><code>min_rows</code> (default <code>1000</code>) is how many logged LLM answers training waits for. Below it, <code>train()</code> refuses. 100 is the hard minimum, for experiments. More answers almost always certify a larger share: in our BANKING77 run the share went from 0% at 250 answers to 60% at 10,000.</p>
+<h3 id="audit_rate-spot-checks">audit_rate: spot checks<a class="headerlink" href="#audit_rate-spot-checks" title="Link to this section">#</a></h3>
+<p><code>audit_rate</code> (default <code>0.01</code>) is the share of all decisions that are also checked against your LLM. When the table answered, your LLM is asked in the background, so the user never waits. When your LLM answered anyway, the row is simply marked as a spot check. These rows are a fair sample of live traffic. They feed the live safety bound on the dashboard, and once there are 100 of them, training certifies on them (<a href="training.html#why-retraining-certifies-on-spot-checks">why</a>).</p>
+<p>Raise it to <code>0.05</code> for the first weeks of serving. Keep it above zero afterwards: without spot checks you would learn about a drop in agreement only from your users.</p>
+<h3 id="min_confidence-and-force_threshold-moving-the-cutoff-by-hand">min_confidence and force_threshold: moving the cutoff by hand<a class="headerlink" href="#min_confidence-and-force_threshold-moving-the-cutoff-by-hand" title="Link to this section">#</a></h3>
+<p>Both override the certified cutoff, in opposite directions, and they are deliberately not symmetric:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>min_confidence</code></th>
+<th><code>force_threshold</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direction</td>
+<td>Stricter: the table needs at least this confidence <strong>and</strong> the certificate</td>
+<td>Looser: the table serves above this confidence <strong>even where the certificate says no</strong></td>
+</tr>
+<tr>
+<td>Guarantee</td>
+<td>Still holds (the table serves a subset of what was certified)</td>
+<td>Voided for those answers: they carry <code>certified=False</code> and flag <code>manual_threshold</code>; a warning is logged at start-up</td>
+</tr>
+<tr>
+<td>Flag on deferred answers</td>
+<td><code>min_confidence</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Use it for</td>
+<td>A safety margin, e.g. <code>0.97</code></td>
+<td>Experiments only</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="canary-mode-and-never_serve-rollout">canary, mode and never_serve: rollout<a class="headerlink" href="#canary-mode-and-never_serve-rollout" title="Link to this section">#</a></h3>
+<ul>
+<li><strong><code>mode</code></strong>: <code>serve</code> (default) answers from the table; <code>shadow</code> lets the table decide but always returns your LLM's answer and counts how often they would have differed; <code>off</code> skips the table entirely.</li>
+<li><strong><code>canary</code></strong> (default <code>1.0</code>): the share of certified answers the table may actually serve. <code>0.1</code> serves one in ten; the rest go to your LLM, flagged <code>canary</code>, and keep feeding the log.</li>
+<li><strong><code>never_serve</code></strong> (default <code>[]</code>): labels that always go to your LLM, however sure the table is.</li>
+</ul>
+<p>The <a href="rollout.html">Rollout guide</a> walks through <code>shadow</code> → <code>canary</code> → <code>serve</code>.</p>
+<h3 id="exposed-untrusted-input">exposed: untrusted input<a class="headerlink" href="#exposed-untrusted-input" title="Link to this section">#</a></h3>
+<p><code>exposed = true</code> also defers answers that a few character edits could flip (flag <code>low_radius</code>). Use it where users may try to game the decision, such as moderation or fraud screens.</p>
+<h2 id="recipes">Recipes<a class="headerlink" href="#recipes" title="Link to this section">#</a></h2>
+<h3 id="it-answers-too-little">"It answers too little"<a class="headerlink" href="#it-answers-too-little" title="Link to this section">#</a></h3>
+<p>The share the table answers depends on how <strong>consistent</strong> your LLM is and how <strong>much</strong> traffic it has seen. In order of impact:</p>
 <ol>
-<li><strong>Log more traffic.</strong> The certified share grows with logged answers. On a 77-option task nothing was certified below about 5,000 answers; on 8 options, about 1,000 was enough. See <a href="benchmarks.html">Benchmarks</a>.</li>
-<li><strong>Offer an <code>other</code> option</strong> and log off-topic traffic at its real rate. Without it, off-topic messages get forced into real options, the table gets less sure everywhere, and the certificate has to be stricter.</li>
-<li><strong>Make the teacher consistent.</strong> Temperature 0, a fixed prompt, and option descriptions that do not overlap. A teacher that answers the same message differently on two calls caps what any student can certify.</li>
-<li><strong>Raise <code>alpha</code> if your product tolerates it.</strong> 5% suits routing and triage. Each step up moves the threshold down and serves more. Measure on your own log first: <code>shad0w train --alpha 0.1</code> prints the share you would get.</li>
-<li><strong>Merge options your teacher confuses.</strong> If <code>card_lost</code> and <code>card_stolen</code> lead to the same action, one option serves more and loses nothing. Use <code>rename</code> to merge them without losing history (<a href="options.html">Changing your options</a>).</li>
-<li><strong>Turn on spot checks early</strong> (<code>audit_rate = 0.05</code> for the first weeks). Certification on a uniform sample of live traffic describes your real mix, not just the hard cases the table deferred.</li>
+<li><strong>Log more traffic.</strong> The certified share grows with the log (see <code>min_rows</code> above).</li>
+<li><strong>Offer an <code>other</code> option</strong> and keep off-topic traffic in the log at its real rate. Without it, off-topic messages get forced into real options, and the table becomes less sure everywhere.</li>
+<li><strong>Make your LLM consistent.</strong> Temperature 0, a fixed prompt, and option descriptions that don't overlap. An LLM that answers the same message differently on two calls caps what any table can certify.</li>
+<li><strong>Merge options your LLM confuses.</strong> If <code>card_lost</code> and <code>card_stolen</code> lead to the same action, merge them with <code>rename</code> (<a href="options.html">Changing your options</a>).</li>
+<li><strong>Raise α</strong>, if your product tolerates it. Measure the gain first with <code>shad0w train --out /tmp/... --alpha 0.1</code>.</li>
 </ol>
-<h2 id="it-must-be-stricter">"It must be stricter"<a class="headerlink" href="#it-must-be-stricter" title="Permanent link">#</a></h2>
-<table>
+<h3 id="it-must-be-stricter">"It must be stricter"<a class="headerlink" href="#it-must-be-stricter" title="Link to this section">#</a></h3>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Need</th>
@@ -64,45 +188,50 @@
 <tbody>
 <tr>
 <td>Fewer disagreements overall</td>
-<td>lower <code>alpha</code> (0.01–0.02)</td>
+<td>lower <code>alpha</code> (<code>0.01</code>–<code>0.02</code>)</td>
 </tr>
 <tr>
-<td>One label must always see the LLM</td>
+<td>One label must always see your LLM</td>
 <td><code>never_serve = ["fraud", "self_harm"]</code></td>
 </tr>
 <tr>
-<td>A floor on confidence, on top of the certificate</td>
-<td><code>min_confidence = 0.97</code> (only ever stricter)</td>
+<td>A margin above the certified cutoff</td>
+<td><code>min_confidence = 0.97</code></td>
 </tr>
 <tr>
-<td>Untrusted input (users trying to game it)</td>
-<td><code>exposed = true</code> (also defers answers a few edits could flip)</td>
-</tr>
-<tr>
-<td>Try it without risk</td>
-<td><code>mode = "shadow"</code>, then <code>canary = 0.1</code>, then serve: <a href="rollout.html">Rollout</a></td>
+<td>Untrusted input</td>
+<td><code>exposed = true</code></td>
 </tr>
 <tr>
 <td>A stricter bound for one question only</td>
 <td>a <code>[questions.&lt;name&gt;]</code> section with its own <code>alpha</code></td>
 </tr>
+<tr>
+<td>Try it without risk first</td>
+<td><code>mode = "shadow"</code>, then <code>canary = 0.1</code></td>
+</tr>
 </tbody>
-</table>
-<h2 id="the-table-is-too-big">"The table is too big"<a class="headerlink" href="#the-table-is-too-big" title="Permanent link">#</a></h2>
-<p>The table holds one small row per word or character pattern it learned, times the number of options, so size grows with vocabulary × options (<a href="scale.html">Scale</a>). Cap it:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">max_mb</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>       <span class="c1"># or SHAD0W_MAX_MB=1, or `shad0w train --max-mb 1`</span>
+</table></div>
+<h3 id="the-table-is-too-big">"The table is too big"<a class="headerlink" href="#the-table-is-too-big" title="Link to this section">#</a></h3>
+<p>Size grows with vocabulary × options (<a href="scale.html">Scale</a>). Cap it with <code>max_mb</code>:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span>
+                         <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">,</span> <span class="n">max_mb</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># or SHAD0W_MAX_MB=1, or shad0w train --max-mb 1</span>
 </code></pre></div>
 
-<p>Training keeps the most informative patterns and refits on them. On 150 options, <code>max_mb=1</code> gave a 1.00 MB table that certified 94.4% of calibration traffic, the same as the unbudgeted 3.6 MB table (94.4%). Very small budgets on large option sets eventually cost coverage: check the printed certified share.</p>
-<h2 id="my-llm-changed">"My LLM changed"<a class="headerlink" href="#my-llm-changed" title="Permanent link">#</a></h2>
-<p>The certificate is against the teacher that produced the log. A new model or a new prompt is a new teacher:</p>
+<p>Training keeps the most informative features and refits on them; the certificate is computed on the capped table. On 150 options, <code>max_mb=1</code> gave a 1.00 MB table that certified 94.4% of calibration traffic, the same as the uncapped 3.6 MB table (94.4%). Very small budgets on many options eventually cost coverage: check the printed share.</p>
+<h3 id="my-llm-changed">"My LLM changed"<a class="headerlink" href="#my-llm-changed" title="Link to this section">#</a></h3>
+<p>The certificate is against the LLM that produced the log. A new model or a new prompt is a new teacher:</p>
 <ol>
-<li>Start a fresh log (point <code>log=</code> or <code>folder=</code> at a new place) and keep the old table serving, or switch it to <code>mode = "shadow"</code> to watch how often the new LLM disagrees with it.</li>
-<li>Once the new log has enough answers, <code>train()</code>: the new table is certified against the new teacher.</li>
+<li>Point <code>folder=</code> at a new place so the new LLM's answers go to a fresh log. Keep the old table serving, or set <code>mode = "shadow"</code> to see how often the new LLM disagrees with it.</li>
+<li>Once the new log has <code>min_rows</code> answers, train: the new table is certified against the new LLM.</li>
 </ol>
-<h2 id="should-i-fine-tune-a-model-instead">"Should I fine-tune a model instead?"<a class="headerlink" href="#should-i-fine-tune-a-model-instead" title="Permanent link">#</a></h2>
-<p>They solve different problems and work well together.</p>
-<table>
+<h3 id="drift-fires-on-bursty-traffic">"Drift fires on bursty traffic"<a class="headerlink" href="#drift-fires-on-bursty-traffic" title="Link to this section">#</a></h3>
+<p>A long run of one hard message type (an outage brings a flood of "card not working") can fill the drift window with unsure answers even if the overall mix is unchanged. Raise <code>drift_window</code> to <code>2000</code> so one burst is a smaller part of it, or raise <code>drift_margin</code> a little. See <a href="troubleshooting.html#drift">Troubleshooting</a>.</p>
+<h2 id="should-i-fine-tune-a-small-model-instead">Should I fine-tune a small model instead?<a class="headerlink" href="#should-i-fine-tune-a-small-model-instead" title="Link to this section">#</a></h2>
+<p>They solve different problems and combine well.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th></th>
@@ -114,22 +243,22 @@
 <tr>
 <td>What you get</td>
 <td>a smaller model that imitates your LLM</td>
-<td>a table that answers the cases it can <strong>prove</strong> it gets right, and defers the rest</td>
+<td>a table that answers what it can show it gets right, and defers the rest</td>
 </tr>
 <tr>
 <td>Cost to build</td>
-<td>labelled data or distillation run, GPU hours</td>
+<td>labelled data or a distillation run, GPU hours</td>
 <td>your LLM's logged answers, seconds to minutes on a CPU</td>
 </tr>
 <tr>
 <td>Per decision</td>
 <td>milliseconds, on a GPU or a fast CPU</td>
-<td>microseconds, in your process, a browser, or a worker</td>
+<td>microseconds, in your process, a browser or a worker</td>
 </tr>
 <tr>
 <td>When it is wrong</td>
 <td>silently</td>
-<td>measured: the certificate bounds disagreement; uncertain inputs go to the teacher</td>
+<td>measured: the certificate bounds disagreement, and unsure inputs go to your LLM</td>
 </tr>
 <tr>
 <td>Best at</td>
@@ -137,27 +266,50 @@
 <td>high-volume, recognisable decisions</td>
 </tr>
 </tbody>
-</table>
-<p>A common set-up is both: fine-tune a small model as the teacher, then put shad0w in front of it. The table takes the easy majority in microseconds and the fine-tuned model handles the rest. Everything on this page still applies, with the fine-tuned model as the teacher.</p>
-<h2 id="knobs-you-rarely-need">Knobs you rarely need<a class="headerlink" href="#knobs-you-rarely-need" title="Permanent link">#</a></h2>
-<p><code>delta</code> (confidence of the certificate, default 90%), <code>cal_fraction</code> and <code>max_cal</code> (how much of the log certifies), <code>drift_window</code> and <code>drift_margin</code> (how fast the drift guard reacts). Their defaults suit almost everyone; the <a href="reference.html">reference</a> lists them all.</p>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="configuration.html"><small>← previous</small>Configuration</a><a class="next" href="options.html"><small>next →</small>Changing your options</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+</table></div>
+<p>A common set-up uses both: the fine-tuned model is the teacher, and shad0w sits in front of it.</p>
+<h2 id="knobs-you-rarely-need">Knobs you rarely need<a class="headerlink" href="#knobs-you-rarely-need" title="Link to this section">#</a></h2>
+<p><code>cal_fraction</code> and <code>max_cal</code> (how much of the log is held back to certify), <code>drift_window</code> and <code>drift_margin</code> (how quickly the drift guard reacts), <code>retrain</code> and <code>on_new_option</code>. Their defaults suit almost everyone; <a href="configuration.html#every-setting">Configuration</a> lists them all.</p>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Tuning%20%26%20fine-tuning&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/tuning.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="tuning.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="configuration.html" rel="prev"><small>← Previous</small>Configuration</a><a class="next" href="options.html" rel="next"><small>Next →</small>Changing your options</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
+<li><a href="#why-you-dont-need-to-fine-tune">Why you don't need to fine-tune</a></li>
+<li><a href="#the-knobs-in-plain-words">The knobs, in plain words</a><ul>
+<li><a href="#alpha">α: how much disagreement you accept</a></li>
+<li><a href="#how-sure-the-certificate-is">δ: how sure the certificate is</a></li>
+<li><a href="#min_rows-when-training-may-start">min_rows: when training may start</a></li>
+<li><a href="#audit_rate-spot-checks">audit_rate: spot checks</a></li>
+<li><a href="#min_confidence-and-force_threshold-moving-the-cutoff-by-hand">min_confidence and force_threshold: moving the cutoff by hand</a></li>
+<li><a href="#canary-mode-and-never_serve-rollout">canary, mode and never_serve: rollout</a></li>
+<li><a href="#exposed-untrusted-input">exposed: untrusted input</a></li>
+</ul>
+</li>
+<li><a href="#recipes">Recipes</a><ul>
 <li><a href="#it-answers-too-little">"It answers too little"</a></li>
 <li><a href="#it-must-be-stricter">"It must be stricter"</a></li>
 <li><a href="#the-table-is-too-big">"The table is too big"</a></li>
 <li><a href="#my-llm-changed">"My LLM changed"</a></li>
-<li><a href="#should-i-fine-tune-a-model-instead">"Should I fine-tune a model instead?"</a></li>
+<li><a href="#drift-fires-on-bursty-traffic">"Drift fires on bursty traffic"</a></li>
+</ul>
+</li>
+<li><a href="#should-i-fine-tune-a-small-model-instead">Should I fine-tune a small model instead?</a></li>
 <li><a href="#knobs-you-rarely-need">Knobs you rarely need</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Tuning%20%26%20fine-tuning&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/tuning.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

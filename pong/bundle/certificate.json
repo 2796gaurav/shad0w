@@ -1,0 +1,30 @@
+{
+  "format": "shad0w-certificate/1",
+  "mode": "shadow",
+  "certified_against": "teacher",
+  "teacher": "hosted LLM",
+  "alpha": 0.05,
+  "delta": 0.1,
+  "statement": "On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. The bound is against the teacher, not the truth, and does not survive a shift in the traffic mix without re-certification.",
+  "created_utc": "2026-10-09T08:03:59+00:00",
+  "questions": {
+    "move": {
+      "type": "choice",
+      "options": [
+        "up",
+        "stay",
+        "down"
+      ],
+      "n_records": 3000,
+      "n_fit": 2100,
+      "data_sha256": "03b44a55637de5355e0d0058eb8a0c0d6fb600f0cc8fee891100cebb97bf5af4",
+      "calibration": "held-out-split",
+      "n_calibration": 900,
+      "agreement_with_teacher": 0.9977777777777778,
+      "threshold": 0.8064760565757751,
+      "certified_share_on_calibration": 1.0,
+      "disagreement_on_certified_calibration": 0.0022222222222222222,
+      "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
+    }
+  }
+}

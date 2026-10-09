@@ -3,146 +3,345 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>Monitoring · shad0w</title>
-<meta name="description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry.">
+<meta name="description" content="The live dashboard, Prometheus metric names, logs, hooks, traces and OpenTelemetry spans, and what to alert on.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/observability.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Monitoring · shad0w">
-<meta property="og:description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/observability.html">
+<meta property="og:description" content="The live dashboard, Prometheus metric names, logs, hooks, traces and OpenTelemetry spans, and what to alert on."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/observability.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Monitoring · shad0w">
-<meta name="twitter:description" content="The live dashboard, Prometheus metrics, logs, hooks, traces and OpenTelemetry."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="The live dashboard, Prometheus metric names, logs, hooks, traces and OpenTelemetry spans, and what to alert on."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Monitoring", "description": "The live dashboard, Prometheus metric names, logs, hooks, traces and OpenTelemetry spans, and what to alert on.", "url": "https://2796gaurav.github.io/shad0w/docs/observability.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Monitoring", "item": "https://2796gaurav.github.io/shad0w/docs/observability.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/observability.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Monitoring</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html" class=active>Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">#</a></h1>
-<p>You should be able to see, at any moment, how much the table is answering, how fast, why it deferred, and whether it still agrees with your LLM. shad0w gives you that out of the box.</p>
-<h2 id="the-dashboard">The dashboard<a class="headerlink" href="#the-dashboard" title="Permanent link">#</a></h2>
-<p><code>shad0w proxy</code> and <code>shad0w serve</code> both serve a live page at <code>/</code>:</p>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--cost-per-call<span class="w"> </span><span class="m">0</span>.0006
-open<span class="w"> </span>http://localhost:8010
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Monitoring</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html" class=active aria-current=page>Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">6 min read</span></div>
+    <h1 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Link to this section">#</a></h1>
+<p class="lead">At any moment you should be able to see how much the table answers, how fast, why it sent calls to your LLM, and whether it still agrees with your LLM. This page shows where each of those lives: the dashboard, Prometheus, logs, traces and OpenTelemetry.</p>
+
+<p><strong>TL;DR</strong></p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--cost-per-call<span class="w"> </span><span class="m">0</span>.0006<span class="w">   </span><span class="c1"># or: shad0w serve --bundle B</span>
+<span class="c1"># dashboard  http://localhost:8010/          Prometheus  http://localhost:8010/metrics</span>
+<span class="c1"># JSON       http://localhost:8010/v1/stats  terminal    shad0w watch</span>
 </code></pre></div>
 
-<p>It shows, updated every second:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">stats</span><span class="p">()[</span><span class="s2">"offload"</span><span class="p">])</span>        <span class="c1"># share answered by the table, in this process</span>
+</code></pre></div>
+
+<p>Words used on this page. <strong>The table</strong>: the small model shad0w trains from your LLM's answers. <strong>Certified</strong>: allowed to serve, because it was tested to differ from your LLM on at most α of its answers. <strong>Defer</strong>: send to your LLM. <strong>Spot check</strong>: a decision also re-asked to your LLM (<code>audit_rate</code>, default 1%). <strong>Drift</strong>: live traffic no longer looks like the traffic the table was tested on.</p>
+<h2 id="the-dashboard">The dashboard<a class="headerlink" href="#the-dashboard" title="Link to this section">#</a></h2>
+<p><code>shad0w proxy</code> and <code>shad0w serve</code> both serve a live page at <code>/</code>, refreshed every second. It shows:</p>
 <ul>
-<li><strong>share answered by the table</strong> (with a sparkline);</li>
+<li>the <strong>share answered by the table</strong>, with a sparkline;</li>
 <li><strong>LLM calls saved</strong>, <strong>time saved</strong> (calls saved × your LLM's measured mean latency, or <code>--llm-latency-ms</code> until one is measured) and <strong>money saved</strong> (with <code>--cost-per-call</code>);</li>
-<li>per question: <strong>table vs LLM latency</strong> (p50), <strong>why the table deferred</strong> (not sure, drift, not trained, and the rollout reasons: shadow, canary, never_serve, min_confidence), and the <strong>live safety bound</strong>;</li>
-<li>the latest decisions, with source, confidence and latency (<code>--no-text</code> hides the text).</li>
+<li>per question: <strong>table vs LLM latency</strong> (p50), <strong>why the table deferred</strong> (counts per flag, see below), and the <strong>live safety bound</strong>;</li>
+<li>the latest decisions with source, confidence and latency (<code>shad0w proxy --no-text</code> hides the message text);</li>
+<li>a <strong>Playground</strong>: pick a question, type a message, and see the table's answer, its confidence against the certified cutoff, the reason and the top options. On <code>shad0w proxy</code> started with <code>--model</code>, it can also ask your LLM and show both answers side by side. Nothing typed there is logged unless you ask. The same is <code>POST /v1/playground</code> (<a href="http.html">HTTP</a>).</li>
 </ul>
-<p>The <strong>live safety bound</strong> is the 90% upper confidence bound on disagreement among table answers, computed from background spot checks (<code>audit_rate</code>, default 1%). While it is at or below α the dashboard shows it in green; above α it turns amber and says "re-train".</p>
-<p>In a terminal:</p>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>watch<span class="w"> </span>--url<span class="w"> </span>http://localhost:8010
-</code></pre></div>
-
-<h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">#</a></h2>
-<p><code>GET /metrics</code>:</p>
-<div class="codehilite"><pre><span></span><code>shad0w_decisions_total{question="intent",source="table"} 8123
+<p><strong>The live safety bound</strong> is a 90% upper bound on how often the table disagrees with your LLM, computed from spot checks on the answers it served. The dashboard shows "no spot checks yet", then "live bound … ≤ α …" while it holds, or "⚠ live bound … &gt; α …: re-train" when it does not.</p>
+<p>In a terminal, <code>shad0w watch</code> shows the same counters (<code>--url</code> for another host, <code>--every</code> for the refresh in seconds). <code>shad0w stats --url http://localhost:8010</code> prints one JSON snapshot.</p>
+<h2 id="why-a-call-went-to-your-llm-flags">Why a call went to your LLM: flags<a class="headerlink" href="#why-a-call-went-to-your-llm-flags" title="Link to this section">#</a></h2>
+<p>Every decision has a <code>flag</code>. <code>None</code> means the table answered under the certificate. Otherwise:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>no_bundle</code></td>
+<td>no trained table yet</td>
+</tr>
+<tr>
+<td class="c-key"><code>low_confidence</code></td>
+<td>the table was not sure enough to stay inside the certified bound</td>
+</tr>
+<tr>
+<td class="c-key"><code>drift</code></td>
+<td>recent traffic looks unlike the calibration data; clears by itself or after retraining</td>
+</tr>
+<tr>
+<td class="c-key"><code>low_radius</code></td>
+<td><code>exposed</code> mode: a few character edits could flip the answer</td>
+</tr>
+<tr>
+<td class="c-key"><code>uncalibrated</code></td>
+<td>the table has no certificate</td>
+</tr>
+<tr>
+<td class="c-key"><code>min_confidence</code></td>
+<td>below your <code>min_confidence</code> floor</td>
+</tr>
+<tr>
+<td class="c-key"><code>never_serve</code></td>
+<td>the label is on <code>never_serve</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>canary</code></td>
+<td>held back by the <code>canary</code> share</td>
+</tr>
+<tr>
+<td class="c-key"><code>shadow</code></td>
+<td><code>mode = "shadow"</code>: the table's answer was recorded, your LLM's returned</td>
+</tr>
+<tr>
+<td class="c-key"><code>off</code></td>
+<td><code>mode = "off"</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>options_changed</code></td>
+<td>your options include ones the table never learned</td>
+</tr>
+<tr>
+<td class="c-key"><code>option_removed</code></td>
+<td>the table picked an option you removed</td>
+</tr>
+<tr>
+<td class="c-key"><code>manual_threshold</code></td>
+<td>served under <code>force_threshold</code>: <strong>not</strong> covered by the certificate</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>decision.why</code> gives the same reason as a sentence. <code>shad0w.explain("drift")</code> turns any flag into words.</p>
+<h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Link to this section">#</a></h2>
+<p><code>GET /metrics</code> on <code>shad0w proxy</code> or <code>shad0w serve</code>, in Prometheus text format:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Metric</th>
+<th class="c-type">Type</th>
+<th>Labels</th>
+<th>What it counts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>shad0w_decisions_total</code></td>
+<td class="c-type">counter</td>
+<td><code>question</code>, <code>source</code></td>
+<td>decisions by source: <code>table</code>, <code>teacher</code> (your LLM answered), <code>deferred</code> (<code>shad0w serve</code> only: the table was not sure and there is no LLM)</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_flags_total</code></td>
+<td class="c-type">counter</td>
+<td><code>question</code>, <code>flag</code></td>
+<td>why the table did not answer (flags above)</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_offload_ratio</code></td>
+<td class="c-type">gauge</td>
+<td><code>question</code></td>
+<td>share of decisions answered by the table</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_audits_total</code></td>
+<td class="c-type">counter</td>
+<td><code>question</code></td>
+<td>table answers spot-checked against your LLM</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_audit_disagreements_total</code></td>
+<td class="c-type">counter</td>
+<td><code>question</code></td>
+<td>spot checks where your LLM disagreed</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_audit_disagreement_upper</code></td>
+<td class="c-type">gauge</td>
+<td><code>question</code></td>
+<td>the live safety bound (90% upper bound); absent until the first spot check</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_alpha</code></td>
+<td class="c-type">gauge</td>
+<td><code>question</code></td>
+<td>α of the loaded table</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_llm_calls_saved_total</code></td>
+<td class="c-type">counter</td>
+<td>—</td>
+<td>LLM calls answered by the table instead</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_time_saved_seconds_total</code></td>
+<td class="c-type">counter</td>
+<td>—</td>
+<td>calls saved × mean LLM latency</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_cost_saved_total</code></td>
+<td class="c-type">counter</td>
+<td>—</td>
+<td>calls saved × <code>cost_per_call</code> (only when it is set)</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_passthrough_total</code></td>
+<td class="c-type">counter</td>
+<td>—</td>
+<td>proxy requests forwarded untouched (not decisions)</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_errors_total</code></td>
+<td class="c-type">counter</td>
+<td>—</td>
+<td>requests that failed</td>
+</tr>
+<tr>
+<td class="c-key"><code>shad0w_latency_seconds</code></td>
+<td class="c-type">histogram</td>
+<td><code>question</code>, <code>source</code></td>
+<td>end-to-end decision latency (LLM time for <code>teacher</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite" data-lang="text"><pre><span></span><code>shad0w_decisions_total{question="intent",source="table"} 8123
 shad0w_decisions_total{question="intent",source="teacher"} 3877
 shad0w_flags_total{question="intent",flag="low_confidence"} 3790
 shad0w_offload_ratio{question="intent"} 0.677
 shad0w_audit_disagreement_upper{question="intent"} 0.041
 shad0w_alpha{question="intent"} 0.05
-shad0w_llm_calls_saved_total 8123
 shad0w_latency_seconds_bucket{question="intent",source="table",le="2.5e-05"} 8090
-...
 </code></pre></div>
 
-<p>Alert on <code>shad0w_audit_disagreement_upper &gt; shad0w_alpha</code>, and on a falling <code>shad0w_offload_ratio</code> (traffic changed).</p>
-<p>In your own app, share one <code>Metrics</code> object:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">metrics</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Metrics</span><span class="p">(</span><span class="n">cost_per_call</span><span class="o">=</span><span class="mf">0.0006</span><span class="p">)</span>
-<span class="n">intent</span>  <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
-<span class="n">urgency</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"urgent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
-<span class="n">metrics</span><span class="o">.</span><span class="n">prometheus</span><span class="p">()</span>      <span class="c1"># text for your /metrics route</span>
-<span class="n">metrics</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>        <span class="c1"># the same data as a dict</span>
+<p>Alerts worth having:</p>
+<div class="codehilite" data-lang="text"><pre><span></span><code>shad0w_audit_disagreement_upper &gt; on(question) shad0w_alpha     # the live bound broke α: retrain or lower canary
+delta(shad0w_offload_ratio[1d]) &lt; -0.1                           # the table answers much less: traffic changed
+increase(shad0w_flags_total{flag="drift"}[1h]) &gt; 0               # drift: retrain on recent traffic
 </code></pre></div>
 
-<h2 id="logs">Logs<a class="headerlink" href="#logs" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="nv">SHAD0W_LOG</span><span class="o">=</span>debug<span class="w"> </span>python<span class="w"> </span>app.py
+<h3 id="in-your-own-app">In your own app<a class="headerlink" href="#in-your-own-app" title="Link to this section">#</a></h3>
+<p>Share one <code>Metrics</code> object between decisions and expose it on your own <code>/metrics</code> route:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">Metrics</span><span class="p">(</span><span class="n">cost_per_call</span><span class="o">=</span><span class="mf">0.0006</span><span class="p">)</span>
+<span class="n">intent</span>  <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+<span class="n">urgent</span>  <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"urgent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">);</span> <span class="n">urgent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">prometheus</span><span class="p">())</span>     <span class="c1"># text for your /metrics route</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()[</span><span class="s2">"decisions"</span><span class="p">])</span>    <span class="c1"># the same data as a dict</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code>14:02:11 shad0w DEBUG intent -&gt; 'lost_card' via table conf=0.993 flag=None 9.4us | my card was stolen
+<p><code>Metrics</code> also takes <code>keep_text=False</code> (keep message text out of <code>recent</code>) and <code>llm_latency_ms=</code> (assumed LLM latency until one is measured).</p>
+<h2 id="logs">Logs<a class="headerlink" href="#logs" title="Link to this section">#</a></h2>
+<p>shad0w logs to the standard <code>shad0w</code> logger and prints nothing unless you ask:</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code><span class="nv">SHAD0W_LOG</span><span class="o">=</span>info<span class="w">  </span>python<span class="w"> </span>app.py<span class="w">     </span><span class="c1"># training, reloads, option changes, spot-check disagreements</span>
+<span class="nv">SHAD0W_LOG</span><span class="o">=</span>debug<span class="w"> </span>python<span class="w"> </span>app.py<span class="w">     </span><span class="c1"># plus one line per decision</span>
+</code></pre></div>
+
+<div class="codehilite" data-lang="text"><pre><span></span><code>14:02:11 shad0w DEBUG intent -&gt; 'lost_card' via table conf=0.993 flag=None 9.4us | my card was stolen
 14:02:11 shad0w DEBUG intent -&gt; 'other' via teacher conf=0.41 flag=low_confidence 612034.2us | explain interest
-14:05:40 shad0w INFO trained 'intent' on 1204 answers in 3.9s: certified share 68.2% at alpha=0.05
+14:05:40 shad0w INFO trained 'intent' on 1204 answers in 3.9s: certified share 68.2% at alpha=0.05 (held-out-split)
 </code></pre></div>
 
-<p><code>SHAD0W_LOG=info</code> shows only training, reloads and spot-check disagreements. Or attach your own handler to the <code>shad0w</code> logger.</p>
-<h2 id="hooks-and-traces">Hooks and traces<a class="headerlink" href="#hooks-and-traces" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>            <span class="c1"># Langfuse, Datadog, Sentry, your warehouse...</span>
-    <span class="n">analytics</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="s2">"shad0w"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
-                               <span class="s2">"us"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">latency_us</span><span class="p">,</span> <span class="s2">"flag"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">flag</span><span class="p">})</span>
+<p>Or attach your own handler: <code>logging.getLogger("shad0w")</code>.</p>
+<h2 id="hooks-and-traces">Hooks and traces<a class="headerlink" href="#hooks-and-traces" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
 
-<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">on_decision</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="s2">"decisions.jsonl"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>             <span class="c1"># Langfuse, Datadog, Sentry, your warehouse...</span>
+    <span class="nb">print</span><span class="p">({</span><span class="s2">"answer"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
+           <span class="s2">"us"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">latency_us</span><span class="p">,</span> <span class="s2">"flag"</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">flag</span><span class="p">})</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">,</span>
+                         <span class="n">on_decision</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="s2">"decisions.jsonl"</span><span class="p">)</span>
+<span class="n">intent</span><span class="p">(</span><span class="s2">"my card was stolen"</span><span class="p">)</span>
 </code></pre></div>
 
-<p><code>trace=</code> writes <strong>every</strong> decision (table and LLM) as one JSON line. It is separate from the training log on purpose: table answers never become training data.</p>
-<h2 id="opentelemetry">OpenTelemetry<a class="headerlink" href="#opentelemetry" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>opentelemetry-api<span class="w"> </span>opentelemetry-sdk
+<p><code>on_decision</code> runs after every decision; an exception in it is logged and never breaks the decision. <code>trace=</code> (or the <code>trace</code> setting) writes <strong>every</strong> decision, table and LLM, as one JSON line:</p>
+<div class="codehilite" data-lang="json"><pre><span></span><code><span class="p">{</span><span class="nt">"ts"</span><span class="p">:</span><span class="w"> </span><span class="mf">1791525795.7</span><span class="p">,</span><span class="w"> </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intent"</span><span class="p">,</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my card was stolen"</span><span class="p">,</span><span class="w"> </span><span class="nt">"answer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"other"</span><span class="p">,</span><span class="w"> </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"> </span><span class="nt">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"flag"</span><span class="p">:</span><span class="w"> </span><span class="s2">"no_bundle"</span><span class="p">,</span><span class="w"> </span><span class="nt">"latency_us"</span><span class="p">:</span><span class="w"> </span><span class="mf">41.2</span><span class="p">}</span>
+</code></pre></div>
+
+<p>The trace is kept apart from the training log on purpose: table answers never become training data.</p>
+<h2 id="opentelemetry">OpenTelemetry<a class="headerlink" href="#opentelemetry" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>opentelemetry-api<span class="w"> </span>opentelemetry-sdk
 <span class="nv">SHAD0W_OTEL</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>python<span class="w"> </span>app.py
 </code></pre></div>
 
-<p>Each decision becomes a span named <code>shad0w.decide</code> with attributes:</p>
-<ul>
-<li><code>shad0w.question</code>, <code>shad0w.source</code>, <code>shad0w.answer</code>, <code>shad0w.confidence</code>, <code>shad0w.certified</code>, <code>shad0w.flag</code>;</li>
-<li><code>gen_ai.request.model</code>, the teacher.</li>
-</ul>
-<h2 id="playground">Playground<a class="headerlink" href="#playground" title="Permanent link">#</a></h2>
-<p>The dashboard has a <strong>Playground</strong> card: pick a question, type a text, and see the table's answer, its confidence against the certified threshold, the reason in words and the top options. On <code>shad0w proxy</code> started with <code>--model</code>, it can also ask your LLM for the same text and show both answers side by side. Nothing typed there is logged unless you ask for it. The same is available as <code>POST /v1/playground</code> (see <a href="http.html">HTTP</a>).</p>
-<h2 id="explain-one-decision">Explain one decision<a class="headerlink" href="#explain-one-decision" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>try<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span><span class="s2">"the ATM ate my card"</span>
+<p>Each decision becomes one span named <code>shad0w.decide</code>, with attributes <code>shad0w.question</code>, <code>shad0w.source</code>, <code>shad0w.answer</code>, <code>shad0w.certified</code>, <code>shad0w.confidence</code> (when the table was consulted), <code>shad0w.flag</code> (when set) and <code>gen_ai.request.model</code> (your LLM's name, when known). Configure the exporter as usual for your OpenTelemetry SDK; if the API is not installed, nothing happens.</p>
+<h2 id="explain-one-decision">Explain one decision<a class="headerlink" href="#explain-one-decision" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>try<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span><span class="s2">"the ATM ate my card"</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code>the ATM ate my card
+<div class="codehilite" data-lang="text"><pre><span></span><code>the ATM ate my card
   ✓ table  card_swallowed  (confidence 0.962, needs 0.911)  10.2 µs
      certified: answered by the table
      top: card_swallowed 0.96, lost_card 0.03, other 0.01
 </code></pre></div>
 
-<p>The same from Python: <code>intent.explain(text)</code>.</p>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="rollout.html"><small>← previous</small>Rollout: shadow → canary → serve</a><a class="next" href="training.html"><small>next →</small>Training & retraining</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+<p>Without a message, <code>shad0w try</code> reads messages interactively. From Python, <code>intent.explain(text)</code> returns the same as a dict (<code>answer</code>, <code>confidence</code>, <code>threshold</code>, <code>flag</code>, <code>why</code>, <code>top</code>, <code>would_serve</code>) without calling your LLM.</p>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Monitoring&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/observability.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="observability.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="rollout.html" rel="prev"><small>← Previous</small>Rollout: shadow → canary → serve</a><a class="next" href="training.html" rel="next"><small>Next →</small>Training & retraining</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
 <li><a href="#the-dashboard">The dashboard</a></li>
-<li><a href="#prometheus">Prometheus</a></li>
+<li><a href="#why-a-call-went-to-your-llm-flags">Why a call went to your LLM: flags</a></li>
+<li><a href="#prometheus">Prometheus</a><ul>
+<li><a href="#in-your-own-app">In your own app</a></li>
+</ul>
+</li>
 <li><a href="#logs">Logs</a></li>
 <li><a href="#hooks-and-traces">Hooks and traces</a></li>
 <li><a href="#opentelemetry">OpenTelemetry</a></li>
-<li><a href="#playground">Playground</a></li>
 <li><a href="#explain-one-decision">Explain one decision</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Monitoring&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/observability.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

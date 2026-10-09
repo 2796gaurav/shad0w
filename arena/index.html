@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Snake arena: System 0 vs System One models, at game speed · shad0w</title>
+<meta name="description" content="shad0w, three small decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM play the same snake games at up to 120 moves a second. Recorded, measured, replayed move for move.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/arena/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Snake arena: System 0 vs System One models, at game speed · shad0w">
+<meta property="og:description" content="shad0w, three small decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM play the same snake games at up to 120 moves a second. Recorded, measured, replayed move for move."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/arena/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Snake arena: System 0 vs System One models, at game speed · shad0w">
+<meta name="twitter:description" content="shad0w, three small decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM play the same snake games at up to 120 moves a second. Recorded, measured, replayed move for move."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/" class=active>Arena</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap arena" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:860px;margin-bottom:28px">
+    <div class="kicker">arena · System 0 vs System One · recorded on an Apple M5 Pro</div>
+    <h1 class="arena-title">Same snake. Five brains.<br><span class="hl">One keeps up and keeps scoring.</span></h1>
+    <p>A game loop gives every decision a few milliseconds: at 60 frames a second, a move must be ready in 16.7 ms. Five decision makers play the same games at the same speed. A snake whose answer has not arrived yet keeps going straight. Every lane below is a real recording: real calls, real measured latency, replayed here move for move.</p>
+    <p class="spec" id="spec"></p>
+  </div>
+
+  <div class="arena-bar">
+    <div><span class="lbl">Game speed</span><div class="chips" id="hzChips"></div></div>
+    <div><span class="lbl">Game</span><div class="chips" id="seedChips"></div></div>
+    <div class="arena-ctl">
+      <button class="btn primary" id="play" type="button">▶ Play</button>
+      <button class="btn" id="restart" type="button">↺ Restart</button>
+      <span class="clock" id="clock">tick 0</span>
+    </div>
+  </div>
+  <p class="muted arena-note" id="slowNote"></p>
+
+  <div class="boards" id="boards"><p class="muted">Loading the recordings…</p></div>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">the whole picture</div><h2>Faster games, fewer points. Except one.</h2>
+      <p>Average food eaten per game, over <span id="nSeeds">8</span> recorded games at each speed. "No clock" is the same games with the game waiting for every answer. The local models score the same at one or two moves a second; the LLM loses most of its score even at one move a second. As the clock speeds up, every lane that waits for its answer starts moving blind. Laya scores almost nothing even with no clock, so its line shows how it plays, not its speed.</p></div>
+    <div class="panel"><div class="chart-scroll"><svg id="scoreChart" class="arena-chart" role="img" aria-label="Average score against game speed for each decision maker"></svg></div>
+      <div class="legend" id="legend"></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">time per decision</div><h2>The frame budget.</h2>
+      <p>Median time to decide one move, on a log scale, against how long one frame lasts at common game speeds. Anything to the right of a line misses that frame.</p></div>
+    <div class="panel"><div class="chart-scroll"><svg id="latChart" class="arena-chart lat" role="img" aria-label="Median decision time per decision maker against frame budgets"></svg></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">what it costs to run</div><h2>Size, memory, hardware.</h2>
+      <p>Measured while each lane played. Local models ran in llama.cpp on the Apple M5 Pro's 16-core GPU; shad0w on one of its CPU cores; the hosted LLM on someone else's hardware.</p></div>
+    <div class="table-wrap"><table class="arena-table" id="resTable"></table></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">your turn</div><h2>Now play against it.</h2>
+      <p>The snake race above was recorded on an Apple M5 Pro. To feel the speed yourself, play Pong against shad0w: it runs in your browser and decides every frame in microseconds.</p></div>
+    <p><a class="btn primary" href="../pong/">Play Pong against shad0w →</a></p>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how it was made</div><h2>Watch, learn, prove, then race.</h2></div>
+    <ol class="steps" id="howList"></ol>
+    <div class="callout" style="margin-top:18px" id="honest"></div>
+  </section>
+
+  <p class="muted" style="text-align:center;margin-top:36px">Put shad0w under your own decisions: <a href="../docs/">Getting started</a> · <a href="../demo/">Playground</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></p>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module">
+import { newGame, step } from "../assets/snake.mjs";
+
+const $ = (id) => document.getElementById(id);
+const fmtMs = (ms) => ms < 0.01 ? `${(ms * 1000).toFixed(1)} µs` : ms < 1 ? `${(ms * 1000).toFixed(0)} µs` : ms < 100 ? `${ms.toFixed(1)} ms` : `${Math.round(ms)} ms`;
+const fmtN = (n) => n.toLocaleString("en-US");
+let D, hz, seed, boards = [], tick = 0, playing = false, timer = null, last = 0, acc = 0;
+
+const data = await (await fetch("arena.json")).json();
+D = data;
+hz = D.default_hz; seed = 1;
+
+// ---------- controls
+function chips(el, items, cur, label, on) {
+  el.innerHTML = items.map((v) => `<button type="button" class="chip${v === cur ? " on" : ""}" data-v="${v}">${label(v)}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    el.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b)); on(+b.dataset.v);
+  }));
+}
+chips($("hzChips"), D.replay_hz, hz, (v) => (v ? `${v} Hz` : "no clock"), (v) => { hz = v; setup(); });
+chips($("seedChips"), D.replay_seeds, seed, (v) => `#${v}`, (v) => { seed = v; setup(); });
+$("play").addEventListener("click", () => (playing ? pause() : play()));
+$("restart").addEventListener("click", () => { setup(); play(); });
+
+// ---------- boards
+const VIEW_TPS = 14;  // the eye can follow ~14 moves a second: faster games are shown slowed down, and say so
+function setup() {
+  pause(); tick = 0;
+  const rec = D.replay[hz][seed];
+  $("boards").innerHTML = D.lanes.map((l) => `
+    <article class="board" style="--c:${l.color}" data-lane="${l.id}">
+      <header><b>${l.name}</b><span class="where">${l.where}</span></header>
+      <p class="sub">${l.sub}</p>
+      <div class="cv"><canvas width="320" height="320"></canvas><div class="over" hidden></div>
+        <svg class="think" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="arc" cx="18" cy="18" r="15" pathLength="100"/></svg></div>
+      <dl class="stats"><div><dt>food</dt><dd data-k="score">0</dd></div><div><dt>moves</dt><dd data-k="dec">0</dd></div>
+        <div><dt>late</dt><dd data-k="late">0</dd></div><div><dt>per move</dt><dd>${fmtMs(D.latency[l.id].p50_ms)}</dd></div></dl>
+    </article>`).join("");
+  boards = D.lanes.map((l, i) => {
+    const el = $("boards").children[i], ep = rec[l.id];
+    const byTick = new Map(ep.moves.map((m) => [m[1], m]));
+    return { lane: l, el, ep, byTick, g: newGame(seed, D.board), ctx: el.querySelector("canvas").getContext("2d"),
+             dec: 0, late: 0, over: el.querySelector(".over"), arc: el.querySelector(".arc"), think: el.querySelector(".think") };
+  });
+  const slow = hz / VIEW_TPS;
+  $("slowNote").textContent = !hz ? "No clock: the game waits for every answer, so this shows how well each one plays when time is free. Shown at a watchable pace." : slow > 1.05 ? `At ${hz} Hz a snake makes ${hz} moves a second, too fast to follow: shown ${slow.toFixed(slow < 10 ? 1 : 0)}× slower. Who is late, and by how much, is exactly as recorded.` : `Shown in real time: ${hz} moves a second.`;
+  boards.forEach(draw);
+  $("clock").textContent = "tick 0";
+  $("play").textContent = "▶ Play";
+}
+
+function draw(b) {
+  const { ctx, g, lane } = b, n = D.board, s = ctx.canvas.width / n;
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.strokeStyle = "rgba(229,229,229,.06)"; ctx.lineWidth = 1;
+  for (let i = 1; i < n; i++) { ctx.beginPath(); ctx.moveTo(i * s, 0); ctx.lineTo(i * s, n * s); ctx.moveTo(0, i * s); ctx.lineTo(n * s, i * s); ctx.stroke(); }
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc((g.food[0] + .5) * s, (g.food[1] + .5) * s, s * .32, 0, 7); ctx.fill();
+  g.snake.forEach(([x, y], i) => {
+    ctx.globalAlpha = i === 0 ? 1 : Math.max(.35, 1 - i / (g.snake.length + 6));
+    ctx.fillStyle = lane.color; ctx.fillRect(x * s + 1.5, y * s + 1.5, s - 3, s - 3);
+  });
+  ctx.globalAlpha = 1;
+  if (!g.alive && g.cause !== "time") { const [x, y] = g.snake[0]; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.strokeRect(x * s + 1, y * s + 1, s - 2, s - 2); }
+}
+
+function advance() {
+  let live = 0;
+  for (const b of boards) {
+    const { g, ep } = b;
+    if (!g.alive || g.tick >= ep.ticks) { finish(b); continue; }
+    live++;
+    const m = b.byTick.get(g.tick);
+    if (m) { b.dec++; if (m[1] > m[0]) b.late++; }
+    step(g, m ? D.moves[m[2]] : null);
+    // the answer this lane is waiting for: asked at m[0], lands at m[1]
+    // the answer this lane is waiting for. A lane that crashed before its answer arrived has no recorded move for
+    // it: it asked when its previous move landed, and its ring fills at its measured time per move
+    const next = ep.moves.find((x) => x[1] >= g.tick);
+    let frac = null;
+    if (next && next[0] <= g.tick && next[1] > next[0]) frac = (g.tick - next[0]) / (next[1] - next[0]);
+    else if (!next && b.lane.id !== "shad0w" && hz) {
+      const prev = ep.moves.length ? ep.moves[ep.moves.length - 1][1] : 0;
+      frac = Math.min(0.97, ((g.tick - prev) * 1000 / hz) / D.latency[b.lane.id].p50_ms);
+    }
+    if (frac !== null) { b.think.classList.add("on"); b.arc.style.strokeDashoffset = 100 - Math.min(100, frac * 100); }
+    else b.think.classList.remove("on");
+    b.el.querySelector('[data-k="score"]').textContent = g.score;
+    b.el.querySelector('[data-k="dec"]').textContent = b.dec;
+    b.el.querySelector('[data-k="late"]').textContent = b.late;
+    draw(b);
+    if (!g.alive || g.tick >= ep.ticks) finish(b);
+  }
+  tick++;
+  $("clock").textContent = hz ? `tick ${tick} · ${(tick / hz).toFixed(1)} s of game time` : `tick ${tick} · no clock`;
+  if (!live) { pause(); $("play").textContent = "▶ Play again"; }
+}
+
+function finish(b) {
+  if (b.done) return;
+  b.done = true; b.think.classList.remove("on");
+  const { g, ep } = b, wait = ep.moves.length ? ep.moves[ep.moves.length - 1][3] : 0;
+  const why = g.cause === "wall" ? "hit a wall" : g.cause === "body" ? "ran into itself" : g.cause === "won" ? "filled the board" : "still alive at the time limit";
+  b.over.hidden = false;
+  const lateTxt = b.dec ? ` · ${b.late} of ${b.dec} moves landed late` : b.lane.id === "shad0w" ? "" : " · its first answer never arrived";
+  b.over.innerHTML = `<b>${g.score} food</b><span>${why}${g.cause === "wall" || g.cause === "body" ? lateTxt : ""}</span>`;
+}
+
+function frame(t) {
+  if (!playing) return;
+  const dt = Math.min(250, t - last); last = t;
+  acc += dt * Math.min(hz || VIEW_TPS, VIEW_TPS) / 1000;
+  while (acc >= 1) { acc -= 1; advance(); if (!playing) return; }
+  timer = requestAnimationFrame(frame);
+}
+function play() {
+  if (boards.every((b) => b.done)) setup();
+  playing = true; last = performance.now(); acc = 1; $("play").textContent = "❚❚ Pause"; timer = requestAnimationFrame(frame);
+}
+function pause() { playing = false; cancelAnimationFrame(timer); if ($("play")) $("play").textContent = "▶ Play"; }
+setup();
+new IntersectionObserver((es) => { if (es[0].isIntersecting && !tick && !playing) play(); }, { threshold: .4 }).observe($("boards"));
+
+// ---------- score vs speed
+$("nSeeds").textContent = D.seeds;
+$("spec").innerHTML = `<b>The machine:</b> ${D.machine.chip} · ${D.machine.cpu} · ${D.machine.gpu} · ${D.machine.ram} · ${D.machine.os}`;
+function scoreChart() {
+  const svg = $("scoreChart"), W = 880, H = 340, L = 54, R = 20, T = 18, B = 46;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  // x positions: "no clock" (hz 0) sits one step left of the slowest speed, then the speeds on a log scale
+  const NC = D.hz[0] / 2.2, xs = [0, ...D.hz], pos = (v) => (v === 0 ? NC : v);
+  const lx = (v) => L + (Math.log(pos(v)) - Math.log(NC)) / (Math.log(xs[xs.length - 1]) - Math.log(NC)) * (W - L - R);
+  const ymax = Math.ceil(Math.max(...D.lanes.flatMap((l) => xs.map((h) => D.summary[l.id][h].score))) / 5) * 5 || 5;
+  const ly = (v) => H - B - v / ymax * (H - T - B);
+  let s = "";
+  for (let v = 0; v <= ymax; v += ymax / 5) s += `<line x1="${L}" x2="${W - R}" y1="${ly(v)}" y2="${ly(v)}" class="g"/><text x="${L - 10}" y="${ly(v) + 4}" text-anchor="end" class="t">${+v.toFixed(1)}</text>`;
+  for (const h of xs) s += `<text x="${lx(h)}" y="${H - B + 20}" text-anchor="middle" class="t${h ? "" : " m"}">${h ? `${h} Hz` : "no clock"}</text>`;
+  s += `<line x1="${lx(60)}" x2="${lx(60)}" y1="${T}" y2="${H - B}" class="mark"/><text x="${lx(60) + 6}" y="${T + 12}" class="t m">60 fps</text>`;
+  s += `<text x="${L}" y="${H - 6}" class="t">game speed (moves per second, log scale)</text>`;
+  for (const l of D.lanes) {
+    const pts = xs.map((h) => [lx(h), ly(D.summary[l.id][h].score)]);
+    s += `<polyline fill="none" stroke="${l.color}" stroke-width="${l.id === "shad0w" ? 3.5 : 2}" points="${pts.map((p) => p.join(",")).join(" ")}"/>`;
+    s += pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${l.id === "shad0w" ? 4.5 : 3}" fill="${l.color}"/>`).join("");
+  }
+  svg.innerHTML = s;
+  $("legend").innerHTML = D.lanes.map((l) => `<span><i style="background:${l.color}"></i>${l.name}</span>`).join("");
+}
+scoreChart();
+
+// ---------- latency vs frame budget
+function latChart() {
+  const svg = $("latChart"), W = 880, rowH = 46, T = 52, B = 40, L = 150, R = 30, H = T + B + rowH * D.lanes.length;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const lo = Math.log10(0.001), hi = Math.log10(3000), lx = (ms) => L + (Math.log10(Math.max(ms, 0.001)) - lo) / (hi - lo) * (W - L - R);
+  let s = "";
+  for (const [ms, lab] of [[0.001, "1 µs"], [0.01, "10 µs"], [0.1, "100 µs"], [1, "1 ms"], [10, "10 ms"], [100, "100 ms"], [1000, "1 s"]])
+    s += `<line x1="${lx(ms)}" x2="${lx(ms)}" y1="${T}" y2="${H - B}" class="g"/><text x="${lx(ms)}" y="${H - B + 18}" text-anchor="middle" class="t">${lab}</text>`;
+  // frame budgets: labels on two staggered rows so neighbouring lines never collide
+  [[1000 / 120, "120 fps"], [1000 / 60, "60 fps"], [1000 / 30, "30 fps"], [100, "10 fps"]].forEach(([f, lab], i) => {
+    const ty = i % 2 ? T - 30 : T - 12;
+    s += `<line x1="${lx(f)}" x2="${lx(f)}" y1="${ty + 4}" y2="${H - B}" class="mark"/><text x="${lx(f)}" y="${ty}" text-anchor="middle" class="t m">${lab}</text>`;
+  });
+  D.lanes.forEach((l, i) => {
+    const y = T + i * rowH + 10, ms = D.latency[l.id].p50_ms;
+    s += `<text x="${L - 12}" y="${y + 17}" text-anchor="end" class="t n">${l.name}</text>`;
+    s += `<rect x="${L}" y="${y}" width="${Math.max(3, lx(ms) - L)}" height="24" rx="5" fill="${l.color}" opacity=".9"/>`;
+    s += `<text x="${lx(ms) + 8}" y="${y + 17}" class="t v">${fmtMs(ms)}</text>`;
+  });
+  svg.innerHTML = s;
+}
+latChart();
+
+// ---------- resources
+$("resTable").innerHTML = `<thead><tr><th></th><th>runs on</th><th>model size</th><th>memory while playing</th><th>moves per second (1 ÷ median time per move)</th><th>cost per million moves</th></tr></thead><tbody>` +
+  D.lanes.map((l) => { const r = D.resources[l.id] || {}; return `<tr${l.id === "shad0w" ? ' class="win"' : ""}><th><i style="background:${l.color}"></i>${l.name}</th><td>${r.runs_on || "–"}</td><td>${r.size || "–"}</td><td>${r.memory || "–"}</td><td>${r.rate || "–"}</td><td>${r.cost || "–"}</td></tr>`; }).join("") + "</tbody>";
+
+// ---------- how it was made + honest notes
+$("howList").innerHTML = D.how.map((h) => `<li><b>${h[0]}</b> ${h[1]}</li>`).join("");
+$("honest").innerHTML = "<b>Read this before quoting the numbers.</b> " + D.notes.join(" ");
+
+</script>
+</body>
+</html>

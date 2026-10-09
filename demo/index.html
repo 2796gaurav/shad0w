@@ -3,22 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-<title>Playground · shad0w</title>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Playground: a 77-intent LLM decision cache in your browser · shad0w</title>
 <meta name="description" content="Type a banking support message and watch a real 77-intent shad0w table decide in your browser, in microseconds.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/demo/">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
-<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Playground · shad0w">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Playground: a 77-intent LLM decision cache in your browser · shad0w">
 <meta property="og:description" content="Type a banking support message and watch a real 77-intent shad0w table decide in your browser, in microseconds."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/demo/">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Playground · shad0w">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Playground: a 77-intent LLM decision cache in your browser · shad0w">
 <meta name="twitter:description" content="Type a banking support message and watch a real 77-intent shad0w table decide in your browser, in microseconds."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
@@ -26,121 +27,72 @@
 <body>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/" class=active>Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/">Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
-<main class="wrap" style="padding-top:44px;padding-bottom:90px">
+<main class="wrap" style="padding-top:56px;padding-bottom:100px">
   <div class="section-head" style="margin-bottom:34px">
     <div class="kicker">playground · runs in your browser</div>
-    <h2 style="margin-top:8px">A real 77-intent banking table,<br><span class="grad-text">deciding as you type.</span></h2>
-    <p>This table was compiled in shadow mode from the answers of a small open model (bge-small, zero-shot, 68% accurate on this task) on the public BANKING77 dataset, then certified at α = 5% on 3,000 answers it never trained on. The decision runs locally in this tab, with no server and no network after load.</p>
+    <h1 style="font:700 clamp(36px,5vw,60px)/1.02 var(--display);letter-spacing:-.04em;margin:14px 0 16px;text-shadow:.06em .06em 0 var(--shadow-ink)">A real 77-intent shad0w,<br><span class="hl">deciding as you type.</span></h1>
+    <p>This shad0w watched a small open model (bge-small, 68% accurate here) answer the public BANKING77 dataset, learned to answer like it, and was certified at α = 5% on 3,000 answers it never trained on. Everything runs in this tab: no server, no network after load.</p>
   </div>
 
-  <div class="demo-shell">
-    <div class="panel">
-      <h3>Type a customer message</h3>
-      <textarea id="q" class="demo-input" spellcheck="false" placeholder="e.g. my card got stolen at the airport">my card got stolen at the airport, please block it</textarea>
-      <div class="chips" id="chips"></div>
-      <div class="verdict">
-        <span id="badge" class="badge ok">loading table…</span>
-        <span class="answer" id="answer">—</span>
-      </div>
-      <div class="gauge" id="gauge"><div class="fill" id="gfill"></div><div class="thr" id="gthr"><span>certified threshold</span></div></div>
-      <div class="muted" style="font-size:14px" id="explain">&nbsp;</div>
-      <div class="bars" id="bars"></div>
-    </div>
+  <div id="tryBox"><p class="muted">Loading the model…</p></div>
 
-    <div style="display:grid;gap:22px;align-content:start">
-      <div class="panel">
-        <h3>This decision</h3>
-        <div class="big-us grad-text" id="us">–</div>
-        <div class="muted" style="font-size:14px;margin:6px 0 16px">per decision in JavaScript, on this device</div>
-        <dl class="kv">
-          <dt>confidence</dt><dd id="conf">–</dd>
-          <dt>certified threshold</dt><dd id="thr">–</dd>
-          <dt>options</dt><dd id="k">–</dd>
-          <dt>table size</dt><dd id="size">–</dd>
-        </dl>
-      </div>
-      <div class="panel">
-        <h3>The certificate</h3>
-        <dl class="kv" id="cert"><dt>loading…</dt><dd></dd></dl>
-        <p class="muted" style="font-size:13px;margin:14px 0 0">The bound is against the teacher (an open model that is 68% accurate here), not against the truth. In production, your own LLM is the teacher.</p>
-        <div id="alphaBox" style="display:none;margin-top:14px"><div class="kicker" style="font-size:11px">try another <span class="nc">α</span></div><div class="chips" id="alphaChips" style="margin-top:8px"></div><p class="muted" style="font-size:12.5px;margin:8px 0 0">The bundle is certified at α = 5%. The other thresholds were computed by the same certifier on the same held-out answers; the test-set figures next to each are what that threshold would have served.</p></div>
-      </div>
+  <div class="demo-shell" style="margin-top:22px">
+    <div class="panel">
+      <h3>The certificate, in plain words</h3>
+      <dl class="kv" id="cert"><dt>loading…</dt><dd></dd></dl>
+      <p class="muted" style="font-size:13px;margin:14px 0 0">The promise is about agreeing with the model shad0w learned from (here an open model that is 68% accurate), not about the truth. In production, your own LLM is the one it learns from.</p>
+    </div>
+    <div class="panel" id="alphaBox" style="display:none">
+      <h3>Try another <span class="nc">α</span></h3>
+      <p class="muted" style="font-size:14px;margin:0 0 12px"><span class="nc">α</span> = the most disagreement you allow. 5% means shad0w may differ from its LLM on at most 1 in 20 answers it gives. Lower α: safer, fewer messages answered.</p>
+      <div class="chips" id="alphaChips"></div>
+      <p class="muted" style="font-size:12.5px;margin:0">The shipped model is certified at α = 5%. The other lines were found by the same certifier on the same held-out answers; next to each is the share of test messages it would answer.</p>
     </div>
   </div>
 
   <div class="panel" style="margin-top:22px">
     <h3>Replay real traffic</h3>
-    <p class="muted" style="margin:0 0 6px">Stream 800 held-out BANKING77 test messages through the table. Certified answers are served locally. The rest would go to the teacher. These 800 are a random sample of the 3,080 test messages, so their rates move a little around the test-set figures above. On a sample this small, a disagreement a bit over α is expected now and then; the bound is about the long run.</p>
+    <p class="muted" style="margin:0 0 6px">Stream 800 held-out BANKING77 test messages through shad0w. Messages it is sure of are answered here; the rest would go to the LLM. These 800 are a random sample of the 3,080 test messages, so the rates move a little around the figures above. On a sample this small, a disagreement a bit over α now and then is expected; the promise is about the long run.</p>
     <div class="replay-grid">
-      <div><b id="r-served">0%</b><span>answered locally</span></div>
-      <div><b id="r-dis">–</b><span>disagreement with the teacher on served answers</span></div>
-      <div><b id="r-us">–</b><span>table time for all 800 messages</span></div>
+      <div><b id="r-served">0%</b><span>answered by shad0w</span></div>
+      <div><b id="r-dis">–</b><span>how often shad0w differed from the LLM, on those</span></div>
+      <div><b id="r-us">–</b><span>shad0w's time for all 800 messages</span></div>
     </div>
-    <button class="btn primary" id="replay" type="button">▶ Replay 800 messages</button>
+    <button class="btn primary" id="replay" type="button">Replay 800 messages →</button>
     <div class="feed" id="feed" style="margin-top:16px"></div>
   </div>
 
   <p class="muted" style="text-align:center;margin-top:36px">Build your own: <a href="../docs/">Getting started</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></p>
 </main>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
 <script type="module">
 import { Bundle } from "../assets/shad0w.mjs";
+import { mountTry } from "../assets/tryui.js";
 
 const $ = (id) => document.getElementById(id);
-const examples = ["my card got stolen at the airport, please block it", "I was charged twice for the same coffee", "why is my top up still pending?",
-  "how do I change my PIN", "the ATM swallowed my card", "can I get a refund for this", "what's the exchange rate for euros", "is it going to rain tomorrow?"];
-$("chips").innerHTML = examples.map((e) => `<button class="chip" type="button">${e}</button>`).join("");
-
-let bundle, spec, replay, alphas = null, alphaKey = "0.05";
+const esc = (t) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+let bundle, spec, replay, alphas = null, alphaKey = "0.05", ui;
 const thrNow = () => (alphas && alphas[alphaKey]) ? alphas[alphaKey].threshold : (spec.threshold ?? 1);
-const fmtUs = (us) => us < 1000 ? `${us.toFixed(us < 10 ? 1 : 0)} µs` : `${(us / 1000).toFixed(1)} ms`;
-
-function timeIt(text) {
-  // timers are coarse in browsers (often 5-100 µs), so time batches of 200 decisions and take the median batch
-  const t = bundle.questions.intent.table, ts = [];
-  for (let b = 0; b < 7; b++) { const a = performance.now(); for (let i = 0; i < 200; i++) t.decide(text); ts.push((performance.now() - a) / 200); }
-  ts.sort((a, b) => a - b);
-  return ts[3] * 1000;
-}
-
-function render() {
-  if (!bundle) return;
-  const text = $("q").value;
-  const a = bundle.decide(text).answers.intent;
-  const thr = thrNow();
-  a.certified = a.confidence >= thr;
-  $("answer").textContent = a.choice.replaceAll("_", " ");
-  $("badge").className = "badge " + (a.certified ? "ok" : "defer");
-  $("badge").textContent = a.certified ? "✓ certified · served locally" : "↗ not certified · defer to your model";
-  $("gfill").style.width = (a.confidence * 100).toFixed(1) + "%";
-  $("gfill").style.background = a.certified ? "var(--green)" : "var(--amber)";
-  $("gthr").style.left = (thr * 100).toFixed(1) + "%";
-  $("explain").textContent = a.certified
-    ? `Confidence ${(a.confidence * 100).toFixed(1)}% clears the certified threshold of ${(thr * 100).toFixed(1)}%. The table answers.`
-    : `Confidence ${(a.confidence * 100).toFixed(1)}% is below the certified threshold of ${(thr * 100).toFixed(1)}%. The table's guess is shown, but the request would go to your model.`;
-  const top = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]).slice(0, 5);
-  $("bars").innerHTML = top.map(([k, v]) => `<div class="bar"><span class="name" title="${k}">${k}</span><span class="track"><span class="fill" style="width:${(v * 100).toFixed(1)}%"></span></span><span class="val">${(v * 100).toFixed(1)}%</span></div>`).join("");
-  $("conf").textContent = (a.confidence * 100).toFixed(2) + "%";
-  $("us").textContent = fmtUs(timeIt(text));
-}
-
-$("q").addEventListener("input", render);
-$("chips").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (c) { $("q").value = c.textContent; render(); } });
 
 $("replay").addEventListener("click", async () => {
   if (!replay) return;
@@ -148,20 +100,19 @@ $("replay").addEventListener("click", async () => {
   const feed = $("feed"); feed.innerHTML = "";
   let served = 0, dis = 0, n = 0;
   const msgs = replay.messages;
-  // browser timers are coarse, so time all decisions in one tight block first, then animate the stream
-  const t0 = performance.now();
+  const t0 = performance.now();  // browser timers are coarse: time all decisions in one block, then animate the stream
   for (const [text] of msgs) bundle.decide(text);
   const total = performance.now() - t0;
   for (let i = 0; i < msgs.length; i++) {
     const [text, teacher] = msgs[i];
     const a = bundle.decide(text).answers.intent;
-    a.certified = a.confidence >= thrNow();
+    const ok = a.confidence >= thrNow();
     n++;
-    if (a.certified) { served++; if (a.choice !== teacher) dis++; }
+    if (ok) { served++; if (a.choice !== teacher) dis++; }
     if (i % 4 === 0 || i === msgs.length - 1) {
       const line = document.createElement("div");
-      line.innerHTML = a.certified ? `<span class="s">✓ table </span> ${a.choice.padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${text.replace(/</g, "&lt;")}`
-                                   : `<span class="d">↗ model </span> ${"(deferred)".padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${text.replace(/</g, "&lt;")}`;
+      line.innerHTML = ok ? `<span class="s">shad0w</span> ${esc(a.choice).padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${esc(text)}`
+                          : `<span class="d">LLM&nbsp;&nbsp;&nbsp;</span> ${"(not sure)".padEnd(32, " ").replaceAll(" ", "&nbsp;")} ${esc(text)}`;
       feed.prepend(line);
       if (feed.childElementCount > 14) feed.lastChild.remove();
       $("r-served").textContent = (100 * served / n).toFixed(1) + "%";
@@ -170,7 +121,7 @@ $("replay").addEventListener("click", async () => {
       await new Promise((r) => setTimeout(r, 18));
     }
   }
-  btn.disabled = false; btn.textContent = "▶ Replay again";
+  btn.disabled = false; btn.textContent = "Replay again →";
 });
 
 (async () => {
@@ -180,24 +131,24 @@ $("replay").addEventListener("click", async () => {
     const cert = await (await fetch("bundle/certificate.json")).json();
     replay = await (await fetch("replay.json")).json();
     try { alphas = await (await fetch("alphas.json")).json(); } catch (e) { alphas = null; }
+    ui = mountTry($("tryBox"), { bundle, q: "intent", msgs: replay.messages, getThr: thrNow,
+      examples: ["my card got stolen at the airport, please block it", "I was charged twice for the same coffee", "why is my top up still pending?",
+        "how do I change my PIN", "the ATM swallowed my card", "can I get a refund for this", "what's the exchange rate for euros", "is it going to rain tomorrow?"] });
     if (alphas) {
       $("alphaBox").style.display = "";
-      $("alphaChips").innerHTML = Object.keys(alphas).sort((x, y) => +x - +y).map((k) => `<button class="chip${k === "0.05" ? " on" : ""}" data-alpha="${k}" type="button">α = ${Math.round(k * 100)}% · serves ${(100 * alphas[k].served_test).toFixed(0)}%</button>`).join("");
-      $("alphaChips").addEventListener("click", (e) => { const b = e.target.closest("[data-alpha]"); if (!b) return; alphaKey = b.dataset.alpha; $("alphaChips").querySelectorAll(".chip").forEach((c) => c.classList.toggle("on", c === b)); $("thr").textContent = (thrNow() * 100).toFixed(1) + "%"; render(); });
+      $("alphaChips").innerHTML = Object.keys(alphas).sort((x, y) => +x - +y).map((k) => `<button class="chip${k === "0.05" ? " on" : ""}" data-alpha="${k}" type="button">α = ${Math.round(k * 100)}% · answers ${(100 * alphas[k].served_test).toFixed(0)}%</button>`).join("");
+      $("alphaChips").addEventListener("click", (e) => { const b = e.target.closest("[data-alpha]"); if (!b) return; alphaKey = b.dataset.alpha; $("alphaChips").querySelectorAll(".chip").forEach((c) => c.classList.toggle("on", c === b)); ui.render(); });
     }
     const q = cert.questions.intent, s = replay.stats;
-    $("thr").textContent = (spec.threshold * 100).toFixed(1) + "%";
-    $("k").textContent = spec.options.length;
-    $("size").textContent = (s.table_bytes / 1048576).toFixed(1) + " MB";
     $("cert").innerHTML = [
-      ["certified bound α", (cert.alpha * 100) + "%"], ["confidence level 1 − δ", (1 - cert.delta) * 100 + "%"],
-      ["teacher answers used", q.n_records.toLocaleString()], ["agreement with teacher", (q.agreement_with_teacher * 100).toFixed(1) + "%"],
-      ["served on calibration", (q.certified_share_on_calibration * 100).toFixed(1) + "%"],
-      ["served on the test set", (s.offload * 100).toFixed(1) + "%"], ["realised disagreement (test)", (s.disagreement * 100).toFixed(1) + "%"],
+      ["α: the most disagreement allowed", (cert.alpha * 100) + "%"], ["how sure the promise is (1 − δ)", (1 - cert.delta) * 100 + "%"],
+      ["LLM answers it learned from", q.n_records.toLocaleString()], ["agrees with its LLM, overall", (q.agreement_with_teacher * 100).toFixed(1) + "%"],
+      ["answered by shad0w (calibration)", (q.certified_share_on_calibration * 100).toFixed(1) + "%"],
+      ["answered by shad0w (test set)", (s.offload * 100).toFixed(1) + "%"], ["how often it actually differed (test)", (s.disagreement * 100).toFixed(1) + "%"],
+      ["options", spec.options.length], ["model size", (s.table_bytes / 1048576).toFixed(1) + " MB"],
     ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
-    render();
   } catch (e) {
-    $("badge").className = "badge defer"; $("badge").textContent = "could not load the table: " + e.message;
+    $("tryBox").innerHTML = `<p class="muted">Could not load the model: ${esc(e.message)}</p>`;
   }
 })();
 </script>

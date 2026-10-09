@@ -1,17 +1,15 @@
-// shad0w site behaviour: theme toggle, mobile menu, copy buttons, tabs, scroll reveal, count-up numbers.
+// shad0w site behaviour (dark only): mobile menu, syntax colours, copy buttons, tabs, reveals, spotlight, number tickers.
 (function () {
   const root = document.documentElement;
-  try { const t = localStorage.getItem("shad0w-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  root.classList.add("js");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   document.addEventListener("DOMContentLoaded", () => {
-    const tb = document.querySelector("[data-theme-toggle]");
-    if (tb) tb.addEventListener("click", () => {
-      const dark = root.dataset.theme ? root.dataset.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
-      root.dataset.theme = dark ? "light" : "dark";
-      try { localStorage.setItem("shad0w-theme", root.dataset.theme); } catch (e) {}
-    });
     const mb = document.querySelector("[data-menu]");
-    if (mb) mb.addEventListener("click", () => document.querySelector(".nav .links").classList.toggle("open"));
+    if (mb) mb.addEventListener("click", () => {
+      const l = document.querySelector(".nav .links"); l.classList.toggle("open");
+      mb.setAttribute("aria-expanded", l.classList.contains("open"));
+    });
 
     // tiny syntax highlighter for code[data-lang] (py, js, sh, c): comments, strings, keywords, numbers, calls
     const KW = { py: "import|from|def|return|async|await|for|in|if|else|elif|with|as|lambda|class|None|True|False|print|not|and|or",
@@ -38,8 +36,9 @@
       el.innerHTML = out;
     });
 
-    // copy buttons: on .install and on every code block
+    // copy buttons on every prose / tab code block (code windows bring their own)
     document.querySelectorAll(".prose pre, .tabs pre").forEach((pre) => {
+      if (pre.closest(".codewin")) return;
       let box = pre.parentElement;
       if (box.querySelector(":scope > .copy")) return;
       if (!box.classList.contains("codehilite")) {
@@ -56,7 +55,8 @@
     document.addEventListener("click", async (e) => {
       const b = e.target.closest(".copy");
       if (!b) return;
-      const text = b.dataset.copy || (b.parentElement.querySelector("pre") || {}).innerText || "";
+      const scope = b.closest(".codewin") || b.parentElement;
+      const text = b.dataset.copy || (scope.querySelector("pre") || {}).innerText || "";
       try { await navigator.clipboard.writeText(text.trim()); b.textContent = "copied"; } catch (err) { b.textContent = "select + copy"; }
       setTimeout(() => (b.textContent = "copy"), 1400);
     });
@@ -71,26 +71,52 @@
       }));
     });
 
-    // reveal + count-up
+    // spotlight: cards light up under the pointer
+    document.addEventListener("pointermove", (e) => {
+      const c = e.target.closest && e.target.closest(".spot");
+      if (!c) return;
+      const r = c.getBoundingClientRect();
+      c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+    }, { passive: true });
+
+    // number tickers (900 ms, ease-out). Elements: data-count="61" data-suffix="%"
     const countUp = (el) => {
+      if (el.dataset.counted) return; el.dataset.counted = 1;
       const to = parseFloat(el.dataset.count), dec = (el.dataset.count.split(".")[1] || "").length;
-      const pre = el.dataset.prefix || "", suf = el.dataset.suffix || "", t0 = performance.now(), dur = 1400;
+      const pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+      if (reduce || isNaN(to)) { el.textContent = pre + (isNaN(to) ? el.dataset.count : to.toFixed(dec)) + suf; return; }
+      const t0 = performance.now(), dur = 900;
       const step = (t) => {
-        const k = Math.min(1, (t - t0) / dur), v = to * (1 - Math.pow(1 - k, 3));
+        const k = Math.min(1, (t - t0) / dur), v = to * (1 - Math.pow(1 - k, 4));
         el.textContent = pre + v.toFixed(dec) + suf;
         if (k < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
     };
-    if ("IntersectionObserver" in window) {
+
+    // reveals: once, at 15% visible; staggered 60 ms inside a group (cap 8). Anything already on screen is shown at once,
+    // and everything is shown after 1.5 s, so nothing stays hidden in screenshots, print or slow devices.
+    const items = [...document.querySelectorAll(".reveal")];
+    const show = (el) => {
+      if (el.classList.contains("in")) return;
+      const sibs = el.parentElement ? [...el.parentElement.children].filter((x) => x.classList.contains("reveal")) : [];
+      const idx = Math.min(7, Math.max(0, sibs.indexOf(el)));
+      if (!reduce && idx) el.style.transitionDelay = (idx * 60) + "ms";
+      el.classList.add("in");
+      el.querySelectorAll("[data-count]").forEach(countUp);
+      if (el.dataset.count) countUp(el);
+    };
+    const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
+    if (reduce || !("IntersectionObserver" in window)) items.forEach(show);
+    else {
+      items.filter(onScreen).forEach(show);
       const io = new IntersectionObserver((entries) => entries.forEach((en) => {
         if (!en.isIntersecting) return;
-        en.target.classList.add("in");
-        en.target.querySelectorAll("[data-count]").forEach(countUp);
-        if (en.target.dataset.count) countUp(en.target);
-        io.unobserve(en.target);
+        show(en.target); io.unobserve(en.target);
       }), { threshold: 0.15 });
-      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-    } else document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+      items.forEach((el) => io.observe(el));
+      setTimeout(() => items.forEach(show), 1500);
+    }
+    document.querySelectorAll("[data-count]:not(.reveal [data-count])").forEach((el) => setTimeout(() => countUp(el), 200));
   });
 })();

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Zero-code System Zero for the OpenAI Decisions API · shad0w</title>
+<meta name="description" content="Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="Zero-code System Zero for the OpenAI Decisions API · shad0w">
+<meta property="og:description" content="Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Zero-code System Zero for the OpenAI Decisions API · shad0w">
+<meta name="twitter:description" content="Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Zero-code System Zero for the OpenAI Decisions API", "description": "Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits.", "datePublished": "2026-10-09", "dateModified": "2026-10-09", "url": "https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "decisions api, proxy, zero code, llm cost", "wordCount": 1135, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "Zero-code System Zero for the OpenAI Decisions API", "item": "https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html"}]}</script><meta property="article:published_time" content="2026-10-09"><meta property="article:author" content="Gaurav Chauhan"><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.md">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>Zero-code System Zero for the OpenAI Decisions API</h1><p class="lead">Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-09</span><span>5 min read</span><span class="tag">decisions api</span><span class="tag">proxy</span><span class="tag">zero code</span><span class="tag">llm cost</span></div></header>
+  <article class="prose"><p>OpenAI's Decisions API is already a System 1: you send a question and a fixed list of answers, and <code>gpt-6-luna</code> returns a choice with probabilities. It is fast and cheap per call. But it still computes every answer from scratch, including the ten-thousandth "my card was stolen".</p>
+<p><code>shad0w proxy</code> adds the reflex below it. Each Decisions API request already names its question and lists its answers, so there is nothing to mark. You move <code>base_url</code> and change nothing else.</p>
+<h2 id="the-proxy-in-three-commands">The proxy in three commands<a class="headerlink" href="#the-proxy-in-three-commands" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>shad0wllm
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w">      </span><span class="c1"># dashboard at http://localhost:8010</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>                                <span class="c1"># openai &gt;= 3.26</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:8010/v1"</span><span class="p">)</span>     <span class="c1"># the only change</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">decisions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">"my card was stolen yesterday"</span><span class="p">,</span>
+    <span class="n">questions</span><span class="o">=</span><span class="p">[{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"choice"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"intent"</span><span class="p">,</span> <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Which support intent is this?"</span><span class="p">,</span>
+        <span class="s2">"choices"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"card lost or stolen"</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"wants money back"</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"anything else"</span><span class="p">}],</span>
+    <span class="p">}],</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Your API key is forwarded to OpenAI as usual. To keep it in the proxy instead, add <code>--api-key-env OPENAI_API_KEY</code>.</p>
+<p>At first shad0w has learned nothing. Every request goes to OpenAI and the answer is logged per question. Once a question has about 1,000 logged answers, train it:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w">                                </span><span class="c1"># the running proxy picks up the new shad0w</span>
+</code></pre></div>
+
+<p>Or let the proxy do it with <code>--auto-train 1000</code>. Training needs <code>pip install "shad0wllm[compile]"</code>.</p>
+<h2 id="watch-first-shadow-mode">Watch first: shadow mode<a class="headerlink" href="#watch-first-shadow-mode" title="Permanent link">#</a></h2>
+<p>You do not have to trust shad0w on day one. Start the proxy with <code>--mode shadow</code>:</p>
+<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--mode<span class="w"> </span>shadow
+</code></pre></div>
+
+<p>Now shad0w decides every call, but OpenAI's answer is always the one returned. shad0w counts two things: <code>would_serve</code>, the calls shad0w would have answered, and <code>shadow_disagreements</code>, how many of those differed from OpenAI. Read them at <code>/v1/stats</code> or on the dashboard. Deferred calls carry the flag <code>shadow</code>.</p>
+<p>Move to serving when <code>shadow_disagreements / would_serve</code> sits at or below your α over a few thousand calls. α is the most disagreement you allow: 5% means shad0w may differ from OpenAI on at most 1 in 20 answers it gives. The <a href="../docs/rollout.html">rollout guide</a> adds a canary step in between.</p>
+<h2 id="what-you-get-back">What you get back<a class="headerlink" href="#what-you-get-back" title="Permanent link">#</a></h2>
+<p>The response has the same shape whether OpenAI or shad0w answered: an <code>answers</code> list with <code>choice</code>, <code>confidence</code> and <code>probabilities</code> per question. shad0w's answers also carry a <code>shad0w</code> object (<code>source</code>, <code>certified</code>, <code>flag</code>), and every response has an <code>x-shad0w-source</code> header: <code>table</code> when shad0w answered, <code>teacher</code> when OpenAI did, or <code>mixed</code>.</p>
+<p><code>mixed</code> is the interesting one. If a request asks several questions and only some are certified, only the rest go to OpenAI, in one smaller request. The answers are merged back in the original order.</p>
+<h2 id="the-dashboard">The dashboard<a class="headerlink" href="#the-dashboard" title="Permanent link">#</a></h2>
+<p>Open http://localhost:8010. It updates every second: share answered by shad0w, LLM calls saved, time saved, shad0w vs LLM speed per question, why shad0w deferred to your LLM, and the live safety bound. That bound comes from background spot checks (<code>--audit-rate</code>, 1% by default) and shows a ⚠ with "re-train" when it rises above α. Add <code>--cost-per-call</code> to see money saved. A built-in playground lets you type a text and see shad0w's answer and confidence.</p>
+<h2 id="agreement-re-checked">Agreement, re-checked<a class="headerlink" href="#agreement-re-checked" title="Permanent link">#</a></h2>
+<p>We ran the Decisions API shape end to end: the openai SDK, the proxy, an upstream, then fresh messages shad0w had never seen. Agreement was checked by asking the upstream again directly.</p>
+<p>shad0w answered 92.7% of fresh traffic and agreed with the upstream on 98.2% of those. Be clear about what this is: the upstream was a <strong>local mock of the Decisions API wire format</strong>, not OpenAI. It proves the request and response shapes round-trip and the certifier works through them. It does not tell you how much of <em>your</em> traffic gpt-6-luna's answers will let shad0w answer. Shadow mode tells you that, on your own traffic, for free.</p>
+<p>Every run is in <a href="honest-numbers.html">honest numbers</a>.</p>
+<h2 id="cost-maths-at-a-million-calls-a-day">Cost maths at a million calls a day<a class="headerlink" href="#cost-maths-at-a-million-calls-a-day" title="Permanent link">#</a></h2>
+<p>Start from list prices and measured rates, then do the multiplication yourself:</p>
+<ul>
+<li>gpt-6-luna lists at about $0.030 per 1,000 decisions. Multiply by 1,000 for a million calls a day. With the proxy, you pay that only on the share shad0w passes to OpenAI.</li>
+<li>For a chat LLM the saving is larger. Shadowing a hosted LLM on BANKING77, calling the LLM for everything cost $0.520 per 1,000 decisions; with shad0w in front it cost $0.204. Again, multiply each by 1,000 for a million a day.</li>
+<li>shad0w's own answers cost nothing per call. They run on the CPU you already pay for.</li>
+</ul>
+<p>Against a decision model the case is narrower, and we say so. The money is small per call. The stronger reasons are latency (microseconds, no network hop) and a written bound on disagreement.</p>
+<h2 id="limits">Limits<a class="headerlink" href="#limits" title="Permanent link">#</a></h2>
+<ul>
+<li><strong><code>score</code> questions always go upstream.</strong> shad0w does not learn ordinal scales.</li>
+<li><strong>Cold start.</strong> Each question needs about 1,000 logged answers, and more with many options.</li>
+<li><strong>Changing options.</strong> Add an option and every decision for that question defers until you retrain. See <a href="adding-a-category.html">adding a category</a>.</li>
+<li><strong>Traffic shift.</strong> The bound covers traffic like what was logged. The drift guard steps back when that changes.</li>
+<li><strong>No authentication.</strong> The proxy has none. Keep it on localhost or inside your network.</li>
+<li><strong>Not measured against the real API.</strong> See above.</li>
+</ul>
+<h2 id="vercel-ai-sdk-and-pydantic-ai">Vercel AI SDK and Pydantic AI<a class="headerlink" href="#vercel-ai-sdk-and-pydantic-ai" title="Permanent link">#</a></h2>
+<p><strong>Pydantic AI and other decision-model clients:</strong> point the client's base URL at the proxy. <code>/v1/decisions</code> and <code>/v1/systemone</code> requests are recognised with no marking.</p>
+<p><strong>Vercel AI SDK:</strong> no proxy needed. With <code>experimental_decide</code>, use shad0w as the model and gpt-6-luna as the fallback:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">decisionModel</span><span class="p">(</span><span class="nx">intent</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fallback</span><span class="o">:</span><span class="w"> </span><span class="kt">openai.decisionModel</span><span class="p">(</span><span class="s2">"gpt-6-luna"</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+</code></pre></div>
+
+<p>shad0w answers the questions it certifies and the fallback answers the rest. See <a href="../docs/frameworks.html">Frameworks</a>.</p>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h2>
+<p><strong>Does it work with Jev, Kev or Laya?</strong> Yes. They speak <code>/v1/systemone</code>, which the proxy recognises the same way. Point <code>--upstream</code> at the System One server. See <a href="../docs/decisions-api.html">Decisions API &amp; System One</a>.</p>
+<p><strong>Can I run it against llama.cpp?</strong> For <code>/v1/systemone</code>, yes. llama.cpp does not implement <code>/v1/decisions</code>, so a Decisions API request shad0w cannot answer comes back as the server's 404, unchanged.</p>
+<p><strong>How do I turn it off?</strong> Drop <code>decisions</code> from the capture list (<code>--capture header,model,tools</code>), or run with <code>--mode off</code>.</p>
+<p><strong>Is shad0w compared with the truth?</strong> No. It is compared with the model it learned from. If gpt-6-luna is wrong, shad0w is wrong the same way.</p>
+<div class="callout"><b>Start in shadow mode.</b> <code>pip install shad0wllm</code>, then <code>shad0w proxy --upstream https://api.openai.com/v1 --mode shadow</code>. You lose nothing and learn what the reflex would save.</div>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="game-speed.html"><small>2026-10-09 · 3 min</small><b>Snake at 120 moves a second: System 0 vs System One models, at game speed</b></a><a class="post-card" href="honest-numbers.html"><small>2026-10-09 · 5 min</small><b>94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM</b></a><a class="post-card" href="adding-a-category.html"><small>2026-10-08 · 2 min</small><b>Adding a category without breaking production</b></a></aside>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+</body>
+</html>

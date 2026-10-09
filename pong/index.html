@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Play Pong against shad0w, live in your browser · shad0w</title>
+<meta name="description" content="A shad0w that learned Pong from an LLM&#x27;s answers plays you in your browser, deciding every frame in microseconds. Add balls, speed up, shrink the paddles.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/pong/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Play Pong against shad0w, live in your browser · shad0w">
+<meta property="og:description" content="A shad0w that learned Pong from an LLM&#x27;s answers plays you in your browser, deciding every frame in microseconds. Add balls, speed up, shrink the paddles."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/pong/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Play Pong against shad0w, live in your browser · shad0w">
+<meta name="twitter:description" content="A shad0w that learned Pong from an LLM&#x27;s answers plays you in your browser, deciding every frame in microseconds. Add balls, speed up, shrink the paddles."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/" class=active>Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap pong" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:860px;margin-bottom:26px">
+    <div class="kicker">play · shad0w runs in this tab</div>
+    <h1 class="arena-title">You vs shad0w.<br><span class="hl">It decides every frame.</span></h1>
+    <p>The right paddle is a real shad0w that learned to play Pong from an LLM's answers. It runs in your browser: no server, no network. Sixty times a second it reads the court and picks up, stay or down, in microseconds. Add balls, speed them up, shrink the paddles: it still decides in time.</p>
+  </div>
+
+  <div class="pong-shell">
+    <div class="court">
+      <canvas id="court" width="800" height="500" aria-label="Pong court: your paddle on the left, shad0w on the right"></canvas>
+      <div class="pong-over" id="over">
+        <b id="overTitle">Ready?</b>
+        <span id="overSub">Move your mouse or finger over the court, or use W/S or the arrow keys. First to 7.</span>
+        <button class="btn primary" id="start" type="button">Play →</button>
+      </div>
+      <div class="pong-score"><span><i>you</i><b id="sYou">0</b></span><span><b id="sShad">0</b><i>shad0w</i></span></div>
+    </div>
+
+    <aside class="pong-side">
+      <div class="panel">
+        <h3>Make it harder</h3>
+        <span class="lbl">Balls</span><div class="chips" id="cBalls"></div>
+        <span class="lbl">Ball speed</span><div class="chips" id="cSpeed"></div>
+        <span class="lbl">Paddles</span><div class="chips" id="cPaddle"></div>
+        <p class="muted" style="font-size:12.5px;margin:4px 0 0">Changing a setting starts a new match.</p>
+      </div>
+      <div class="panel hud">
+        <h3>shad0w, live</h3>
+        <dl class="kv">
+          <dt>time per decision</dt><dd id="hUs">–</dd>
+          <dt>of each frame's 16.7 ms</dt><dd id="hBudget">–</dd>
+          <dt>decisions this match</dt><dd id="hN">0</dd>
+          <dt>decisions it could make per second</dt><dd id="hRate">–</dd>
+          <dt>certified decisions</dt><dd id="hCert">–</dd>
+        </dl>
+        <div class="pulse" id="pulse" aria-hidden="true"><i></i><span>deciding</span></div>
+        <p class="muted" style="font-size:12.5px;margin:12px 0 0">Measured in this tab: shad0w decides the recent court situations in a block every second and divides, because browser clocks are too coarse to time one decision.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how this paddle was made</div><h2>Watch, learn, prove. Then play.</h2></div>
+    <ol class="steps" id="howList"></ol>
+    <div class="callout" style="margin-top:18px" id="honest"></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">against other decision makers</div><h2>The race against System One models is on the arena page.</h2>
+      <p>There, shad0w and four other decision makers (a hosted LLM and three small decision models on an Apple M5 Pro's GPU) play the same snake games at speeds up to 120 moves a second. Recorded on an Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB), with every number measured.</p></div>
+    <p><a class="btn" href="../arena/">See the snake arena →</a></p>
+  </section>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module">
+import { newMatch, tick, describe, trainer, urgent, W, H, PW, MARGIN, FPS } from "../assets/pong.mjs";
+import { Bundle } from "../assets/shad0w.mjs";
+
+const $ = (id) => document.getElementById(id);
+const info = await (await fetch("pong.json")).json();
+const bundle = await Bundle.load(new URL("bundle", location.href).href);
+const ctx = $("court").getContext("2d");
+const opts = { balls: 2, speed: 7, paddle: 90 };
+const SET = {
+  balls: { el: "cBalls", vals: [1, 2, 3, 4, 6], label: (v) => `${v}` },
+  speed: { el: "cSpeed", vals: [5, 7, 9, 12], label: (v) => ({ 5: "calm", 7: "normal", 9: "fast", 12: "frantic" }[v]) },
+  paddle: { el: "cPaddle", vals: [120, 90, 64, 44], label: (v) => ({ 120: "large", 90: "normal", 64: "small", 44: "tiny" }[v]) },
+};
+for (const [k, s] of Object.entries(SET)) {
+  $(s.el).innerHTML = s.vals.map((v) => `<button type="button" class="chip${v === opts[k] ? " on" : ""}" data-v="${v}">${s.label(v)}</button>`).join("");
+  $(s.el).querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    $(s.el).querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+    opts[k] = +b.dataset.v; reset(playing ? "play" : "demo");
+  }));
+}
+
+let m, mode = "demo", playing = false, pointer = null, keys = { up: false, down: false };
+let nDec = 0, nCert = 0, recent = [], trails = [], flash = 0, last = 0, acc = 0, usPer = null;
+
+function reset(next) {
+  mode = next; playing = next === "play";
+  m = newMatch((Math.random() * 1e9) | 0, { ...opts, paddleSpeed: opts.paddle < 60 ? 10 : 9 });
+  nDec = nCert = 0; trails = m.balls.map(() => []);
+  $("sYou").textContent = 0; $("sShad").textContent = 0; $("hN").textContent = 0;
+  $("over").hidden = playing;
+}
+
+// ---- shad0w picks a move for one paddle: describe the court in words, ask the table
+function shad0wMove(side) {
+  const text = describe(m, side);
+  const a = bundle.decide(text, { probabilities: false }).answers.move;
+  if (side === "right") { nDec++; nCert += a.certified ? 1 : 0; recent.push(text); if (recent.length > 240) recent.shift(); flash = 1; }
+  return a.choice;  // in this tab there is no LLM to defer to, so an uncertified answer is used too (counted above)
+}
+
+// ---- inputs
+const court = $("court");
+const toY = (e) => { const r = court.getBoundingClientRect(); return ((e.clientY - r.top) / r.height) * H; };
+court.addEventListener("pointermove", (e) => { pointer = toY(e); });
+court.addEventListener("pointerdown", (e) => { pointer = toY(e); });
+court.addEventListener("touchmove", (e) => { if (playing) e.preventDefault(); }, { passive: false });
+court.addEventListener("pointerleave", () => { pointer = null; });
+addEventListener("keydown", (e) => {
+  if (["ArrowUp", "w", "W"].includes(e.key)) { keys.up = true; pointer = null; if (playing) e.preventDefault(); }
+  if (["ArrowDown", "s", "S"].includes(e.key)) { keys.down = true; pointer = null; if (playing) e.preventDefault(); }
+});
+addEventListener("blur", () => { keys.up = keys.down = false; });  // a key held while the window loses focus must not stick
+addEventListener("keyup", (e) => {
+  if (["ArrowUp", "w", "W"].includes(e.key)) keys.up = false;
+  if (["ArrowDown", "s", "S"].includes(e.key)) keys.down = false;
+});
+$("start").addEventListener("click", () => reset("play"));
+
+// ---- one 60 Hz frame
+function frame() {
+  let left;
+  if (mode === "demo") left = shad0wMove("left");
+  else if (keys.up !== keys.down) left = keys.up ? "up" : "down";
+  else left = pointer ?? "stay";
+  const ev = tick(m, { left, right: shad0wMove("right") });
+  for (const e of ev) if (e.type === "point") {
+    $("sYou").textContent = m.left.score; $("sShad").textContent = m.right.score;
+    if (playing && (m.left.score >= 7 || m.right.score >= 7)) {
+      const won = m.left.score > m.right.score;
+      $("overTitle").textContent = won ? "You beat shad0w." : "shad0w wins this one.";
+      $("overSub").textContent = `${m.left.score} : ${m.right.score}. shad0w made ${nDec.toLocaleString("en-US")} decisions${usPer ? `, about ${fmtUs(usPer)} each` : ""}. Try more balls or a smaller paddle.`;
+      $("start").textContent = "Play again →";
+      reset("demo"); $("over").hidden = false;
+      $("sYou").textContent = 0; $("sShad").textContent = 0;
+      return;
+    }
+    if (mode === "demo" && (m.left.score >= 7 || m.right.score >= 7)) reset("demo");
+  }
+  m.balls.forEach((b, i) => { const t = trails[i] || (trails[i] = []); t.push([b.x, b.y]); if (t.length > 8) t.shift(); });
+}
+
+// ---- drawing
+function draw() {
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(229,229,229,.12)"; ctx.setLineDash([8, 12]); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(W / 2, 10); ctx.lineTo(W / 2, H - 10); ctx.stroke(); ctx.setLineDash([]);
+  const ph = m.o.paddle;
+  // your paddle (alabaster), shad0w's (orange, with its prussian shadow)
+  ctx.fillStyle = "#e5e5e5"; ctx.fillRect(MARGIN, m.left.y - ph / 2, PW, ph);
+  ctx.fillStyle = "#14213d"; ctx.fillRect(W - MARGIN - PW + 5, m.right.y - ph / 2 + 5, PW, ph);
+  ctx.fillStyle = "#fca311"; ctx.fillRect(W - MARGIN - PW, m.right.y - ph / 2, PW, ph);
+  // where shad0w expects the most urgent ball
+  const u = urgent(m, "right");
+  if (u) { ctx.strokeStyle = "rgba(252,163,17,.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W - MARGIN - PW - 14, u.y); ctx.lineTo(W - MARGIN - PW - 4, u.y); ctx.stroke(); }
+  m.balls.forEach((b, i) => {
+    (trails[i] || []).forEach(([x, y], k, t) => { ctx.globalAlpha = (k + 1) / t.length * 0.25; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fill(); });
+    ctx.globalAlpha = b.wait > 0 ? 0.35 : 1; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, 7); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+const fmtUs = (us) => us < 10 ? `${us.toFixed(1)} µs` : `${Math.round(us)} µs`;
+function loop(t) {
+  const dt = Math.min(100, t - last); last = t; acc += dt;
+  while (acc >= 1000 / FPS) { acc -= 1000 / FPS; frame(); }
+  draw();
+  $("pulse").classList.toggle("on", flash > 0.5); flash *= 0.8;
+  requestAnimationFrame(loop);
+}
+
+// ---- timing, measured here: decide the recent situations in a block, then divide (browser clocks are coarse)
+function measure() {
+  if (recent.length < 20) return;
+  let n = 0, reps = 0;
+  const t0 = performance.now();
+  // ~6 ms of deciding; the repetition cap keeps a frozen or coarse clock (privacy modes, background tabs) from spinning
+  while (performance.now() - t0 < 6 && reps++ < 400) { for (const s of recent) bundle.decide(s, { probabilities: false }); n += recent.length; }
+  const took = performance.now() - t0;
+  $("hN").textContent = nDec.toLocaleString("en-US");
+  $("hCert").textContent = nDec ? `${((nCert / nDec) * 100).toFixed(1)}%` : "–";
+  if (took < 1) return;  // too little elapsed time to divide honestly
+  usPer = (took * 1000) / n;
+  $("hUs").textContent = fmtUs(usPer);
+  $("hBudget").textContent = `${((usPer / 16667) * 100).toFixed(3)}%`;
+  $("hRate").textContent = Math.round(1e6 / usPer).toLocaleString("en-US");
+}
+setInterval(measure, 1000);
+
+$("howList").innerHTML = info.how.map((h) => `<li><b>${h[0]}</b> ${h[1]}</li>`).join("");
+$("honest").innerHTML = "<b>What this shows, and what it doesn't.</b> " + info.notes.join(" ");
+reset("demo");
+requestAnimationFrame((t) => { last = t; loop(t); });
+</script>
+</body>
+</html>

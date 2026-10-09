@@ -3,268 +3,1061 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>Command line · shad0w</title>
-<meta name="description" content="Every shad0w command, with examples.">
+<meta name="description" content="Every shad0w command and every flag, with defaults, examples and exit codes.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/cli.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Command line · shad0w">
-<meta property="og:description" content="Every shad0w command, with examples."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/cli.html">
+<meta property="og:description" content="Every shad0w command and every flag, with defaults, examples and exit codes."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/cli.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Command line · shad0w">
-<meta name="twitter:description" content="Every shad0w command, with examples."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="Every shad0w command and every flag, with defaults, examples and exit codes."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Command line", "description": "Every shad0w command and every flag, with defaults, examples and exit codes.", "url": "https://2796gaurav.github.io/shad0w/docs/cli.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Command line", "item": "https://2796gaurav.github.io/shad0w/docs/cli.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/cli.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Command line</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html" class=active>Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="command-line">Command line<a class="headerlink" href="#command-line" title="Permanent link">#</a></h1>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>--help
-shad0w<span class="w"> </span>&lt;command&gt;<span class="w"> </span>--help
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Command line</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html" class=active aria-current=page>Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">11 min read</span></div>
+    <h1 id="command-line">Command line<a class="headerlink" href="#command-line" title="Link to this section">#</a></h1>
+<p class="lead">Everything shad0w does from Python it also does from a terminal: start a project, import old answers, train, try, watch and serve. This page lists every command and every flag.</p>
+
+<p><strong>TL;DR</strong></p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span>
+shad0w<span class="w"> </span>init<span class="w">                                     </span><span class="c1"># shad0w.toml + a runnable app.py</span>
+python<span class="w"> </span>app.py<span class="w"> </span><span class="s2">"my card was stolen"</span><span class="w">              </span><span class="c1"># your LLM answers; the answer is logged</span>
+shad0w<span class="w"> </span>status<span class="w">                                   </span><span class="c1"># rows logged, certified share, next step</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">     </span><span class="c1"># once enough answers are logged</span>
+shad0w<span class="w"> </span>try<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span><span class="s2">"my card was stolen"</span>
 </code></pre></div>
 
-<h2 id="everyday">Everyday<a class="headerlink" href="#everyday" title="Permanent link">#</a></h2>
-<table>
+<p><code>shad0w --help</code> lists the commands; <code>shad0w &lt;command&gt; --help</code> lists a command's flags; <code>shad0w --version</code> prints the version.</p>
+<p>Words used on this page. <strong>The table</strong> (or <strong>bundle</strong>, the folder that holds it): the small model shad0w trains from your LLM's answers. <strong>Certified</strong>: tested on answers it never trained on and allowed to serve only where it differs from your LLM on at most <strong>α</strong>. <strong>Log</strong>: the JSON Lines file of your LLM's answers that training reads.</p>
+<h2 id="commands-at-a-glance">Commands at a glance<a class="headerlink" href="#commands-at-a-glance" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Command</th>
+<th class="c-key">Command</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>shad0w proxy --upstream URL</code></td>
-<td>OpenAI-compatible gateway; see <a href="proxy.html">The proxy</a></td>
+<td class="c-key"><a href="#init"><code>init</code></a></td>
+<td>Write a commented <code>shad0w.toml</code> and a runnable <code>app.py</code></td>
 </tr>
 <tr>
-<td><code>shad0w train --log L --out B</code></td>
-<td>train + certify a table from logged answers (questions and options are detected)</td>
+<td class="c-key"><a href="#status"><code>status</code></a></td>
+<td>One line per decision: rows logged, certified share, live agreement, next step</td>
 </tr>
 <tr>
-<td><code>shad0w train --dir D --question Q</code></td>
-<td>the same, for the <code>decision()</code> / proxy folder layout</td>
+<td class="c-key"><a href="#import"><code>import</code></a></td>
+<td>Turn exported LLM request/response pairs into a decision's log</td>
 </tr>
 <tr>
-<td><code>shad0w try --bundle B "text" …</code></td>
-<td>answer, confidence vs threshold, the reason, and µs; interactive without text</td>
+<td class="c-key"><a href="#doctor"><code>doctor</code></a></td>
+<td>Check Python, the C core, training deps, config, your API key, an upstream, a bundle and a log</td>
 </tr>
 <tr>
-<td><code>shad0w stats --log L</code></td>
-<td>what has been logged, and whether it's ready to train</td>
+<td class="c-key"><a href="#config"><code>config</code></a></td>
+<td>Print every effective setting and where it came from, or write a starter <code>shad0w.toml</code></td>
 </tr>
 <tr>
-<td><code>shad0w stats --url http://localhost:8010</code></td>
-<td>one snapshot of a running proxy or server</td>
+<td class="c-key"><a href="#proxy"><code>proxy</code></a></td>
+<td>OpenAI-compatible gateway: answers marked decisions from the table, forwards the rest</td>
 </tr>
 <tr>
-<td><code>shad0w watch</code></td>
-<td>live counters from a running proxy or server</td>
+<td class="c-key"><a href="#train"><code>train</code></a></td>
+<td>Train and certify a table from logged answers</td>
 </tr>
 <tr>
-<td><code>shad0w serve --bundle B</code></td>
-<td>HTTP decisions (<code>/v1/decide</code>, <code>/v1/decisions</code>, <code>/v1/systemone</code>) plus dashboard and metrics; see <a href="http.html">HTTP</a></td>
+<td class="c-key"><a href="#try"><code>try</code></a></td>
+<td>See what the table answers for a message, how sure it is, how fast, and why</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#stats"><code>stats</code></a></td>
+<td>Summarise a log, or print a snapshot of a running proxy or server</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#watch"><code>watch</code></a></td>
+<td>Live counters from a running proxy or server</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#serve"><code>serve</code></a></td>
+<td>HTTP decisions from a bundle, with dashboard and metrics</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#decide"><code>decide</code></a></td>
+<td>One raw decision as JSON</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#bench"><code>bench</code></a></td>
+<td>Latency percentiles of a bundle</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#report"><code>report</code></a></td>
+<td>Print a bundle's certificate</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#certify"><code>certify</code></a></td>
+<td>Re-certify a bundle on fresh answers it never trained on</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#calibrate"><code>calibrate</code></a></td>
+<td>Certify a bundle against human labels</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#compile"><code>compile</code></a></td>
+<td>Build a table from human labels or from unlabelled text</td>
+</tr>
+<tr>
+<td class="c-key"><a href="#shadow"><code>shadow</code></a></td>
+<td>Train with an explicit schema (the older form of <code>train</code>)</td>
 </tr>
 </tbody>
-</table>
-<h2 id="setup-and-settings">Setup and settings<a class="headerlink" href="#setup-and-settings" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<p>Settings that a command does not take as a flag come from <code>SHAD0W_*</code> variables, then <code>shad0w.toml</code>, then the defaults (<a href="configuration.html">Configuration</a>). A flag always wins.</p>
+<h2 id="start">Start<a class="headerlink" href="#start" title="Link to this section">#</a></h2>
+<h3 id="init">init<a class="headerlink" href="#init" title="Link to this section">#</a></h3>
+<p>Write a commented <code>shad0w.toml</code> (with <code>llm</code> and <code>api_key_env</code>) and a runnable <code>app.py</code> that uses <code>decision()</code>. Existing files are kept unless you pass <code>--force</code>.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Command</th>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>shad0w doctor</code></td>
-<td>check Python, the C core, training deps, Node, the config, an API key (<code>--llm provider/model</code>), an upstream (<code>--upstream URL</code>), a bundle (<code>--bundle B</code>) and a log (<code>--log L</code>); see <a href="troubleshooting.html">Troubleshooting</a></td>
+<td class="c-key"><code>--dir</code></td>
+<td class="c-def"><code>.</code></td>
+<td>Folder to write into (created if missing)</td>
 </tr>
 <tr>
-<td><code>shad0w config</code></td>
-<td>every effective setting and where it came from (default, env, <code>shad0w.toml</code>, code); <code>--question Q</code> applies that question's section</td>
+<td class="c-key"><code>--name</code></td>
+<td class="c-def"><code>intent</code></td>
+<td>The decision's name: a Python name, used for the variable, the folder and the log field</td>
 </tr>
 <tr>
-<td><code>shad0w config --init</code></td>
-<td>write a commented <code>shad0w.toml</code> with every setting</td>
+<td class="c-key"><code>--llm</code></td>
+<td class="c-def"><code>openai/gpt-6-luna</code></td>
+<td><code>provider/model</code>; the provider picks <code>api_key_env</code> (none for local servers such as <code>ollama/...</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--options</code></td>
+<td class="c-def">a card-support example (<code>refund</code>, <code>lost_card</code>, <code>balance</code>, <code>other</code>)</td>
+<td>Comma-separated option names, at least two</td>
+</tr>
+<tr>
+<td class="c-key"><code>--force</code></td>
+<td class="c-def">off</td>
+<td>Overwrite existing files</td>
+</tr>
+<tr>
+<td class="c-key"><code>--files</code></td>
+<td class="c-def">off</td>
+<td>Write the older starter instead: <code>schema.json</code> and <code>teacher_log.jsonl</code> for <code>shad0w shadow</code></td>
 </tr>
 </tbody>
-</table>
-<h2 id="certificates">Certificates<a class="headerlink" href="#certificates" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>init<span class="w"> </span>--dir<span class="w"> </span>support<span class="w"> </span>--name<span class="w"> </span>ticket<span class="w"> </span>--options<span class="w"> </span>billing,tech,other
+</code></pre></div>
+
+<div class="codehilite" data-lang="text"><pre><span></span><code>wrote support/shad0w.toml, support/app.py
+next:
+  cd support
+  export OPENAI_API_KEY=sk-...      # your key; shad0w.toml names this variable
+  python app.py "my card was stolen"
+  shad0w status
+</code></pre></div>
+
+<h3 id="status">status<a class="headerlink" href="#status" title="Link to this section">#</a></h3>
+<p>One line per decision folder: rows logged against <code>min_rows</code>, the certified share at α, live agreement on spot checks since the last training, and the next step.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Command</th>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>shad0w report --bundle B</code></td>
-<td>print the certificate</td>
+<td class="c-key"><code>--folder</code></td>
+<td class="c-def">the <code>folder</code> setting (<code>shad0w</code>)</td>
+<td>The decisions folder to scan</td>
 </tr>
 <tr>
-<td><code>shad0w certify --bundle B --data fresh.jsonl</code></td>
-<td>re-certify on fresh traffic the table never trained on</td>
-</tr>
-<tr>
-<td><code>shad0w calibrate --bundle B --data labels.jsonl</code></td>
-<td>certify against ~300 human labels (truth, not the LLM)</td>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code></td>
+<td>Config file to read</td>
 </tr>
 </tbody>
-</table>
-<h2 id="other-ways-to-build-a-table">Other ways to build a table<a class="headerlink" href="#other-ways-to-build-a-table" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<div class="codehilite" data-lang="text"><pre><span></span><code>intent    1,500/1,000 rows  certified 61.2% at alpha=0.05 (threshold 0.886)  live agreement 97.0% (n=33)  -&gt; serving
+ticket      240/1,000 rows  no table yet  -&gt; log 760 more answers
+</code></pre></div>
+
+<h3 id="import">import<a class="headerlink" href="#import" title="Link to this section">#</a></h3>
+<p>Turn exported request/response pairs into a decision's log, so training can start from answers you already paid for. Each line of the file is <code>{"request": ..., "response": ...}</code>; OpenAI Batch output works as is. Labels that match none of the options are skipped and counted. Rows are written with <code>"source": "import"</code>.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Command</th>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>shad0w init</code></td>
-<td>write a starter <code>schema.json</code> and an example log</td>
+<td class="c-key"><code>--from</code></td>
+<td class="c-def">required</td>
+<td><code>openai-chat</code> (chat completions) or <code>openai-decisions</code> (<code>/v1/decisions</code>)</td>
 </tr>
 <tr>
-<td><code>shad0w shadow --schema S --data L --out B</code></td>
-<td>train with an explicit schema (what <code>train</code> does under the hood)</td>
+<td class="c-key"><code>--file</code></td>
+<td class="c-def">required</td>
+<td>The JSON Lines export</td>
 </tr>
 <tr>
-<td><code>shad0w compile --schema S --data labels.jsonl --out B</code></td>
-<td>from human labels</td>
+<td class="c-key"><code>--question</code></td>
+<td class="c-def">required</td>
+<td>The decision's name: its folder and log field</td>
 </tr>
 <tr>
-<td><code>shad0w compile --schema S --unlabeled texts.txt --out B</code></td>
-<td>from option names + unlabelled text (needs <code>shad0wllm[logs]</code>); uncertified until calibrated</td>
+<td class="c-key"><code>--options</code></td>
+<td class="c-def">the request's enum, or the answers seen</td>
+<td>Comma-separated options</td>
 </tr>
 <tr>
-<td><code>shad0w decide --bundle B "text"</code></td>
-<td>the raw decision as JSON</td>
+<td class="c-key"><code>--dir</code></td>
+<td class="c-def"><code>shad0w</code></td>
+<td>Decisions folder</td>
 </tr>
 <tr>
-<td><code>shad0w bench --bundle B --texts file.txt</code></td>
-<td>p50/p99 latency</td>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code></td>
+<td>Config file to read</td>
 </tr>
 </tbody>
-</table>
-<h2 id="common-flags">Common flags<a class="headerlink" href="#common-flags" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>import<span class="w"> </span>--from<span class="w"> </span>openai-chat<span class="w"> </span>--file<span class="w"> </span>export.jsonl<span class="w"> </span>--question<span class="w"> </span>intent
+</code></pre></div>
+
+<div class="codehilite" data-lang="text"><pre><span></span><code>export.jsonl: 1,500 answers imported into shad0w/intent/log.jsonl (0 exchanges without a usable answer, 0 with an unknown option)
+next: shad0w train --dir shad0w --question intent
+</code></pre></div>
+
+<h2 id="check-and-configure">Check and configure<a class="headerlink" href="#check-and-configure" title="Link to this section">#</a></h2>
+<h3 id="doctor">doctor<a class="headerlink" href="#doctor" title="Link to this section">#</a></h3>
+<p>Checks what most often goes wrong and prints one line each: <code>[ok]</code>, <code>[--]</code> (a warning) or <code>[!!]</code> (a problem). Exits 1 when any <code>[!!]</code> line is printed, so it works in CI. What each line means: <a href="troubleshooting.html#what-each-doctor-line-means">Troubleshooting</a>.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Flag</th>
-<th>Default</th>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>--alpha</code></td>
-<td><code>0.05</code></td>
-<td>the most disagreement allowed among table answers</td>
+<td class="c-key"><code>--llm</code></td>
+<td class="c-def">the <code>llm</code> setting</td>
+<td><code>provider/model</code> whose API key should be set; prints where the key comes from, masked</td>
 </tr>
 <tr>
-<td><code>--delta</code></td>
-<td><code>0.1</code></td>
-<td>how often the certificate itself may be wrong</td>
+<td class="c-key"><code>--upstream</code></td>
+<td class="c-def">—</td>
+<td>An OpenAI-compatible base URL to probe (<code>&lt;url&gt;/models</code>)</td>
 </tr>
 <tr>
-<td><code>--min-rows</code></td>
-<td><code>1000</code></td>
-<td><code>train</code> refuses smaller logs (100 is the hard minimum)</td>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">—</td>
+<td>A bundle to load; reports each question's options, threshold and α</td>
 </tr>
 <tr>
-<td><code>--teacher</code></td>
-<td></td>
-<td>a name for your LLM, recorded in the certificate</td>
+<td class="c-key"><code>--log</code></td>
+<td class="c-def">—</td>
+<td>A log to count against <code>min_rows</code></td>
 </tr>
 <tr>
-<td><code>--gate</code></td>
-<td></td>
-<td><code>train</code> only: keep the existing table unless the new one certifies at least 80% of its share</td>
-</tr>
-<tr>
-<td><code>--config</code></td>
-<td><code>./shad0w.toml</code></td>
-<td>path to a config file</td>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code></td>
+<td>Config file to read and validate</td>
 </tr>
 </tbody>
-</table>
-<p>Any setting not given as a flag comes from a <code>SHAD0W_*</code> variable, then <code>shad0w.toml</code>, then the default. See <a href="configuration.html">Configuration</a>. The proxy's own flags are on <a href="proxy.html">its page</a>.</p>
-<h2 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Permanent link">#</a></h2>
-<table>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>doctor<span class="w"> </span>--llm<span class="w"> </span>openai/gpt-6-luna<span class="w"> </span>--bundle<span class="w"> </span>shad0w/intent/bundle<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl
+</code></pre></div>
+
+<div class="codehilite" data-lang="text"><pre><span></span><code>[ok] Python 3.12.14                       shad0w 0.3.2
+[ok] C core                               built in
+[ok] training deps (scipy, scikit-learn)  installed
+[--] torch (optional, faster training)    not installed: scipy solver is used
+[ok] TOML config reader                   tomllib
+[ok] Node (JavaScript package)            v24.20.0
+[ok] config                               defaults; mode=serve alpha=0.05 audit_rate=0.01 canary=1.0
+[ok] openai API key                       key: set via OPENAI_API_KEY (sk-…3f9a)
+[ok] bundle question 'intent'             4 options, threshold 0.886, alpha 0.05
+[ok] certificate.json                     present
+[ok] log                                  1,500 rows (ready to train)
+
+all good
+</code></pre></div>
+
+<h3 id="config">config<a class="headerlink" href="#config" title="Link to this section">#</a></h3>
+<p>Without flags, prints every setting, its effective value and where it came from (<code>default</code>, <code>env:SHAD0W_…</code>, <code>toml:…</code>, <code>toml:… [questions.X]</code>, <code>configure()</code>), then the config file in use and where the LLM key comes from (masked).</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Code</th>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--question</code></td>
+<td class="c-def">—</td>
+<td>Also apply that question's <code>[questions.&lt;name&gt;]</code> section</td>
+</tr>
+<tr>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code> or <code>$SHAD0W_CONFIG</code></td>
+<td>Config file to read (with <code>--init</code>: the file to write)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--init</code></td>
+<td class="c-def">off</td>
+<td>Write a commented <code>shad0w.toml</code> listing every setting with its default and meaning; refuses to overwrite</td>
+</tr>
+<tr>
+<td class="c-key"><code>--explain</code></td>
+<td class="c-def">on</td>
+<td>The default action; accepted for clarity</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>config<span class="w"> </span>--question<span class="w"> </span>intent
+shad0w<span class="w"> </span>config<span class="w"> </span>--init
+</code></pre></div>
+
+<h2 id="train-and-certify">Train and certify<a class="headerlink" href="#train-and-certify" title="Link to this section">#</a></h2>
+<h3 id="train">train<a class="headerlink" href="#train" title="Link to this section">#</a></h3>
+<p>Train and certify a table from logged answers. Questions and options are detected from the log unless you pass <code>--schema</code> (or a previous bundle's <code>schema.json</code> exists). When at least 100 spot-check rows exist, they are used to certify (<a href="training.html#why-retraining-certifies-on-spot-checks">why</a>).</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--dir</code></td>
+<td class="c-def">—</td>
+<td>The <code>decision()</code> / proxy layout: reads <code>&lt;dir&gt;/&lt;question&gt;/log.jsonl</code>, writes <code>&lt;dir&gt;/&lt;question&gt;/bundle</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--question</code></td>
+<td class="c-def">the only one in <code>--dir</code></td>
+<td>Which question to train</td>
+</tr>
+<tr>
+<td class="c-key"><code>--log</code></td>
+<td class="c-def">—</td>
+<td>A JSON Lines log (instead of <code>--dir</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--out</code></td>
+<td class="c-def">—</td>
+<td>Bundle folder to write (with <code>--log</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--schema</code></td>
+<td class="c-def">options seen in the log</td>
+<td>A <code>schema.json</code> naming each question's options</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def">the <code>alpha</code> setting (<code>0.05</code>)</td>
+<td>Most disagreement allowed among table answers</td>
+</tr>
+<tr>
+<td class="c-key"><code>--delta</code></td>
+<td class="c-def">the <code>delta</code> setting (<code>0.1</code>)</td>
+<td>Chance the certificate itself is wrong</td>
+</tr>
+<tr>
+<td class="c-key"><code>--min-rows</code></td>
+<td class="c-def">the <code>min_rows</code> setting (<code>1000</code>)</td>
+<td>Refuse smaller logs (exit 1); 100 is the hard minimum</td>
+</tr>
+<tr>
+<td class="c-key"><code>--max-mb</code></td>
+<td class="c-def">the <code>max_mb</code> setting (none)</td>
+<td>Size budget per table, in MB</td>
+</tr>
+<tr>
+<td class="c-key"><code>--rename OLD=NEW</code></td>
+<td class="c-def">—</td>
+<td>Rename a label in the log while training; repeatable. Without <code>--schema</code>, the previous bundle's <code>schema.json</code> is reused with the names renamed</td>
+</tr>
+<tr>
+<td class="c-key"><code>--gate</code></td>
+<td class="c-def">off</td>
+<td>Keep the existing bundle unless the new one certifies at least 80% of its share (exit 3 when kept)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--teacher</code></td>
+<td class="c-def"><code>unspecified</code></td>
+<td>A name for your LLM, recorded in the certificate</td>
+</tr>
+<tr>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code></td>
+<td>Config file to read (including <code>[questions.&lt;name&gt;]</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent
+shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>log.jsonl<span class="w"> </span>--out<span class="w"> </span>bundle<span class="w"> </span>--schema<span class="w"> </span>schema.json<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.02<span class="w"> </span>--max-mb<span class="w"> </span><span class="m">1</span>
+shad0w<span class="w"> </span>train<span class="w"> </span>--log<span class="w"> </span>log.jsonl<span class="w"> </span>--out<span class="w"> </span>bundle<span class="w"> </span>--rename<span class="w"> </span><span class="nv">lost_card</span><span class="o">=</span>card_lost<span class="w">   </span><span class="c1"># the old schema is renamed for you</span>
+</code></pre></div>
+
+<h3 id="report">report<a class="headerlink" href="#report" title="Link to this section">#</a></h3>
+<p>Print a bundle's certificate as JSON: α, δ, the teacher, and per question the options, the number of rows, the threshold, the certified share and the calibration set used.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle folder</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="certify">certify<a class="headerlink" href="#certify" title="Link to this section">#</a></h3>
+<p>Keep the table, and refresh its threshold and certificate on fresh answers it never trained on (for example last week's log).</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle to re-certify (rewritten in place)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--data</code></td>
+<td class="c-def">required</td>
+<td>JSON Lines of fresh LLM answers (<code>text</code> plus one field per question)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def">the bundle's α</td>
+<td>Most disagreement allowed</td>
+</tr>
+<tr>
+<td class="c-key"><code>--delta</code></td>
+<td class="c-def"><code>0.1</code></td>
+<td>Chance the certificate itself is wrong</td>
+</tr>
+<tr>
+<td class="c-key"><code>--teacher</code></td>
+<td class="c-def">the bundle's</td>
+<td>A name for your LLM</td>
+</tr>
+<tr>
+<td class="c-key"><code>--force</code></td>
+<td class="c-def">off</td>
+<td>Certify even with fewer than 100 rows (it then usually stops serving)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="calibrate">calibrate<a class="headerlink" href="#calibrate" title="Link to this section">#</a></h3>
+<p>Certify against human labels (the truth) instead of your LLM. About 300 labels per question suffice.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle (rewritten in place)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--data</code></td>
+<td class="c-def">required</td>
+<td>JSON Lines of labelled examples, held out from training</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def">the table's α</td>
+<td>Most error allowed</td>
+</tr>
+<tr>
+<td class="c-key"><code>--force</code></td>
+<td class="c-def">off</td>
+<td>Calibrate even with fewer than 100 labels per question</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="compile">compile<a class="headerlink" href="#compile" title="Link to this section">#</a></h3>
+<p>Build a table without an LLM log.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--schema</code></td>
+<td class="c-def">required</td>
+<td><code>schema.json</code> naming the options</td>
+</tr>
+<tr>
+<td class="c-key"><code>--data</code></td>
+<td class="c-def">—</td>
+<td>JSON Lines of human labels</td>
+</tr>
+<tr>
+<td class="c-key"><code>--unlabeled</code></td>
+<td class="c-def">—</td>
+<td>A text file, one message per line: label-free mode, uncertified until calibrated (needs <code>shad0wllm[logs]</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--encoder</code></td>
+<td class="c-def"><code>bge-small</code></td>
+<td>Sentence encoder for label-free mode</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def"><code>0.05</code></td>
+<td>α recorded for later calibration</td>
+</tr>
+<tr>
+<td class="c-key"><code>--out</code></td>
+<td class="c-def">required</td>
+<td>Bundle folder to write</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="shadow">shadow<a class="headerlink" href="#shadow" title="Link to this section">#</a></h3>
+<p>Train with an explicit schema and data file: what <code>train</code> does under the hood, kept for older scripts.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--schema</code></td>
+<td class="c-def">required</td>
+<td><code>schema.json</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--data</code></td>
+<td class="c-def">required</td>
+<td>JSON Lines: <code>text</code> plus one field per question holding your LLM's answer</td>
+</tr>
+<tr>
+<td class="c-key"><code>--teacher</code></td>
+<td class="c-def"><code>unspecified</code></td>
+<td>A name for your LLM</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def"><code>0.05</code></td>
+<td>Most disagreement allowed (this command does not read <code>shad0w.toml</code>)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--delta</code></td>
+<td class="c-def"><code>0.1</code></td>
+<td>Chance the certificate itself is wrong</td>
+</tr>
+<tr>
+<td class="c-key"><code>--out</code></td>
+<td class="c-def">required</td>
+<td>Bundle folder to write</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="use-a-table">Use a table<a class="headerlink" href="#use-a-table" title="Link to this section">#</a></h2>
+<h3 id="try">try<a class="headerlink" href="#try" title="Link to this section">#</a></h3>
+<p>Shows, for each message: whether the table would answer, the answer, its confidence against the certified threshold, the time in µs, the reason, and the top three options. Without messages it reads them interactively (an empty line quits).</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle folder</td>
+</tr>
+<tr>
+<td class="c-key"><code>--question</code></td>
+<td class="c-def">the bundle's only question</td>
+<td>Which question to show</td>
+</tr>
+<tr>
+<td class="c-key"><code>text …</code></td>
+<td class="c-def">—</td>
+<td>One or more messages</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite" data-lang="text"><pre><span></span><code>my card was stolen
+  ✓ table  lost_card  (confidence 0.962, needs 0.911)  7.7 µs
+     certified: answered by the table
+     top: lost_card 0.96, card_swallowed 0.03, other 0.01
+</code></pre></div>
+
+<h3 id="decide">decide<a class="headerlink" href="#decide" title="Link to this section">#</a></h3>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle folder</td>
+</tr>
+<tr>
+<td class="c-key"><code>text</code></td>
+<td class="c-def">required</td>
+<td>One message</td>
+</tr>
+<tr>
+<td class="c-key"><code>--exposed</code></td>
+<td class="c-def">off</td>
+<td>Treat the input as adversarial (also defer answers a few edits could flip)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Prints the raw decision for every question as JSON: choice, confidence, <code>certified</code>, <code>flag</code>, probabilities.</p>
+<h3 id="bench">bench<a class="headerlink" href="#bench" title="Link to this section">#</a></h3>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle folder</td>
+</tr>
+<tr>
+<td class="c-key"><code>--texts</code></td>
+<td class="c-def">required</td>
+<td>A text file, one message per line</td>
+</tr>
+</tbody>
+</table></div>
+<p>Prints <code>{"n", "p50_us", "p99_us", "questions"}</code> after a short warm-up.</p>
+<h3 id="serve">serve<a class="headerlink" href="#serve" title="Link to this section">#</a></h3>
+<p>HTTP decisions from a bundle, without an LLM: <code>POST /v1/decide</code>, <code>/v1/decisions</code>, <code>/v1/systemone</code>, <code>/v1/playground</code>, plus the dashboard at <code>/</code>, <code>/v1/stats</code>, <code>/metrics</code> and <code>/v1/health</code>. See <a href="http.html">HTTP</a>. No authentication: keep it on localhost or behind your own front end.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--bundle</code></td>
+<td class="c-def">required</td>
+<td>The bundle folder</td>
+</tr>
+<tr>
+<td class="c-key"><code>--host</code></td>
+<td class="c-def"><code>127.0.0.1</code></td>
+<td>Address to listen on</td>
+</tr>
+<tr>
+<td class="c-key"><code>--port</code></td>
+<td class="c-def"><code>8010</code></td>
+<td>Port</td>
+</tr>
+<tr>
+<td class="c-key"><code>--cost-per-call</code></td>
+<td class="c-def">—</td>
+<td>Cost of one LLM call, for "money saved"</td>
+</tr>
+<tr>
+<td class="c-key"><code>--llm-latency-ms</code></td>
+<td class="c-def">—</td>
+<td>Assumed LLM latency, for "time saved"</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="proxy">proxy<a class="headerlink" href="#proxy" title="Link to this section">#</a></h3>
+<p>An OpenAI-compatible gateway in front of your LLM. Requests marked as decisions are answered from the table when it is certified; everything else is forwarded unchanged. Full guide: <a href="proxy.html">The proxy</a>.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--upstream</code></td>
+<td class="c-def"><code>https://api.openai.com/v1</code></td>
+<td>The real API base URL (OpenAI, Groq, Ollama, vLLM, …)</td>
+</tr>
+<tr>
+<td class="c-key"><code>--dir</code></td>
+<td class="c-def">the <code>folder</code> setting (<code>shad0w</code>)</td>
+<td>Where logs and bundles live: <code>&lt;dir&gt;/&lt;question&gt;/</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--model</code></td>
+<td class="c-def">—</td>
+<td>Upstream model for requests that use <code>model="shad0w/&lt;question&gt;"</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--api-key-env NAME</code></td>
+<td class="c-def">forward each client's own key</td>
+<td>Send the key in this environment variable upstream</td>
+</tr>
+<tr>
+<td class="c-key"><code>--api-key-file PATH</code></td>
+<td class="c-def">forward each client's own key</td>
+<td>Send the key in this file upstream, re-read on every request (Docker / Kubernetes secrets). Not with <code>--api-key-env</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--host</code></td>
+<td class="c-def"><code>127.0.0.1</code></td>
+<td>Address to listen on</td>
+</tr>
+<tr>
+<td class="c-key"><code>--port</code></td>
+<td class="c-def"><code>8010</code></td>
+<td>Port</td>
+</tr>
+<tr>
+<td class="c-key"><code>--audit-rate</code></td>
+<td class="c-def">the <code>audit_rate</code> setting (<code>0.01</code>)</td>
+<td>Share of decisions spot-checked against the LLM</td>
+</tr>
+<tr>
+<td class="c-key"><code>--auto-train</code></td>
+<td class="c-def">the <code>auto_train</code> setting (<code>0</code>, off)</td>
+<td>Retrain a question every N new LLM answers</td>
+</tr>
+<tr>
+<td class="c-key"><code>--alpha</code></td>
+<td class="c-def">the <code>alpha</code> setting (<code>0.05</code>)</td>
+<td>Most disagreement allowed</td>
+</tr>
+<tr>
+<td class="c-key"><code>--delta</code></td>
+<td class="c-def">the <code>delta</code> setting (<code>0.1</code>)</td>
+<td>Chance the certificate itself is wrong</td>
+</tr>
+<tr>
+<td class="c-key"><code>--min-rows</code></td>
+<td class="c-def">the <code>min_rows</code> setting (<code>1000</code>)</td>
+<td>Answers needed before auto-train runs</td>
+</tr>
+<tr>
+<td class="c-key"><code>--mode</code></td>
+<td class="c-def">the <code>mode</code> setting (<code>serve</code>)</td>
+<td><code>serve</code>, <code>shadow</code> or <code>off</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--canary</code></td>
+<td class="c-def">the <code>canary</code> setting (<code>1.0</code>)</td>
+<td>Share of certified answers the table may serve</td>
+</tr>
+<tr>
+<td class="c-key"><code>--never-serve</code></td>
+<td class="c-def">—</td>
+<td>Comma-separated labels that always go to the LLM</td>
+</tr>
+<tr>
+<td class="c-key"><code>--min-confidence</code></td>
+<td class="c-def">—</td>
+<td>Confidence floor on top of the certificate</td>
+</tr>
+<tr>
+<td class="c-key"><code>--capture</code></td>
+<td class="c-def">the <code>capture</code> setting (<code>header,model,tools,decisions</code>)</td>
+<td>How requests are recognised as decisions; add <code>json_schema</code>; repeatable</td>
+</tr>
+<tr>
+<td class="c-key"><code>--timeout</code></td>
+<td class="c-def">the <code>timeout</code> setting (<code>120</code>)</td>
+<td>Upstream timeout in seconds</td>
+</tr>
+<tr>
+<td class="c-key"><code>--trace</code></td>
+<td class="c-def">—</td>
+<td>JSON Lines file receiving every decision</td>
+</tr>
+<tr>
+<td class="c-key"><code>--bundle Q=PATH</code></td>
+<td class="c-def"><code>&lt;dir&gt;/&lt;Q&gt;/bundle</code></td>
+<td>Use the bundle at PATH for question Q; repeatable</td>
+</tr>
+<tr>
+<td class="c-key"><code>--schema</code></td>
+<td class="c-def">—</td>
+<td>A <code>schema.json</code> naming each question's options</td>
+</tr>
+<tr>
+<td class="c-key"><code>--cost-per-call</code></td>
+<td class="c-def">—</td>
+<td>Cost of one LLM call, for "money saved"</td>
+</tr>
+<tr>
+<td class="c-key"><code>--llm-latency-ms</code></td>
+<td class="c-def">—</td>
+<td>Assumed LLM latency until measured, for "time saved"</td>
+</tr>
+<tr>
+<td class="c-key"><code>--no-text</code></td>
+<td class="c-def">off</td>
+<td>Keep request text out of the dashboard</td>
+</tr>
+<tr>
+<td class="c-key"><code>--config</code></td>
+<td class="c-def"><code>./shad0w.toml</code> or <code>$SHAD0W_CONFIG</code></td>
+<td>Config file to read</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>https://api.openai.com/v1<span class="w"> </span>--api-key-env<span class="w"> </span>OPENAI_API_KEY<span class="w"> </span>--mode<span class="w"> </span>shadow
+shad0w<span class="w"> </span>proxy<span class="w"> </span>--api-key-file<span class="w"> </span>/run/secrets/openai<span class="w"> </span>--canary<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>--cost-per-call<span class="w"> </span><span class="m">0</span>.0006
+</code></pre></div>
+
+<p>On start it prints where the key comes from, masked: <code>upstream key: set via OPENAI_API_KEY (sk-…3f9a)</code>.</p>
+<h2 id="watch">Watch<a class="headerlink" href="#watch" title="Link to this section">#</a></h2>
+<h3 id="stats">stats<a class="headerlink" href="#stats" title="Link to this section">#</a></h3>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--log</code></td>
+<td class="c-def">—</td>
+<td>Summarise a log: answers per source and per option, and whether it is ready to train</td>
+</tr>
+<tr>
+<td class="c-key"><code>--top</code></td>
+<td class="c-def"><code>15</code></td>
+<td>Options shown per question</td>
+</tr>
+<tr>
+<td class="c-key"><code>--trace</code></td>
+<td class="c-def">—</td>
+<td>Also summarise a trace file: share answered by the table</td>
+</tr>
+<tr>
+<td class="c-key"><code>--url</code></td>
+<td class="c-def">—</td>
+<td>Instead of <code>--log</code>: print one JSON snapshot from a running proxy or server (<code>/v1/stats</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>One of <code>--log</code> or <code>--url</code> is required.</p>
+<h3 id="watch_1">watch<a class="headerlink" href="#watch_1" title="Link to this section">#</a></h3>
+<p>Live counters in the terminal: decisions, share answered by the table, LLM calls, time and money saved, per-question latency and the live safety bound, and the latest decisions. Ctrl-C quits.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Flag</th>
+<th class="c-def">Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>--url</code></td>
+<td class="c-def"><code>http://127.0.0.1:8010</code></td>
+<td>The running <code>shad0w proxy</code> or <code>shad0w serve</code></td>
+</tr>
+<tr>
+<td class="c-key"><code>--every</code></td>
+<td class="c-def"><code>1.0</code></td>
+<td>Refresh interval in seconds</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Code</th>
 <th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>0</code></td>
-<td>success</td>
+<td class="c-key"><code>0</code></td>
+<td>Success</td>
 </tr>
 <tr>
-<td><code>1</code></td>
-<td><code>train</code>: not enough logged answers yet; <code>doctor</code>: at least one <code>[!!]</code> line</td>
+<td class="c-key"><code>1</code></td>
+<td><code>train</code>: not enough logged answers yet. <code>doctor</code>: at least one <code>[!!]</code> line</td>
 </tr>
 <tr>
-<td><code>2</code></td>
-<td>a one-line error on stderr (missing bundle or log, missing training deps, invalid setting); no traceback</td>
+<td class="c-key"><code>2</code></td>
+<td>A one-line <code>shad0w: …</code> error on stderr (missing bundle or log, missing training dependencies, invalid setting, bad flag); no traceback</td>
 </tr>
 <tr>
-<td><code>3</code></td>
+<td class="c-key"><code>3</code></td>
 <td><code>train --gate</code> kept the old table</td>
 </tr>
 </tbody>
-</table>
-<h2 id="files">Files<a class="headerlink" href="#files" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>shad0w/intent/log.jsonl            {"text": "...", "intent": "lost_card", "source": "teacher", "ts": ...}  one per LLM answer
-shad0w/intent/bundle/manifest.json options, certified threshold, alpha, drift-guard state
-shad0w/intent/bundle/intent.s0     the table (int8, ~1.5 MB)
-shad0w/intent/bundle/certificate.json   what was certified, on how much data, when
-shad0w/intent/bundle/schema.json   the options (and descriptions) it was trained with
+</table></div>
+<h2 id="files">Files<a class="headerlink" href="#files" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="text"><pre><span></span><code>shad0w.toml                              settings (optional)
+shad0w/intent/log.jsonl                  {"text": "...", "intent": "lost_card", "source": "teacher", "ts": ...}  one per LLM answer
+shad0w/intent/bundle/manifest.json       options, certified threshold, alpha, drift-guard state
+shad0w/intent/bundle/intent.s0           the table (int8)
+shad0w/intent/bundle/certificate.json    what was certified, on how much data, when
+shad0w/intent/bundle/schema.json         the options (and descriptions) it was trained with
 </code></pre></div>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="training.html"><small>← previous</small>Training & retraining</a><a class="next" href="troubleshooting.html"><small>next →</small>Troubleshooting</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+
+<p>A typical table is about 1.5 MB on disk.</p>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Command%20line&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/cli.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="cli.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="training.html" rel="prev"><small>← Previous</small>Training & retraining</a><a class="next" href="troubleshooting.html" rel="next"><small>Next →</small>Troubleshooting</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
-<li><a href="#everyday">Everyday</a></li>
-<li><a href="#setup-and-settings">Setup and settings</a></li>
-<li><a href="#certificates">Certificates</a></li>
-<li><a href="#other-ways-to-build-a-table">Other ways to build a table</a></li>
-<li><a href="#common-flags">Common flags</a></li>
+<li><a href="#commands-at-a-glance">Commands at a glance</a></li>
+<li><a href="#start">Start</a><ul>
+<li><a href="#init">init</a></li>
+<li><a href="#status">status</a></li>
+<li><a href="#import">import</a></li>
+</ul>
+</li>
+<li><a href="#check-and-configure">Check and configure</a><ul>
+<li><a href="#doctor">doctor</a></li>
+<li><a href="#config">config</a></li>
+</ul>
+</li>
+<li><a href="#train-and-certify">Train and certify</a><ul>
+<li><a href="#train">train</a></li>
+<li><a href="#report">report</a></li>
+<li><a href="#certify">certify</a></li>
+<li><a href="#calibrate">calibrate</a></li>
+<li><a href="#compile">compile</a></li>
+<li><a href="#shadow">shadow</a></li>
+</ul>
+</li>
+<li><a href="#use-a-table">Use a table</a><ul>
+<li><a href="#try">try</a></li>
+<li><a href="#decide">decide</a></li>
+<li><a href="#bench">bench</a></li>
+<li><a href="#serve">serve</a></li>
+<li><a href="#proxy">proxy</a></li>
+</ul>
+</li>
+<li><a href="#watch">Watch</a><ul>
+<li><a href="#stats">stats</a></li>
+<li><a href="#watch_1">watch</a></li>
+</ul>
+</li>
 <li><a href="#exit-codes">Exit codes</a></li>
 <li><a href="#files">Files</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Command%20line&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/cli.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

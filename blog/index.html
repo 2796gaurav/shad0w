@@ -3,54 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-<title>Blog · shad0w</title>
-<meta name="description" content="Essays and guides on System Zero, certified LLM shortcuts, and putting shad0w in front of the models you already run.">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>shad0w blog – System Zero, LLM cost and honest benchmarks</title>
+<meta name="description" content="Essays and measurements on serving repeat LLM decisions locally, and where it fails.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
-<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Blog · shad0w">
-<meta property="og:description" content="Essays and guides on System Zero, certified LLM shortcuts, and putting shad0w in front of the models you already run."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="shad0w blog – System Zero, LLM cost and honest benchmarks">
+<meta property="og:description" content="Essays and measurements on serving repeat LLM decisions locally, and where it fails."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Blog · shad0w">
-<meta name="twitter:description" content="Essays and guides on System Zero, certified LLM shortcuts, and putting shad0w in front of the models you already run."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="shad0w blog – System Zero, LLM cost and honest benchmarks">
+<meta name="twitter:description" content="Essays and measurements on serving repeat LLM decisions locally, and where it fails."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Blog", "name": "The shad0w blog", "url": "https://2796gaurav.github.io/shad0w/blog/", "blogPost": [{"@type": "BlogPosting", "headline": "Adding a category without breaking production", "url": "https://2796gaurav.github.io/shad0w/blog/adding-a-category.html", "datePublished": "2026-10-08"}, {"@type": "BlogPosting", "headline": "System Zero: the reflex layer your LLM stack is missing", "url": "https://2796gaurav.github.io/shad0w/blog/system-zero.html", "datePublished": "2026-10-08"}, {"@type": "BlogPosting", "headline": "How can a small table promise it agrees with your LLM?", "url": "https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html", "datePublished": "2026-10-07"}, {"@type": "BlogPosting", "headline": "What we measured: where shad0w wins, and where it loses", "url": "https://2796gaurav.github.io/shad0w/blog/what-we-measured.html", "datePublished": "2026-10-06"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Blog", "name": "The shad0w blog", "url": "https://2796gaurav.github.io/shad0w/blog/", "blogPost": [{"@type": "BlogPosting", "headline": "Zero-code System Zero for the OpenAI Decisions API", "url": "https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html", "datePublished": "2026-10-09"}, {"@type": "BlogPosting", "headline": "Snake at 120 moves a second: System 0 vs System One models, at game speed", "url": "https://2796gaurav.github.io/shad0w/blog/game-speed.html", "datePublished": "2026-10-09"}, {"@type": "BlogPosting", "headline": "94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM", "url": "https://2796gaurav.github.io/shad0w/blog/honest-numbers.html", "datePublished": "2026-10-09"}, {"@type": "BlogPosting", "headline": "Adding a category without breaking production", "url": "https://2796gaurav.github.io/shad0w/blog/adding-a-category.html", "datePublished": "2026-10-08"}, {"@type": "BlogPosting", "headline": "System Zero: the reflex layer below your LLM", "url": "https://2796gaurav.github.io/shad0w/blog/system-zero.html", "datePublished": "2026-10-08"}, {"@type": "BlogPosting", "headline": "How shad0w proves it agrees with your LLM", "url": "https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html", "datePublished": "2026-10-07"}]}</script>
 </head>
 <body class="blogpage">
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/">Docs</a>
     <a href="../blog/" class=active>Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <main class="wrap blog-index">
   <span class="kicker">the shad0w blog</span>
-  <h1 class="big">Ideas, measurements, <span class="grad-text">and how-tos.</span></h1>
-  <p class="lead muted">Why most decisions an app sends to an LLM are repeats, how a table can prove it agrees with your model, and how to run that in production. <a href="feed.xml">RSS</a></p>
-  <div class="post-grid"><a class="post-card big" href="adding-a-category.html"><small>2026-10-08 · 3 min read</small>
-        <b>Adding a category without breaking production</b><span>A trained shortcut and a changing list of options are a dangerous mix. What goes wrong, the rule shad0w follows now, and the lifecycle of an option from rename to retirement.</span><em>Read →</em></a><a class="post-card big" href="system-zero.html"><small>2026-10-08 · 4 min read</small>
-        <b>System Zero: the reflex layer your LLM stack is missing</b><span>LLMs think slowly. Decision models think fast. But most of what an app asks is a repeat, and repeats need a reflex. A case for System Zero, and how shad0w implements it.</span><em>Read →</em></a><a class="post-card big" href="how-the-certificate-works.html"><small>2026-10-07 · 4 min read</small>
-        <b>How can a small table promise it agrees with your LLM?</b><span>The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.</span><em>Read →</em></a><a class="post-card big" href="what-we-measured.html"><small>2026-10-06 · 5 min read</small>
-        <b>What we measured: where shad0w wins, and where it loses</b><span>Real LLMs, real proxies, public datasets and the same certifier for every method. The numbers that make shad0w worth using, and the ones that show when not to.</span><em>Read →</em></a></div>
+  <h1>Notes from <span class="hl">the shadow.</span></h1>
+  <p class="lead muted">System Zero, what we measured, and how to run a reflex in front of your LLM. Losses included. <a href="feed.xml">RSS</a></p>
+  <div class="post-grid"><a class="post-card big feature" href="decisions-api-proxy.html"><small>2026-10-09 · 5 min read</small>
+        <b>Zero-code System Zero for the OpenAI Decisions API</b><span>Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits.</span><em>Read →</em></a><a class="post-card big" href="game-speed.html"><small>2026-10-09 · 3 min read</small>
+        <b>Snake at 120 moves a second: System 0 vs System One models, at game speed</b><span>shad0w learned snake and Pong from an LLM&#x27;s answers. Then it raced three System One decision models on an Apple M5 Pro&#x27;s GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play.</span><em>Read →</em></a><a class="post-card big" href="honest-numbers.html"><small>2026-10-09 · 5 min read</small>
+        <b>94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM</b><span>We put shad0w in front of a hosted LLM through the official OpenAI client and measured how much shad0w answered, how often it agreed with the LLM, how fast, and where it answered nothing at all.</span><em>Read →</em></a><a class="post-card big" href="adding-a-category.html"><small>2026-10-08 · 2 min read</small>
+        <b>Adding a category without breaking production</b><span>A trained shortcut and a changing list of options are a dangerous mix. The rule shad0w follows, and what happens when you add, remove or rename an option.</span><em>Read →</em></a><a class="post-card big" href="system-zero.html"><small>2026-10-08 · 4 min read</small>
+        <b>System Zero: the reflex layer below your LLM</b><span>shad0w is the shadow of your LLM. It watches your LLM, learns to answer like it, and takes the repeat traffic, so the LLM only gets what shad0w is not sure about. What System Zero is, why a cache is not enough, and where shad0w stays silent.</span><em>Read →</em></a><a class="post-card big" href="how-the-certificate-works.html"><small>2026-10-07 · 5 min read</small>
+        <b>How shad0w proves it agrees with your LLM</b><span>The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.</span><em>Read →</em></a></div>
 </main>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
 </body>
 </html>

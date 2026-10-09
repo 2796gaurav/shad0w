@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-08",
+ "generated": "2026-10-09",
  "status": "new",
  "n": {
   "tests.count": "149",
@@ -29,7 +29,7 @@
   "headline.llm_calls_left": "14–39%",
   "headline.alpha_pct": "5%",
   "headline.conf_pct": "90%",
-  "headline.dis_sentence": "disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs",
+  "headline.dis_sentence": "disagrees with your LLM on at most α = 5% of what it serves (90% confidence) on traffic like the logged traffic; realised 3.0–6.0% in our runs, above α only where the traffic mix shifted (CLINC150)",
   "curve.dataset": "BANKING77",
   "curve.first_n": "250",
   "curve.last_n": "10,000",
@@ -71,7 +71,7 @@
   "price.jev_per_1k": "$0.0126",
   "price.gpt41mini_per_1k": "$0.520",
   "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)",
-  "film.length_s": "102",
+  "film.length_s": "104",
   "fit.torch_s": "40 s",
   "fit.scipy_s": "217 s",
   "scale.hardware": "Measured on 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39, 2026-10-08",
@@ -82,7 +82,21 @@
   "scale.k150_cert_full": "94.4%",
   "scale.k150_cert_budget": "94.4%",
   "scale.largest": "500 options with a 4 MB budget (5.0 MB, 57.3% certified)",
-  "scale.largest_train": "21 minutes"
+  "scale.largest_train": "21 minutes",
+  "arena.shad0w_score": "28.0",
+  "arena.llm_score_free": "25.9",
+  "arena.llm_score_10": "0.1",
+  "arena.best_sysone": "Kev-4B",
+  "arena.shad0w_us": "1.6 µs",
+  "arena.kev_ms": "23 ms",
+  "arena.laya_ms": "16 ms",
+  "arena.kev4b_ms": "145 ms",
+  "arena.llm_ms": "912 ms",
+  "arena.table_kb": "2 KB",
+  "pong.us": "1.5 µs",
+  "pong.kb": "6 KB",
+  "pong.agreement": "99.8%",
+  "pong.rows": "3,000"
  },
  "raw": {
   "tests.count": 149,
@@ -158,7 +172,7 @@
    0.0,
    0.081
   ],
-  "film.length_s": 102,
+  "film.length_s": 104,
   "fit.torch_s": 40.5,
   "fit.scipy_s": 216.8,
   "scale.p50_range": [
@@ -171,7 +185,20 @@
   "scale.k150_cert_full": 0.944,
   "scale.k150_cert_budget": 0.944,
   "scale.largest": 500,
-  "scale.largest_train": 1234.3
+  "scale.largest_train": 1234.3,
+  "arena.shad0w_score": 28,
+  "arena.llm_score_free": 25.88,
+  "arena.llm_score_10": 0.125,
+  "arena.shad0w_us": 0.0016,
+  "arena.kev_ms": 22.7,
+  "arena.laya_ms": 15.89,
+  "arena.kev4b_ms": 145,
+  "arena.llm_ms": 912,
+  "arena.table_kb": 2,
+  "pong.us": 1.5,
+  "pong.kb": 6,
+  "pong.agreement": 0.9977777777777778,
+  "pong.rows": 3000
  },
  "prov": {
   "tests.count": {
@@ -291,7 +318,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "lat.kev_ms": {
@@ -299,7 +326,7 @@
    "dataset": null,
    "teacher": "Kev-0.8B (llama.cpp GGUF)",
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "lat.laya_ms": {
@@ -307,7 +334,7 @@
    "dataset": null,
    "teacher": "Laya 421M",
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "legacy.fid.range_offload": {
@@ -355,7 +382,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "headline.teacher": {
@@ -363,7 +390,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "headline.llm_calls_left": {
@@ -371,7 +398,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "headline.alpha_pct": {
@@ -379,7 +406,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "headline.conf_pct": {
@@ -387,7 +414,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "headline.dis_sentence": {
@@ -403,7 +430,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "curve.first_n": {
@@ -411,7 +438,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "curve.last_n": {
@@ -419,7 +446,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "curve.first_pct": {
@@ -459,7 +486,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "kevteacher.offload": {
@@ -467,7 +494,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "mean.teacher": {
@@ -475,7 +502,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "mean.measured": {
@@ -483,7 +510,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "demo.offload": {
@@ -555,7 +582,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "e2e.offload": {
@@ -587,7 +614,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "e2e.n_cal": {
@@ -595,7 +622,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a01.served": {
@@ -603,7 +630,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a01.dis": {
@@ -611,7 +638,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a02.served": {
@@ -619,7 +646,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a02.dis": {
@@ -627,7 +654,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a05.served": {
@@ -635,7 +662,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a05.dis": {
@@ -643,7 +670,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a10.served": {
@@ -651,7 +678,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sweep.a10.dis": {
@@ -659,7 +686,7 @@
    "dataset": "BANKING77",
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "sst2.served": {
@@ -723,7 +750,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "film.length_s": {
@@ -731,7 +758,7 @@
    "dataset": null,
    "teacher": null,
    "hardware": "Apple M5 Pro (15 cores, 24 GB), macOS",
-   "date": "2026-10-08",
+   "date": "2026-10-09",
    "status": "new"
   },
   "fit.torch_s": {
@@ -820,6 +847,118 @@
    "teacher": null,
    "hardware": "12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39",
    "date": "2026-10-08",
+   "status": "new"
+  },
+  "arena.shad0w_score": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.llm_score_free": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.llm_score_10": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.best_sysone": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.shad0w_us": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.kev_ms": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.laya_ms": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.kev4b_ms": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.llm_ms": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "arena.table_kb": {
+   "source": "arena/results/arena_summary.json",
+   "dataset": "snake, 8 seeded games per speed",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "pong.us": {
+   "source": "arena/results/pong_eval.json",
+   "dataset": "pong, simulated matches",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "pong.kb": {
+   "source": "arena/results/pong_eval.json",
+   "dataset": "pong, simulated matches",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "pong.agreement": {
+   "source": "arena/results/pong_eval.json",
+   "dataset": "pong, simulated matches",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node",
+   "date": "2026-10-09",
+   "status": "new"
+  },
+  "pong.rows": {
+   "source": "arena/results/pong_eval.json",
+   "dataset": "pong, simulated matches",
+   "teacher": "hosted LLM",
+   "hardware": "Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node",
+   "date": "2026-10-09",
    "status": "new"
   }
  },

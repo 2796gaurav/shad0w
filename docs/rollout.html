@@ -3,86 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>&quot;Rollout: shadow → canary → serve&quot; · shad0w</title>
-<meta name="description" content="Put shad0w into production in three steps, and know what to watch before each one.">
+<meta name="description" content="Put shad0w into production in steps (log only, shadow, canary, serve), what to watch at each one, and how to go back.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/rollout.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="&quot;Rollout: shadow → canary → serve&quot; · shad0w">
-<meta property="og:description" content="Put shad0w into production in three steps, and know what to watch before each one."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/rollout.html">
+<meta property="og:description" content="Put shad0w into production in steps (log only, shadow, canary, serve), what to watch at each one, and how to go back."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/rollout.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="&quot;Rollout: shadow → canary → serve&quot; · shad0w">
-<meta name="twitter:description" content="Put shad0w into production in three steps, and know what to watch before each one."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="Put shad0w into production in steps (log only, shadow, canary, serve), what to watch at each one, and how to go back."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "\"Rollout: shadow → canary → serve\"", "description": "Put shad0w into production in steps (log only, shadow, canary, serve), what to watch at each one, and how to go back.", "url": "https://2796gaurav.github.io/shad0w/docs/rollout.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Rollout: shadow → canary → serve", "item": "https://2796gaurav.github.io/shad0w/docs/rollout.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/rollout.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · Rollout: shadow → canary → serve</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html" class=active>Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="rollout-shadow-canary-serve">Rollout: shadow → canary → serve<a class="headerlink" href="#rollout-shadow-canary-serve" title="Permanent link">#</a></h1>
-<p>The certificate is a statistical promise made on past traffic. A careful rollout checks it on live traffic before the table answers anyone. Each step below is one line in <code>shad0w.toml</code> (or one keyword, or one environment variable; see <a href="configuration.html">Configuration</a>), so moving between steps needs no deploy of new code.</p>
-<h2 id="0-log-only">0. Log only<a class="headerlink" href="#0-log-only" title="Permanent link">#</a></h2>
-<p>Before any table exists, every call goes to your LLM and the answer is written to the log. Nothing changes for your users.</p>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>stats<span class="w"> </span>--log<span class="w"> </span>shad0w/intent/log.jsonl<span class="w">     </span><span class="c1"># how many answers, which options, ready to train?</span>
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Rollout: shadow → canary → serve</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html" class=active aria-current=page>Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">4 min read</span></div>
+    <h1 id="rollout-shadow-canary-serve">Rollout: shadow → canary → serve<a class="headerlink" href="#rollout-shadow-canary-serve" title="Link to this section">#</a></h1>
+<p class="lead">The certificate is a promise made on past traffic. A careful rollout checks it on live traffic before the table answers anyone. Each step is one setting, so moving between steps needs no code change: only a config change and a restart.</p>
+
+<p><strong>TL;DR</strong></p>
+<div class="codehilite" data-lang="toml"><pre><span></span><code><span class="c1"># shad0w.toml, step by step</span>
+<span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"shadow"</span><span class="w">        </span><span class="c1"># 1. the table decides, your LLM still answers every user</span>
+<span class="c1"># mode = "serve"       # 2. then: the table answers ...</span>
+<span class="c1"># canary = 0.1         #    ... 10% of what it is certified on</span>
+<span class="c1"># canary = 1.0         # 3. then: everything it is certified on</span>
+<span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">      </span><span class="c1"># spot checks: keep them on at every step</span>
+</code></pre></div>
+
+<p>Words used on this page. <strong>The table</strong>: the small model shad0w trains from your LLM's answers. <strong>Certified</strong>: tested on answers it never trained on and allowed to serve only where it differs from your LLM on at most α (default 5%). <strong>Defer</strong>: send to your LLM. <strong>Spot check</strong>: a decision also re-asked to your LLM to measure live agreement.</p>
+<div class="viz" data-viz="rollout">off: the table is not consulted; your LLM answers everything. shadow: the table decides every call, but users get your LLM's answer; shad0w counts would_serve and shadow_disagreements. canary: the table answers a share (for example 10%) of what it is certified on; the rest go to your LLM, flagged canary. serve: the table answers everything it is certified on. Every LLM answer is logged at every step.</div>
+
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Setting</th>
+<th>What users get</th>
+<th>What is logged and counted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0. Log only</td>
+<td>no table yet</td>
+<td>your LLM's answer</td>
+<td>every LLM answer</td>
+</tr>
+<tr>
+<td>1. Shadow</td>
+<td><code>mode = "shadow"</code></td>
+<td>your LLM's answer</td>
+<td>every LLM answer; <code>would_serve</code>, <code>shadow_disagreements</code></td>
+</tr>
+<tr>
+<td>2. Canary</td>
+<td><code>mode = "serve"</code>, <code>canary = 0.1</code></td>
+<td>the table's answer for 10% of certified calls, your LLM's for the rest</td>
+<td>LLM answers (flag <code>canary</code>); spot checks</td>
+</tr>
+<tr>
+<td>3. Serve</td>
+<td><code>mode = "serve"</code>, <code>canary = 1.0</code></td>
+<td>the table's answer whenever it is certified</td>
+<td>LLM answers for deferred calls; spot checks</td>
+</tr>
+<tr>
+<td>Off</td>
+<td><code>mode = "off"</code></td>
+<td>your LLM's answer</td>
+<td>every LLM answer (flag <code>off</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The same settings work as keywords (<code>decision(..., mode="shadow")</code>), environment variables (<code>SHAD0W_MODE=shadow</code>, <code>SHAD0W_CANARY=0.1</code>) and proxy flags (<code>shad0w proxy --mode shadow --canary 0.1</code>). See <a href="configuration.html#mode">Configuration</a>.</p>
+<h2 id="0-log-only">0. Log only<a class="headerlink" href="#0-log-only" title="Link to this section">#</a></h2>
+<p>Before a table exists, every call goes to your LLM and the answer is written to the log. Nothing changes for your users.</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>status<span class="w">                                 </span><span class="c1"># rows logged vs min_rows, and the next step</span>
 shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w"> </span>shad0w<span class="w"> </span>--question<span class="w"> </span>intent<span class="w">    </span><span class="c1"># once ready: build and certify the table</span>
 </code></pre></div>
 
-<p>Read the certified share that <code>train</code> prints. If it is close to 0%, the table is not confident enough to help on this question yet. Log more answers, or see <a href="troubleshooting.html">Troubleshooting</a>.</p>
-<h2 id="1-shadow">1. Shadow<a class="headerlink" href="#1-shadow" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"shadow"</span>
-<span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">      </span><span class="c1"># a larger uniform sample early on: it also makes re-certification honest</span>
+<p>Read the certified share that <code>train</code> prints. If it is close to 0%, the table is not sure enough to help on this question yet: log more answers, or see <a href="troubleshooting.html#the-table-answers-nothing-or-very-little">Troubleshooting</a>.</p>
+<h2 id="1-shadow">1. Shadow<a class="headerlink" href="#1-shadow" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="toml"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"shadow"</span>
+<span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="w">      </span><span class="c1"># a larger fair sample early on; it also keeps the next certificate honest</span>
 </code></pre></div>
 
 <p>The table now decides every call, but your LLM's answer is the one returned. shad0w counts two things:</p>
 <ul>
-<li><strong><code>would_serve</code></strong>: calls the table would have answered.</li>
+<li><strong><code>would_serve</code></strong>: calls the table would have answered;</li>
 <li><strong><code>shadow_disagreements</code></strong>: of those, how many differed from your LLM.</li>
 </ul>
-<p>Read them with <code>intent.stats()</code> in Python, or at <code>/v1/stats</code> and on the dashboard of <code>shad0w proxy</code> / <code>shad0w serve</code>. Deferred calls carry the flag <code>shadow</code>.</p>
-<p><strong>Move on when</strong> <code>shadow_disagreements / would_serve</code> sits at or below your α on a few thousand calls, and <code>would_serve / all calls</code> is worth having.</p>
-<h2 id="2-canary">2. Canary<a class="headerlink" href="#2-canary" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serve"</span>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+
+<span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"shadow"</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="s2">"other"</span><span class="p">)</span>   <span class="c1"># your real llm= here</span>
+<span class="c1"># ... after some traffic:</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"would_serve"</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">"shadow_disagreements"</span><span class="p">])</span>
+</code></pre></div>
+
+<p>On <code>shad0w proxy</code> and <code>shad0w serve</code>, the dashboard and <code>/v1/stats</code> show the same. Deferred calls carry the flag <code>shadow</code>.</p>
+<p><strong>Move on when</strong> <code>shadow_disagreements / would_serve</code> sits at or below α over a few thousand calls, and <code>would_serve</code> is a share worth having.</p>
+<h2 id="2-canary">2. Canary<a class="headerlink" href="#2-canary" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="toml"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serve"</span>
 <span class="n">canary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w">           </span><span class="c1"># the table answers 10% of what it is certified on</span>
 </code></pre></div>
 
-<p>Now real users get table answers, but only a tenth of the eligible ones. The rest go to your LLM with the flag <code>canary</code> and keep feeding the log.</p>
-<p>Watch the <strong>live bound</strong> on the dashboard. It is a 90% upper bound on disagreement among served answers, computed from the spot checks. The dashboard shows it green while it is at or below α and amber with "re-train" when it is above.</p>
+<p>Real users now get table answers, but only for a tenth of the eligible calls. The rest go to your LLM with the flag <code>canary</code> and keep feeding the log.</p>
+<p>Watch the <strong>live bound</strong> on the dashboard: a 90% upper bound on disagreement among the table's answers, computed from spot checks. It reads "live bound … ≤ α …" while it holds, and "⚠ live bound … &gt; α …: re-train" when it does not.</p>
 <p><strong>Move on when</strong> the live bound stays at or below α as the number of spot checks grows.</p>
-<h2 id="3-serve">3. Serve<a class="headerlink" href="#3-serve" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serve"</span>
+<h2 id="3-serve">3. Serve<a class="headerlink" href="#3-serve" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="toml"><pre><span></span><code><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serve"</span>
 <span class="n">canary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span>
 <span class="n">audit_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="w">      </span><span class="c1"># keep spot checks on: they are your early warning</span>
-<span class="n">auto_train</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w">      </span><span class="c1"># optional: retrain every 1,000 new logged answers</span>
+<span class="n">auto_train</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2000</span><span class="w">      </span><span class="c1"># optional: retrain in the background every 2,000 new answers</span>
 <span class="n">retrain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gated"</span><span class="w">      </span><span class="c1"># keep the old table unless the new one is at least as useful</span>
 </code></pre></div>
 
-<p>The table answers everything it is certified on. Keep <code>audit_rate</code> above zero. Without spot checks you would only learn about a drop in agreement from your users.</p>
-<h2 id="going-back">Going back<a class="headerlink" href="#going-back" title="Permanent link">#</a></h2>
-<p>Any step can be undone without a restart of your code: set <code>mode = "shadow"</code> or <code>canary = 0</code> and restart the process that reads the config, or set <code>SHAD0W_MODE=off</code> in its environment. Labels that must never be answered by the table go in <code>never_serve</code>; that works at every step.</p>
-<h2 id="what-to-watch-in-one-table">What to watch, in one table<a class="headerlink" href="#what-to-watch-in-one-table" title="Permanent link">#</a></h2>
-<table>
+<p>The table answers everything it is certified on. Keep <code>audit_rate</code> above zero. Without spot checks you would learn about a drop in agreement only from your users.</p>
+<h2 id="going-back">Going back<a class="headerlink" href="#going-back" title="Link to this section">#</a></h2>
+<p>Every step can be undone with a setting and a restart of the process that reads it, with no code change:</p>
+<ul>
+<li><code>SHAD0W_MODE=off</code> in the environment: the table is skipped everywhere in that process. Environment variables beat <code>shad0w.toml</code>, so this is the fastest kill switch.</li>
+<li><code>mode = "shadow"</code> or <code>canary = 0</code> in <code>shad0w.toml</code>: back to watching.</li>
+<li><code>never_serve = ["fraud"]</code>: labels that must never be answered by the table. It works at every step.</li>
+</ul>
+<h2 id="what-to-watch">What to watch<a class="headerlink" href="#what-to-watch" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
 <th>Signal</th>
@@ -93,43 +175,52 @@ shad0w<span class="w"> </span>train<span class="w"> </span>--dir<span class="w">
 <tbody>
 <tr>
 <td>Share answered by the table</td>
-<td>dashboard, <code>stats()["offload"]</code>, <code>/v1/stats</code></td>
+<td>dashboard, <code>stats()["offload"]</code>, <code>/v1/stats</code>, <code>shad0w_offload_ratio</code></td>
 <td>It falls: traffic changed. Retrain.</td>
 </tr>
 <tr>
 <td>Live bound vs α</td>
-<td>dashboard, <code>shad0w_audit_disagreement_upper</code> in Prometheus</td>
-<td>It stays above α. Retrain, or lower <code>canary</code>.</td>
+<td>dashboard, <code>stats()["audit_disagreement_upper"]</code>, <code>shad0w_audit_disagreement_upper</code> vs <code>shad0w_alpha</code></td>
+<td>It stays above α. Lower <code>canary</code> or go back to <code>shadow</code>, then retrain.</td>
 </tr>
 <tr>
 <td><code>drift</code> flags</td>
-<td>dashboard "why deferred", <code>stats()["flags"]</code></td>
-<td>They appear: inputs look unlike the calibration data. Answers go to your LLM until it clears; retrain on the new traffic.</td>
+<td>dashboard "why deferred", <code>stats()["flags"]</code>, <code>shad0w_flags_total{flag="drift"}</code></td>
+<td>They stay: inputs look unlike the calibration data. Retrain on the new traffic.</td>
 </tr>
 <tr>
-<td>Log size since last train</td>
-<td><code>shad0w stats --log ...</code></td>
-<td>It passes <code>min_rows</code> again: a retrain will usually certify more.</td>
+<td>New answers since the last training</td>
+<td><code>shad0w status</code></td>
+<td>It suggests <code>shad0w train ...</code>: a retrain will usually certify more.</td>
 </tr>
 </tbody>
-</table>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="without-llm.html"><small>← previous</small>Running without an LLM</a><a class="next" href="observability.html"><small>next →</small>Monitoring</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+</table></div>
+<p>More on each signal in <a href="observability.html">Monitoring</a>.</p>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Rollout%3A%20shadow%20%E2%86%92%20canary%20%E2%86%92%20serve&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/rollout.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="rollout.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="without-llm.html" rel="prev"><small>← Previous</small>Running without an LLM</a><a class="next" href="observability.html" rel="next"><small>Next →</small>Monitoring</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
 <li><a href="#0-log-only">0. Log only</a></li>
 <li><a href="#1-shadow">1. Shadow</a></li>
 <li><a href="#2-canary">2. Canary</a></li>
 <li><a href="#3-serve">3. Serve</a></li>
 <li><a href="#going-back">Going back</a></li>
-<li><a href="#what-to-watch-in-one-table">What to watch, in one table</a></li>
+<li><a href="#what-to-watch">What to watch</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Rollout%3A%20shadow%20%E2%86%92%20canary%20%E2%86%92%20serve&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/rollout.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

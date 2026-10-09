@@ -195,7 +195,8 @@ class Bundle {
       const full = opts.probabilities !== false;
       const d = table.decide(text, full);
       const thr = spec.threshold === null || spec.threshold === undefined ? Infinity : spec.threshold;
-      const flag = spec.calibrated === false ? "uncalibrated" : d.confidence < thr ? "low_confidence" : null;
+      const flag = spec.calibrated === false ? "uncalibrated" : !String(text).trim() ? "empty_input"
+        : !(d.confidence >= thr) ? "low_confidence" : null;  // fail closed on NaN
       const out = { confidence: d.confidence, certified: flag === null, flag };
       if (spec.type === "yesno") { out.answer = d.index === 1; out.probability = full ? d.probabilities[1] : d.p1; }
       else {
@@ -231,6 +232,86 @@ const PROVIDERS = {
 const env = (k) => (typeof process !== "undefined" && process.env ? process.env[k] : undefined);
 const canon = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+
+// ---------------------------------------------------------------------------------------------------------------
+// API keys: apiKey (a string, or a function returning a string or a Promise, called on every request) > apiKeyEnv
+// (the NAME of an environment variable) > configure({apiKey | apiKeyEnv}) > the provider's usual variable.
+// Keys live in closures only: never on the teacher, never in a log row or an error message ("sk-…3f9a" at most).
+
+const CONFIG = {};
+
+/**
+ * Process-wide defaults for decision() and the teachers: configure({ llm, apiKey, apiKeyEnv, baseURL, auditRate }).
+ * Call configure() with no argument to clear them. Returns the current defaults with the key masked.
+ */
+function configure(opts) {
+  const known = ["llm", "apiKey", "apiKeyEnv", "baseURL", "auditRate"];
+  if (opts === undefined || opts === null) { for (const k of Object.keys(CONFIG)) delete CONFIG[k]; return {}; }
+  for (const k of Object.keys(opts)) {
+    if (!known.includes(k)) throw new TypeError(`configure: unknown option "${k}"${didYouMean(k, known)}`);
+    if (opts[k] !== undefined) CONFIG[k] = opts[k];
+  }
+  if (CONFIG.apiKey !== undefined && typeof CONFIG.apiKey !== "string" && typeof CONFIG.apiKey !== "function") throw new TypeError("apiKey must be a string or a function that returns one");
+  const out = { ...CONFIG };
+  if (out.apiKey !== undefined) out.apiKey = typeof out.apiKey === "function" ? "<function>" : maskKey(out.apiKey);
+  return out;
+}
+
+/** "sk-…3f9a": the prefix and the last 4 characters, enough to tell keys apart, never enough to use one. */
+function maskKey(v) {
+  if (!v) return "<empty>";
+  v = String(v);
+  const m = /^([A-Za-z]{1,8}[-_])/.exec(v);
+  const head = m && v.length > m[1].length + 8 ? m[1] : "";
+  return v.length >= 12 ? `${head}…${v.slice(-4)}` : "…";
+}
+
+function didYouMean(word, known) {
+  const lev = (a, b) => {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  };
+  let best = null, score = Infinity;
+  for (const k of known) { const s = lev(word.toLowerCase(), k.toLowerCase()); if (s < score) { score = s; best = k; } }
+  return best && score <= Math.max(2, Math.floor(best.length / 3)) ? ` (did you mean "${best}"?)` : "";
+}
+
+/** Where a teacher's key comes from. Returns { get: async () => key | undefined, source, describe() }. */
+function resolveKey(opts, providerEnv) {
+  let value, envName, source;
+  if (opts.apiKey !== undefined && opts.apiKey !== null) { value = opts.apiKey; source = typeof value === "function" ? "apiKey (function)" : "apiKey"; }
+  else if (opts.apiKeyEnv) { envName = opts.apiKeyEnv; source = envName; }
+  else if (CONFIG.apiKey !== undefined) { value = CONFIG.apiKey; source = "configure({apiKey})"; }
+  else if (CONFIG.apiKeyEnv) { envName = CONFIG.apiKeyEnv; source = CONFIG.apiKeyEnv; }
+  else if (providerEnv) { envName = providerEnv; source = providerEnv; }
+  else return null;
+  if (value !== undefined && typeof value !== "string" && typeof value !== "function") throw new TypeError("apiKey must be a string or a function that returns one");
+  const get = async () => {
+    const v = typeof value === "function" ? await value() : value !== undefined ? value : env(envName);
+    return v === undefined || v === null ? undefined : String(v).trim();
+  };
+  const now_ = () => (typeof value === "function" ? null : value !== undefined ? value : env(envName));
+  return {
+    get, source, explicit: opts.apiKey !== undefined && opts.apiKey !== null, isFunction: typeof value === "function",
+    present: () => typeof value === "function" || !!now_(),
+    describe: () => typeof value === "function" ? `set via ${source} (called on every request)`
+      : now_() ? `set via ${source} (${maskKey(now_())})` : `not set (${source} is empty)`,
+  };
+}
+
+function missingKey(name, src) {
+  return new Error(`${name}: no API key${src ? ` (${src} is not set)` : ""}. Pass apiKey: "sk-..." (or a function that returns the key), ` +
+    `apiKeyEnv: "NAME_OF_YOUR_ENV_VAR", or set it once with configure({ apiKeyEnv: "..." }).`);
+}
+
+function redactKey(text, key) {
+  let t = String(text);
+  if (key && key.length >= 6) t = t.split(key).join(maskKey(key));
+  return t.replace(/(bearer\s+)[A-Za-z0-9._~+/=-]{8,}/gi, "$1…");
+}
 
 /** Map an LLM reply (text, JSON text or parsed JSON) to exactly one option, or null. Same rules as Python. */
 function matchOption(reply, options, field) {
@@ -292,10 +373,10 @@ function openaiTeacher(opts) {
   let name = rest.join("/");
   if (!(provider in PROVIDERS)) { provider = ""; name = model; }
   const [defUrl, keyEnv] = PROVIDERS[provider] || ["", null];
-  const baseURL = String(opts.baseURL || env("SHAD0W_BASE_URL") || defUrl).replace(/\/+$/, "");
+  const baseURL = String(opts.baseURL || CONFIG.baseURL || env("SHAD0W_BASE_URL") || defUrl).replace(/\/+$/, "");
   if (!baseURL) throw new Error(`model "${model}": unknown provider; pass baseURL`);
-  const apiKey = opts.apiKey !== undefined ? opts.apiKey : keyEnv ? env(keyEnv) : undefined;
-  if (keyEnv && !apiKey) throw new Error(`${provider}: set ${keyEnv} or pass apiKey`);
+  const key = resolveKey(opts, keyEnv);
+  if (key && !key.explicit && !key.present()) throw missingKey(model, key.source);
   const doFetch = opts.fetch || globalThis.fetch;
   const options = spec.type === "yesno" ? ["yes", "no"] : Object.keys(spec.criteria);
   const system = opts.system || prompt(spec);
@@ -314,6 +395,7 @@ function openaiTeacher(opts) {
       for (const k of dropped) delete body[k];
       if (structured) body.response_format = responseFormat;
       const headers = { "content-type": "application/json", ...(opts.headers || {}) };
+      const apiKey = key ? await key.get() : undefined;
       if (apiKey) headers.authorization = `Bearer ${apiKey}`;
       let r;
       const ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -326,7 +408,7 @@ function openaiTeacher(opts) {
         return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
       }
       if (r) {
-        const detail = (await r.text()).slice(0, 500);
+        const detail = redactKey((await r.text()).slice(0, 500), apiKey);
         if (r.status === 400 || r.status === 422) {
           const m = detail.toLowerCase();
           const p = ["temperature", "max_tokens"].find((k) => k in body && m.includes(k));
@@ -353,6 +435,7 @@ function openaiTeacher(opts) {
   teacher.options = options;
   teacher.complete = complete;
   teacher.teacherName = model;
+  teacher.keySource = key ? key.describe() : "no key (none needed)";
   return teacher;
 }
 
@@ -360,6 +443,7 @@ function openaiTeacher(opts) {
 const FLAG_WORDS = {
   null: "certified: answered by the table",
   no_bundle: "no trained table yet: asked your model",
+  empty_input: "the message is empty: asked your model",
   low_confidence: "table not sure enough to stay inside the certified bound: asked your model",
   low_radius: "input could be flipped by a few edits (exposed mode): asked your model",
   drift: "traffic looks different from calibration: asked your model until re-certified",
@@ -371,6 +455,7 @@ const FLAG_WORDS = {
   shadow: "shadow mode: the table's answer was recorded, your model's was returned",
   off: "mode=off: the table was not consulted",
   options_changed: "your options include ones the table never learned: asked your model until you retrain",
+  new_options_served: "served although you added options the table never learned (onNewOption \"serve\"): NOT covered by the certificate",
   option_removed: "the table picked an option you removed: asked your model",
 };
 const explainFlag = (flag) => FLAG_WORDS[flag === null || flag === undefined ? "null" : flag] || String(flag || "");
@@ -399,6 +484,8 @@ class Shadow {
     this.rename = opts.rename || {};
     this.onNewOption = opts.onNewOption || "defer";
     this.optionsAdded = []; this.optionsRemoved = [];
+    try { this.declaredOptions = opts.options ? normalizeOptions(opts.options, this.question) : null; }
+    catch { this.declaredOptions = null; }  // only used for display; option errors are reported where options are used
     if (bundle && opts.options) {
       const spec = bundle.questions[this.question].spec;
       const want = normalizeOptions(opts.options, this.question);
@@ -440,8 +527,9 @@ class Shadow {
       a = { ...a, choice: r(a.choice) };
       if (a.probabilities) a.probabilities = Object.fromEntries(Object.entries(a.probabilities).map(([k, v]) => [r(k), v]));
     }
-    if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
-    else if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };
+    if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };  // checked first, always
+    else if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
+    else if (this.optionsAdded.length && a.certified) a = { ...a, uncovered: true };  // onNewOption "serve": served, not covered
     return a;
   }
 
@@ -451,7 +539,9 @@ class Shadow {
       const spec = this.bundle.questions[this.question].spec;
       return spec.type === "yesno" ? ["yes", "no"] : [...spec.options];
     }
-    return this.teacher && this.teacher.options ? [...this.teacher.options] : null;
+    if (this.teacher && this.teacher.options) return [...this.teacher.options];
+    const d = this.declaredOptions;  // options passed to the constructor, before any table exists
+    return d ? (d.type === "yesno" ? ["yes", "no"] : Object.keys(d.criteria)) : null;
   }
 
   /** The certified threshold of this question, or null. */
@@ -463,6 +553,9 @@ class Shadow {
 
   _done(d, text, t0) {
     d.question = this.question;
+    d.why = d.source === "fallback"
+      ? (d.flag === "no_bundle" ? "no trained table yet: used your fallback (no LLM configured)" : explainFlag(d.flag).replace("asked your model", "used your fallback (no LLM configured)"))
+      : explainFlag(d.flag);
     d.threshold = this.threshold();
     d.latencyUs = (now() - t0) * 1000;
     this.counts[d.source]++;
@@ -488,8 +581,8 @@ class Shadow {
     const a = this._table(text, opts.probabilities !== false);
     if (!a || !a.certified) return null;
     const local = "choice" in a ? a.choice : a.answer;
-    const d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null,
-      probabilities: a.probabilities || null };
+    const d = { answer: local, source: "table", confidence: a.confidence, certified: !a.uncovered,
+      flag: a.uncovered ? "new_options_served" : null, probabilities: a.probabilities || null };
     this._audit(text, local, opts.teacher || this.teacher);
     return this._done(d, text, t0);
   }
@@ -520,7 +613,7 @@ class Shadow {
     const t0 = now();
     const teacher = opts.teacher || this.teacher;
     let d;
-    const a = this._table(text);
+    const a = opts._pre || this._table(text);
     if ((!a || !a.certified) && !teacher && this.fallback !== undefined) {   // no teacher: the fallback answers, unlogged
       const answer = typeof this.fallback === "function" ? await this.fallback(text) : this.fallback;
       d = { answer, source: "fallback", confidence: a ? a.confidence : null, certified: false, flag: a ? a.flag : "no_bundle" };
@@ -532,7 +625,8 @@ class Shadow {
     } else {
       const local = "choice" in a ? a.choice : a.answer;
       if (a.certified) {
-        d = { answer: local, source: "table", confidence: a.confidence, certified: true, flag: null };
+        d = { answer: local, source: "table", confidence: a.confidence, certified: !a.uncovered,
+          flag: a.uncovered ? "new_options_served" : null };
         this._audit(text, local, teacher);
       } else {
         const answer = await this._ask(text, "teacher", teacher);
@@ -540,6 +634,36 @@ class Shadow {
       }
     }
     return this._done(d, text, t0);
+  }
+
+  /**
+   * Decide a batch, in order. The table answers first; only the texts it defers go to the teacher, at most
+   * `concurrency` (default 8) at a time.
+   */
+  async decideMany(texts, opts = {}) {
+    texts = [...texts];
+    const teacher = opts.teacher || this.teacher;
+    const out = new Array(texts.length);
+    const todo = [];
+    for (let i = 0; i < texts.length; i++) {
+      const a = this._table(texts[i]);
+      if (a && a.certified) out[i] = await this.decide(texts[i], { teacher, _pre: a });
+      else todo.push(i);
+    }
+    let next = 0;
+    const n = Math.max(1, Math.min(opts.concurrency ?? 8, todo.length));
+    const worker = async () => { while (next < todo.length) { const i = todo[next++]; out[i] = await this.decide(texts[i], { teacher }); } };
+    await Promise.all(Array.from({ length: todo.length ? n : 0 }, worker));
+    return out;
+  }
+
+  /** A one-line summary: question, options, state, teacher and where its key comes from (masked). */
+  toString() {
+    const opts = this.options();
+    const state = this.bundle ? `serving (threshold ${this.threshold()})` : "logging (no table yet)";
+    const t = this.teacher;
+    const key = t && t.keySource ? `, key: ${t.keySource}` : "";
+    return `Shadow("${this.question}", options=${opts ? opts.length : "?"}, ${state}, llm=${t ? t.teacherName || t.name || "function" : "none"}${key})`;
   }
 
   stats() {
@@ -558,6 +682,16 @@ class Shadow {
 async function decision(name, opts = {}) {
   if (name && typeof name === "object") { opts = name; name = opts.name || "decision"; }  // decision({options, llm})
   name = name || "decision";
+  const known = ["options", "llm", "apiKey", "apiKeyEnv", "baseURL", "bundle", "log", "name", "teacher", "question", "auditRate",
+    "onDecision", "random", "fallback", "rename", "onNewOption", "fetch", "timeout", "retries", "headers", "system",
+    "temperature", "maxTokens", "structured", "model"];
+  for (const k of Object.keys(opts)) if (!known.includes(k)) throw new TypeError(`decision: unknown option "${k}"${didYouMean(k, known)}`);
+  if (opts.llm === undefined && CONFIG.llm !== undefined) opts = { ...opts, llm: CONFIG.llm };
+  if (opts.auditRate === undefined && CONFIG.auditRate !== undefined) opts = { ...opts, auditRate: CONFIG.auditRate };
+  if (typeof opts.llm === "function") {
+    const llmOnly = ["apiKey", "apiKeyEnv", "baseURL"].filter((k) => opts[k] !== undefined);
+    if (llmOnly.length) throw new TypeError(`${llmOnly.join(", ")} only apply when llm is a "provider/model" string; your llm is a function, so it holds its own key and URL`);
+  }
   let bundle = opts.bundle || null;
   if (typeof bundle === "string") {
     // A bundle that does not exist yet is fine (log-only start); a corrupt or unsupported one is an error.
@@ -597,7 +731,7 @@ async function postJSON(url, headers, body, { fetch: doFetch = globalThis.fetch,
     finally { if (timer) clearTimeout(timer); }
     if (r && r.ok) return r.json();
     if (r) {
-      last = new Error(`HTTP ${r.status}: ${(await r.text()).slice(0, 500)}`);
+      last = new Error(`HTTP ${r.status}: ${redactKey((await r.text()).slice(0, 500), String(headers.authorization || "").replace(/^Bearer /i, ""))}`);
       if (r.status !== 429 && r.status < 500) throw last;
     }
     if (attempt >= retries) throw last;
@@ -618,9 +752,11 @@ function systemoneTeacher(opts) {
     ? { type: "noul", instructions: spec.instructions || `Is the answer to '${spec.question}' yes for this text?` }
     : { type: "choice", instructions: spec.instructions || `Classify the text (${spec.question}). Pick exactly one option.`,
         criteria: Object.fromEntries(options.map((o) => [o, spec.criteria[o] || o])) };
-  const headers = { ...(opts.headers || {}) };
-  if (opts.apiKey) headers.authorization = `Bearer ${opts.apiKey}`;
+  const key = resolveKey({ ...opts, apiKeyEnv: opts.apiKeyEnv }, null);
   const teacher = async (text) => {
+    const headers = { ...(opts.headers || {}) };
+    const k = key ? await key.get() : undefined;
+    if (k) headers.authorization = `Bearer ${k}`;
     const data = await postJSON(`${root}/v1/systemone`, headers, { model: opts.model || "default", state: String(text), questions: { [spec.question]: q } }, opts);
     const a = data && data.answers && data.answers[spec.question];
     if (!a) throw new Error(`systemone server returned no answer for "${spec.question}"`);
@@ -636,6 +772,7 @@ function systemoneTeacher(opts) {
     return opt;
   };
   teacher.question = spec.question; teacher.options = options; teacher.teacherName = `systemone/${opts.model || "default"}`;
+  teacher.keySource = key ? key.describe() : "no key (none needed)";
   return teacher;
 }
 
@@ -645,17 +782,18 @@ function systemoneTeacher(opts) {
  */
 function decisionsTeacher(opts) {
   const spec = normalizeOptions(opts.options, opts.question);
-  const baseURL = String(opts.baseURL || env("SHAD0W_BASE_URL") || "https://api.openai.com/v1").replace(/\/+$/, "");
-  const apiKey = opts.apiKey !== undefined ? opts.apiKey : env("OPENAI_API_KEY");
-  if (!apiKey && /api\.openai\.com/.test(baseURL)) throw new Error("openai-decisions: set OPENAI_API_KEY or pass apiKey");
+  const baseURL = String(opts.baseURL || CONFIG.baseURL || env("SHAD0W_BASE_URL") || "https://api.openai.com/v1").replace(/\/+$/, "");
+  const key = resolveKey(opts, "OPENAI_API_KEY");
+  if (!key.explicit && !key.present() && /api\.openai\.com/.test(baseURL)) throw missingKey("openai-decisions", key.source);
   const options = spec.type === "yesno" ? ["yes", "no"] : Object.keys(spec.criteria);
   const question = spec.type === "yesno"
     ? { type: "predicate", name: spec.question, instructions: spec.instructions || `Is the answer to '${spec.question}' yes for this text?` }
     : { type: "choice", name: spec.question, instructions: spec.instructions || `Classify the text (${spec.question}). Pick exactly one option.`,
         choices: options.map((o) => (spec.criteria[o] ? { value: o, description: spec.criteria[o] } : { value: o })) };
-  const headers = { ...(opts.headers || {}) };
-  if (apiKey) headers.authorization = `Bearer ${apiKey}`;
   const teacher = async (text) => {
+    const headers = { ...(opts.headers || {}) };
+    const apiKey = await key.get();
+    if (apiKey) headers.authorization = `Bearer ${apiKey}`;
     const data = await postJSON(`${baseURL}/decisions`, headers, { model: opts.model || "gpt-6-luna", input: String(text), questions: [question] }, opts);
     const a = data && Array.isArray(data.answers) ? (data.answers.find((x) => x.name === spec.question) || data.answers[0]) : null;
     if (!a) throw new Error(`decisions API returned no answer for "${spec.question}"`);
@@ -671,6 +809,7 @@ function decisionsTeacher(opts) {
     return opt;
   };
   teacher.question = spec.question; teacher.options = options; teacher.teacherName = `openai-decisions/${opts.model || "gpt-6-luna"}`;
+  teacher.keySource = key.describe();
   return teacher;
 }
 
@@ -777,6 +916,6 @@ function decisionModel(shadows, opts = {}) {
 }
 
 export { Table, Bundle, Shadow, openaiTeacher, systemoneTeacher, decisionsTeacher, decision, shad0wMiddleware, decisionModel,
-  explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };
+  configure, maskKey, explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };
 export default { Table, Bundle, Shadow, openaiTeacher, systemoneTeacher, decisionsTeacher, decision, shad0wMiddleware, decisionModel,
-  explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };
+  configure, maskKey, explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };

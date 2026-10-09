@@ -1,0 +1,29 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "hosted LLM",
+    "alpha": 0.05,
+    "delta": 0.1
+  },
+  "questions": {
+    "move": {
+      "type": "choice",
+      "options": [
+        "up",
+        "stay",
+        "down"
+      ],
+      "threshold": 0.8064760565757751,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.9069792032241821,
+        "base": 0.0022222222222222365,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    }
+  }
+}

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Changelog · shad0w</title>
+<meta name="description" content="What changed in each shad0w release.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/changelog.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Changelog · shad0w">
+<meta property="og:description" content="What changed in each shad0w release."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/changelog.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Changelog · shad0w">
+<meta name="twitter:description" content="What changed in each shad0w release."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Changelog", "description": "What changed in each shad0w release.", "url": "https://2796gaurav.github.io/shad0w/docs/changelog.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Changelog", "item": "https://2796gaurav.github.io/shad0w/docs/changelog.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/changelog.md">
+</head>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Changelog</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html" class=active aria-current=page>Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Understand<span class="rt">16 min read</span></div>
+    <!-- generated by build_site.py from shad0w-src/CHANGELOG.md; edit that file -->
+<h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Link to this section">#</a></h1>
+<h2 id="032">0.3.2<a class="headerlink" href="#032" title="Link to this section">#</a></h2>
+<p>API keys you can see and pass anywhere, plus a faster start: enum options, <code>shad0w init</code> / <code>status</code> / <code>import</code>, warm starts and batches.</p>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>The proxy could send one client's API key on another client's behalf.</strong> <code>Gateway.teacher_for</code> cached decision-model teachers by whether a key was present, not by which key, so the first client's forwarded key was reused for every later client on the same question and model. Teachers are now cached per key, by a SHA-256 id (never the raw key). Spot checks keep using the key of the request they check.</li>
+<li><strong>A chat spot check on a keep-alive connection could carry the next request's key.</strong> The background re-ask read the handler's headers when it ran, by which time the connection could already be serving another client's request. It now uses a snapshot of the URL, method and headers of the request it checks.</li>
+</ul>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>Explicit API keys.</strong> <code>decision(..., api_key=..., api_key_env=..., base_url=...)</code> are named parameters (and on <code>Shadow</code>, which now builds the LLM teacher itself from <code>llm="provider/model"</code>, and on <code>LLMTeacher</code>). <code>api_key</code> may be a zero-argument function, called on every request, for rotating or vault keys. Order: <code>api_key</code> &gt; <code>api_key_env</code> &gt; <code>shad0w.configure()</code> &gt; the <code>api_key_env</code> setting &gt; the provider's variable.</li>
+<li><strong><code>shad0w.configure(llm=, api_key=, api_key_env=, base_url=, **settings)</code></strong>: process-wide defaults, ranked just below one call's keywords; <code>configure()</code> with no arguments clears them. JavaScript: <code>configure({ llm, apiKey, apiKeyEnv, baseURL })</code>.</li>
+<li><strong>Keys never leak.</strong> Keys are held in <code>shad0w.Secret</code>, which prints as <code>sk-…3f9a</code> and pickles without the key (an environment-variable name survives). <code>repr</code>, <code>vars()</code>, traces, logs, error messages (HTTP error bodies and <code>Bearer</code> tokens are redacted), <code>shad0w doctor</code> and <code>shad0w config</code> show only the mask and where the key came from.</li>
+<li><strong>Settings <code>llm</code>, <code>base_url</code>, <code>api_key_env</code></strong> (<code>SHAD0W_LLM</code>, <code>SHAD0W_BASE_URL</code>, <code>SHAD0W_API_KEY_ENV</code>, <code>shad0w.toml</code>). An <code>api_key = ...</code> line in <code>shad0w.toml</code> is an error that says to store the variable's name instead.</li>
+<li><strong><code>shad0w proxy --api-key-file PATH</code></strong> for Docker / Kubernetes secrets, re-read on every request. The startup banner says where the upstream key comes from (masked).</li>
+<li><strong><code>shad0w doctor --llm</code></strong> prints <code>key: set via OPENAI_API_KEY (sk-…3f9a)</code>; without <code>--llm</code> it checks the <code>llm</code> from <code>shad0w.toml</code>.</li>
+<li><strong>Enum options.</strong> <code>options=MyEnum</code>, <code>options=Literal["a", "b"]</code> and <code>options=bool</code>. String enums use their values, other enums their names (string values become descriptions). <code>@shad0w.decide</code> with <code>-&gt; MyEnum</code> returns enum members.</li>
+<li><strong><code>@shad0w.decide(llm="openai/gpt-6-luna", api_key=...)</code></strong> calls the LLM for you: the return annotation names the options and the function body is never run (<code>def route(text) -&gt; Literal[...]: ...</code>).</li>
+<li><strong><code>shad0w init</code> writes a commented <code>shad0w.toml</code></strong> (with <code>api_key_env</code>) <strong>and a runnable <code>app.py</code></strong> using <code>decision()</code>: <code>--name</code>, <code>--llm</code>, <code>--options a,b,c</code>. The old starter is <code>shad0w init --files</code>.</li>
+<li><strong><code>Shadow.warm_start(rows_or_path, text="text", label=...)</code></strong>: import answers or human labels you already have (list of dicts, <code>.jsonl</code>, <code>.json</code>, <code>.csv</code>) as <code>source="import"</code>, checked against the options, with counts.</li>
+<li><strong><code>shad0w import --from openai-chat|openai-decisions --file F --question Q</code></strong>: exported request/response JSON Lines (OpenAI Batch output too) into a decision's log.</li>
+<li><strong><code>shad0w status</code></strong>: one line per decision folder with rows vs <code>min_rows</code>, certified share at alpha, live agreement on spot checks since training, and the next step.</li>
+<li><strong><code>decide_many(texts, concurrency=8)</code> / <code>adecide_many</code></strong>: the table answers first; only deferred texts go to your LLM, in parallel; order kept. JavaScript: <code>shadow.decideMany(texts, { concurrency })</code>.</li>
+<li><strong><code>Decision.why</code></strong>: the reason for every decision in plain words (JavaScript decisions carry <code>why</code> too). A <code>TeacherError</code> raised during a decision says why the LLM was asked.</li>
+<li><strong><code>repr(shadow)</code> and a Jupyter view</strong>: question, number of options, state (<code>logging 240/1,000</code> or the certified share at alpha), the LLM and where its key comes from.</li>
+</ul>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>Tied confidences could serve more than the certificate covered.</strong> The threshold search tested the top <em>k</em> calibration answers but then served every answer tied with the <em>k</em>-th one. With many identical confidences (repeated messages), realised disagreement could exceed α. Each candidate is now tested on exactly the answers it would serve, in both procedures.</li>
+<li><strong>Narrowed options could turn an uncertain answer into a certified one.</strong> Asking for a subset of the options renormalised the confidence before comparing it with the threshold. Certification is now judged on the full-option answer; a narrowed request that changes the answer, or names no known option, is never certified.</li>
+<li><strong>A table file with non-finite weights is refused</strong> by both the C and the Python loader (it used to serve NaN confidences as certified), and every threshold check fails closed on NaN (Python and JavaScript).</li>
+<li><strong>Answers that match no option are never logged</strong>, also from function teachers (old names from <code>rename</code> and 0/1 for yes/no still are); Enum members are logged by name/value; an async <code>llm</code> passed to the sync <code>decide()</code> raises a clear <code>TypeError</code> instead of logging a coroutine.</li>
+<li><strong><code>never_serve</code> works for yes/no questions</strong> (<code>never_serve = ["yes"]</code>).</li>
+<li><strong><code>on_new_option = "serve"</code></strong> answers are now reported as <code>certified=False</code> with flag <code>new_options_served</code>.</li>
+<li><strong><code>record()</code> without a teacher</strong> no longer tags rows as spot checks (they would have claimed a uniform sample that was not one). <code>record(..., source=shadow._src())</code> lets a caller that spot-checks served answers itself keep the sample uniform; the proxy's Decisions API and System One paths do this.</li>
+<li><strong>Spot checks cover every answer the table served</strong>, including <code>force_threshold</code> and <code>on_new_option="serve"</code> answers, not only certified ones.</li>
+<li><strong>JavaScript</strong>: with options both added and removed under <code>onNewOption: "serve"</code>, a removed option is never served.</li>
+<li><strong>The proxy</strong> checks the shape of chat requests up front (<code>messages</code> and <code>tools</code> must be lists of objects) and answers 400; other errors are no longer reported as a malformed request.</li>
+<li><strong>CLI</strong>: <code>shad0w ... | head</code> exits quietly; <code>stats</code> and <code>calibrate</code> skip a half-written log line; <code>SHAD0W_TIMEOUT=none</code> means no timeout again; the refused-key message names the actual key line.</li>
+<li><strong><code>shad0w serve</code> / proxy</strong>: malformed request shapes get a 400 instead of a dropped connection; a negative <code>Content-Length</code> is refused.</li>
+<li><strong><code>shad0w certify</code> / <code>calibrate</code></strong> refuse fewer than 100 rows unless <code>--force</code> (one row used to silently stop the table from serving).</li>
+<li><strong><code>shadow_compile</code> with 100–120 rows</strong> no longer crashes (it always leaves rows to fit on); re-certifying keeps the drift settings.</li>
+<li><strong>Lone UTF-16 surrogates</strong> in a message no longer crash <code>decide</code>.</li>
+<li><strong>One malformed line in a log</strong> is skipped with a warning naming its line number instead of blocking <code>train</code>.</li>
+<li><strong>Settings</strong>: a bad <code>SHAD0W_*</code> value names the variable; <code>[questions] intent = 3</code> gives a clear error; <code>auto_train=True</code>, negative <code>auto_train</code> and non-positive <code>timeout</code> are refused; <code>exposed="no"</code> means False; <code>options</code> needs two distinct choices; <code>OPENAI_API_KEY = ...</code> (any <code>*api_key</code> line) in <code>shad0w.toml</code> is refused like <code>api_key</code>.</li>
+<li><strong>Empty messages are never served</strong> (flag <code>empty_input</code>, Python and JavaScript): the table would only have echoed its most common answer.</li>
+<li><strong><code>shad0w serve</code></strong> stops quietly on Ctrl-C; <code>POST /v1/decide</code> without <code>state</code> explains the body it needs.</li>
+<li><strong>An edited <code>shad0w.toml</code> could be read stale.</strong> The parsed file was cached by modification time alone, so two edits within the same timestamp tick (common on Windows) kept the first. It is now keyed by the nanosecond time and the file size.</li>
+<li><strong><code>shad0w proxy --bundle</code></strong> refuses entries without <code>QUESTION=</code> and paths with no bundle, instead of ignoring them.</li>
+<li><strong><code>shad0w.toml</code></strong>: unknown keys are reported with a suggestion (<code>alpah</code> → did you mean <code>alpha</code>), and a syntax error names the file.</li>
+<li><strong><code>shad0w try</code></strong> says "would ask your LLM; the table's guess" for answers it would defer; <code>shad0w status</code> also accepts <code>--dir</code>.</li>
+<li><strong><code>llm_teacher()</code></strong> takes its model from <code>shad0w.configure(llm=...)</code> / <code>SHAD0W_LLM</code> when none is passed.</li>
+<li><strong>Python 3.10</strong>: <code>tomli</code> is now a dependency there (<code>shad0w init</code> writes a <code>shad0w.toml</code>); the test suite runs on 3.10.</li>
+<li><strong>CLI</strong>: unreachable servers, busy ports and similar OS errors print one line and exit 2; <code>decide</code>, <code>serve</code> and <code>bench</code> have help text; the generated <code>app.py</code> imports <code>os</code>.</li>
+<li><code>shad0w calibrate</code> updated the threshold in <code>manifest.json</code> but not in <code>certificate.json</code>, so <code>shad0w report</code> showed a stale certificate.</li>
+<li><code>certify_bundle</code> dropped questions with no fresh records from the certificate while they kept serving on their old threshold; their previous entry is now kept and marked <code>recertified: false</code>, with a warning.</li>
+<li>A spot check whose LLM call failed stayed in the pending list forever (a small leak).</li>
+<li><code>adecide()</code> gains the <code>probabilities=</code> keyword that <code>decide()</code> has.</li>
+<li><strong><code>mode="shadow"</code> with <code>force_threshold</code> served table answers to users.</strong> Shadow mode now never serves; forced answers count as <code>would_serve</code>.</li>
+<li><code>shad0w train --rename OLD=NEW</code> without <code>--schema</code> reused the old <code>schema.json</code> and dropped every renamed row; the old schema is now renamed too.</li>
+<li><code>shad0w config</code> printed invalid values (say <code>SHAD0W_MODE=on</code>) without complaint; it now reports them and exits 2.</li>
+<li><code>shad0w shadow</code> and <code>shad0w compile</code> ignored <code>alpha</code> from <code>shad0w.toml</code> / <code>SHAD0W_ALPHA</code> (they defaulted to 0.05).</li>
+<li><code>shad0w compile</code> with a label that is not in the schema printed a raw <code>'x' is not in list</code>.</li>
+<li>JavaScript <code>configure({ auditRate })</code> was accepted but ignored.</li>
+<li>A subset of options with almost no probability mass was not renormalised (confidence ~1e-33 instead of probabilities that sum to 1).</li>
+<li>A teacher built with <code>complete=</code> reported itself as the default model in errors; it is now named after the function.</li>
+<li>TypeScript: <code>Flag</code> includes <code>options_changed</code> and <code>option_removed</code>; <code>Table.decide</code> and <code>Bundle.decide</code> accept <code>probabilities</code>.</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>Wheels for Python 3.14 and musllinux (Alpine)</strong>; release builds use cibuildwheel 3.4, npm publishes only after PyPI. The sdist now includes the test suite's mock LLM and the JavaScript sources, so <code>pytest</code> runs from it.</li>
+<li><strong>Clear errors instead of silent drops.</strong> <code>api_key</code>, <code>base_url</code> or other LLM keywords with a function <code>llm</code> raise <code>TypeError</code> (they used to be ignored). An unknown keyword raises <code>TypeError</code> with a "did you mean" suggestion instead of a misleading missing-key error. The missing-key message names <code>api_key=</code>, <code>api_key_env=</code> and <code>shad0w.configure</code>.</li>
+<li><code>LLMTeacher.api_key</code> is a <code>Secret</code> (compare with <code>==</code>, read with <code>.get()</code>); <code>teacher.key_source</code> describes it.</li>
+<li><code>examples/quickstart.py</code> uses <code>decision()</code>, <code>decide_many()</code> and <code>train()</code> with an offline stand-in LLM.</li>
+<li>The built-in dashboard uses the shad0w palette (black, Prussian blue, orange, alabaster, white); LLM bars are striped so table and LLM never differ by colour alone.</li>
+</ul>
+<h2 id="031">0.3.1<a class="headerlink" href="#031" title="Link to this section">#</a></h2>
+<p>Changing options safely, scale, running without an LLM, and a faster JavaScript runtime.</p>
+<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>Adding or removing an option after training no longer serves wrong answers.</strong> A table trained on the old option list answered messages about a new option with an old label, marked certified (more than half of a new option's messages in our test), and kept answering with options you had removed. shad0w now compares the options you offer with the ones the table learned. Added options send every decision to your LLM (<code>flag="options_changed"</code>) until you retrain; removed options are never served (<code>flag="option_removed"</code>); everything your LLM answers meanwhile is logged, so the next <code>train()</code> learns the new list. The retrain gate never blocks this case. The proxy applies the same rule to the options each request names, and the chat path now parses replies against the request's own enum, so a new option is learned instead of dropped.</li>
+<li><strong><code>adecide()</code> with a canary could run a sync teacher on the event loop.</strong> The rollout policy was drawn twice; it is now drawn once.</li>
+</ul>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Link to this section">#</a></h3>
+<ul>
+<li><strong><code>rename={"old": "new"}</code></strong> (also <code>SHAD0W_RENAME</code>, TOML and <code>shad0w train --rename OLD=NEW</code>): rename options without retraining; the next training run renames the old rows in the log.</li>
+<li><strong><code>on_new_option = "defer" | "serve"</code></strong>: what to do with options the table never learned.</li>
+<li><strong><code>max_mb</code></strong> (also <code>shad0w train --max-mb</code>): a size budget per table. Training keeps the most informative patterns and refits on them; the certificate is computed on the capped table. On 150 options a 1 MB budget certified the same share as the 3.6 MB table without one.</li>
+<li><strong><code>fallback=</code></strong>: run without an LLM. A value or a function answers what the table is unsure about (<code>source="fallback"</code>, never logged as training data). Train on human labels, rules or an existing classifier.</li>
+<li><strong><code>decision()</code> name is optional</strong> (default <code>"decision"</code>), in Python and JavaScript.</li>
+<li><strong>Large option sets train faster with the same quality</strong>: the C search runs on a subsample above 2M table cells, the temperature uses 3 folds, and L-BFGS keeps a shorter history above 10M weights, so up to 1,024 options train on a laptop.</li>
+<li><code>Shadow.stats()</code> reports <code>options_added</code> / <code>options_removed</code>; the JS <code>Shadow</code> has <code>optionsAdded</code>, <code>optionsRemoved</code>, <code>rename</code>, <code>onNewOption</code>, <code>fallback</code>.</li>
+<li>Benchmark <code>bench/b9_scale.py</code>: size, speed, training time and certified share from 10 to 500 options.</li>
+</ul>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>Faster JavaScript.</strong> Hashing works straight on the UTF-8 bytes without allocations, rows are found through a hash table (as in the C core) instead of a binary search, and <code>bundle.decide(text, { probabilities: false })</code> skips the per-option map. On a 77-option table on a laptop CPU, <code>Shadow.decide</code> (which uses the fast path) went from about 20 µs to about 8 µs per decision, and <code>bundle.decide</code> with probabilities from about 20 µs to about 15 µs. Answers are bit-identical (checked on 20,000 inputs and by the parity tests).</li>
+<li>The two copies of the retrain quality gate (Python and CLI) are one helper, <code>shad0w.shadow.gate_reason</code>.</li>
+</ul>
+<h2 id="030">0.3.0<a class="headerlink" href="#030" title="Link to this section">#</a></h2>
+<p>Zero-code for the new decision APIs, every knob in one place, and retraining you can trust.</p>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>OpenAI Decisions API and System One, with no marking.</strong> <code>shad0w proxy</code> intercepts <code>POST /v1/decisions</code> (OpenAI, <code>client.decisions.create(...)</code>) and <code>POST /v1/systemone</code> (Jev, Kev, Laya, Ollaya, llama.cpp). Each choice or predicate question becomes a shad0w question. Certified ones are answered by the table with per-option probabilities and a confidence. Only the remaining questions are forwarded upstream, and their answers are logged. Score questions always pass through. <code>shad0w serve</code> speaks both formats too.</li>
+<li><strong>Decision models as teachers.</strong> <code>llm="openai-decisions/gpt-6-luna"</code> and <code>llm="systemone/&lt;model&gt;"</code> with <code>base_url=</code>.</li>
+<li><strong>Settings layer</strong> (<code>shad0w.config</code>, <code>shad0w.toml</code>, <code>SHAD0W_*</code>). Precedence is code &gt; environment &gt; file &gt; defaults, with <code>[questions.&lt;name&gt;]</code> sections. <code>shad0w config</code> prints every effective value and its source, and <code>shad0w config --init</code> writes a commented starter file.</li>
+<li><strong>Rollout knobs.</strong></li>
+<li><code>mode = "serve" | "shadow" | "off"</code>: shadow mode computes the table's answer, returns your LLM's, and counts <code>would_serve</code> and <code>shadow_disagreements</code>.</li>
+<li><code>canary</code>, <code>never_serve</code> and <code>min_confidence</code>: these can only make serving stricter.</li>
+<li><code>force_threshold</code>: serves uncertified answers with <code>certified=False, flag="manual_threshold"</code>, and warns loudly.</li>
+<li><code>drift_window</code> and <code>drift_margin</code>.</li>
+<li><strong><code>shad0w doctor</code>.</strong> It checks Python, the C core, the training dependencies, Node, the config, provider keys, upstream reachability, bundles and logs.</li>
+<li><strong>Proxy.</strong></li>
+<li>Tool-shaped requests (a forced <code>tool_choice</code> whose function has one enum parameter) are recognised and answered with <code>tool_calls</code>, streaming included.</li>
+<li>New <code>X-Shad0w-Options</code> header.</li>
+<li>New flags: <code>--delta --min-rows --mode --canary --never-serve --min-confidence --capture --timeout --trace --bundle Q=PATH --llm-latency-ms --config</code>.</li>
+<li>New <code>POST /v1/playground</code>.</li>
+<li><strong>Dashboard playground.</strong> Type a message to see the table's answer, its confidence against the threshold, the reason, and optionally your LLM's answer side by side.</li>
+<li><strong><code>Decision</code> fields.</strong> It gains <code>question</code>, <code>threshold</code> and <code>top</code> (filled with <code>probabilities=True</code>).</li>
+<li><strong><code>Shadow</code> methods.</strong> It gains <code>peek(text)</code> (the table's answer only when it would be served) and <code>record(text, answer)</code> (log an answer you fetched yourself), for integrations.</li>
+<li><strong><code>@shad0w.decide</code>.</strong> A decorator whose <code>-&gt; Literal[...]</code> (or <code>-&gt; bool</code>) return annotation names the options; the function body is the teacher.</li>
+<li><strong><code>Metrics(llm_latency_ms=...)</code>.</strong> "Time saved" now shows before the first LLM call is measured.</li>
+</ul>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>json_schema capture is opt-in.</strong> The proxy no longer treats every request with a <code>response_format.json_schema.name</code> as a decision; use <code>--capture json_schema</code> to restore that. Unmarked calls now pass straight through, as the README always said.</li>
+<li><strong>The <code>/v1/systemone</code> response shape changed.</strong> On <code>shad0w serve</code> it now returns the System One shape (<code>answers{}</code> with <code>choice</code>, <code>confidence</code>, <code>probabilities</code>, or <code>noul</code>/<code>probability</code> for yes/no, plus <code>latency_ms</code>) instead of the <code>/v1/decide</code> shape. <code>/v1/decide</code> is unchanged.</li>
+<li><strong>Gated retraining.</strong> <code>auto_train</code> keeps the current bundle unless the new one certifies at least 80% of its share (<code>retrain = "always"</code> restores the old behaviour). The auto-train counter is restored from the certificate after a restart. <code>shad0w train --gate</code> does the same on the command line.</li>
+<li><strong>Audit rows sample deferred traffic too.</strong> A deferred answer is logged as <code>source: "audit"</code> with probability <code>audit_rate</code>, so audit rows are a uniform sample of all traffic. <code>train()</code> certifies on them when at least 100 exist, and fits on the rest. The certificate gains an additive <code>calibration</code> key: <code>uniform-audit</code> or <code>held-out-split</code>. Raise <code>audit_rate</code> (e.g. 0.05) during ramp-up for an honest calibration set.</li>
+<li><strong>torch moved to <code>[torch]</code>.</strong> <code>[compile]</code> is now scipy + scikit-learn. Training without torch uses the scipy solver and gives the same tables, more slowly. <code>[logs]</code> pulls <code>[torch]</code>.</li>
+<li><strong><code>Shadow</code> policy arguments are keyword-only.</strong> <code>audit_rate</code>, <code>exposed</code>, <code>auto_train</code>, <code>alpha</code> and the new knobs must be passed by keyword; defaults come from the settings layer.</li>
+</ul>
+<h3 id="fixed_2">Fixed<a class="headerlink" href="#fixed_2" title="Link to this section">#</a></h3>
+<ul>
+<li><strong>The CLI never crashes on output encoding.</strong> On Windows, piped output uses cp1252, which has no <code>✓</code> or <code>→</code>. <code>shad0w try</code> crashed with <code>UnicodeEncodeError</code>; it now prints replacement characters instead.</li>
+<li><strong>The C core loader picks this platform's build.</strong> A source checkout holding builds for several platforms (say a macOS <code>_reflex*.so</code> next to the Linux one) could make Linux load the macOS binary. It now prefers this interpreter's extension suffix.</li>
+<li><code>decision(..., complete=fn)</code> raised <code>TypeError</code>.</li>
+<li>Yes/no questions trained from string answers ("no") learned every label as "yes".</li>
+<li><code>explain()</code> and <code>adecide()</code> fed the drift guard (twice for <code>adecide</code>).</li>
+<li>Missing bundles, missing logs and a missing <code>[compile]</code> produced raw tracebacks. The CLI now prints one line and exits 2.</li>
+<li>The auto-train counter was updated outside the lock.</li>
+</ul>
+<h2 id="020">0.2.0<a class="headerlink" href="#020" title="Link to this section">#</a></h2>
+<p>Plug shad0w into any LLM in one line, or with no code change at all, and see what it is doing.</p>
+<ul>
+<li><strong><code>shad0w.decision(name, options=..., llm="openai/gpt-6-luna")</code>.</strong> One call from nothing to a working cascade. Your LLM answers and is logged; <code>.train()</code> builds and certifies the table and hot-swaps it in; after that, certified answers come from the table.</li>
+<li><strong><code>shad0w.llm_teacher(...)</code>.</strong> Any OpenAI-compatible chat model becomes a teacher. Built-in providers: OpenAI, Anthropic, Gemini, Groq, Together, OpenRouter, Mistral, DeepSeek, Fireworks, xAI, Ollama, vLLM and LM Studio. It uses structured outputs (an enum of your options), falls back to plain text automatically, maps every reply to exactly one option, retries, and drops parameters a model refuses. <code>client=</code> reuses an openai SDK client; <code>complete=</code> plugs in LiteLLM, LangChain or anything else. Standard library only.</li>
+<li><strong><code>shad0w proxy</code>: an OpenAI-compatible gateway.</strong></li>
+<li>Point <code>base_url</code> at it and mark decisions with the <code>X-Shad0w-Question</code> header, a <code>shad0w/&lt;question&gt;</code> model name, or a <code>json_schema</code> name.</li>
+<li>Certified answers come back as a normal <code>chat.completion</code> (text, JSON object or your JSON schema, streaming too) in microseconds.</li>
+<li>Everything else is forwarded untouched and logged. Bundles retrained by <code>shad0w train</code> are picked up automatically, and <code>--auto-train N</code> retrains on its own.</li>
+<li><strong>Observability.</strong></li>
+<li>A live dashboard at <code>/</code> on <code>shad0w proxy</code> and <code>shad0w serve</code>. It shows table share, LLM calls, time and money saved, latency, deferral reasons, and the live spot-check bound vs α.</li>
+<li>Prometheus at <code>/metrics</code> and JSON at <code>/v1/stats</code>.</li>
+<li><code>SHAD0W_LOG=debug</code> for per-decision logs, <code>on_decision=</code> hooks, <code>trace=</code> decision files, and OpenTelemetry spans with <code>SHAD0W_OTEL=1</code>.</li>
+<li><strong>New commands.</strong> <code>shad0w train</code> detects questions and options from the log. <code>shad0w try</code> shows each answer, its speed and why. <code>shad0w stats</code> reports what has been logged and whether it is ready to train. <code>shad0w watch</code> shows live counters.</li>
+<li><strong><code>Shadow</code> upgrades.</strong> <code>train()</code>, <code>auto_train=N</code>, <code>adecide()</code> for async code, <code>explain(text)</code>, <code>on_decision</code>, <code>trace</code>, shared <code>metrics</code>, and a per-call <code>teacher=</code> override. Spot checks now run in the background, so they never slow an answer. Answers that match no option are never logged.</li>
+<li><strong>JavaScript.</strong> <code>decision()</code>, <code>Shadow</code> and <code>openaiTeacher()</code> mirror the Python API (fetch-based, so they work in Node, browsers, Workers, Deno and Bun), with full TypeScript types.</li>
+<li><strong>C.</strong> A public header, <code>shad0w.h</code>.</li>
+<li><strong>Faster HTTP replies.</strong> <code>shad0w serve</code> and <code>shad0w proxy</code> now set <code>TCP_NODELAY</code>. Headers and body went out as two writes, which could stall each keep-alive reply by ~40 ms (Nagle plus delayed ACK). A table answer through the proxy now takes ~1.4 ms end to end, measured at the openai SDK client.</li>
+<li><strong>Training works without torch.</strong> If torch is not installed, training solves the same convex objective with scipy's L-BFGS. It is slower, but needs no extra download.</li>
+</ul>
+<h2 id="011">0.1.1<a class="headerlink" href="#011" title="Link to this section">#</a></h2>
+<ul>
+<li><strong>Certificate holds up under LLM-like teachers.</strong> Teachers that are wrong a few percent of the time regardless of the input (sampling noise) could make the strict-to-lenient fixed-sequence test stop early. A 97.6%-agreeing teacher then certified 0%. The default procedure (<code>auto</code>) now runs fixed-sequence and a Bonferroni test over 12 pre-registered coverage levels, each at δ/2, and keeps the more lenient threshold. That is still valid at δ by the union bound. In simulation, offload under flat teacher noise rose from 39% to ~100%; where disagreement rises as confidence falls, ~98% of the fixed-sequence offload was kept. The violation rate stayed within δ for every procedure. The end-to-end case above now certifies 100% with 2.3% realised disagreement on fresh traffic (bound 5%).</li>
+<li><code>SelectiveRiskController(alpha, delta, procedure="auto" | "fixed-sequence" | "bonferroni")</code>. The certificate records which procedure produced the threshold.</li>
+<li>Release pipeline: PyPI and npm both publish through Trusted Publishing (OIDC). No tokens are stored.</li>
+</ul>
+<h2 id="010">0.1.0<a class="headerlink" href="#010" title="Link to this section">#</a></h2>
+<p>First public release.</p>
+<ul>
+<li><strong>Shadow mode.</strong> <code>shad0w shadow</code> compiles a table from your model's logged answers and certifies how often it disagrees with that model (Learn-then-Test, Clopper–Pearson, fixed-sequence testing). <code>shad0w certify</code> re-certifies on fresh traffic, and <code>shad0w report</code> prints the certificate.</li>
+<li><strong><code>shad0w.Shadow</code> wrapper and <code>@shad0w.cascade</code> decorator.</strong> Put the table in front of your existing model call in one line. The wrapper has a log-only start (no bundle yet), logs deferred answers for the next compile, and runs live spot-check audits with a Clopper–Pearson bound in <code>stats()</code>.</li>
+<li><strong>Robust certificate start.</strong> The test sequence starts where a run with disagreement at half of α can still certify. One unlucky disagreement among the most confident answers no longer certifies nothing. A simulation test checks that the violation rate stays ≤ δ.</li>
+<li><strong>Three runtimes, identical decisions.</strong> Python (numpy only), a C core shipped inside the wheels, and a dependency-free JavaScript package (<code>npm i shad0wllm</code>, CJS + ESM + types, with <code>Bundle.load</code> applying the certified threshold).</li>
+<li><strong>Strict table loading</strong> in all three runtimes. Unknown versions, impossible shapes, unsorted keys and truncated or padded files are refused.</li>
+<li>Typed answers with confidence, an exact robustness radius, <code>certified</code> and <code>flag</code>. Also a label-free drift guard and anytime-valid auditors.</li>
+<li>Human-label mode (<code>shad0w compile --data</code>, <code>shad0w calibrate</code>) and label-free mode (<code>shad0w compile --unlabeled</code>).</li>
+<li>Fast Python path: <code>probabilities=False</code> skips the per-option dict (about 8 µs per call through the C core, versus about 15 µs with it).</li>
+<li>Reference HTTP server: <code>POST /v1/decide</code> (alias <code>/v1/systemone</code>) and <code>GET /v1/health</code>.</li>
+<li><code>shad0w init</code> and <code>shad0w --version</code>.</li>
+</ul>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Changelog&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/changelog.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="changelog.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="reference.html" rel="prev"><small>← Previous</small>Reference</a><span></span></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
+<ul>
+<li><a href="#032">0.3.2</a><ul>
+<li><a href="#security">Security</a></li>
+<li><a href="#added">Added</a></li>
+<li><a href="#fixed">Fixed</a></li>
+<li><a href="#changed">Changed</a></li>
+</ul>
+</li>
+<li><a href="#031">0.3.1</a><ul>
+<li><a href="#fixed_1">Fixed</a></li>
+<li><a href="#added_1">Added</a></li>
+<li><a href="#changed_1">Changed</a></li>
+</ul>
+</li>
+<li><a href="#030">0.3.0</a><ul>
+<li><a href="#added_2">Added</a></li>
+<li><a href="#changed_2">Changed</a></li>
+<li><a href="#fixed_2">Fixed</a></li>
+</ul>
+</li>
+<li><a href="#020">0.2.0</a></li>
+<li><a href="#011">0.1.1</a></li>
+<li><a href="#010">0.1.0</a></li>
+</ul>
+</div>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Changelog&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/changelog.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
+</div>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

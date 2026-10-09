@@ -3,49 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>Frameworks · shad0w</title>
-<meta name="description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, FastAPI, Django and Cloudflare Workers.">
+<meta name="description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, Pydantic AI, FastAPI, Django and Cloudflare Workers.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Gaurav Chauhan">
 <link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/frameworks.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
 <meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Frameworks · shad0w">
-<meta property="og:description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, FastAPI, Django and Cloudflare Workers."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/frameworks.html">
+<meta property="og:description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, Pydantic AI, FastAPI, Django and Cloudflare Workers."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/frameworks.html">
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Frameworks · shad0w">
-<meta name="twitter:description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, FastAPI, Django and Cloudflare Workers."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="twitter:description" content="Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, Pydantic AI, FastAPI, Django and Cloudflare Workers."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Frameworks", "description": "Recipes for LangChain, LangGraph, LiteLLM, the Vercel AI SDK, Pydantic AI, FastAPI, Django and Cloudflare Workers.", "url": "https://2796gaurav.github.io/shad0w/docs/frameworks.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "LangChain, LiteLLM, AI SDK…", "item": "https://2796gaurav.github.io/shad0w/docs/frameworks.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/frameworks.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · LangChain, LiteLLM, AI SDK…</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html" class=active>LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="frameworks">Frameworks<a class="headerlink" href="#frameworks" title="Permanent link">#</a></h1>
-<p>shad0w needs one thing from a framework: a way to ask the LLM for an answer. Every recipe below is that, plus one line.</p>
-<h2 id="any-function-the-decorator">Any function: the decorator<a class="headerlink" href="#any-function-the-decorator" title="Permanent link">#</a></h2>
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">LangChain, LiteLLM, AI SDK…</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html" class=active aria-current=page>LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Use it from<span class="rt">6 min read</span></div>
+    <h1 id="frameworks">Frameworks<a class="headerlink" href="#frameworks" title="Link to this section">#</a></h1>
+<p>Copy-paste recipes for putting shad0w in front of the LLM call your framework already makes. shad0w needs one thing from a framework: a way to ask the LLM for an answer. Every recipe below is that, plus a line or two.</p>
+<h2 id="pick-a-recipe">Pick a recipe<a class="headerlink" href="#pick-a-recipe" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>You use</th>
+<th>Easiest route</th>
+<th>Code change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>any Python function that asks an LLM</td>
+<td><a href="#any-function-the-decorator"><code>@shad0w.decide</code></a></td>
+<td>a decorator</td>
+</tr>
+<tr>
+<td>LangChain / LangGraph</td>
+<td><a href="#langchain-langgraph"><code>llm_teacher(complete=...)</code> or <code>shad0w_runnable</code></a></td>
+<td>a few lines</td>
+</tr>
+<tr>
+<td>LiteLLM (SDK or proxy)</td>
+<td><a href="#litellm"><code>shad0w.integrations.litellm</code></a></td>
+<td>one import, or a callback</td>
+</tr>
+<tr>
+<td>Vercel AI SDK</td>
+<td><a href="#vercel-ai-sdk"><code>shad0wMiddleware</code> / <code>decisionModel</code></a></td>
+<td>wrap the model</td>
+</tr>
+<tr>
+<td>Pydantic AI and other decision-model clients</td>
+<td><a href="#pydantic-ai-and-other-decision-model-clients">the proxy</a></td>
+<td><code>base_url</code> only</td>
+</tr>
+<tr>
+<td>FastAPI, Django, Flask</td>
+<td><a href="#fastapi">create once, call per request</a></td>
+<td>a few lines</td>
+</tr>
+<tr>
+<td>any OpenAI SDK, any language</td>
+<td><a href="#anything-with-an-openai-client">the proxy</a></td>
+<td><code>base_url</code> only</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every recipe has the same behaviour: the table (shad0w's small learned model) answers what it is <strong>certified</strong> on (tested on answers it never trained on, with a bound on how often it disagrees with your LLM); everything else goes to your LLM and the answer is logged for the next <code>train()</code>.</p>
+<h2 id="any-function-the-decorator">Any function: the decorator<a class="headerlink" href="#any-function-the-decorator" title="Link to this section">#</a></h2>
 <p>If you already have a function that asks your LLM, annotate its return type with the options:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
 
 <span class="nd">@shad0w</span><span class="o">.</span><span class="n">decide</span><span class="p">()</span>
@@ -56,9 +117,10 @@
 <span class="n">route</span><span class="o">.</span><span class="n">shadow</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>                  <span class="c1"># after ~1,000 logged answers</span>
 </code></pre></div>
 
-<p><code>-&gt; bool</code> makes a yes/no question.</p>
-<h2 id="langchain-langgraph">LangChain / LangGraph<a class="headerlink" href="#langchain-langgraph" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<p><code>-&gt; bool</code> makes a yes/no question, and an <code>Enum</code> return type returns enum members. To let shad0w call the LLM itself, pass it to the decorator: <code>@shad0w.decide(llm="openai/gpt-6-luna")</code>, and leave the body as <code>...</code>. See <a href="python.html#decorators">Python</a>.</p>
+<h2 id="langchain-langgraph">LangChain / LangGraph<a class="headerlink" href="#langchain-langgraph" title="Link to this section">#</a></h2>
+<p>Use the chat model you already have as the teacher. shad0w builds the prompt and maps the reply to one option:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableLambda</span>
 
@@ -67,58 +129,61 @@
                              <span class="n">complete</span><span class="o">=</span><span class="k">lambda</span> <span class="n">messages</span><span class="p">:</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 <span class="n">team</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"team"</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">teacher</span><span class="p">)</span>
 
-<span class="n">route</span> <span class="o">=</span> <span class="n">RunnableLambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">team</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span><span class="o">.</span><span class="n">answer</span><span class="p">)</span>        <span class="c1"># use it in a chain…</span>
+<span class="n">route</span> <span class="o">=</span> <span class="n">RunnableLambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">team</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span><span class="o">.</span><span class="n">answer</span><span class="p">)</span>        <span class="c1"># use it in a chain...</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">pick_next</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>                                           <span class="c1"># …or as a LangGraph conditional edge</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_next</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>                                           <span class="c1"># ...or as a LangGraph conditional edge</span>
     <span class="k">return</span> <span class="n">team</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">answer</span>
 <span class="n">graph</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">"triage"</span><span class="p">,</span> <span class="n">pick_next</span><span class="p">,</span> <span class="p">{</span><span class="s2">"billing"</span><span class="p">:</span> <span class="s2">"billing_agent"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">:</span> <span class="s2">"tech_agent"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">:</span> <span class="s2">"sales_agent"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">:</span> <span class="s2">"human"</span><span class="p">})</span>
 </code></pre></div>
 
-<p>Or wrap the chat model you already have as a Runnable. The table answers what it is certified on; otherwise the model is called, its reply is mapped to one option and logged:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.integrations.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">shad0w_runnable</span>
+<p>Or wrap a chain you already have (your own prompt and model) as a Runnable. The table answers what it is certified on; otherwise the chain runs, its reply is mapped to one option and logged:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.integrations.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">shad0w_runnable</span>
 
-<span class="n">team</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"team"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"billing"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">])</span>   <span class="c1"># no llm: the Runnable supplies it</span>
+<span class="n">team</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"team"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"billing"</span><span class="p">,</span> <span class="s2">"tech"</span><span class="p">,</span> <span class="s2">"sales"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">])</span>   <span class="c1"># no llm: the chain supplies it</span>
 <span class="n">router</span> <span class="o">=</span> <span class="n">shad0w_runnable</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">prompt</span> <span class="o">|</span> <span class="n">llm</span><span class="p">)</span>        <span class="c1"># .invoke(text | {"text": ...} | messages), .ainvoke(...) too</span>
-<span class="n">router</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">"my invoice is wrong"</span><span class="p">)</span>                <span class="c1"># -&gt; "billing"</span>
+<span class="n">router</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"my invoice is wrong"</span><span class="p">})</span>      <span class="c1"># -&gt; "billing"</span>
 </code></pre></div>
 
-<h2 id="litellm">LiteLLM<a class="headerlink" href="#litellm" title="Permanent link">#</a></h2>
-<p>In-process, using any of LiteLLM's providers as the teacher:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">litellm</span><span class="o">,</span><span class="w"> </span><span class="nn">shad0w</span>
+<p>With <code>shad0w_runnable</code>, shad0w never calls the model itself, so there are no background spot checks; the first recipe has them.</p>
+<h2 id="litellm">LiteLLM<a class="headerlink" href="#litellm" title="Link to this section">#</a></h2>
+<p><strong>In-process, any of LiteLLM's providers as the teacher:</strong></p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">litellm</span><span class="o">,</span><span class="w"> </span><span class="nn">shad0w</span>
 
 <span class="n">complete</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">messages</span><span class="p">:</span> <span class="n">litellm</span><span class="o">.</span><span class="n">completion</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"anthropic/claude-haiku-4-5"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
                                                <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
 <span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">shad0w</span><span class="o">.</span><span class="n">llm_teacher</span><span class="p">([</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">question</span><span class="o">=</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="n">complete</span><span class="p">))</span>
 </code></pre></div>
 
-<p>Or keep calling LiteLLM and let shad0w short-circuit certified answers. They come back as normal <code>ModelResponse</code> objects, through LiteLLM's <code>mock_response</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.integrations.litellm</span><span class="w"> </span><span class="kn">import</span> <span class="n">completion</span>
+<p><strong>Keep calling LiteLLM</strong> and let shad0w short-circuit certified answers. They come back as normal <code>ModelResponse</code> objects, through LiteLLM's <code>mock_response</code>:</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.integrations.litellm</span><span class="w"> </span><span class="kn">import</span> <span class="n">completion</span>
 
 <span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">])</span>
 <span class="n">resp</span> <span class="o">=</span> <span class="n">completion</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-6-luna"</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"my card was stolen"</span><span class="p">}])</span>
 </code></pre></div>
 
 <p><strong>LiteLLM proxy.</strong> Register a callback in a file next to your <code>config.yaml</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># shad0w_hooks.py</span>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="c1"># shad0w_hooks.py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.integrations.litellm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Shad0wLogger</span>
 
 <span class="n">handler</span> <span class="o">=</span> <span class="n">Shad0wLogger</span><span class="p">({</span><span class="s2">"intent"</span><span class="p">:</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">])})</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="c1"># config.yaml</span>
+<div class="codehilite" data-lang="yaml"><pre><span></span><code><span class="c1"># config.yaml</span>
 <span class="nt">litellm_settings</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">callbacks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shad0w_hooks.handler</span>
 </code></pre></div>
 
-<p>A request is a decision when its metadata names the question, <code>extra_body={"metadata": {"shad0w_question": "intent"}}</code>, or when the handler has only one question. Answers from the model are logged for the next <code>train()</code>. These adapters are tested against stand-ins for LiteLLM's interfaces, not against a running LiteLLM proxy.</p>
-<p>Or put the shad0w proxy in front of a LiteLLM proxy. It speaks OpenAI, so nothing else changes:</p>
-<div class="codehilite"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>http://localhost:4000<span class="w"> </span>--port<span class="w"> </span><span class="m">8010</span>
+<p>A request is a decision when its metadata names the question, <code>extra_body={"metadata": {"shad0w_question": "intent"}}</code>, or when the handler has only one question. <code>Shad0wLogger(shadows, question_of=fn)</code> lets you pick the question from the request yourself. Answers from the model are logged for the next <code>train()</code>. These adapters are tested against stand-ins for LiteLLM's interfaces, not against a running LiteLLM proxy.</p>
+<p><strong>Or put the shad0w proxy in front of a LiteLLM proxy.</strong> It speaks OpenAI, so nothing else changes:</p>
+<div class="codehilite" data-lang="shell"><pre><span></span><code>shad0w<span class="w"> </span>proxy<span class="w"> </span>--upstream<span class="w"> </span>http://localhost:4000<span class="w"> </span>--port<span class="w"> </span><span class="m">8010</span>
 </code></pre></div>
 
-<h2 id="vercel-ai-sdk">Vercel AI SDK<a class="headerlink" href="#vercel-ai-sdk" title="Permanent link">#</a></h2>
+<h2 id="vercel-ai-sdk">Vercel AI SDK<a class="headerlink" href="#vercel-ai-sdk" title="Link to this section">#</a></h2>
 <p>Wrap the model: certified answers skip it, everything else is logged for training.</p>
-<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">wrapLanguageModel</span><span class="p">,</span><span class="w"> </span><span class="nx">generateText</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"ai"</span><span class="p">;</span>
+<div class="codehilite" data-lang="typescript"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">wrapLanguageModel</span><span class="p">,</span><span class="w"> </span><span class="nx">generateText</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"ai"</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">openai</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@ai-sdk/openai"</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decision</span><span class="p">,</span><span class="w"> </span><span class="nx">shad0wMiddleware</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"shad0wllm"</span><span class="p">;</span>
 
@@ -133,38 +198,40 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>With <code>experimental_decide</code>, use <code>decisionModel(intent, { fallback: openai.decisionModel("gpt-6-luna") })</code> as the model: the table answers the questions it certifies and the fallback answers the rest. See <a href="javascript.html">JavaScript</a>.</p>
-<h2 id="pydantic-ai-and-other-decision-model-clients">Pydantic AI and other decision-model clients<a class="headerlink" href="#pydantic-ai-and-other-decision-model-clients" title="Permanent link">#</a></h2>
+<p><code>specificationVersion</code> must match your <code>ai</code> major version (ai 5 → <code>"v2"</code>, ai 6 → <code>"v3"</code>, ai 7 → <code>"v4"</code>). With <code>experimental_decide</code>, use <code>decisionModel(intent, { fallback: openai.decisionModel("gpt-6-luna") })</code> as the model: the table answers the questions it certifies and the fallback answers the rest. See <a href="javascript.html#vercel-ai-sdk">JavaScript</a>.</p>
+<h2 id="pydantic-ai-and-other-decision-model-clients">Pydantic AI and other decision-model clients<a class="headerlink" href="#pydantic-ai-and-other-decision-model-clients" title="Link to this section">#</a></h2>
 <p>Point the client's base URL at <code>shad0w proxy</code>. Requests to <code>/v1/decisions</code> (OpenAI Decisions API) and <code>/v1/systemone</code> (Jev, Kev, Laya) are recognised with no marking. See <a href="decisions-api.html">Decisions API &amp; System One</a>.</p>
-<h2 id="fastapi">FastAPI<a class="headerlink" href="#fastapi" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<h2 id="fastapi">FastAPI<a class="headerlink" href="#fastapi" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shad0w</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 <span class="n">intent</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"intent"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"refund"</span><span class="p">,</span> <span class="s2">"lost_card"</span><span class="p">,</span> <span class="s2">"balance"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-6-luna"</span><span class="p">,</span>
-                         <span class="n">auto_train</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+                         <span class="n">auto_train</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>                  <span class="c1"># retrain in the background every 2,000 new answers</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/route"</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="k">await</span> <span class="n">intent</span><span class="o">.</span><span class="n">adecide</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">"intent"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">latency_us</span><span class="p">}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="k">await</span> <span class="n">intent</span><span class="o">.</span><span class="n">adecide</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span>                 <span class="c1"># never blocks the event loop on a table answer</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"intent"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">answer</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="s2">"why"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">why</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">latency_us</span><span class="p">}</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/shad0w"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">intent</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
 </code></pre></div>
 
-<p>For Prometheus, share a <code>shad0w.Metrics()</code> across your deciders and expose <code>metrics.prometheus()</code> on <code>/metrics</code>.</p>
-<h2 id="django-flask">Django / Flask<a class="headerlink" href="#django-flask" title="Permanent link">#</a></h2>
-<p>Create the decider once at import time (module level). It is thread-safe. Call <code>intent(text)</code> in your views.</p>
-<h2 id="cloudflare-workers-deno-bun">Cloudflare Workers, Deno, Bun<a class="headerlink" href="#cloudflare-workers-deno-bun" title="Permanent link">#</a></h2>
+<p>For Prometheus, share one <code>shad0w.Metrics()</code> across your deciders (<code>metrics=</code> keyword) and expose <code>metrics.prometheus()</code> on <code>/metrics</code>. See <a href="observability.html">Monitoring</a>.</p>
+<h2 id="django-flask">Django / Flask<a class="headerlink" href="#django-flask" title="Link to this section">#</a></h2>
+<p>Create the decider once, at import time (module level). It is thread-safe. Call <code>intent(text)</code> in your views.</p>
+<h2 id="cloudflare-workers-deno-bun">Cloudflare Workers, Deno, Bun<a class="headerlink" href="#cloudflare-workers-deno-bun" title="Link to this section">#</a></h2>
 <p>See <a href="javascript.html">JavaScript</a>. The same <code>decision()</code> works everywhere <code>fetch</code> does.</p>
-<h2 id="anything-with-an-openai-client">Anything with an OpenAI client<a class="headerlink" href="#anything-with-an-openai-client" title="Permanent link">#</a></h2>
+<h2 id="anything-with-an-openai-client">Anything with an OpenAI client<a class="headerlink" href="#anything-with-an-openai-client" title="Link to this section">#</a></h2>
 <p>Run the <a href="proxy.html">proxy</a> and set <code>base_url</code>. That covers Ruby, Go, Java, .NET, PHP and every other language with an OpenAI SDK.</p>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="c.html"><small>← previous</small>C & other languages</a><a class="next" href="configuration.html"><small>next →</small>Configuration</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20LangChain%2C%20LiteLLM%2C%20AI%20SDK%E2%80%A6&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/frameworks.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="frameworks.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="c.html" rel="prev"><small>← Previous</small>C & other languages</a><a class="next" href="configuration.html" rel="next"><small>Next →</small>Configuration</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
+<li><a href="#pick-a-recipe">Pick a recipe</a></li>
 <li><a href="#any-function-the-decorator">Any function: the decorator</a></li>
 <li><a href="#langchain-langgraph">LangChain / LangGraph</a></li>
 <li><a href="#litellm">LiteLLM</a></li>
@@ -176,11 +243,18 @@
 <li><a href="#anything-with-an-openai-client">Anything with an OpenAI client</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20LangChain%2C%20LiteLLM%2C%20AI%20SDK%E2%80%A6&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/frameworks.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>

@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("shad0w-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
 <title>C &amp; other languages · shad0w</title>
 <meta name="description" content="Decide in about a microsecond from C, C++, Go, Rust, Swift or anything with an FFI.">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -16,117 +17,208 @@
 <meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="C &amp; other languages · shad0w">
 <meta name="twitter:description" content="Decide in about a microsecond from C, C++, Go, Rust, Swift or anything with an FFI."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
-<meta name="theme-color" content="#07070c">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "C & other languages", "description": "Decide in about a microsecond from C, C++, Go, Rust, Swift or anything with an FFI.", "url": "https://2796gaurav.github.io/shad0w/docs/c.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "C & other languages", "item": "https://2796gaurav.github.io/shad0w/docs/c.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/c.md">
 </head>
-<body>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
 <nav class="nav"><div class="wrap">
   <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
-  <button class="icon-btn menu-btn" data-menu aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="links">
     <a href="../#how">How it works</a>
     <a href="../#compare">Compare</a>
-    <a href="../#integrate">Integrate</a>
     <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
     <a href="../docs/" class=active>Docs</a>
     <a href="../blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle light and dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </div></nav>
 <div class="wrap docs">
-  <aside class="sidebar"><details class="dmenu" open><summary>Docs menu · C & other languages</summary><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html" class=active>C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a></details>
-  <script>if (matchMedia("(max-width: 780px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script></aside>
-  <article class="prose"><h1 id="c-other-languages">C &amp; other languages<a class="headerlink" href="#c-other-languages" title="Permanent link">#</a></h1>
-<p>The C core is one file, <code>reflex.c</code>, plus a header, <code>shad0w.h</code>. It needs only libc and libm, and a decision takes about a microsecond.</p>
-<h2 id="1-get-the-two-files">1. Get the two files<a class="headerlink" href="#1-get-the-two-files" title="Permanent link">#</a></h2>
-<p>They ship inside the Python package:</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">D</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import shad0w, os; print(os.path.dirname(shad0w.__file__))"</span><span class="k">)</span>/_native
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">C &amp; other languages</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html" class=active aria-current=page>C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Use it from<span class="rt">3 min read</span></div>
+    <h1 id="c-other-languages">C &amp; other languages<a class="headerlink" href="#c-other-languages" title="Link to this section">#</a></h1>
+<p>Load a trained shad0w table from C and decide in about 1.0 µs. The core is one file, <code>reflex.c</code>, plus a header, <code>shad0w.h</code>. It needs only libc and libm. Use it from C, C++, or any language with a C FFI.</p>
+<p>This page gives you the two files, a complete program, and the five functions. Training still happens in Python.</p>
+<h2 id="tldr">TL;DR<a class="headerlink" href="#tldr" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="shell"><pre><span></span><code><span class="nv">D</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import shad0w, os; print(os.path.dirname(shad0w.__file__))"</span><span class="k">)</span>/_native
 cp<span class="w"> </span><span class="nv">$D</span>/shad0w.h<span class="w"> </span><span class="nv">$D</span>/reflex.c<span class="w"> </span>.
+cc<span class="w"> </span>-O2<span class="w"> </span>app.c<span class="w"> </span>reflex.c<span class="w"> </span>-lm<span class="w"> </span>-o<span class="w"> </span>app<span class="w">        </span><span class="c1"># app.c below</span>
 </code></pre></div>
 
-<h2 id="2-decide">2. Decide<a class="headerlink" href="#2-decide" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<h2 id="1-get-the-two-files">1. Get the two files<a class="headerlink" href="#1-get-the-two-files" title="Link to this section">#</a></h2>
+<p>They ship inside the Python package, in <code>shad0w/_native/</code>. The commands above copy them next to your code.</p>
+<h2 id="2-read-the-manifest">2. Read the manifest<a class="headerlink" href="#2-read-the-manifest" title="Link to this section">#</a></h2>
+<p>A trained bundle is a folder: <code>manifest.json</code> plus one <code>&lt;question&gt;.s0</code> file per question. The C core reads the <code>.s0</code> file. Two values come from <code>manifest.json</code>, under <code>questions.&lt;name&gt;</code>:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th class="c-key">Manifest field</th>
+<th>What it is</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="c-key"><code>options</code></td>
+<td>the option names, in table order</td>
+<td>turning the index <code>k</code> into a name</td>
+</tr>
+<tr>
+<td class="c-key"><code>threshold</code></td>
+<td>the certified confidence threshold</td>
+<td>the answer is certified when <code>probs[k] &gt;= threshold</code>. <code>null</code> means the table certifies nothing: always ask your LLM.</td>
+</tr>
+<tr>
+<td class="c-key"><code>calibrated</code></td>
+<td><code>false</code> when the table has no certificate</td>
+<td>treat every answer as uncertified</td>
+</tr>
+<tr>
+<td class="c-key"><code>type</code></td>
+<td><code>"choice"</code> or <code>"yesno"</code></td>
+<td>for yes/no, options are <code>["no", "yes"]</code>: <code>k == 1</code> means yes</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-decide">3. Decide<a class="headerlink" href="#3-decide" title="Link to this section">#</a></h2>
+<div class="codehilite" data-lang="c"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">"shad0w.h"</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">S0Reflex</span><span class="w"> </span><span class="o">*</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s0_load</span><span class="p">(</span><span class="s">"bundle/intent.s0"</span><span class="p">);</span><span class="w">            </span><span class="cm">/* NULL if missing or corrupt */</span>
+<span class="w">  </span><span class="n">S0Reflex</span><span class="w"> </span><span class="o">*</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s0_load</span><span class="p">(</span><span class="s">"bundle/intent.s0"</span><span class="p">);</span><span class="w">                               </span><span class="cm">/* NULL if missing or corrupt */</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">options</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"refund"</span><span class="p">,</span><span class="w"> </span><span class="s">"lost_card"</span><span class="p">,</span><span class="w"> </span><span class="s">"balance"</span><span class="p">,</span><span class="w"> </span><span class="s">"other"</span><span class="p">};</span><span class="w">     </span><span class="cm">/* manifest.json "options", same order */</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.911f</span><span class="p">;</span><span class="w">                                          </span><span class="cm">/* manifest.json "threshold" */</span>
+
 <span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"my card was stolen"</span><span class="p">;</span>
 <span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">probs</span><span class="p">[</span><span class="n">S0_MAX_CLASSES</span><span class="p">],</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span>
 <span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s0_decide</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">strlen</span><span class="p">(</span><span class="n">text</span><span class="p">),</span><span class="w"> </span><span class="n">probs</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">radius</span><span class="p">);</span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.911f</span><span class="p">;</span><span class="w">                              </span><span class="cm">/* from bundle/manifest.json */</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">"option %d, certified</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">);</span><span class="w">   </span><span class="cm">/* manifest options[k] */</span>
-<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">"ask the LLM</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">"%s (certified, %.3f)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">"ask the LLM (table guessed %s, %.3f)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+
 <span class="w">  </span><span class="n">s0_free</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<h2 id="3-build">3. Build<a class="headerlink" href="#3-build" title="Permanent link">#</a></h2>
-<div class="codehilite"><pre><span></span><code>cc<span class="w"> </span>-O2<span class="w"> </span>app.c<span class="w"> </span>reflex.c<span class="w"> </span>-lm<span class="w"> </span>-o<span class="w"> </span>app
+<div class="codehilite" data-lang="shell"><pre><span></span><code>cc<span class="w"> </span>-O2<span class="w"> </span>app.c<span class="w"> </span>reflex.c<span class="w"> </span>-lm<span class="w"> </span>-o<span class="w"> </span>app<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./app
 </code></pre></div>
 
-<p>The answer is option <code>k</code> in <code>manifest.json</code>'s <code>options</code> list (same order). It is certified when <code>probs[k] &gt;= threshold</code>, also from <code>manifest.json</code>. A loaded table is read-only and can be shared across threads; give each thread its own <code>probs</code> buffer.</p>
-<h2 id="other-languages">Other languages<a class="headerlink" href="#other-languages" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>Go:</strong> cgo (<code>// #include "shad0w.h"</code>).</li>
-<li><strong>Rust:</strong> <code>bindgen</code> or a 5-line <code>extern "C"</code> block.</li>
-<li><strong>Swift / Objective-C:</strong> add both files to the target.</li>
-<li><strong>Java / Kotlin:</strong> JNI or Panama.</li>
-<li><strong>Anything else:</strong> the <a href="http.html">HTTP server</a> or the <a href="proxy.html">proxy</a>.</li>
-</ul>
-<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">#</a></h2>
-<table>
+<div class="codehilite" data-lang="text"><pre><span></span><code>lost_card (certified, 0.993)
+</code></pre></div>
+
+<p>Text is UTF-8; pass its length in bytes. The answers are identical to Python's and JavaScript's on the same table.</p>
+<h2 id="threads">Threads<a class="headerlink" href="#threads" title="Link to this section">#</a></h2>
+<p>A loaded table is read-only and can be shared across threads. Give each thread its own <code>probs</code> buffer.</p>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead>
 <tr>
-<th>Function</th>
+<th class="c-key">Function</th>
 <th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>S0Reflex *s0_load(const char *path)</code></td>
-<td>load a <code>.s0</code> table; <code>NULL</code> on any error (wrong version, truncated, unsorted keys)</td>
+<td class="c-key"><code>S0Reflex *s0_load(const char *path)</code></td>
+<td>load a <code>.s0</code> table; <code>NULL</code> on any error (missing file, wrong version, truncated, unsorted keys)</td>
 </tr>
 <tr>
-<td><code>int s0_decide(m, text, len, probs, &amp;radius)</code></td>
-<td>index of the best option; writes every option's probability and the robustness radius</td>
+<td class="c-key"><code>int s0_decide(m, text, len, probs, &amp;radius)</code></td>
+<td>returns the index of the best option; writes every option's probability to <code>probs</code> (<code>s0_num_classes(m)</code> floats) and the robustness radius (how many inserted words it takes to flip the answer; <code>INFINITY</code> when none can)</td>
 </tr>
 <tr>
-<td><code>uint32_t s0_num_classes(m)</code></td>
-<td>number of options</td>
+<td class="c-key"><code>uint32_t s0_num_classes(m)</code></td>
+<td>the number of options</td>
 </tr>
 <tr>
-<td><code>double s0_bench(m, texts, lens, n, reps, per_call_ns)</code></td>
-<td>mean nanoseconds per decision</td>
+<td class="c-key"><code>double s0_bench(m, texts, lens, n, reps, per_call_ns)</code></td>
+<td>mean nanoseconds per decision over <code>reps</code> passes; <code>per_call_ns</code> may be <code>NULL</code></td>
 </tr>
 <tr>
-<td><code>void s0_free(m)</code></td>
-<td>release</td>
+<td class="c-key"><code>void s0_free(m)</code></td>
+<td>release the table</td>
 </tr>
 </tbody>
-</table>
-  <p class="muted" style="margin-top:40px;font-size:14px">Something unclear? <a href="https://github.com/2796gaurav/shad0w/issues/new">Open an issue</a> or <a href="https://github.com/2796gaurav/shad0w/edit/gh-pages/">suggest an edit</a>.</p>
-  <div class="pager"><a href="http.html"><small>← previous</small>HTTP</a><a class="next" href="frameworks.html"><small>next →</small>LangChain, LiteLLM, AI SDK…</a></div></article>
-  <aside class="toc"><b>On this page</b><div class="toc">
+</table></div>
+<p><code>S0_MAX_CLASSES</code> (1024) is the largest number of options a table can have.</p>
+<p>The C core does not apply the drift guard or the rollout settings (<code>mode</code>, <code>canary</code>, <code>never_serve</code>); those live in Python. For them, use the <a href="http.html">HTTP server</a> or the <a href="proxy.html">proxy</a>.</p>
+<h2 id="other-languages">Other languages<a class="headerlink" href="#other-languages" title="Link to this section">#</a></h2>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>Language</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go</td>
+<td>cgo: <code>// #include "shad0w.h"</code> and build <code>reflex.c</code> with the package</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><code>bindgen</code>, or a five-line <code>extern "C"</code> block</td>
+</tr>
+<tr>
+<td>Swift / Objective-C</td>
+<td>add both files to the target</td>
+</tr>
+<tr>
+<td>Java / Kotlin</td>
+<td>JNI or Panama</td>
+</tr>
+<tr>
+<td>Anything else</td>
+<td>the <a href="http.html">HTTP server</a>, or the <a href="proxy.html">proxy</a> for OpenAI-compatible clients</td>
+</tr>
+</tbody>
+</table></div>
+    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20C%20%26%20other%20languages&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/c.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="c.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="http.html" rel="prev"><small>← Previous</small>HTTP</a><a class="next" href="frameworks.html" rel="next"><small>Next →</small>LangChain, LiteLLM, AI SDK…</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
 <ul>
+<li><a href="#tldr">TL;DR</a></li>
 <li><a href="#1-get-the-two-files">1. Get the two files</a></li>
-<li><a href="#2-decide">2. Decide</a></li>
-<li><a href="#3-build">3. Build</a></li>
-<li><a href="#other-languages">Other languages</a></li>
+<li><a href="#2-read-the-manifest">2. Read the manifest</a></li>
+<li><a href="#3-decide">3. Decide</a></li>
+<li><a href="#threads">Threads</a></li>
 <li><a href="#functions">Functions</a></li>
+<li><a href="#other-languages">Other languages</a></li>
 </ul>
 </div>
-</aside>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20C%20%26%20other%20languages&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/c.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
 </div>
 <footer><div class="wrap">
-  <span><span class="wordmark" style="font:700 17px var(--display);color:var(--ink)">shad<span class="o"></span>w</span> &nbsp;·&nbsp; built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</span>
-  <span><a href="../docs/">Docs</a> · <a href="../blog/">Blog</a> · <a href="../demo/">Playground</a> · <a href="../docs/benchmarks.html">Benchmarks</a> · <a href="https://pypi.org/project/shad0wllm/">PyPI</a> · <a href="https://www.npmjs.com/package/shad0wllm">npm</a> · <a href="https://github.com/2796gaurav/shad0w">GitHub</a></span>
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a>.</p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
 </div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
 </body>
 </html>
