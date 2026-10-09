@@ -268,6 +268,16 @@ def _answer_field(req: dict) -> str | None:
     return t[1] if t else None
 
 
+
+def _shape(req: dict) -> None:
+    """Refuse chat-completions bodies whose shape the rest of the proxy cannot read (a 400, not a crash)."""
+    msgs = req.get("messages")
+    if msgs is not None and not (isinstance(msgs, list) and all(isinstance(m, dict) for m in msgs)):
+        raise ValueError("shad0w proxy: malformed request: `messages` must be a list of objects")
+    tools = req.get("tools")
+    if tools is not None and not (isinstance(tools, list) and all(isinstance(t, dict) for t in tools)):
+        raise ValueError("shad0w proxy: malformed request: `tools` must be a list of objects")
+
 def question_of(req: dict, headers, capture=("header", "model", "tools", "decisions")) -> str | None:
     h = headers.get("x-shad0w-question")
     if h and "header" in capture:
@@ -485,6 +495,8 @@ def make_handler(gw: Gateway):
                         req = json.loads(body or b"{}")
                     except ValueError:
                         req = None
+                if isinstance(req, dict):
+                    _shape(req)
                 q = question_of(req, self.headers, gw.capture) if isinstance(req, dict) else None
                 text = last_user_text(req) if q else None
                 if not q or text is None:
@@ -493,9 +505,9 @@ def make_handler(gw: Gateway):
                 self._decide(q, req, text)
             except Upstream as u:
                 self._relay_upstream(u)
-            except (ValueError, TypeError, AttributeError, KeyError) as e:  # malformed request shapes get a 400
+            except ValueError as e:  # malformed requests (shapes are checked up front, see _shape)
                 gw.metrics.errors += 1
-                self._json(400, {"error": {"message": f"shad0w proxy: malformed request: {e}", "type": "invalid_request_error"}})
+                self._json(400, {"error": {"message": str(e), "type": "invalid_request_error"}})
 
         # -- chat completions marked as decisions ---------------------------------------------------------------
         def _decide(self, q, req, text):
@@ -585,7 +597,10 @@ def make_handler(gw: Gateway):
         # -- decision-model formats: no marking needed -----------------------------------------------------------
         def _decisions(self, dialect, req):
             t0 = time.perf_counter()
-            text, qs = wire.parse(dialect, req)
+            try:
+                text, qs = wire.parse(dialect, req)
+            except (TypeError, AttributeError, KeyError) as e:
+                raise ValueError(f"shad0w proxy: malformed {dialect} request: {e}") from None
             served: dict[str, object] = {}
             pending: list[wire.WireQ] = []
             for q in qs:
@@ -601,7 +616,7 @@ def make_handler(gw: Gateway):
                     pending.append(q)
                 else:
                     served[q.name] = d
-                    if d.certified and sh.audit_rate and sh.teacher is None:
+                    if sh.audit_rate and sh.teacher is None:  # every answer the table served is eligible
                         self._spot_check(dialect, req, sh, q, text, d)
             up: dict[str, dict] = {}
             if pending:
@@ -616,7 +631,8 @@ def make_handler(gw: Gateway):
                     if q.qtype != "score" and q.name in up:
                         v = wire.answer_value(q, up[q.name])
                         if v is not None:
-                            gw.shadow(q.name).record(text, v)
+                            qs_ = gw.shadow(q.name)
+                            qs_.record(text, v, source=qs_._src())  # served answers are spot-checked above: keep audits uniform
             answers = [] if dialect == "decisions" else {}
             for q in qs:
                 if q.name in served:

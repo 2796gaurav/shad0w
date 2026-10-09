@@ -111,6 +111,9 @@ def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metri
                         metrics.record(qn, "table" if a["certified"] else "deferred", a.get("choice", a.get("answer")),
                                        us / 1e6, a["confidence"], a["flag"], text)
                     return self._send(200, wire.format_response(dialect, req, answers, us, {"source": "table"}))
+                if not isinstance(req, dict) or "state" not in req:
+                    return self._send(400, {"error": 'body needs "state": the text (or JSON) to decide on, '
+                                                     'e.g. {"state": "my card was stolen"}'})
                 out = model.decide(req["state"], exposed=bool(req.get("exposed", False)), questions=req.get("questions"))
                 out["latency_us"] = (time.perf_counter_ns() - t) / 1e3
                 for qn, a in out["answers"].items():
@@ -134,4 +137,9 @@ def serve(bundle: str, host: str = "127.0.0.1", port: int = 8010, metrics: Metri
         return srv
     print(f"shad0w serving {bundle} on http://{host}:{port}/v1/decide  (also /v1/decisions, /v1/systemone)"
           f"   dashboard http://{host}:{port}/", flush=True)
-    srv.serve_forever()
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:  # Ctrl-C: stop quietly, like `shad0w proxy`
+        print("\nshad0w serve stopped", flush=True)
+    finally:
+        srv.server_close()

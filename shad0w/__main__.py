@@ -34,12 +34,14 @@ Files:
 
 import argparse
 import json
+import os
 import sys
 import time
 
 
 def _rows_by_question(path, schema_questions):
-    rows = [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
+    from .shadow import read_jsonl
+    rows = read_jsonl(path)
     out = {}
     for q in schema_questions:
         rs = [r for r in rows if q in r]
@@ -268,7 +270,8 @@ def _try(a):
         t0 = time.perf_counter_ns()
         sh.model.decide(t, questions={sh.question: {}}, probabilities=False)
         us = (time.perf_counter_ns() - t0) / 1e3
-        mark = "\u2713 table" if e.get("would_serve", e["certified"]) else "\u2192 your LLM"
+        served = e.get("would_serve", e["certified"])
+        mark = "\u2713 table" if served else "\u2192 would ask your LLM; the table's guess:"
         print(f"  {mark}  {e['answer']}  (confidence {e['confidence']:.3f}, needs {e['threshold']:.3f})  {us:.1f} \u00b5s")
         print(f"     {e['why']}" + (f"  [{e['policy_flag']}]" if e.get("policy_flag") not in (None, e["flag"]) else ""))
         print("     top: " + ", ".join(f"{k} {v:.2f}" for k, v in e["top"]))
@@ -303,7 +306,8 @@ def _stats(a):
     need = _config.resolve().min_rows
     if not os.path.exists(a.log):
         raise FileNotFoundError(f"nothing logged yet at {a.log}")
-    rows = [json.loads(l) for l in open(a.log, encoding="utf-8") if l.strip()]
+    from .shadow import read_jsonl
+    rows = read_jsonl(a.log)  # skips a half-written last line instead of failing
     names = sorted({k for r in rows for k in r} - {"text", "source", "ts"})
     src = Counter(r.get("source", "teacher") for r in rows)
     print(f"{a.log}: {len(rows):,} answers logged ({', '.join(f'{k} {v:,}' for k, v in src.items())})")
@@ -701,6 +705,12 @@ def main(argv=None):
     except FileNotFoundError as e:
         print(f"shad0w: {e}", file=sys.stderr)
         return 2
+    except BrokenPipeError:  # `shad0w report | head`: the reader went away; exit quietly
+        try:
+            sys.stdout = open(os.devnull, "w")
+        except OSError:
+            pass
+        return 0
     except OSError as e:  # unreachable server, port in use, a folder where a file was expected, permissions
         print(f"shad0w: {e}", file=sys.stderr)
         return 2
@@ -745,7 +755,7 @@ def _main(argv=None):
     im.add_argument("--config")
 
     stt = sub.add_parser("status", help="one line per decision folder: rows, certificate, live agreement, next step")
-    stt.add_argument("--folder", help="the decisions folder (default: the `folder` setting, shad0w)")
+    stt.add_argument("--folder", "--dir", dest="folder", help="the decisions folder (default: the `folder` setting, shad0w)")
     stt.add_argument("--config")
 
     sh = sub.add_parser("shadow", help="compile from a teacher's logged answers and certify agreement with it")
@@ -905,7 +915,14 @@ def _main(argv=None):
         elif a.api_key_file:
             key = _key_file(a.api_key_file)
         schema = json.load(open(a.schema, encoding="utf-8")) if a.schema else None
-        bundles = dict(b.split("=", 1) for b in (a.bundle or []) if "=" in b)
+        bundles = {}
+        for b in a.bundle or []:
+            if "=" not in b:
+                ap.error(f"--bundle {b!r}: use QUESTION=PATH, e.g. --bundle intent=shad0w/intent/bundle")
+            qn, path = b.split("=", 1)
+            if not os.path.exists(os.path.join(path, "manifest.json")):
+                ap.error(f"--bundle {b!r}: no bundle at {path} (no manifest.json)")
+            bundles[qn] = path
         capture = [c for x in (a.capture or []) for c in x.split(",") if c] or None
         never = [x.strip() for x in a.never_serve.split(",") if x.strip()] if a.never_serve else None
         srv = proxy(a.upstream, host=a.host, port=a.port, folder=a.dir, model=a.model, api_key=key, audit_rate=a.audit_rate,

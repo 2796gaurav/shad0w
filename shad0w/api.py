@@ -174,8 +174,9 @@ class Question:
             flag = "uncalibrated"
         elif unknown:
             flag = "options_changed"
+        elif not text.strip():  # nothing to go on: the table would only echo its most common answer
+            flag = "empty_input"
         elif y != y_full or not (conf >= self.threshold):  # fail closed on NaN
-            flag = "low_confidence"
             flag = "low_confidence"
         elif exposed and r < self.r_min:
             flag = "low_radius"

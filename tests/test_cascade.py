@@ -31,7 +31,7 @@ def bundle(tmp_path_factory):
 
 def test_log_only_mode_writes_teacher_log(tmp_path):
     log = tmp_path / "log.jsonl"
-    sh = shad0w.Shadow(None, teacher=teacher, question="intent", log=str(log))
+    sh = shad0w.Shadow(None, teacher=teacher, question="intent", log=str(log), audit_rate=0)  # no random "audit" tag
     d = sh.decide("hi block my card thanks")
     assert d.answer == "lost_card" and d.source == "teacher" and d.flag == "no_bundle"
     row = json.loads(log.read_text(encoding="utf-8").splitlines()[0])

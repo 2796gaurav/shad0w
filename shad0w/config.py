@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import difflib
 import functools
+import logging
 import os
 import re
 from dataclasses import dataclass, fields
@@ -161,7 +162,10 @@ def _load_toml_cached(path: str, mtime: float) -> dict:
         except ModuleNotFoundError:
             raise ValueError(f"reading {path} needs Python 3.11+ or `pip install tomli`") from None
     with open(path, "rb") as f:
-        return tomllib.load(f)
+        try:
+            return tomllib.load(f)
+        except tomllib.TOMLDecodeError as e:
+            raise ValueError(f"{path}: not valid TOML: {e}") from None
 
 
 def load_toml(path: str) -> dict:
@@ -237,8 +241,8 @@ def _validate(s: dict) -> None:
         raise ValueError(f"retrain must be one of {RETRAIN}, got {s['retrain']!r}")
     if int(s["auto_train"]) < 0:
         raise ValueError(f"auto_train must be 0 (off) or a positive number of answers, got {s['auto_train']!r}")
-    if not (isinstance(s["timeout"], (int, float)) and s["timeout"] > 0):
-        raise ValueError(f"timeout must be a positive number of seconds, got {s['timeout']!r}")
+    if s["timeout"] is not None and not (isinstance(s["timeout"], (int, float)) and s["timeout"] > 0):
+        raise ValueError(f"timeout must be a positive number of seconds (or none), got {s['timeout']!r}")
     if int(s["min_rows"]) < 100:
         raise ValueError("min_rows must be at least 100")
     if int(s["drift_window"]) < 10:
@@ -265,7 +269,7 @@ def unknown_keywords(names, known, where: str) -> TypeError:
     return TypeError(f"{where} got unexpected keyword argument(s): {hints}")
 
 
-_KEY_LINE = ("{where}: found `api_key = ...`. Never put the key itself in a file: store the env var name in api_key_env, "
+_KEY_LINE = ("{where}: found `{key} = ...`. Never put the key itself in a file: store the env var name in api_key_env, "
              "not the key itself, e.g. api_key_env = \"OPENAI_API_KEY\"")
 
 
@@ -273,8 +277,21 @@ def _check_no_key(doc: dict, cfg: str) -> None:
     secs = [("", doc)] + [(f" [questions.{q}]", v) for q, v in (doc.get("questions") if isinstance(doc.get("questions"), dict) else {}).items()
                                     if isinstance(v, dict)]
     for sec, d in secs:
-        if any(str(k).lower().replace("-", "_").endswith(("api_key", "apikey")) for k in d):
-            raise ValueError(_KEY_LINE.format(where=f"{cfg}{sec}"))
+        bad = [k for k in d if str(k).lower().replace("-", "_").endswith(("api_key", "apikey"))]
+        if bad:
+            raise ValueError(_KEY_LINE.format(where=f"{cfg}{sec}", key=bad[0]))
+
+
+_WARNED: set = set()
+
+
+def _warn_unknown(cfg: str, sec: str, keys: list) -> None:
+    """A misspelt key in shad0w.toml is ignored, so say so once (with a suggestion) instead of silently using defaults."""
+    for k in keys:
+        if (cfg, sec, k) in _WARNED:
+            continue
+        _WARNED.add((cfg, sec, k))
+        logging.getLogger("shad0w").warning("%s%s: unknown setting %r ignored%s", cfg, sec, k, did_you_mean(str(k), DEFAULTS))
 
 
 def _layers(question: str | None, path: str | None, overrides: dict) -> list[tuple[str, dict]]:
@@ -288,6 +305,7 @@ def _layers(question: str | None, path: str | None, overrides: dict) -> list[tup
         doc = load_toml(cfg)
         _check_no_key(doc, cfg)
         top = {k: v for k, v in doc.items() if k in DEFAULTS}
+        _warn_unknown(cfg, "", [k for k in doc if k not in DEFAULTS and k != "questions"])
         layers.append((f"toml:{cfg}", top))
         qs = doc.get("questions") or {}
         if not isinstance(qs, dict):
@@ -296,6 +314,7 @@ def _layers(question: str | None, path: str | None, overrides: dict) -> list[tup
         if qsec and not isinstance(qsec, dict):
             raise ValueError(f"{cfg}: [questions.{question}] must be a table of settings, got {qsec!r}")
         if qsec:
+            _warn_unknown(cfg, f" [questions.{question}]", [k for k in qsec if k not in DEFAULTS])
             layers.append((f"toml:{cfg} [questions.{question}]", {k: v for k, v in qsec.items() if k in DEFAULTS}))
     env = {}
     for k in DEFAULTS:

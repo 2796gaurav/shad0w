@@ -42,6 +42,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+import numpy as np
+
 from . import config as _config
 from .api import Model, load
 from .observe import Metrics, TraceWriter, emit_span, log, otel_enabled
@@ -94,6 +96,7 @@ _FLAG_WORDS = {
     "no_bundle": "no trained table yet: asked your model",
     "low_confidence": "table not sure enough to stay inside the certified bound: asked your model",
     "low_radius": "input could be flipped by a few edits (exposed mode): asked your model",
+    "empty_input": "the message is empty: asked your model",
     "drift": "traffic looks different from calibration: asked your model until the window recovers or you re-train",
     "uncalibrated": "table has no certificate: asked your model",
     "min_confidence": "below your min_confidence floor (stricter than the certificate): asked your model",
@@ -379,8 +382,7 @@ class Shadow:
             t0, r, local, serve, certified, flag = pre
         if serve:
             d = self._mk(local, "table", r, certified, flag, t0)
-            if certified:
-                self._spot_check(teacher, text, name, local)
+            self._spot_check(teacher, text, name, local)  # every served answer is eligible, certified or not
             return self._done(d, text, name, None, ns0)
         return self._defer(text, teacher, name, r, flag, local, t0, ns0)
 
@@ -419,17 +421,19 @@ class Shadow:
         if not serve:
             return None
         d = self._mk(local, "table", r, certified, flag, t0)
-        if certified:
-            self._spot_check(self.teacher, text, name, local)
+        self._spot_check(self.teacher, text, name, local)
         return self._done(d, text, name, None, time.time_ns() if self._otel else 0)
 
-    def record(self, text: str, answer, *, teacher_s: float | None = None) -> Decision:
-        """Log an answer you obtained from your model yourself and count it as a teacher decision."""
+    def record(self, text: str, answer, *, teacher_s: float | None = None, source: str | None = None) -> Decision:
+        """Log an answer you obtained from your model yourself and count it as a teacher decision.
+        source: "teacher" or "audit". By default rows are sampled as "audit" at audit_rate only when this Shadow has a
+        teacher (so served answers are spot-checked too); a caller that spot-checks served answers itself (the proxy)
+        passes source=shadow._src() so the "audit" rows stay a uniform sample of all traffic."""
         t0 = time.perf_counter()
         name = self.question or "decision"
-        # an "audit" row must be a uniform sample of ALL traffic: only true when served answers are spot-checked too,
-        # which needs a teacher on this Shadow (peek() + record() integrations often have none)
-        self._record(text, self._src() if self.teacher is not None else "teacher", name, answer)
+        if source is None:
+            source = self._src() if self.teacher is not None else "teacher"
+        self._record(text, source, name, answer)
         if self.model is None:
             d = self._mk(answer, "teacher", None, False, "no_bundle", t0)
         else:
@@ -479,7 +483,7 @@ class Shadow:
             t0, r, local, serve, certified, flag = pre
             if serve:
                 d = self._mk(local, "table", r, certified, flag, t0)
-                if certified and self.audit_rate and self._rng.random() < self.audit_rate:
+                if self.audit_rate and self._rng.random() < self.audit_rate:
                     task = asyncio.ensure_future(self._aaudit(teacher, text, name, local))
                     self._audits.add(task)
                     task.add_done_callback(self._audits.discard)
@@ -723,17 +727,23 @@ class Shadow:
 
     def _loggable(self, answer):
         """The answer as it belongs in the log: an option name (Enum members by value/name) or a bool for yes/no.
-        None when it matches no option, so a stray answer never becomes training data."""
+        None when it matches no option, so a stray answer never becomes training data. Old names from `rename` are
+        kept as given (training maps them to the new names), and so are the bundle's options."""
         from .llm import enum_option, match_option
         answer = enum_option(answer)
         schema = self.schema or {}
-        if schema.get("type") == "yesno" or isinstance(answer, bool):
-            if isinstance(answer, bool):
-                return answer
+        if schema.get("type") == "yesno" or isinstance(answer, (bool, np.bool_)):
+            if isinstance(answer, (bool, np.bool_)):
+                return bool(answer)
+            if isinstance(answer, (int, float, np.integer, np.floating)) and answer in (0, 1):
+                return bool(answer)
             v = match_option(str(answer), ["yes", "no"])
             return None if v is None else v == "yes"
-        opts = list(schema.get("criteria") or {}) or (list(self.model.questions[self.question].options)
-                                                       if self.model is not None and self.question in self.model.questions else [])
+        opts = list(schema.get("criteria") or {})
+        if self.model is not None and self.question in self.model.questions:
+            opts += [o for o in self.model.questions[self.question].options if o not in opts]
+        for a, b in (self.settings.rename_map or {}).items():
+            opts += [o for o in (a, b) if o not in opts]
         if not opts or answer in opts:
             return answer
         return match_option(answer if isinstance(answer, str) else str(answer), opts)
@@ -964,7 +974,8 @@ def decide(fn: Callable | None = None, /, *, name: str | None = None, folder: st
         route("my invoice is wrong")     # "billing": from the table when certified, else from ask_llm (logged)
         route.shadow.train()             # once ~1,000 answers are logged
 
-    A `-> bool` annotation makes a yes/no question. Files live in <folder>/<name>/ like `decision()`.
+    A `-> bool` annotation makes a yes/no question. Files live in `folder` when given, else in
+    <folder setting>/<name>/, exactly like `decision()`.
     Or let shad0w call the LLM for you; then the body is never run:
 
         @shad0w.decide(llm="openai/gpt-6-luna", api_key=os.environ["OPENAI_API_KEY"])

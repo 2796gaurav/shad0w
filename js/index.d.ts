@@ -40,7 +40,7 @@ export function items(text: string): number[];
 export function words(text: string): Uint8Array[];
 export const TABLE_VERSION: number;
 
-export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
+export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "empty_input" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
   | "canary" | "never_serve" | "shadow" | "off" | "options_changed" | "option_removed" | "new_options_served" | null;
 
 /** One decision from a Shadow cascade. */

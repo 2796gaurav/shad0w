@@ -196,7 +196,8 @@ class Bundle {
       const full = opts.probabilities !== false;
       const d = table.decide(text, full);
       const thr = spec.threshold === null || spec.threshold === undefined ? Infinity : spec.threshold;
-      const flag = spec.calibrated === false ? "uncalibrated" : !(d.confidence >= thr) ? "low_confidence" : null;  // fail closed on NaN
+      const flag = spec.calibrated === false ? "uncalibrated" : !String(text).trim() ? "empty_input"
+        : !(d.confidence >= thr) ? "low_confidence" : null;  // fail closed on NaN
       const out = { confidence: d.confidence, certified: flag === null, flag };
       if (spec.type === "yesno") { out.answer = d.index === 1; out.probability = full ? d.probabilities[1] : d.p1; }
       else {
@@ -443,6 +444,7 @@ function openaiTeacher(opts) {
 const FLAG_WORDS = {
   null: "certified: answered by the table",
   no_bundle: "no trained table yet: asked your model",
+  empty_input: "the message is empty: asked your model",
   low_confidence: "table not sure enough to stay inside the certified bound: asked your model",
   low_radius: "input could be flipped by a few edits (exposed mode): asked your model",
   drift: "traffic looks different from calibration: asked your model until re-certified",
@@ -483,6 +485,8 @@ class Shadow {
     this.rename = opts.rename || {};
     this.onNewOption = opts.onNewOption || "defer";
     this.optionsAdded = []; this.optionsRemoved = [];
+    try { this.declaredOptions = opts.options ? normalizeOptions(opts.options, this.question) : null; }
+    catch { this.declaredOptions = null; }  // only used for display; option errors are reported where options are used
     if (bundle && opts.options) {
       const spec = bundle.questions[this.question].spec;
       const want = normalizeOptions(opts.options, this.question);
@@ -524,9 +528,9 @@ class Shadow {
       a = { ...a, choice: r(a.choice) };
       if (a.probabilities) a.probabilities = Object.fromEntries(Object.entries(a.probabilities).map(([k, v]) => [r(k), v]));
     }
-    if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
+    if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };  // checked first, always
+    else if (this.optionsAdded.length && this.onNewOption !== "serve") a = { ...a, certified: false, flag: "options_changed" };
     else if (this.optionsAdded.length && a.certified) a = { ...a, uncovered: true };  // onNewOption "serve": served, not covered
-    else if ("choice" in a && this.optionsRemoved.includes(a.choice)) a = { ...a, certified: false, flag: "option_removed" };
     return a;
   }
 
@@ -536,7 +540,9 @@ class Shadow {
       const spec = this.bundle.questions[this.question].spec;
       return spec.type === "yesno" ? ["yes", "no"] : [...spec.options];
     }
-    return this.teacher && this.teacher.options ? [...this.teacher.options] : null;
+    if (this.teacher && this.teacher.options) return [...this.teacher.options];
+    const d = this.declaredOptions;  // options passed to the constructor, before any table exists
+    return d ? (d.type === "yesno" ? ["yes", "no"] : Object.keys(d.criteria)) : null;
   }
 
   /** The certified threshold of this question, or null. */

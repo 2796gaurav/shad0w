@@ -203,3 +203,85 @@ def test_proxy_spot_checks_keep_their_own_key(tmp_path):
         mock.close()
     spot = [r for r in mock.requests if r["body"].get("messages") == chat["messages"]]
     assert spot and all(r["headers"].get("authorization") == "Bearer sk-AAAA1111AAAA" for r in spot)
+
+
+# -- second review ---------------------------------------------------------------------------------------------------
+
+def test_renamed_and_numeric_answers_are_still_logged(tmp_path):
+    import shad0w
+    d = shad0w.decision("intent", options=["money_back", "lost_card", "balance", "transfer"], folder=str(tmp_path / "r"),
+                        llm=lambda t: "refund", audit_rate=0, rename={"refund": "money_back"})
+    d("x")
+    assert json.loads(open(d.log).read())["intent"] == "refund"  # the old name; training maps it to the new one
+    y = shad0w.decision("spam", options=bool, folder=str(tmp_path / "y"), llm=lambda t: 1, audit_rate=0)
+    y("x")
+    assert json.loads(open(y.log).read())["spam"] is True
+
+
+def test_served_but_uncovered_answers_are_spot_checked(tmp_path):
+    import shad0w
+    _trained(tmp_path)
+    d2 = shad0w.decision("intent", options=OPTS + ["fraud"], folder=str(tmp_path / "intent"), llm=synth_label,
+                         audit_rate=1.0, on_new_option="serve")
+    out = [d2(r["text"]) for r in synth(40, 11)[0]]
+    d2.flush(5)
+    assert any(x.source == "table" for x in out)
+    assert any(json.loads(line)["source"] == "audit" for line in open(d2.log))
+
+
+def test_record_can_keep_audit_rows_uniform(tmp_path):
+    import shad0w
+    d = shad0w.decision("intent", options=OPTS, folder=str(tmp_path / "p"), audit_rate=1.0)
+    d.record("hi", "refund", source=d._src())
+    assert json.loads(open(d.log).read())["source"] == "audit"
+
+
+def test_proxy_refuses_malformed_chat_bodies_with_400(tmp_path):
+    import threading
+    import urllib.error
+    import urllib.request
+
+    from shad0w.proxy import proxy
+
+    from .mock_llm import MockLLM
+    mock = MockLLM()
+    srv = proxy(mock.url, port=0, folder=str(tmp_path), audit_rate=0.0, model="mock-1")
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        for body in ({"messages": "str"}, {"messages": ["str"]}, {"messages": [{"role": "user", "content": "x"}], "tools": ["x"]}):
+            req = urllib.request.Request(f"http://127.0.0.1:{srv.server_address[1]}/v1/chat/completions", data=json.dumps(body).encode(),
+                                         headers={"content-type": "application/json", "x-shad0w-question": "intent"})
+            with pytest.raises(urllib.error.HTTPError) as e:
+                urllib.request.urlopen(req, timeout=5)
+            assert e.value.code == 400
+    finally:
+        srv.shutdown()
+        mock.close()
+
+
+# -- fresh-install review ----------------------------------------------------------------------------------------------
+
+def test_empty_input_is_never_served(model):
+    for t in ("", "   ", "\n"):
+        r = model.questions["intent"].decide(t, observe=False)
+        assert r["certified"] is False and r["flag"] == "empty_input"
+
+
+def test_unknown_toml_keys_are_reported(tmp_path, caplog):
+    from shad0w import config
+    p = tmp_path / "shad0w.toml"
+    p.write_text("alpah = 0.1\n")
+    with caplog.at_level("WARNING", logger="shad0w"):
+        config.resolve(path=str(p))
+    assert "alpah" in caplog.text and "alpha" in caplog.text
+    p.write_text("alpha = \n")
+    with pytest.raises(ValueError, match="shad0w.toml"):
+        config.resolve(path=str(p))
+
+
+def test_proxy_cli_checks_bundle_paths(tmp_path):
+    from shad0w.__main__ import main
+    with pytest.raises(SystemExit):
+        main(["proxy", "--upstream", "http://127.0.0.1:9/v1", "--bundle", str(tmp_path)])
+    with pytest.raises(SystemExit):
+        main(["proxy", "--upstream", "http://127.0.0.1:9/v1", "--bundle", f"intent={tmp_path}"])

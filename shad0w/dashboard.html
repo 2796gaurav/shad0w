@@ -78,7 +78,7 @@ const $=id=>document.getElementById(id), hist=[];
 const pct=x=>x==null?'–':(100*x).toFixed(1)+'%', n=x=>x==null?'–':x.toLocaleString();
 const dur=s=>s==null?'–':s<1?(s*1e3).toFixed(0)+' ms':s<120?s.toFixed(1)+' s':s<7200?(s/60).toFixed(1)+' min':(s/3600).toFixed(1)+' h';
 const lat=us=>us==null?'–':us<1000?us.toFixed(1)+' µs':(us/1e3).toFixed(1)+' ms';
-const why={null:'certified',no_bundle:'not trained yet',low_confidence:'not sure enough',low_radius:'fragile input',drift:'traffic drifted',uncalibrated:'no certificate',min_confidence:'below your floor',never_serve:'label kept with LLM',canary:'canary held back',shadow:'shadow mode',off:'table off',manual_threshold:'forced (uncertified)'};
+const why={null:'certified',no_bundle:'not trained yet',low_confidence:'not sure enough',low_radius:'fragile input',empty_input:'empty message',drift:'traffic drifted',uncalibrated:'no certificate',min_confidence:'below your floor',never_serve:'label kept with LLM',canary:'canary held back',shadow:'shadow mode',off:'table off',manual_threshold:'forced (uncertified)'};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function spark(){const W=300,H=60;if(hist.length<2){$('spark').innerHTML='';return}
  const pts=hist.map((v,i)=>[i*W/(hist.length-1),H-4-v*(H-8)]);

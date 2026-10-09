@@ -29,16 +29,25 @@ API keys you can see and pass anywhere, plus a faster start: enum options, `shad
 - **Tied confidences could serve more than the certificate covered.** The threshold search tested the top *k* calibration answers but then served every answer tied with the *k*-th one. With many identical confidences (repeated messages), realised disagreement could exceed α. Each candidate is now tested on exactly the answers it would serve, in both procedures.
 - **Narrowed options could turn an uncertain answer into a certified one.** Asking for a subset of the options renormalised the confidence before comparing it with the threshold. Certification is now judged on the full-option answer; a narrowed request that changes the answer, or names no known option, is never certified.
 - **A table file with non-finite weights is refused** by both the C and the Python loader (it used to serve NaN confidences as certified), and every threshold check fails closed on NaN (Python and JavaScript).
-- **Answers that match no option are never logged**, also from function teachers; Enum members are logged by name/value; an async `llm` passed to the sync `decide()` raises a clear `TypeError` instead of logging a coroutine.
+- **Answers that match no option are never logged**, also from function teachers (old names from `rename` and 0/1 for yes/no still are); Enum members are logged by name/value; an async `llm` passed to the sync `decide()` raises a clear `TypeError` instead of logging a coroutine.
 - **`never_serve` works for yes/no questions** (`never_serve = ["yes"]`).
 - **`on_new_option = "serve"`** answers are now reported as `certified=False` with flag `new_options_served`.
-- **`record()` without a teacher** no longer tags rows as spot checks (they would have claimed a uniform sample that was not one).
+- **`record()` without a teacher** no longer tags rows as spot checks (they would have claimed a uniform sample that was not one). `record(..., source=shadow._src())` lets a caller that spot-checks served answers itself keep the sample uniform; the proxy's Decisions API and System One paths do this.
+- **Spot checks cover every answer the table served**, including `force_threshold` and `on_new_option="serve"` answers, not only certified ones.
+- **JavaScript**: with options both added and removed under `onNewOption: "serve"`, a removed option is never served.
+- **The proxy** checks the shape of chat requests up front (`messages` and `tools` must be lists of objects) and answers 400; other errors are no longer reported as a malformed request.
+- **CLI**: `shad0w ... | head` exits quietly; `stats` and `calibrate` skip a half-written log line; `SHAD0W_TIMEOUT=none` means no timeout again; the refused-key message names the actual key line.
 - **`shad0w serve` / proxy**: malformed request shapes get a 400 instead of a dropped connection; a negative `Content-Length` is refused.
 - **`shad0w certify` / `calibrate`** refuse fewer than 100 rows unless `--force` (one row used to silently stop the table from serving).
 - **`shadow_compile` with 100–120 rows** no longer crashes (it always leaves rows to fit on); re-certifying keeps the drift settings.
 - **Lone UTF-16 surrogates** in a message no longer crash `decide`.
 - **One malformed line in a log** is skipped with a warning naming its line number instead of blocking `train`.
 - **Settings**: a bad `SHAD0W_*` value names the variable; `[questions] intent = 3` gives a clear error; `auto_train=True`, negative `auto_train` and non-positive `timeout` are refused; `exposed="no"` means False; `options` needs two distinct choices; `OPENAI_API_KEY = ...` (any `*api_key` line) in `shad0w.toml` is refused like `api_key`.
+- **Empty messages are never served** (flag `empty_input`, Python and JavaScript): the table would only have echoed its most common answer.
+- **`shad0w serve`** stops quietly on Ctrl-C; `POST /v1/decide` without `state` explains the body it needs.
+- **`shad0w proxy --bundle`** refuses entries without `QUESTION=` and paths with no bundle, instead of ignoring them.
+- **`shad0w.toml`**: unknown keys are reported with a suggestion (`alpah` → did you mean `alpha`), and a syntax error names the file.
+- **`shad0w try`** says "would ask your LLM; the table's guess" for answers it would defer; `shad0w status` also accepts `--dir`.
 - **`llm_teacher()`** takes its model from `shad0w.configure(llm=...)` / `SHAD0W_LLM` when none is passed.
 - **Python 3.10**: `tomli` is now a dependency there (`shad0w init` writes a `shad0w.toml`); the test suite runs on 3.10.
 - **CLI**: unreachable servers, busy ports and similar OS errors print one line and exit 2; `decide`, `serve` and `bench` have help text; the generated `app.py` imports `os`.

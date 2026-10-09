@@ -192,7 +192,7 @@ Measured on public datasets with the certificate at α = 5% (full tables, source
 - **2.4 µs** per decision in Python (C core inside), **1.0 µs** in C, **10 µs** in JavaScript, **0.53 ms** end to end through the proxy at the openai SDK client. A hosted LLM call: 1416 ms.
 - The share grows with traffic: **0% → 60%** as logged answers went from 250 to 10,000 (BANKING77).
 - With Kev-0.8B (local, MLX) as the teacher, mean latency fell from **382 ms to 115 ms** (measured end to end) and accuracy moved +1.0 points.
-- Reproduce it on a laptop with a free teacher model (bge-small, 68% accurate) on BANKING77: the in-browser demo answers 63.3% locally with 3.3% realised disagreement; `python examples/shadow_demo.py` runs the same with the drift guard on and answers a few points less (about 59%).
+- Reproduce it on a laptop with a free teacher model (bge-small, 68% accurate) on BANKING77: the in-browser demo answers 63.3% locally with 3.3% realised disagreement; `python examples/shadow_demo.py` runs the same on your machine with the drift guard on (it answered between 59% and 70% locally in our runs, depending on library versions).
 - Where it loses: sentiment (SST-2) certifies 0% and defers everything; legal clauses (LEDGAR) 13%.
 
 Every number above has a source file, hardware, teacher and date on the [benchmarks page](https://2796gaurav.github.io/shad0w/docs/benchmarks.html).

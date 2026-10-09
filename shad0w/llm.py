@@ -283,7 +283,7 @@ class LLMTeacher:
         ans = self.parse(content)
         if ans is None:
             self.failures += 1
-            raise TeacherError(f"{self.name} replied {redact(content[:200], self._key)!r}, which matches none of {self.options}")
+            raise TeacherError(f"{self.name} replied {redact(content, self._key)[:200]!r}, which matches none of {self.options}")
         return ans
 
     def complete(self, text: str) -> str:
