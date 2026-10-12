@@ -12,6 +12,10 @@
 </p>
 
 <p align="center">
+  <a href="https://2796gaurav.github.io/shad0w/#film">▶ Watch how it works, in two minutes</a> · <a href="https://github.com/2796gaurav/shad0w/releases/latest">download the films (2 min and 30 s, 16:9 and 9:16)</a>
+</p>
+
+<p align="center">
   <a href="https://pypi.org/project/shad0wllm/"><img alt="PyPI" src="https://img.shields.io/pypi/v/shad0wllm?label=pip%20install%20shad0wllm&color=7c5cff&logo=pypi&logoColor=white&cacheSeconds=3600"></a>
   <a href="https://www.npmjs.com/package/shad0wllm"><img alt="npm" src="https://img.shields.io/npm/v/shad0wllm?label=npm%20i%20shad0wllm&color=7c5cff&logo=npm&logoColor=white&cacheSeconds=3600"></a>
   <a href="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml/badge.svg"></a>
