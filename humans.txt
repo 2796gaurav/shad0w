@@ -1,0 +1,9 @@
+/* TEAM */
+Gaurav Chauhan
+LinkedIn: https://www.linkedin.com/in/gauravc2708/
+GitHub: https://github.com/2796gaurav
+Email: gauravc2708@gmail.com
+
+/* SITE */
+shad0w, System 0 for your LLM. Apache-2.0.
+https://github.com/2796gaurav/shad0w

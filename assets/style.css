@@ -857,3 +857,4 @@ aside.toc { position: sticky; top: 88px; align-self: start; font-size: 13.5px; c
   .pong-over { gap: 8px; padding: 12px; } .pong-over b { font-size: 22px; } .pong-over span { font-size: 13px; }
   .pong-over .btn { height: 38px; }
 }
+footer .fbrand p.fsocial { margin-top: 8px; font-size: 13px; }

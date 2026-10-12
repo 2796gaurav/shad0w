@@ -44,6 +44,14 @@
 - [System Zero: the reflex layer below your LLM](https://2796gaurav.github.io/shad0w/blog/system-zero.html): shad0w is the shadow of your LLM. It watches your LLM, learns to answer like it, and takes the repeat traffic, so the LLM only gets what shad0w is not sure about. What System Zero is, why a cache is not enough, and where shad0w stays silent.
 - [How shad0w proves it agrees with your LLM](https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html): The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.
 
+## Watch and play
+- [How shad0w works, in two minutes (film)](https://2796gaurav.github.io/shad0w/#film): MP4 at https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4
+- [Snake arena](https://2796gaurav.github.io/shad0w/arena/): shad0w, small decision models and a hosted LLM play the same snake games at game speed
+- [Play Pong against shad0w](https://2796gaurav.github.io/shad0w/pong/) · [Playground: a 77-intent table in your browser](https://2796gaurav.github.io/shad0w/demo/)
+
+## Author
+- Gaurav Chauhan · [LinkedIn](https://www.linkedin.com/in/gauravc2708/) · [GitHub](https://github.com/2796gaurav) · gauravc2708@gmail.com
+
 ## Code
 - [GitHub](https://github.com/2796gaurav/shad0w)
 - [PyPI: shad0wllm](https://pypi.org/project/shad0wllm/)
