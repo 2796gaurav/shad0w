@@ -36,6 +36,8 @@
     <a href="demo/">Playground</a>
     <a href="pong/">Pong</a>
     <a href="arena/">Arena</a>
+    <a href="duel/">Duel</a>
+    <a href="doom/">Doom</a>
     <a href="docs/">Docs</a>
     <a href="blog/">Blog</a>
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
@@ -507,8 +509,16 @@
 
 <section class="section" id="games">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">at game speed</span><h2>Fast enough to <span class="hl">play.</span></h2><p>A game gives every decision a few milliseconds. We taught shad0w two games from an LLM's answers, then put it where speed decides who wins.</p></div>
+    <div class="section-head reveal"><span class="kicker">at game speed</span><h2>Fast enough to <span class="hl">play.</span></h2><p>A game gives every decision a few milliseconds. We taught shad0w four games from an LLM's answers, then put it where speed decides who wins.</p></div>
     <div class="games-grid">
+      <a class="game-card reveal" href="duel/">
+        <img src="assets/duel-thumb.jpg" alt="First-person view of the duel: the shad0w bot peeking past a crate" width="640" height="360" loading="lazy">
+        <div><span class="kicker">new · play it in your browser</span><h3>Duel: you vs shad0w, one rifle</h3><p>A first-person 1v1 on a small desert map. Its brain learned tactics from an LLM and decides move, stance and fire every frame in your tab. Crouch behind crates, jump to peek.</p><b>Play →</b></div>
+      </a>
+      <a class="game-card reveal" href="doom/">
+        <img src="assets/doom-thumb.jpg" alt="Doom, four lanes: shad0w fighting while the LLM lanes wait for their answers" width="640" height="360" loading="lazy">
+        <div><span class="kicker">new · recorded head to head</span><h3>Can System 0 run Doom?</h3><p>An LLM taught it with the game paused. With the clock running, the LLM waits seconds for each move and dies; its shadow decides every tic in microseconds and keeps fighting.</p><b>Watch the race →</b></div>
+      </a>
       <a class="game-card reveal" href="pong/">
         <svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" rx="10" fill="#000"/><line x1="160" y1="10" x2="160" y2="170" stroke="#e5e5e5" stroke-opacity=".15" stroke-dasharray="6 9" stroke-width="2"/><rect x="18" y="58" width="7" height="46" fill="#e5e5e5"/><rect x="299" y="83" width="7" height="46" fill="#14213d"/><rect x="295" y="79" width="7" height="46" fill="#fca311"/><circle cx="214" cy="70" r="5" fill="#fff"/><circle cx="118" cy="128" r="5" fill="#fff"/><circle cx="252" cy="118" r="5" fill="#fff" opacity=".6"/></svg>
         <div><span class="kicker">live, in your browser</span><h3>Play Pong against shad0w</h3><p>It decides every frame in about 1.5 µs (Node, Apple M5 Pro; your browser is measured live) from a 6 KB table that agrees with its LLM on 99.8% of moves. Add up to six balls.</p><b>Play →</b></div>
@@ -679,7 +689,7 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
     <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
-    <div><h6>Product</h6><a href="demo/">Playground</a><a href="pong/">Play Pong vs shad0w</a><a href="arena/">Snake arena</a><a href="docs/">Get started</a><a href="docs/benchmarks.html">Benchmarks</a><a href="docs/compare.html">Compare</a></div>
+    <div><h6>Product</h6><a href="demo/">Playground</a><a href="pong/">Play Pong vs shad0w</a><a href="arena/">Snake arena</a><a href="duel/">Duel vs shad0w</a><a href="doom/">Doom</a><a href="docs/">Get started</a><a href="docs/benchmarks.html">Benchmarks</a><a href="docs/compare.html">Compare</a></div>
     <div><h6>Read</h6><a href="blog/">Blog</a><a href="blog/system-zero.html">System Zero</a><a href="docs/guarantee.html">The guarantee</a><a href="docs/limits.html">Limits</a></div>
     <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="llms.txt">llms.txt</a></div>
   </div>

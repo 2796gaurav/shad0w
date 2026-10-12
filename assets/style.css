@@ -858,3 +858,30 @@ aside.toc { position: sticky; top: 88px; align-self: start; font-size: 13.5px; c
   .pong-over .btn { height: 38px; }
 }
 footer .fbrand p.fsocial { margin-top: 8px; font-size: 13px; }
+
+/* ---------- duel (first-person 1v1 vs shad0w) ---------- */
+.duel-shell { grid-template-columns: minmax(0, 1fr) 280px; }
+.duel-court canvas#view { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; cursor: crosshair; background: #000; }
+.duel-hud { position: absolute; inset: 0; pointer-events: none; font-family: var(--mono); }
+.duel-hud .cross { --gap: 8px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+.duel-hud .cross i { position: absolute; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.55); }
+.duel-hud .cross i:nth-child(1) { width: 2px; height: 9px; left: -1px; top: calc(-9px - var(--gap)); }
+.duel-hud .cross i:nth-child(2) { width: 2px; height: 9px; left: -1px; top: var(--gap); }
+.duel-hud .cross i:nth-child(3) { width: 9px; height: 2px; top: -1px; left: calc(-9px - var(--gap)); }
+.duel-hud .cross i:nth-child(4) { width: 9px; height: 2px; top: -1px; left: var(--gap); }
+.duel-hud .hit { position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; opacity: 0; transition: opacity .05s;
+  background: linear-gradient(45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%); }
+.duel-hud .hit.head { filter: drop-shadow(0 0 3px #fca311) sepia(1) saturate(6) hue-rotate(-12deg); }
+.duel-hud .dmg { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse at center, transparent 45%, rgba(200,20,20,.55)); }
+.duel-hud .banner { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); padding: 10px 18px; border-radius: 10px; background: rgba(0,0,0,.6);
+  color: #fff; font: 600 clamp(14px, 1.8vw, 22px) var(--display); letter-spacing: -.01em; white-space: nowrap; }
+.duel-hud .mini { position: absolute; left: 12px; top: 12px; width: clamp(120px, 20%, 176px); height: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35); }
+.duel-hud .vitals { position: absolute; left: 14px; bottom: 12px; display: flex; gap: 18px; }
+.duel-hud .vitals span, .duel-hud .brain { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 8px; background: rgba(0,0,0,.45); }
+.duel-hud i { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.7); }
+.duel-hud b { color: #fff; font-size: clamp(14px, 1.6vw, 20px); font-variant-numeric: tabular-nums; }
+.duel-hud .brain { position: absolute; right: 12px; bottom: 12px; text-align: right; }
+.duel-hud .brain span { color: #fff; font-size: 12.5px; }
+.duel-hud .brain b { color: var(--orange); font-size: 13px; }
+@media (max-width: 900px) { .duel-shell { grid-template-columns: 1fr; } .duel-hud .brain { display: none; } }
+.game-card img { width: 100%; height: auto; display: block; border-radius: 10px; aspect-ratio: 16 / 9; object-fit: cover; }

@@ -1,0 +1,68 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "gpt-4.1-mini",
+    "alpha": 0.05,
+    "delta": 0.1
+  },
+  "questions": {
+    "move": {
+      "type": "choice",
+      "options": [
+        "push",
+        "retreat",
+        "strafe_left",
+        "strafe_right",
+        "hold",
+        "to_cover"
+      ],
+      "threshold": 0.6483669281005859,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.5542611479759216,
+        "base": 0.08166666666666667,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    },
+    "stance": {
+      "type": "choice",
+      "options": [
+        "stand",
+        "crouch",
+        "jump"
+      ],
+      "threshold": 0.7541041374206543,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.7021836042404175,
+        "base": 0.09583333333333333,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    },
+    "fire": {
+      "type": "choice",
+      "options": [
+        "fire",
+        "hold_fire",
+        "reload"
+      ],
+      "threshold": 0.5608032941818237,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.8173125982284546,
+        "base": 0.011666666666666714,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    }
+  }
+}

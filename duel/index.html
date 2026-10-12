@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Duel: a 1v1 rifle fight against shad0w, in your browser · shad0w</title>
+<meta name="description" content="A first-person 1v1 on a small desert map. Your opponent&#x27;s brain learned tactics from an LLM and decides 60 times a second in your browser, in microseconds.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/duel/">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Duel: a 1v1 rifle fight against shad0w, in your browser · shad0w">
+<meta property="og:description" content="A first-person 1v1 on a small desert map. Your opponent&#x27;s brain learned tactics from an LLM and decides 60 times a second in your browser, in microseconds."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/duel/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og-duel.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Duel: a 1v1 rifle fight against shad0w, in your browser · shad0w">
+<meta name="twitter:description" content="A first-person 1v1 on a small desert map. Your opponent&#x27;s brain learned tactics from an LLM and decides 60 times a second in your browser, in microseconds."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og-duel.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../duel/" class=active>Duel</a>
+    <a href="../doom/">Doom</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap pong duel arena" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:880px;margin-bottom:26px">
+    <div class="kicker">play · a 1v1 rifle duel · shad0w runs in this tab</div>
+    <h1 class="arena-title">You vs shad0w.<br><span class="hl">One rifle. Sixty decisions a second.</span></h1>
+    <p>A first-person duel on a small three-lane desert map. Your opponent's brain is a shad0w table that learned tactics from an LLM's answers: when to push, sidestep, crouch, jump, fire or reload. Here it runs in your browser, with no server and no network, and makes those three calls every frame in microseconds. The LLM it learned from needs over a second per decision; at this speed it would still be thinking about your first peek.</p>
+  </div>
+
+  <div class="pong-shell duel-shell">
+    <div class="court duel-court">
+      <canvas id="view" aria-label="First-person view of the duel"></canvas>
+      <div id="hud" class="duel-hud" aria-hidden="true">
+        <div class="cross" id="cross"><i></i><i></i><i></i><i></i></div>
+        <div class="hit" id="hit"></div>
+        <div class="dmg" id="dmg"></div>
+        <div class="banner" id="banner" hidden></div>
+        <canvas class="mini" id="mini"></canvas>
+        <div class="vitals"><span><i>health</i><b id="hp">100</b></span><span><i>ammo</i><b id="ammo">30 / 30</b></span><span><i>time</i><b id="timer">75</b></span></div>
+        <div class="brain"><i>shad0w is deciding</i><span id="brain">–</span></div>
+      </div>
+      <div class="pong-score"><span><i>you</i><b id="sYou">0</b></span><span><b id="sShad">0</b><i>shad0w</i></span></div>
+      <div class="pong-over" id="over">
+        <b id="overTitle">Ready?</b>
+        <span id="overSub">WASD to move · mouse to aim · click to shoot · Space to jump · Ctrl or C to crouch · R to reload. Head shots kill at once. First to 5 rounds.</span>
+        <button class="btn primary" id="start" type="button">Play →</button>
+      </div>
+    </div>
+
+    <aside class="pong-side">
+      <div class="panel">
+        <h3>Its hand</h3>
+        <span class="lbl">Difficulty</span><div class="chips" id="cSkill"></div>
+        <p class="muted" style="font-size:12.5px;margin:4px 0 0">The brain is the same at every level. Difficulty changes only its hand: how fast it reacts once it sees you (420 ms on easy, 160 ms on elite) and how fast it can turn.</p>
+      </div>
+      <div class="panel hud">
+        <h3>shad0w, live</h3>
+        <dl class="kv">
+          <dt>time per decision</dt><dd id="hUs">–</dd>
+          <dt>of each frame's 16.7 ms</dt><dd id="hBudget">–</dd>
+          <dt>decisions this match</dt><dd id="hN">0</dd>
+          <dt>decisions it could make per second</dt><dd id="hRate">–</dd>
+          <dt>certified decisions</dt><dd id="hCert">–</dd>
+        </dl>
+        <p class="muted" style="font-size:12.5px;margin:12px 0 0">One decision is three answers (move, stance, fire). Measured in this tab: recent situations are decided in a block and divided, because browser clocks are too coarse to time one.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how this opponent was made</div><h2>An LLM taught it. With the game paused.</h2></div>
+    <ol class="steps" id="howList"></ol>
+    <div class="callout" style="margin-top:18px" id="honest"></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">its brain, against other brains</div><h2>Same opponent, different brains.</h2>
+      <p>Before going live, every brain played the same 400 rounds against the same scripted opponent, with the same hand. Win rates are from those rounds.</p></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">more</div><h2>Other games where it decides in time.</h2></div>
+    <p><a class="btn" href="../doom/">Can System 0 run Doom? →</a> <a class="btn" href="../arena/">Snake arena →</a> <a class="btn" href="../pong/">Pong →</a></p>
+  </section>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const info = await (await fetch("duel.json")).json();
+const t = info.train, ev = info.eval;
+$("howList").innerHTML = [
+  `<b>Play.</b> A hand-written bot and a scripted opponent fought ${t.rounds_explored.toLocaleString("en-US")} rounds on this map, and ${t.rows.toLocaleString("en-US")} moments were picked from them: peeks, trades, reloads, low health, lost contact.`,
+  `<b>Ask.</b> Each moment was described in words ("Enemy visible, mid range, behind low cover. Your aim: almost on target. You: standing, exposed. Ammo low.") and ${t.teacher_name} chose move, stance and fire, with the game paused.${t.teacher_ms_p50 ? ` Its median answer took ${t.teacher_ms_p50.toLocaleString("en-US")} ms.` : ""}`,
+  `<b>Learn.</b> shad0w compiled those answers into three small tables (${t.table_kb} KB in all) in ${t.train_s} s, and certified them: where it serves an answer, it agrees with the LLM ${t.agreement_pct}% of the time on held-out moments.`,
+  `<b>Play again.</b> The tables run here, in your browser, 60 times a second. When a table is not sure, it still answers (there is no time to ask the LLM mid-fight); the panel shows how often it was certified.`,
+].map((s) => `<li>${s}</li>`).join("");
+$("honest").innerHTML = `<b>What is and isn't shad0w here.</b> shad0w makes the decisions: push or retreat, sidestep or hold, stand, crouch or jump, fire, hold fire or reload. The aiming is mechanical, like a human hand: once it sees you, its crosshair turns towards your chest after a reaction delay and at a limited speed. That hand is what the difficulty changes. Shots have the same spread and recoil rules for both of you.`;
+$("evalTable").innerHTML = `<tr><th>brain</th><th>wins</th><th>losses</th><th>draws</th><th>win rate</th><th>time per decision</th></tr>` +
+  ev.rows.map((r) => `<tr${r.hl ? ' class="hl"' : ""}><td>${r.name}</td><td>${r.win}</td><td>${r.loss}</td><td>${r.draw}</td><td><b>${r.rate}%</b></td><td>${r.time}</td></tr>`).join("");
+</script>
+<script type="module" src="../assets/duel-play.mjs"></script>
+</body>
+</html>

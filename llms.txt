@@ -47,6 +47,8 @@
 ## Watch and play
 - [How shad0w works, in two minutes (film)](https://2796gaurav.github.io/shad0w/#film): MP4 at https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4
 - [Snake arena](https://2796gaurav.github.io/shad0w/arena/): shad0w, small decision models and a hosted LLM play the same snake games at game speed
+- [Can System 0 run Doom?](https://2796gaurav.github.io/shad0w/doom/): an LLM plays ViZDoom with the game paused; shad0w learns its choices and plays every tic in microseconds, against the LLM in real time (recorded, replayed)
+- [Duel: a 1v1 rifle fight against shad0w](https://2796gaurav.github.io/shad0w/duel/): a first-person browser game whose opponent's tactics were learned from an LLM and decided 60 times a second
 - [Play Pong against shad0w](https://2796gaurav.github.io/shad0w/pong/) · [Playground: a 77-intent table in your browser](https://2796gaurav.github.io/shad0w/demo/)
 
 ## Author

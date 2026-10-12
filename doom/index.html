@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Can System 0 run Doom? An LLM&#x27;s shadow plays every tic · shad0w</title>
+<meta name="description" content="An LLM plays Doom with the game paused. shad0w learns its choices and plays every tic in microseconds, against the same LLM in real time. Recorded and replayed.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/doom/">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Can System 0 run Doom? An LLM&#x27;s shadow plays every tic · shad0w">
+<meta property="og:description" content="An LLM plays Doom with the game paused. shad0w learns its choices and plays every tic in microseconds, against the same LLM in real time. Recorded and replayed."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/doom/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og-doom.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Can System 0 run Doom? An LLM&#x27;s shadow plays every tic · shad0w">
+<meta name="twitter:description" content="An LLM plays Doom with the game paused. shad0w learns its choices and plays every tic in microseconds, against the same LLM in real time. Recorded and replayed."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og-doom.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../#compare">Compare</a>
+    <a href="../demo/">Playground</a>
+    <a href="../pong/">Pong</a>
+    <a href="../arena/">Arena</a>
+    <a href="../duel/">Duel</a>
+    <a href="../doom/" class=active>Doom</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap arena doom" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:900px;margin-bottom:26px">
+    <div class="kicker">arena · Doom · System 0 vs an LLM, at game speed · recorded and replayed</div>
+    <h1 class="arena-title">Can System 0 run Doom?<br><span class="hl">It decides every tic.</span></h1>
+    <p>Doom runs at 35 tics a second. An LLM played it with the game paused, one answer per tic, and shad0w learned its choices into a <b id="kb">–</b> table. Then everyone played the same games with the clock running: the table answers in microseconds, the LLM in seconds. While an answer is on its way, the marine stands still. Every frame below is real ViZDoom (Freedoom assets), replayed move for move from the recordings.</p>
+  </div>
+
+  <div class="panel" style="padding:10px">
+    <video id="film" controls playsinline preload="metadata" style="width:100%;border-radius:10px;display:block;background:#000" poster="doom-poster.jpg">
+      <source src="doom-race.mp4" type="video/mp4">
+    </video>
+    <p class="muted" style="font-size:13px;margin:10px 4px 2px" id="filmNote"></p>
+  </div>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">the whole picture</div><h2>Same games. The clock decides.</h2>
+      <p id="resLead"></p></div>
+    <div class="panel"><div class="chart-scroll"><svg id="killChart" class="arena-chart" role="img" aria-label="Average kills per game for each decision maker"></svg></div></div>
+    <div class="panel" style="margin-top:14px"><div class="table-wrap"><table class="arena-table" id="resTable"></table></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">time per decision</div><h2>The tic budget.</h2>
+      <p>Median time to decide one move, on a log scale, against one Doom tic (28.6 ms). Anything to the right of the line misses the tic: the game moves on without it.</p></div>
+    <div class="panel"><div class="chart-scroll"><svg id="budgetChart" class="arena-chart" role="img" aria-label="Time per decision on a log scale against one tic"></svg></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how the table was made</div><h2>The LLM played paused. shad0w watched.</h2></div>
+    <ol class="steps" id="howList"></ol>
+    <div class="callout" style="margin-top:18px" id="honest"></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">play one yourself</div><h2>A 1v1 against a shad0w, in your browser.</h2>
+      <p>The duel is a first-person rifle fight on a small desert map. Its brain learned tactics from an LLM the same way, and decides 60 times a second in your tab.</p></div>
+    <p><a class="btn primary" href="../duel/">Play the duel →</a> <a class="btn" href="../arena/">Snake arena →</a> <a class="btn" href="../pong/">Pong →</a></p>
+  </section>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../demo/">Playground</a><a href="../pong/">Play Pong vs shad0w</a><a href="../arena/">Snake arena</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../docs/">Get started</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const D = await (await fetch("doom.json")).json();
+const L = D.lanes, t = D.train, fmt = (ms) => ms < 1 ? `${(ms * 1000).toFixed(1)} µs` : `${Math.round(ms).toLocaleString("en-US")} ms`;
+const sh = L.find((r) => r.lane === "shad0w"), live = L.filter((r) => r.lane.startsWith("llm")), paused = L.find((r) => r.lane.startsWith("paused"));
+$("kb").textContent = `${t.table_kb} KB`;
+$("filmNote").textContent = `One recorded game (seed ${D.film_seed ?? sh.seeds[0]}), all lanes from the same start, shown in game time. The bar at the bottom of a panel means that lane's answer had not arrived yet that tic.${paused ? ` The paused lane's game took ${paused.wall_minutes[paused.seeds.indexOf(D.film_seed ?? 1)]} minutes of real time to play.` : ""} ${D.machine}.`;
+const onSeeds = (r, seeds) => { const k = r.seeds.map((s, i) => [s, r.kills_all[i]]).filter(([s]) => seeds.includes(s)).map(([, k]) => k); return +(k.reduce((a, b) => a + b, 0) / k.length).toFixed(1); };
+$("resLead").innerHTML = `Average kills per game: ${sh.games} recorded games for each lane, the same seeds for every lane` +
+  (paused ? `, except the paused LLM, which played ${paused.games} (seeds ${paused.seeds.join(", ")}): each of its games took ${Math.min(...paused.wall_minutes)}–${Math.max(...paused.wall_minutes)} minutes of real calls. On those same ${paused.games} games shad0w averaged <b>${onSeeds(sh, paused.seeds)}</b> kills and the LLM it learned from <b>${paused.kills}</b>` : "") +
+  `. With the clock running, ${live.map((r) => `${r.name.split(",")[0]} averaged ${r.kills}`).join(" and ")}.`;
+const colors = { shad0w: "var(--orange)" };
+// kills chart
+{
+  const W = 860, rowH = 44, H = L.length * rowH + 30, max = Math.max(...L.map((r) => r.kills), 1), x0 = 250;
+  $("killChart").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  $("killChart").innerHTML = L.map((r, i) => { const y = 10 + i * rowH, w = (W - x0 - 70) * r.kills / max, hl = r.lane === "shad0w";
+    return `<text x="0" y="${y + 18}" class="lbl" fill="currentColor" font-size="14" font-weight="${hl ? 700 : 500}">${r.name}</text>
+      <text x="0" y="${y + 34}" fill="var(--text-dim)" font-size="11.5">${r.sub}</text>
+      <rect x="${x0}" y="${y + 6}" width="${Math.max(2, w)}" height="22" rx="5" fill="${hl ? "var(--orange)" : r.lane.startsWith("shad0w") ? "color-mix(in srgb, var(--orange) 45%, transparent)" : "var(--text-dim)"}"/>
+      <text x="${x0 + Math.max(2, w) + 8}" y="${y + 22}" font-size="14" font-weight="700" fill="currentColor">${r.kills}</text>`; }).join("");
+}
+// table
+$("resTable").innerHTML = `<tr><th>decision maker</th><th>kills</th><th>survived</th><th>decisions a game</th><th>time per decision</th><th>tics spent waiting</th></tr>` +
+  L.map((r) => `<tr${r.lane === "shad0w" ? ' class="hl"' : ""}><td><b>${r.name}</b><br><span class="muted" style="font-size:12.5px">${r.sub}</span></td><td><b>${r.kills}</b></td><td>${r.seconds} s</td><td>${r.decisions.toLocaleString("en-US")}</td><td>${fmt(r.latency_ms)}</td><td>${r.lane.startsWith("paused") ? "none (the game waits)" : `${Math.round(r.late_share * 100)}%`}</td></tr>`).join("");
+// budget chart (log scale)
+{
+  const items = L.filter((r) => !r.lane.endsWith("10")).map((r) => ({ name: r.name.split(",")[0] + (r.lane.startsWith("paused") ? " (paused)" : ""), ms: r.latency_ms, hl: r.lane === "shad0w" }));
+  if (D.c_ns_p50) items.unshift({ name: "shad0w in C", ms: D.c_ns_p50 / 1e6, hl: true });
+  const W = 860, rowH = 34, H = items.length * rowH + 50, x0 = 200, lo = Math.log10(0.0005), hi = Math.log10(20000), X = (ms) => x0 + (W - x0 - 20) * (Math.log10(ms) - lo) / (hi - lo);
+  const tic = X(D.tic_ms);
+  let s = [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000].map((v) => `<line x1="${X(v)}" x2="${X(v)}" y1="0" y2="${H - 30}" stroke="var(--line)"/><text x="${X(v)}" y="${H - 12}" font-size="11" text-anchor="middle" fill="var(--text-dim)">${v < 1 ? `${v * 1000} µs` : v < 1000 ? `${v} ms` : `${v / 1000} s`}</text>`).join("");
+  s += `<line x1="${tic}" x2="${tic}" y1="0" y2="${H - 30}" stroke="var(--orange)" stroke-dasharray="4 4"/><text x="${tic + 6}" y="12" font-size="11.5" fill="var(--orange)">one tic: ${D.tic_ms} ms</text>`;
+  s += items.map((it, i) => { const y = 22 + i * rowH; return `<text x="0" y="${y + 13}" font-size="13" fill="currentColor" font-weight="${it.hl ? 700 : 500}">${it.name}</text>
+    <rect x="${x0}" y="${y}" width="${Math.max(2, X(it.ms) - x0)}" height="16" rx="4" fill="${it.hl ? "var(--orange)" : "var(--text-dim)"}"/>
+    <text x="${X(it.ms) + 6}" y="${y + 13}" font-size="12" fill="currentColor">${fmt(it.ms)}</text>`; }).join("");
+  $("budgetChart").setAttribute("viewBox", `0 0 ${W} ${H}`); $("budgetChart").innerHTML = s;
+}
+$("howList").innerHTML = [
+  `<b>Play, paused.</b> Exploratory games produced ${t.rows.toLocaleString("en-US")} moments, from easy aims to being surrounded. Each was put to ${t.teacher_name ?? "a hosted LLM"} in words ("Nearest: demon slightly right, close. 4 monsters: 1 to the left, 3 to the right. Ammo 17.") with the game paused, and it picked turn left, turn right, shoot or wait.`,
+  `<b>Learn.</b> shad0w compiled those answers into a ${t.table_kb} KB table in ${t.train_s} s. On held-out moments it agrees with the LLM ${Math.round(t.agreement * 100)}% of the time; it is certified on ${Math.round(t.certified_share * 100)}% of them (where it serves, at most 5% disagreement, 90% confidence).`,
+  `<b>Learn where it goes.</b> Then the table played, and the LLM answered the moments the table actually reached; the table was trained again on everything (one round of DAgger). A student is only as good as what it was taught about its own mistakes.`,
+  `<b>Race.</b> Every lane played the same seeds with the clock running. A lane's answer lands on the first tic after it arrives; until then the marine does nothing. Latency is measured on every real call.`,
+].map((s) => `<li>${s}</li>`).join("");
+$("honest").innerHTML = `<b>What this does and doesn't show.</b> The table is only as good as the LLM's choices: with the game paused, the LLM is the teacher's true skill, and shad0w's edge is speed, not wisdom. ` +
+  `The LLM lanes are real calls to a hosted a hosted LLM and gpt-4.1 from this laptop, so their latency includes the network, as any hosted model's would. "shad0w, 10 times a second" is the same table asked at the rate the Jev team published for its Doom demo; it shows what the decision rate alone is worth, and is not a measurement of Jev. ` +
+  `One scenario (${D.scenario}). ${D.machine}.`;
+</script>
+</body>
+</html>
