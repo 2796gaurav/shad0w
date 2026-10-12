@@ -53,6 +53,7 @@
         <div class="cross" id="cross"><i></i><i></i><i></i><i></i></div>
         <div class="hit" id="hit"></div>
         <div class="dmg" id="dmg"></div>
+        <div class="dmgdir" id="dmgDir"></div>
         <div class="banner" id="banner" hidden></div>
         <div class="radar"><canvas class="mini" id="mini"></canvas><span id="where"></span></div>
         <div class="feed" id="feed"></div>
@@ -64,16 +65,17 @@
       <div class="pong-score"><span><i>you</i><b id="sYou">0</b></span><span><b id="sShad">0</b><i>shad0w</i></span></div>
       <div class="pong-over" id="over">
         <b id="overTitle">Ready?</b>
-        <span id="overSub">WASD to move · mouse to aim · click to shoot · Shift to walk silently · Space to jump · Ctrl or C to crouch · R to reload. Its footsteps tell you where it is: there is no enemy on the radar. Head shots kill. First to 5 rounds.</span>
+        <span id="overSub">WASD to move · mouse to aim · click to shoot · Shift to walk silently · Space to jump · Ctrl or C to crouch · R to reload. Its footsteps tell you where it is: there is no enemy on the radar. Head shots kill. First to 5 rounds. There is one setting: the hardest.</span>
         <button class="btn primary" id="start" type="button">Play →</button>
       </div>
     </div>
 
     <aside class="pong-side">
-      <div class="panel">
-        <h3>Its hand</h3>
-        <span class="lbl">Difficulty</span><div class="chips" id="cSkill"></div>
-        <p class="muted" style="font-size:12.5px;margin:4px 0 0">The brain is the same at every level. Difficulty changes only its hand: how fast it reacts once it sees you (420 ms on easy, 160 ms on elite) and how fast it can turn.</p>
+      <div class="panel brainp">
+        <h3>What it is thinking</h3>
+        <p class="muted" style="font-size:12.5px;margin:0 0 8px">The words it reads right now, and its three answers with how sure it is. Refreshed 8 times a second; it decides 60.</p>
+        <code class="btext" id="bText">Press Play.</code>
+        <div id="bBars"></div>
       </div>
       <div class="panel hud">
         <h3>shad0w, live</h3>
@@ -96,8 +98,14 @@
   </section>
 
   <section class="arena-sec">
+    <div class="section-head"><div class="kicker">the setting you play</div><h2>How hard is it?</h2>
+      <p>You always face the hardest version: its hand reacts in 150 ms, about as fast as the quickest human reactions, and turns fast. Before going live it played 600 rounds against each of two simulated players with the same rules and the same rifle: a skilled player (250 ms reactions) and a very good one (180 ms). They are simulations, not people: a real player also reads sounds, pre-aims angles and learns its habits, so expect your own result to differ.</p></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table" id="hardTable"></table></div></div>
+  </section>
+
+  <section class="arena-sec">
     <div class="section-head"><div class="kicker">its brain, against other brains</div><h2>Same opponent, different brains.</h2>
-      <p>Before going live, every brain played against the same scripted opponent with the same hand: 400 rounds each for shad0w and the hand-written rules, 10 each for the LLM itself (every one of its rounds costs real calls). The LLM, with the game paused, decides 10 times a second; its student decides 60. A brain is only as good as its teacher's choices, and a well-tuned hand-written bot is still a strong baseline.</p></div>
+      <p>To compare brains with the LLM itself, every brain played against the same scripted opponent with the same, slower hand (not the one you face): 400 rounds each for shad0w and the hand-written rules, 10 each for the LLM itself (every one of its rounds costs real calls). The LLM, with the game paused, decides 10 times a second; its student decides 60. A brain is only as good as its teacher's choices, and a well-tuned hand-written bot is still a strong baseline.</p></div>
     <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
   </section>
 
@@ -127,7 +135,9 @@ $("howList").innerHTML = [
   `<b>Learn.</b> shad0w compiled those answers into three small tables (${t.table_kb} KB in all) in ${t.train_s} s, and certified them: where it serves an answer, it agrees with the LLM ${t.agreement_pct}% of the time on held-out moments.`,
   `<b>Play again.</b> The tables run here, in your browser, 60 times a second. When a table is not sure, it still answers (there is no time to ask the LLM mid-fight); the panel shows how often it was certified.`,
 ].map((s) => `<li>${s}</li>`).join("");
-$("honest").innerHTML = `<b>What is and isn't shad0w here.</b> shad0w makes the decisions: push or retreat, sidestep or hold, stand, crouch or jump, fire, hold fire or reload. The aiming is mechanical, like a human hand: once it sees you, its crosshair turns towards your chest after a reaction delay and at a limited speed. That hand is what the difficulty changes. Shots have the same spread and recoil rules for both of you.`;
+$("honest").innerHTML = `<b>What is and isn't shad0w here.</b> shad0w makes the decisions: push or retreat, sidestep or hold, stand, crouch or jump, fire, hold fire or reload. The aiming is mechanical, like a human hand: once it sees you, its crosshair turns towards you after a 150 ms reaction (the fastest human reactions) and at a limited speed. There is no easy mode. Shots have the same spread and recoil rules for both of you, and it can't see or shoot through walls. One thing it gets for free: until it first sees you, its path leads towards where you really are (a stand-in for the map sense and footsteps a real player uses). After first contact it only knows where it last saw you and whether it just heard shots.`;
+$("hardTable").innerHTML = `<tr><th>against</th><th>brain</th><th>rounds</th><th>wins</th><th>losses</th><th>draws</th><th>win rate</th><th>time per decision</th></tr>` +
+  info.hard.rows.map((r) => `<tr${r.hl ? ' class="hl"' : ""}><td>${r.vs}</td><td>${r.name}</td><td>${r.rounds}</td><td>${r.win}</td><td>${r.loss}</td><td>${r.draw}</td><td><b>${r.rate}%</b></td><td>${r.time}</td></tr>`).join("");
 $("evalTable").innerHTML = `<tr><th>brain</th><th>rounds</th><th>wins</th><th>losses</th><th>draws</th><th>win rate</th><th>time per decision</th></tr>` +
   ev.rows.map((r) => `<tr${r.hl ? ' class="hl"' : ""}><td>${r.name}</td><td>${r.rounds}</td><td>${r.win}</td><td>${r.loss}</td><td>${r.draw}</td><td><b>${r.rate}%</b></td><td>${r.time}</td></tr>`).join("");
 </script>

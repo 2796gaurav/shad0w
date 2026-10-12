@@ -892,3 +892,22 @@ footer .fbrand p.fsocial { margin-top: 8px; font-size: 13px; }
 @media (max-width: 900px) { .duel-shell { grid-template-columns: 1fr; } .duel-hud .brain { display: none; } }
 .game-card img { width: 100%; height: auto; display: block; border-radius: 10px; aspect-ratio: 16 / 9; object-fit: cover; }
 @media (max-width: 640px) { footer .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* duel: damage direction, brain panel, scoreboard */
+.duel-hud .dmgdir { --a: 0deg; position: absolute; left: 50%; top: 50%; width: 180px; height: 180px; margin: -90px 0 0 -90px; opacity: 0; transform: rotate(var(--a));
+  background: radial-gradient(ellipse 40px 14px at 50% 6px, rgba(220,30,20,.85), transparent 70%); }
+.brainp .btext { display: block; font: 12px/1.45 var(--mono); color: var(--text); background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; min-height: 64px; white-space: normal; }
+.brainp .bq { display: grid; gap: 3px; margin-bottom: 10px; font: 12px var(--mono); }
+.brainp .bl { color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; font-size: 10.5px; }
+.brainp .bo { position: relative; display: flex; justify-content: space-between; padding: 3px 8px; border-radius: 6px; overflow: hidden; background: rgba(255,255,255,.04); }
+.brainp .bo i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255,255,255,.08); transition: width .12s; }
+.brainp .bo.top i { background: var(--orange); opacity: .35; }
+.brainp .bo em, .brainp .bo b { position: relative; font-style: normal; font-weight: 500; }
+.brainp .bo.top em { color: var(--white); }
+.brainp .bc { font-size: 10.5px; color: var(--text-dim); }
+.pong-over .sb { margin: 4px auto 10px; border-collapse: collapse; font: 13px var(--mono); }
+.pong-over .sb th, .pong-over .sb td { padding: 4px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.12); }
+.pong-over .sb th { color: var(--text-dim); font-weight: 500; font-size: 11px; }
+.pong-over .sb .o { color: var(--orange); }
+.pong-over span b { font: inherit; font-weight: 700; letter-spacing: normal; color: var(--white); }
+.pong-over span b.o { color: var(--orange); }

@@ -2,7 +2,7 @@
 // the training harness: CS 1.6's AK-47 numbers, speeds and spray) and the bot's decisions come from a shad0w table in this tab.
 // Everything you see and hear is original and made in code: no assets from any commercial game.
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
-import { MAP, MW, MH, H_WALL, H_CRATE, H_BOX, DT, round, step, describe, visible, eye, SKILL, spreadDeg, airborne, moving, callout } from "./duel.mjs";
+import { MAP, MW, MH, H_WALL, H_CRATE, H_BOX, DT, round, step, describe, visible, eye, HARDEST, spreadDeg, airborne, moving, callout } from "./duel.mjs";
 import { Bundle } from "./shad0w.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -69,63 +69,108 @@ const wallH = (x, y) => H_WALL + Math.floor(hash(Math.floor(x / 3), Math.floor(y
   lintel(2, 17, 6, 19); lintel(19, 12, 25, 13); lintel(22, 15, 25, 16); lintel(31, 16, 34, 17);
   const doorMat = new THREE.MeshLambertMaterial({ color: 0x6b4321 });   // the long doors, left open
   for (const [x, y, r] of [[2.15, 16.3, 0.45], [5.85, 16.3, -0.45]]) { const d = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.6, 1.1), doorMat); d.position.set(x, 1.3, y); d.rotation.y = r; d.castShadow = true; scene.add(d); }
+  // the tunnels are roofed and dim, lit by a few bare lamps (looks only: the roof is above every eye and every shot)
+  const roofMat = new THREE.MeshLambertMaterial({ color: 0x7d6142 }), lampMat = new THREE.MeshBasicMaterial({ color: 0xffd9a0 });
+  for (const [x0, y0, x1, y1] of [[38, 9, 42, 15], [38, 18, 42, 26]]) {
+    const r = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0 + 1, 0.4, y1 - y0), roofMat); r.position.set((x0 + x1) / 2, 3.1, (y0 + y1) / 2); r.castShadow = true; scene.add(r);
+    for (let z = y0 + 1.5; z < y1; z += 3) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.18), lampMat); l.position.set(40, 2.86, z); scene.add(l); }
+    const pl = new THREE.PointLight(0xffc98a, 6, 9, 1.6); pl.position.set(40, 2.6, (y0 + y1) / 2); scene.add(pl);
+  }
+  // palms over the walls by mid and A, and the painted site letters
+  const trunkMat = new THREE.MeshLambertMaterial({ color: 0x7a5a3a }), frondMat = new THREE.MeshLambertMaterial({ color: 0x5f7f3a, side: THREE.DoubleSide });
+  for (const [x, z, hgt] of [[25.5, 7.6, 5.6], [13.4, 6.5, 6.2], [36.5, 9.4, 5.2]]) {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, hgt, 8), trunkMat); t.position.set(x, hgt / 2, z); t.rotation.z = 0.06; t.castShadow = true; scene.add(t);
+    for (let k = 0; k < 7; k++) { const f = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.5), frondMat), a = k / 7 * Math.PI * 2;
+      f.position.set(x + Math.cos(a) * 1.05, hgt - 0.25, z + Math.sin(a) * 1.05); f.rotation.set(-Math.PI / 2 + 0.45, 0, -a, "YXZ"); f.rotation.y = -a; f.castShadow = true; scene.add(f); }
+  }
+  const letter = (ch, x, z, ry) => { const tex = canvasTex(256, 256, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = "rgba(170,40,30,.85)"; g.font = "bold 200px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(ch, w / 2, h / 2 + 10); });
+    const pl = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), new THREE.MeshLambertMaterial({ map: tex, transparent: true })); pl.position.set(x, 1.7, z); pl.rotation.y = ry; scene.add(pl); };
+  letter("A", 2.02, 5.5, Math.PI / 2); letter("B", 41.98, 4.5, -Math.PI / 2);
 }
 
-// ---------------- the enemy: a humanoid with shad0w's orange visor ----------------
-const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .8, metalness: .05, ...o });
-const M = { cloth: mat(0x2b3140), vest: mat(0x3a3f2e), skin: mat(0x7a5a45), mask: mat(0x16181d), boot: mat(0x1a1a1a), metal: mat(0x1d1f22, { metalness: .6, roughness: .4 }),
-  wood: mat(0x6a3f1d), visor: new THREE.MeshStandardMaterial({ color: 0xfca311, emissive: 0xfca311, emissiveIntensity: 1.3 }) };
-const box = (w, h, d, m) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.castShadow = true; return o; };
-const enemy = new THREE.Group(); scene.add(enemy);
-const hips = new THREE.Group(); enemy.add(hips);
-const legL = new THREE.Group(), legR = new THREE.Group();
-for (const [leg, z] of [[legL, 0.11], [legR, -0.11]]) {
-  leg.position.set(0, 0.86, z);
-  const thigh = box(0.18, 0.46, 0.17, M.cloth); thigh.position.y = -0.23;
-  const knee = new THREE.Group(); knee.position.y = -0.46;
-  const shin = box(0.16, 0.38, 0.15, M.cloth); shin.position.y = -0.19; const boot = box(0.26, 0.1, 0.16, M.boot); boot.position.set(0.04, -0.37, 0);
-  knee.add(shin, boot); leg.add(thigh, knee); leg.userData.knee = knee; hips.add(leg);
+// ---------------- the enemy: a CT or a T, with shad0w's orange visor as its only mark ----------------
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .82, metalness: .04, ...o });
+const LOOK = {
+  CT: { shirt: 0x3a5078, pants: 0x34425e, vest: 0x2a374d, head: 0x3a4048, glove: 0x15171a, boot: 0x141414, helmet: true },
+  T: { shirt: 0x9b8460, pants: 0x5e5446, vest: 0x5b4a33, head: 0x3b3127, glove: 0x4a3524, boot: 0x2b2118, helmet: false } };
+const visorMat = new THREE.MeshStandardMaterial({ color: 0xfca311, emissive: 0xfca311, emissiveIntensity: 1.3 });
+const gunMetal = mat(0x1d1f22, { metalness: .6, roughness: .4 }), gunWood = mat(0x6a3f1d);
+const part = (geo, m, x = 0, y = 0, z = 0) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; return o; };
+const cap = (r, len) => new THREE.CapsuleGeometry(r, len, 4, 10);
+function soldier(side) {
+  const L = LOOK[side], lit = (c) => mat(c, { emissive: new THREE.Color(c).multiplyScalar(0.28) });   // a little self-light, so a soldier in shade still reads
+  const M = { shirt: lit(L.shirt), pants: lit(L.pants), vest: lit(L.vest), head: lit(L.head), glove: lit(L.glove), boot: lit(L.boot), skin: lit(0x8a6650) };
+  const root = new THREE.Group(), hips = new THREE.Group(); root.add(hips);
+  const legs = [];
+  for (const z of [0.1, -0.1]) {   // hip -> knee -> boot
+    const leg = new THREE.Group(); leg.position.set(0, 0.88, z);
+    leg.add(part(cap(0.085, 0.3), M.pants, 0, -0.22, 0));
+    const knee = new THREE.Group(); knee.position.y = -0.45;
+    knee.add(part(cap(0.075, 0.28), M.pants, 0, -0.2, 0), part(new THREE.BoxGeometry(0.27, 0.1, 0.15), M.boot, 0.05, -0.39, 0));
+    leg.add(knee); leg.userData.knee = knee; hips.add(leg); legs.push(leg);
+  }
+  const torso = new THREE.Group(); torso.position.y = 0.9; hips.add(torso);
+  hips.add(part(new THREE.BoxGeometry(0.24, 0.2, 0.36), M.pants, 0, 0.9, 0), part(new THREE.BoxGeometry(0.26, 0.05, 0.38), M.vest, 0, 0.98, 0));   // pelvis and belt
+  torso.add(part(cap(0.17, 0.32), M.shirt, 0, 0.3, 0));                                        // chest and belly
+  torso.add(part(new THREE.BoxGeometry(0.3, 0.38, 0.4), M.vest, 0.01, 0.34, 0));                 // plate carrier
+  torso.add(part(new THREE.BoxGeometry(0.06, 0.12, 0.28), M.vest, 0.17, 0.24, 0));               // pouches
+  torso.add(part(new THREE.CylinderGeometry(0.05, 0.06, 0.08, 10), M.skin, 0, 0.64, 0));         // neck
+  const head = part(new THREE.SphereGeometry(0.125, 18, 14), M.head, 0, 0.77, 0); torso.add(head);
+  if (L.helmet) { const h = part(new THREE.SphereGeometry(0.142, 18, 10, 0, Math.PI * 2, 0, Math.PI / 1.9), M.vest, 0, 0.79, 0); torso.add(h); }
+  else { torso.add(part(new THREE.TorusGeometry(0.12, 0.035, 8, 18), M.vest, 0, 0.83, 0).rotateX(Math.PI / 2)); }   // head-wrap
+  torso.add(part(new THREE.BoxGeometry(0.05, 0.05, 0.19), visorMat, 0.115, 0.775, 0));            // goggles: shad0w's orange
+  // arms: shoulder -> elbow -> glove, both hands on the rifle
+  const arm = (z, shoulderRot, elbowRot) => { const s = new THREE.Group(); s.position.set(0.02, 0.52, z); s.rotation.set(0, 0, shoulderRot);
+    s.add(part(cap(0.06, 0.2), M.shirt, 0, -0.15, 0)); const e = new THREE.Group(); e.position.y = -0.3; e.rotation.z = elbowRot;
+    e.add(part(cap(0.055, 0.18), M.shirt, 0, -0.13, 0), part(new THREE.SphereGeometry(0.05, 8, 8), M.glove, 0, -0.27, 0)); s.add(e); return s; };
+  torso.add(arm(0.2, 1.15, 0.9), arm(-0.19, 1.3, 0.55));
+  const rifle = new THREE.Group(); rifle.position.set(0.36, 0.42, -0.02);
+  rifle.add(part(new THREE.BoxGeometry(0.5, 0.08, 0.06), gunMetal), part(new THREE.BoxGeometry(0.36, 0.035, 0.035), gunMetal, 0.42, 0.01, 0),
+            part(new THREE.BoxGeometry(0.24, 0.08, 0.05), gunWood, -0.34, -0.02, 0), part(new THREE.BoxGeometry(0.18, 0.06, 0.07), gunWood, 0.2, 0, 0),
+            part(new THREE.BoxGeometry(0.06, 0.17, 0.05), gunMetal, 0.06, -0.1, 0).rotateZ(0.35));
+  torso.add(rifle);
+  root.userData = { hips, torso, legs, rifle };
+  root.visible = false; scene.add(root); return root;
 }
-const torso = new THREE.Group(); torso.position.y = 0.86; hips.add(torso);
-{
-  const t = box(0.26, 0.56, 0.42, M.cloth); t.position.y = 0.3;
-  const vest = box(0.3, 0.42, 0.46, M.vest); vest.position.y = 0.34;
-  const pouch = box(0.08, 0.12, 0.3, M.vest); pouch.position.set(0.18, 0.24, 0);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 14), M.mask); head.position.y = 0.73; head.castShadow = true;
-  const visor = box(0.06, 0.06, 0.2, M.visor); visor.position.set(0.12, 0.75, 0);
-  const neck = box(0.1, 0.08, 0.1, M.skin); neck.position.y = 0.62;
-  const armL = box(0.46, 0.12, 0.12, M.cloth); armL.position.set(0.2, 0.42, 0.22); armL.rotation.z = -0.2;
-  const armR = box(0.4, 0.12, 0.12, M.cloth); armR.position.set(0.18, 0.4, -0.2); armR.rotation.z = -0.15;
-  const rifle = new THREE.Group(); rifle.position.set(0.35, 0.4, 0.0);
-  const rec = box(0.5, 0.08, 0.06, M.metal), barrel = box(0.36, 0.035, 0.035, M.metal), stock = box(0.24, 0.08, 0.05, M.wood), mag = box(0.06, 0.16, 0.05, M.metal), guard = box(0.18, 0.06, 0.07, M.wood);
-  barrel.position.x = 0.42; stock.position.x = -0.34; mag.position.set(0.06, -0.1, 0); mag.rotation.z = 0.35; guard.position.x = 0.2;
-  rifle.add(rec, barrel, stock, mag, guard);
-  torso.add(t, vest, pouch, head, visor, neck, armL, armR, rifle);
-}
+const SOLDIER = { CT: soldier("CT"), T: soldier("T") };
+let enemy = SOLDIER.T;
 const flash = new THREE.PointLight(0xffc56b, 0, 7); scene.add(flash);
 let enemyDeadT = -1;
 
 // ---------------- your rifle (first person) ----------------
+const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+const handMat = { glove: mat(0x15171a, { emissive: 0x0b0b0b }), sleeve: mat(0x2c3e5c, { emissive: 0x0d1018 }) };
+function dressHands(side) { const L = LOOK[side]; handMat.glove.color.setHex(L.glove); handMat.sleeve.color.setHex(L.shirt); }
 const vm = new THREE.Group(); camera.add(vm); vm.scale.setScalar(0.78);
 camera.add(new THREE.PointLight(0xfff0d8, 0.8, 1.2));   // a little fill light on the rifle in your hands
 {
   const mt = mat(0x4a4e55, { metalness: .35, roughness: .5, emissive: 0x15171a }), wd = mat(0x7f4d24, { roughness: .65, emissive: 0x1c0d05 });
   const rec = box(0.07, 0.08, 0.42, mt), barrel = box(0.026, 0.026, 0.36, mt), guard = box(0.075, 0.07, 0.2, wd), stock = box(0.06, 0.1, 0.24, wd), grip = box(0.05, 0.12, 0.05, wd);
-  const mag = box(0.05, 0.2, 0.08, mt), sight = box(0.012, 0.03, 0.012, mt), hand = box(0.09, 0.07, 0.12, M.cloth);
+  const mag = box(0.05, 0.2, 0.08, mt), sight = box(0.012, 0.03, 0.012, mt);
   barrel.position.z = -0.38; guard.position.set(0, -0.005, -0.25); stock.position.set(0, -0.02, 0.3); grip.position.set(0, -0.09, 0.08); grip.rotation.x = 0.35;
-  mag.position.set(0, -0.14, -0.08); mag.rotation.x = -0.35; sight.position.set(0, 0.055, -0.48); hand.position.set(0, -0.06, -0.24);
-  vm.add(rec, barrel, guard, stock, grip, mag, sight, hand); vm.userData.mag = mag;
+  mag.position.set(0, -0.14, -0.08); mag.rotation.x = -0.35; sight.position.set(0, 0.055, -0.48);
+  vm.add(rec, barrel, guard, stock, grip, mag, sight); vm.userData.mag = mag;
+  // your hands: a glove on the handguard and one on the grip, each with a sleeve going back out of view
+  for (const [g, d] of [[[-0.04, -0.065, -0.25], [-0.55, -0.45, 0.7]], [[0.02, -0.13, 0.1], [0.3, -0.5, 0.8]]]) {
+    const gl = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), handMat.glove); gl.scale.set(1.15, 0.9, 1.4); gl.position.set(...g);
+    const dir = new THREE.Vector3(...d).normalize(), len = 0.55, sl = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.062, len, 12), handMat.sleeve);
+    sl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir); sl.position.set(...g).addScaledVector(dir, len / 2 + 0.03);
+    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 12), handMat.glove); cuff.quaternion.copy(sl.quaternion); cuff.position.set(...g).addScaledVector(dir, 0.05);
+    vm.add(gl, sl, cuff);
+  }
   vm.traverse((o) => { o.castShadow = false; });
 }
 const muzzle = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.24), new THREE.MeshBasicMaterial({ color: 0xffc56b, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
 muzzle.position.set(0, 0, -0.6); vm.add(muzzle);
-let kick = 0, punch = 0, reloadAnim = 0;
+let kick = 0, punch = 0, reloadAnim = 0, botKick = 0;
 
 const tracers = [], puffs = [];
 function tracer(x0, y0, z0, x1, y1, z1, color) {
   const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x0, z0, y0), new THREE.Vector3(x1, z1, y1)]);
   const l = new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .8 })); scene.add(l); tracers.push({ l, t: 0.06 });
 }
+function blood(x, y, z, head) { for (let i = 0; i < (head ? 9 : 5); i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.03 + Math.random() * 0.04, 5, 5), new THREE.MeshBasicMaterial({ color: 0x7a0f0a, transparent: true, opacity: .9 }));
+  s.position.set(x + (Math.random() - .5) * .25, z + (Math.random() - .5) * .25, y + (Math.random() - .5) * .25); scene.add(s); puffs.push({ s, t: 0.35 }); } }
 function puff(x, y, z) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), new THREE.MeshBasicMaterial({ color: 0x8a7350, transparent: true, opacity: .8 }));
   s.position.set(x, z, y); scene.add(s); puffs.push({ s, t: 0.6 }); }
 
@@ -140,6 +185,8 @@ function gunshot(pan, gain, near) { if (!ac) return; const n = noise(0.22, 2.2),
   const dst = out(pan, gain); n.connect(f).connect(dst); o.connect(og).connect(dst); n.start(); o.start(); o.stop(ac.currentTime + .16); }
 function footstep(pan, gain) { if (!ac || gain < .01) return; const n = noise(0.08, 3), f = ac.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 420 + Math.random() * 160; f.Q.value = .8; n.connect(f).connect(out(pan, gain)); n.start(); }
 function ding(freq, gain = .15) { if (!ac) return; const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = freq; g.gain.setValueAtTime(gain, ac.currentTime); g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .18); o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + .2); }
+function radio(freqs) { if (!ac) return; freqs.forEach((f, i) => { const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + i * .13; o.type = "square"; o.frequency.value = f;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.05, t + .01); g.gain.exponentialRampToValueAtTime(.001, t + .11); o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .12); }); }
 function clack(gain = .2) { if (!ac) return; const n = noise(0.05, 4), f = ac.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 1800; n.connect(f).connect(out(0, gain)); n.start(); }
 function heard(x, y) {   // a sound at (x, y) for you: panned by bearing, quieter with distance and through walls
   const hm = m.human, dx = x - hm.x, dy = y - hm.y, d = Math.hypot(dx, dy) || 1;
@@ -160,17 +207,18 @@ addEventListener("mousemove", (e) => { if (!locked) return; yaw += e.movementX *
 document.addEventListener("pointerlockchange", () => { locked = document.pointerLockElement === view; if (!locked && state === "play" && !DEBUG) pause(); });
 
 // ---------------- match ----------------
-const SET = { skill: { el: "cSkill", vals: ["easy", "normal", "hard", "elite"], label: (v) => v } };
-const opts = { skill: "normal" };
 let m = null, state = "menu", acc = 0, last = performance.now(), freezeUntil = 0, roundNo = 0, bannerT = 0;
-const score = { you: 0, shad0w: 0 }, stats = { shots: 0, hits: 0, heads: 0, decisions: 0, cert: 0, lastDecision: null };
+const score = { you: 0, shad0w: 0 }, stats = { shots: 0, hits: 0, heads: 0, decisions: 0, cert: 0, lastDecision: null, botShots: 0, botHits: 0, botHeads: 0, kills: 0, deaths: 0 };
 const recent = [];
-function newMatch() { score.you = score.shad0w = 0; roundNo = 0; Object.assign(stats, { shots: 0, hits: 0, heads: 0 }); $("sYou").textContent = 0; $("sShad").textContent = 0; $("feed").innerHTML = ""; nextRound(); }
+function newMatch() { score.you = score.shad0w = 0; roundNo = 0; Object.assign(stats, { shots: 0, hits: 0, heads: 0, botShots: 0, botHits: 0, botHeads: 0, kills: 0, deaths: 0, decisions: 0, cert: 0 }); $("sYou").textContent = 0; $("sShad").textContent = 0; $("feed").innerHTML = ""; nextRound(); }
 function nextRound() {
   roundNo++;
   m = round((Date.now() + roundNo * 7919) >>> 0, roundNo % 2 ? "T" : "CT");
-  yaw = m.human.yaw; pitch = 0; enemyDeadT = -1; enemy.rotation.set(0, 0, 0);
-  freezeUntil = m.t + 1.6; showBanner(`Round ${roundNo} · you are ${m.human.side === "CT" ? "Counter-Terrorist" : "Terrorist"}`, 1.8);
+  yaw = m.human.yaw; pitch = 0; enemyDeadT = -1;
+  for (const k in SOLDIER) SOLDIER[k].visible = false;
+  enemy = SOLDIER[m.bot.side]; enemy.visible = true; enemy.rotation.set(0, 0, 0);
+  dressHands(m.human.side);
+  freezeUntil = m.t + 1.6; setTimeout(() => radio([700, 700, 940]), 900); showBanner(`Round ${roundNo} · you are ${m.human.side === "CT" ? "Counter-Terrorist" : "Terrorist"}`, 1.8);
 }
 function showBanner(s, t) { bannerT = t; $("banner").textContent = s; $("banner").hidden = false; }
 function feed(killer, head) {
@@ -202,15 +250,16 @@ function simTick() {
   const b = frozen ? { move: "hold", stance: "stand", fire: "hold_fire" } : botDecide();
   const h = frozen ? { wishX: 0, wishY: 0, crouch: false, jump: false, fire: false, reload: false, yaw, pitch } : humanAct();
   const wasReloading = m.human.reloadT > 0;
-  const ev = step(m, b, h, SKILL[opts.skill]);
+  const ev = step(m, b, h, HARDEST);   // always the hardest hand: 150 ms reactions, fast turns
   if (!wasReloading && m.human.reloadT > 0) { reloadAnim = 2.5; clack(.25); }
   for (const e of ev) {
     if (e.kind === "step") { if (e.who === "bot") { const [p, g] = heard(e.x, e.y); footstep(p, g * .55); } else footstep(0, .05); continue; }
     if (e.kind !== "shot") continue;
     const f = e.who === "bot" ? m.bot : m.human;
     if (e.who === "human") { stats.shots++; gunshot(0, .32, true); kick = 1; punch = Math.min(punch + 0.012, 0.06); muzzle.material.opacity = 1; muzzle.rotation.z = Math.random() * 3;
-      if (e.hit) { stats.hits++; stats.heads += e.head; hitMarker(e.head); if (e.head) ding(2900, .18); } }
-    else { const [p, g] = heard(f.x, f.y); gunshot(p, .1 + .35 * g, false); flash.position.set(f.x, eye(f), f.y); flash.intensity = 7; if (e.hit) damage(); }
+      if (e.hit) { stats.hits++; stats.heads += e.head; hitMarker(e.head); blood(e.x, e.y, e.z, e.head); if (e.head) ding(2900, .18); } }
+    else { botKick = 1; stats.botShots++; const [p, g] = heard(f.x, f.y); gunshot(p, .1 + .35 * g, false); flash.position.set(f.x, eye(f), f.y); flash.intensity = 7;
+      if (e.hit) { stats.botHits++; stats.botHeads += e.head; damage(f.x, f.y); } }
     tracer(f.x + Math.cos(f.yaw) * .45, f.y + Math.sin(f.yaw) * .45, eye(f) - .14, e.x, e.y, e.z, e.who === "bot" ? 0xffcf7a : 0xfff2c4);
     if (!e.hit) puff(e.x, e.y, e.z);
   }
@@ -218,7 +267,7 @@ function simTick() {
 }
 function endRound(ev) {
   const w = m.winner, lastShot = ev.filter((e) => e.kind === "shot" && e.hit).pop();
-  if (w === "human") { score.you++; enemyDeadT = 0; feed("you", lastShot?.head); } else if (w === "bot") { score.shad0w++; feed("shad0w", lastShot?.head); }
+  if (w === "human") { score.you++; stats.kills++; enemyDeadT = 0; feed("you", lastShot?.head); radio([660, 880]); } else if (w === "bot") { score.shad0w++; stats.deaths++; feed("shad0w", lastShot?.head); radio([520, 390]); }
   $("sYou").textContent = score.you; $("sShad").textContent = score.shad0w;
   const done = score.you >= 5 || score.shad0w >= 5;
   showBanner(w === "human" ? `${m.human.side === "CT" ? "Counter-Terrorists" : "Terrorists"} win · you` : w === "bot" ? "shad0w wins the round" : "Round draw", 2.2);
@@ -228,7 +277,11 @@ function finish() {
   state = "over"; document.exitPointerLock?.();
   const a = stats.shots ? Math.round(100 * stats.hits / stats.shots) : 0;
   $("overTitle").textContent = score.you > score.shad0w ? `You beat shad0w ${score.you}–${score.shad0w} 🏆` : `shad0w wins ${score.shad0w}–${score.you}`;
-  $("overSub").innerHTML = `Your accuracy ${a}% · head shots ${stats.heads}. shad0w made <b>${stats.decisions.toLocaleString("en-US")}</b> decisions this match, every one in this tab.`;
+  const ba = stats.botShots ? Math.round(100 * stats.botHits / stats.botShots) : 0, hs = (h, k) => k ? Math.round(100 * h / k) : 0;
+  $("overSub").innerHTML = `<table class="sb"><tr><th></th><th>rounds</th><th>accuracy</th><th>hits to the head</th><th>shots</th></tr>
+    <tr><td><b>you</b></td><td>${score.you}</td><td>${a}%</td><td>${hs(stats.heads, stats.hits)}%</td><td>${stats.shots}</td></tr>
+    <tr><td><b class="o">shad0w</b></td><td>${score.shad0w}</td><td>${ba}%</td><td>${hs(stats.botHeads, stats.botHits)}%</td><td>${stats.botShots}</td></tr></table>
+    shad0w made <b>${stats.decisions.toLocaleString("en-US")}</b> decisions this match, every one in this tab, ${stats.decisions ? Math.round(100 * stats.cert / stats.decisions) : 0}% of them certified.`;
   $("start").textContent = "Play again →"; $("over").hidden = false;
 }
 function pause() { state = "paused"; $("overTitle").textContent = "Paused"; $("overSub").textContent = "Click to resume."; $("start").textContent = "Resume →"; $("over").hidden = false; }
@@ -236,7 +289,9 @@ function pause() { state = "paused"; $("overTitle").textContent = "Paused"; $("o
 // ---------------- HUD ----------------
 let hitT = 0, dmgT = 0;
 function hitMarker(head) { hitT = .16; $("hit").className = head ? "hit head" : "hit"; }
-function damage() { dmgT = .4; }
+let dmgDirT = 0;
+function damage(x, y) { dmgT = .4; dmgDirT = 1.1;   // which way it came from, relative to where you look (0 = straight ahead)
+  const rel = Math.atan2(y - m.human.y, x - m.human.x) - yaw; $("dmgDir").style.setProperty("--a", `${rel * 180 / Math.PI + 90}deg`); }
 const mini = $("mini"), mg = mini.getContext("2d"), MS = 4;
 mini.width = MW * MS; mini.height = MH * MS;
 const miniBase = document.createElement("canvas"); miniBase.width = mini.width; miniBase.height = mini.height;
@@ -251,6 +306,7 @@ function drawHud(dt) {
   $("cross").style.setProperty("--gap", `${5 + spreadDeg(hm) * 5}px`);
   hitT = Math.max(0, hitT - dt); $("hit").style.opacity = hitT > 0 ? 1 : 0;
   dmgT = Math.max(0, dmgT - dt); $("dmg").style.opacity = dmgT * 1.6;
+  dmgDirT = Math.max(0, dmgDirT - dt); $("dmgDir").style.opacity = Math.min(1, dmgDirT * 1.5);
   if (bannerT > 0) { bannerT -= dt; if (bannerT <= 0) $("banner").hidden = true; }
   // radar: only you. CS radars show an enemy only when a teammate spots it; in a 1v1 there is nobody to spot it.
   mg.clearRect(0, 0, mini.width, mini.height); mg.drawImage(miniBase, 0, 0);
@@ -270,6 +326,15 @@ setInterval(() => {   // timing, measured here: decide recent situations in a bl
   $("hCert").textContent = stats.decisions ? `${Math.round(100 * stats.cert / stats.decisions)}%` : "–";
 }, 1000);
 
+const NICE = { strafe_left: "strafe left", strafe_right: "strafe right", to_cover: "take cover", hold_fire: "hold fire" };
+setInterval(() => {   // the brain panel: the words it reads right now and its three answers with their probabilities
+  if (!m || state === "menu" && !DEBUG) return;
+  const text = describe(m), r = bundle.decide(text, { probabilities: true }).answers;
+  $("bText").textContent = text;
+  $("bBars").innerHTML = ["move", "stance", "fire"].map((q) => { const a = r[q], top = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]).slice(0, 3);
+    return `<div class="bq"><span class="bl">${q}</span>${top.map(([o, p], i) => `<span class="bo${i ? "" : " top"}"><i style="width:${Math.round(p * 100)}%"></i><em>${NICE[o] || o}</em><b>${Math.round(p * 100)}%</b></span>`).join("")}<span class="bc">${a.certified ? "certified" : "not certified"}</span></div>`; }).join("");
+}, 125);
+
 // ---------------- render loop ----------------
 let walkPhase = 0;
 function frame(now) {
@@ -286,12 +351,13 @@ function frame(now) {
     vm.position.set(0.24 + bob * 0.6, -0.235 - rk * 0.18 + Math.abs(bob) * 0.4, -0.5 + kick * 0.05);
     vm.rotation.set(kick * 0.08 - rk * 0.6, 0, rk * 0.3); vm.userData.mag.position.y = -0.14 - rk * 0.12;
     muzzle.material.opacity *= 0.35;
-    const speed = Math.hypot(bt.vx, bt.vy); walkPhase += dt * speed * 2.6;   // the enemy: walk cycle, crouch, death fall
-    const crouch = bt.crouch ? 1 : 0, swing = speed > 0.4 ? Math.sin(walkPhase) * 0.55 * (1 - crouch * .5) : 0;
+    const speed = Math.hypot(bt.vx, bt.vy); walkPhase += dt * speed * 2.6;   // the enemy: walk cycle, crouch, jump, recoil, death fall
+    const E = enemy.userData, crouch = bt.crouch ? 1 : 0, air = airborne(bt) ? 1 : 0, swing = speed > 0.4 && !air ? Math.sin(walkPhase) * 0.55 * (1 - crouch * .5) : 0;
     enemy.position.set(bt.x, bt.z, bt.y); enemy.rotation.y = -bt.yaw;
-    legL.rotation.z = swing - crouch * 0.9; legR.rotation.z = -swing - crouch * 0.9;
-    legL.userData.knee.rotation.z = legR.userData.knee.rotation.z = crouch * 1.5;
-    hips.position.y = -crouch * 0.42; torso.rotation.z = -crouch * 0.15;
+    E.legs[0].rotation.z = swing - crouch * 1.0 - air * 0.5; E.legs[1].rotation.z = -swing - crouch * 1.0 - air * 0.2;
+    E.legs[0].userData.knee.rotation.z = E.legs[1].userData.knee.rotation.z = crouch * 1.7 + air * 0.8;
+    E.hips.position.y = -crouch * 0.4; E.torso.rotation.z = -crouch * 0.12 + Math.sin(walkPhase * 2) * 0.03 * (speed > 0.4 ? 1 : 0);
+    E.rifle.position.x = 0.36 - botKick * 0.05; botKick = Math.max(0, botKick - dt * 10);
     if (enemyDeadT >= 0) { enemyDeadT += dt; enemy.rotation.z = Math.min(1.45, enemyDeadT * 4); enemy.position.y = -Math.min(0.25, enemyDeadT); }
     flash.intensity *= 0.55;
     for (let i = tracers.length - 1; i >= 0; i--) { const t = tracers[i]; t.t -= dt; t.l.material.opacity = Math.max(0, t.t / .06) * .8; if (t.t <= 0) { scene.remove(t.l); t.l.geometry.dispose(); tracers.splice(i, 1); } }
@@ -305,14 +371,6 @@ function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.
 addEventListener("resize", resize); resize();
 
 // ---------------- menu ----------------
-for (const [k, s] of Object.entries(SET)) {
-  $(s.el).innerHTML = s.vals.map((v) => `<button type="button" class="chip${v === opts[k] ? " on" : ""}" data-v="${v}">${s.label(v)}</button>`).join("");
-  $(s.el).querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
-    $(s.el).querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b)); opts[k] = b.dataset.v;
-    $("overTitle").textContent = `Difficulty: ${opts[k]}`; $("overSub").textContent = "Its brain is the same at every level; only its hand (reaction time and turn speed) changes."; $("start").textContent = "Play →"; $("over").hidden = false;
-    newMatch(); state = "menu";
-  }));
-}
 $("start").addEventListener("click", () => {
   if (!ac) { try { ac = new AudioContext(); } catch { ac = null; } }
   if (state !== "paused") newMatch();
@@ -323,7 +381,7 @@ if (matchMedia("(pointer: coarse)").matches) $("overSub").textContent = "This on
 newMatch(); state = "menu";   // a live scene behind the menu
 requestAnimationFrame(frame);
 if (DEBUG) {   // test hooks: ?debug lets keys through without pointer lock; &fov=N zooms; the camera faces the bot until told otherwise
-  window.__duel = { get m() { return m; }, get stats() { return stats; }, follow: true };
+  window.__duel = { get m() { return m; }, get stats() { return stats; }, follow: true, finish };
   const fov = +new URLSearchParams(location.search).get("fov"); if (fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
   setInterval(() => { if (m && window.__duel.follow) { yaw = Math.atan2(m.bot.y - m.human.y, m.bot.x - m.human.x); pitch = -0.05; } }, 16);
 }

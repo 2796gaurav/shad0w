@@ -188,6 +188,7 @@ export function coverCell(f, ex, ey, ez) {
 }
 
 // ---------- the aim servo (the "hand"): reaction delay + turn speed ----------
+export const HARDEST = { react: 0.15, turn: 480, jitter: 0.3, aimZ: 0.3 };   // the website's bot: top-1% human reactions (150 ms), tracks fast
 export const SKILL = { easy: { react: 0.42, turn: 140, jitter: 1.6 }, normal: { react: 0.30, turn: 220, jitter: 1.0 },
                        hard: { react: 0.22, turn: 320, jitter: 0.6 }, elite: { react: 0.16, turn: 420, jitter: 0.35 } };
 export function aim(f, tx, ty, tz, seesNow, t, skill, rnd) {
@@ -248,7 +249,7 @@ export function step(m, botAct, humanAct, skill = SKILL.normal) {
   else if (botAct.move === "to_cover") { const c = coverCell(b, e.x, e.y, eye(e)); if (c) { if (!m._cf || m._ck !== `${c.x},${c.y}`) { m._cf = field(c.x, c.y); m._ck = `${c.x},${c.y}`; } wish = downhill(m._cf, b.x, b.y); } }
   move(b, wish[0], wish[1], botAct.stance === "crouch", botAct.stance === "jump");
   // aim: at the enemy's chest when seen, else along the path
-  if (sees) aim(b, e.x, e.y, eye(e) - 0.3, true, t, skill, m.r);
+  if (sees) aim(b, e.x, e.y, eye(e) - (skill.aimZ ?? 0.3), true, t, skill, m.r);
   else { b.sawSince = -1; if (Math.hypot(wish[0], wish[1]) > 0.1) aim(b, b.x + wish[0], b.y + wish[1], eye(b), false, t, skill, m.r); }
   // the human (or the scripted opponent)
   const h = typeof humanAct === "function" ? humanAct(m, e, b) : humanAct;
@@ -279,8 +280,8 @@ export function scripted(style = 0.5, skill = SKILL.normal) {
     if (sees) { me.lastSeenT = t; me.seenX = foe.x; me.seenY = foe.y; }
     let wish = [0, 0], crouch = false, jump = false, fire = false, reload = false;
     if (sees) {
-      aim(me, foe.x, foe.y, eye(foe) - 0.3, true, t, skill, m.r);
-      const err = aimError(me, foe.x, foe.y, eye(foe) - 0.3);
+      aim(me, foe.x, foe.y, eye(foe) - (skill.aimZ ?? 0.3), true, t, skill, m.r);
+      const err = aimError(me, foe.x, foe.y, eye(foe) - (skill.aimZ ?? 0.3));
       fire = err < 2.2 && me.ammo > 0;
       crouch = Math.hypot(foe.x - me.x, foe.y - me.y) > 12 && m.r() < style;
       if (m.r() < 0.03) peekT = t + 0.6;
