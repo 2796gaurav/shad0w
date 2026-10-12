@@ -251,4 +251,5 @@ Try it on one of your decisions and [share your numbers](https://github.com/2796
 ```
 </details>
 
-<p align="center">Built by <a href="https://github.com/2796gaurav">Gaurav Chauhan</a> · Apache-2.0</p>
+<p align="center">Built by <b>Gaurav Chauhan</b> · <a href="https://www.linkedin.com/in/gauravc2708/">LinkedIn</a> · <a href="https://github.com/2796gaurav">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a> · Apache-2.0<br>
+Questions, ideas or a decision you want to try it on? Open an issue or write to me.</p>
