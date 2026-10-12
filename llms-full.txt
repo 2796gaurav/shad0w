@@ -3822,11 +3822,21 @@ The OpenAI steps skip themselves when `OPENAI_API_KEY` is unset. `BENCHMARK.md` 
 <!-- numbers:begin provenance -->
 | number | value | source | dataset | teacher | hardware | date | status |
 |---|---|---|---|---|---|---|---|
-| `cert.violation` | 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%) | `results/b8_certificate_sim.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `curve.dataset` | BANKING77 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `curve.first_n` | 250 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `arena.best_sysone` | Kev-4B | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.kev4b_ms` | 145 ms | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.kev_ms` | 23 ms | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.laya_ms` | 16 ms | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.llm_ms` | 912 ms | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.llm_score_10` | 0.1 | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.llm_score_free` | 25.9 | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.shad0w_score` | 28.0 | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.shad0w_us` | 1.6 µs | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `arena.table_kb` | 2 KB | `arena/results/arena_summary.json` | snake, 8 seeded games per speed | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU | 2026-10-12 | new |
+| `cert.violation` | 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%) | `results/b8_certificate_sim.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `curve.dataset` | BANKING77 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `curve.first_n` | 250 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `curve.first_pct` | 0% | `results/b6_compare_openai_banking77.json` | banking77 | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `curve.last_n` | 10,000 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `curve.last_n` | 10,000 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `curve.last_pct` | 60% | `results/b6_compare_openai_banking77.json` | banking77 | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
 | `demo.agreement` | 81.4% | `site-src/demo-data/replay.json + bundle/certificate.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
 | `demo.dis` | 3.3% | `site-src/demo-data/replay.json + bundle/certificate.json` | BANKING77 test | bge-small zero-shot | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
@@ -3838,32 +3848,32 @@ The OpenAI steps skip themselves when `OPENAI_API_KEY` is unset. `BENCHMARK.md` 
 | `demo.threshold` | 0.886 | `site-src/demo-data/replay.json + bundle/certificate.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
 | `e2e.agreement` | 95.9% | `results/b4_e2e_openai_gpt-4.1-mini_77.json` | BANKING77 | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
 | `e2e.llm_ms` | 1397 ms | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `e2e.n_cal` | 1,499 | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `e2e.n_log` | 4,999 | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `e2e.n_cal` | 1,499 | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `e2e.n_log` | 4,999 | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `e2e.offload` | 51.3% | `results/b4_e2e_openai_gpt-4.1-mini_77.json` | BANKING77 fresh traffic | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `e2e.run` | gpt-4.1-mini (OpenAI) · 77 intents | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `film.length_s` | 102 | `video/film.html (EVENTS-JSON duration)` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `e2e.run` | gpt-4.1-mini (OpenAI) · 77 intents | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `film.length_s` | 120 | `launch-film/film-long.html (DURATION)` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `fit.scipy_s` | 217 s | `results/b2_fit_compare.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `fit.torch_s` | 40 s | `results/b2_fit_compare.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
-| `headline.alpha_pct` | 5% | `default alpha` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `headline.conf_pct` | 90% | `default delta = 0.1` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `headline.alpha_pct` | 5% | `default alpha` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `headline.conf_pct` | 90% | `default delta = 0.1` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `headline.dis_range` | 3.0–6.0% | `results/b6_compare_openai_banking77.json` | banking77, clinc150, ag_news, sst2 | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `headline.dis_sentence` | disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `headline.llm_calls_left` | 14–39% | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `headline.dis_sentence` | disagrees with your LLM on at most α = 5% of what it serves (90% confidence) on traffic like the logged traffic; realised 3.0–6.0% in our runs, above α only where the traffic mix shifted (CLINC150) | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `headline.llm_calls_left` | 14–39% | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `headline.served_range` | 61–86% | `results/b6_compare_openai_banking77.json` | banking77, clinc150, ag_news | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `headline.tasks_n` | 3 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `headline.teacher` | gpt-4.1-mini (OpenAI) | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `headline.tasks_n` | 3 | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `headline.teacher` | gpt-4.1-mini (OpenAI) | `results/b6_compare_openai_banking77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `hero.us` | 2.4 µs | `results/b3_latency.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
 | `hero.us_n` | 2.4 | `results/b3_latency.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `kevteacher.offload` | 70% | `results/b7_systemone.json` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `kevteacher.offload` | 70% | `results/b7_systemone.json` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `lat.bundle_mb` | 1.5 MB | `results/b3_latency.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.c_us` | 1.0 µs | `results/b3_latency.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.http_ms` | 0.17 ms | `results/b3_latency.json` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.js_p99_us` | 38 µs | `results/b3_latency.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.js_us` | 10 µs | `results/b3_latency.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
-| `lat.kev_ms` | 271 ms | `results/evidence.json s1.llama_Kev_0_8B` |  | Kev-0.8B (llama.cpp GGUF) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `lat.laya_ms` | 91.6 ms | `results/evidence.json s1.laya` |  | Laya 421M | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `lat.llm_model` | gpt-4.1-mini (OpenAI) | `results/evidence.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `lat.kev_ms` | 271 ms | `results/evidence.json s1.llama_Kev_0_8B` |  | Kev-0.8B (llama.cpp GGUF) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `lat.laya_ms` | 91.6 ms | `results/evidence.json s1.laya` |  | Laya 421M | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `lat.llm_model` | gpt-4.1-mini (OpenAI) | `results/evidence.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `lat.llm_ms` | 1416 ms | `results/b4_e2e_openai_gpt-4.1-mini_8.json` | banking77 | gpt-4.1-mini (OpenAI) | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.proxy_ms` | 0.53 ms | `results/b3_latency.json` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `lat.py_fast_us` | 2.4 µs | `results/b3_latency.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
@@ -3874,12 +3884,16 @@ The OpenAI steps skip themselves when `OPENAI_API_KEY` is unset. `BENCHMARK.md` 
 | `legacy.fid.range_dis` | 3.9–5.7% (above 5% on 2 of 7 tasks; max over seeds 6.5%) | `legacy/benchmarks/results/phase31_fidelity.json` | 7 tasks | EmbeddingGemma-300m / Kev-0.8B | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
 | `legacy.fid.range_offload` | 45–71% | `legacy/benchmarks/results/phase31_fidelity.json` | 7 intent/topic tasks | EmbeddingGemma-300m zero-shot (6 tasks), Kev-0.8B (1 task) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
 | `legacy.fid.tasks_n` | 7 | `legacy/benchmarks/results/phase31_fidelity.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
-| `mean.acc_delta` | +1.0 | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `mean.acc_delta` | +1.0 | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `mean.cascade_ms` | 115 ms | `results/b7_systemone.json` | BANKING77 | Kev-0.8B | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
 | `mean.llm_ms` | 382 ms | `results/b7_systemone.json` | BANKING77 | Kev-0.8B | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `mean.measured` | measured end to end | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `mean.teacher` | Kev-0.8B (local, MLX) | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `mean.measured` | measured end to end | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `mean.teacher` | Kev-0.8B (local, MLX) | `results/b7_systemone.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `oos.silent` | 5% | `results/b6_compare_openai_clinc150.json` | clinc150 | gpt-4.1-mini (OpenAI) | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
+| `pong.agreement` | 99.8% | `arena/results/pong_eval.json` | pong, simulated matches | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node | 2026-10-12 | new |
+| `pong.kb` | 6 KB | `arena/results/pong_eval.json` | pong, simulated matches | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node | 2026-10-12 | new |
+| `pong.rows` | 3,000 | `arena/results/pong_eval.json` | pong, simulated matches | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node | 2026-10-12 | new |
+| `pong.us` | 1.5 µs | `arena/results/pong_eval.json` | pong, simulated matches | hosted LLM | Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node | 2026-10-12 | new |
 | `price.gpt41mini_per_1k` | $0.520 | `results/b6_compare_*.json` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `price.jev_per_1k` | $0.0126 | `https://openrouter.ai/docs/guides/community/jev` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `price.luna_per_1k` | $0.030 | `https://developers.openai.com/api/docs/guides/decisions` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
@@ -3894,14 +3908,14 @@ The OpenAI steps skip themselves when `OPENAI_API_KEY` is unset. `BENCHMARK.md` 
 | `scale.p50_range` | 7.1 and 10.7 µs | `results/b9_scale.json` | synthetic, one consistent teacher |  | 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39 | 2026-10-08 | new |
 | `sst2.served` | 0% | `results/b6_compare_openai_sst2.json` | sst2 | gpt-4.1-mini (OpenAI) | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `sst2.table_acc` | 79% | `legacy/benchmarks/results/phase29_hybrid.json (table vs gold, SST-2)` | SST-2 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-01 | legacy |
-| `sweep.a01.dis` | n/a | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a01.served` | 0% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a02.dis` | 0.4% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a02.served` | 20% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a05.dis` | 3.0% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a05.served` | 61% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a10.dis` | 7.4% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
-| `sweep.a10.served` | 80% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
+| `sweep.a01.dis` | n/a | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a01.served` | 0% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a02.dis` | 0.4% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a02.served` | 20% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a05.dis` | 3.0% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a05.served` | 61% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a10.dis` | 7.4% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
+| `sweep.a10.served` | 80% | `results/evidence.json cmp.banking77.openai.shad0w` | BANKING77 |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `tests.count` | 149 | `results/b1_tests.txt` |  |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 <!-- numbers:end provenance -->
 

@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Benchmarks & evidence", "description": "Every number shad0w quotes, with the dataset, the LLM, the hardware, the date and the result file behind it, plus where shad0w loses.", "url": "https://2796gaurav.github.io/shad0w/docs/benchmarks.html", "dateModified": "2026-10-09", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Benchmarks & evidence", "item": "https://2796gaurav.github.io/shad0w/docs/benchmarks.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/benchmarks.md">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Benchmarks & evidence", "description": "Every number shad0w quotes, with the dataset, the LLM, the hardware, the date and the result file behind it, plus where shad0w loses.", "url": "https://2796gaurav.github.io/shad0w/docs/benchmarks.html", "dateModified": "2026-10-12", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://github.com/2796gaurav"}, "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Benchmarks & evidence", "item": "https://2796gaurav.github.io/shad0w/docs/benchmarks.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/benchmarks.md">
 </head>
 <body class="docspage">
 <a class="skip" href="#doc">Skip to content</a>
@@ -53,7 +53,7 @@
     <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
   </aside>
   <article class="prose" id="doc">
-    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Understand<span class="rt">19 min read</span></div>
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Understand<span class="rt">21 min read</span></div>
     <h1 id="benchmarks-evidence">Benchmarks &amp; evidence<a class="headerlink" href="#benchmarks-evidence" title="Link to this section">#</a></h1>
 <p>This page shows every measurement behind the numbers on this site: what was run, on what data, against which LLM, and what each column means. It also lists where shad0w loses. Every figure comes from <code>numbers.json</code>, which the benchmark kit generates from the result files named under each table.</p>
 <p><strong>Which version was measured.</strong> The result files were produced with shad0w 0.3.0 on 8 October 2026. Before the 0.3.2 release the latency runs, the certificate simulation and the BANKING77 and CLINC150 comparisons were repeated with 0.3.2 on the same machine; they matched within noise, and JavaScript came out a little faster than the figure shown here.</p>
@@ -1377,13 +1377,113 @@
 </thead>
 <tbody>
 <tr>
+<td class="c-key"><code>arena.best_sysone</code></td>
+<td>Kev-4B</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.kev4b_ms</code></td>
+<td>145 ms</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.kev_ms</code></td>
+<td>23 ms</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.laya_ms</code></td>
+<td>16 ms</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.llm_ms</code></td>
+<td>912 ms</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.llm_score_10</code></td>
+<td>0.1</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.llm_score_free</code></td>
+<td>25.9</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.shad0w_score</code></td>
+<td>28.0</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.shad0w_us</code></td>
+<td>1.6 µs</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>arena.table_kb</code></td>
+<td>2 KB</td>
+<td><code>arena/results/arena_summary.json</code></td>
+<td>snake, 8 seeded games per speed</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6; System One models in llama.cpp on its GPU</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
 <td class="c-key"><code>cert.violation</code></td>
 <td>0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)</td>
 <td><code>results/b8_certificate_sim.json</code></td>
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1393,7 +1493,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1403,7 +1503,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1423,7 +1523,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1543,7 +1643,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1553,7 +1653,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1573,17 +1673,17 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
 <td class="c-key"><code>film.length_s</code></td>
-<td>102</td>
-<td><code>video/film.html (EVENTS-JSON duration)</code></td>
+<td>120</td>
+<td><code>launch-film/film-long.html (DURATION)</code></td>
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1613,7 +1713,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1623,7 +1723,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1638,7 +1738,7 @@
 </tr>
 <tr>
 <td class="c-key"><code>headline.dis_sentence</code></td>
-<td>disagrees with your LLM on at most α = 5% of what it serves (90% confidence); realised 3.0–6.0% in our runs</td>
+<td>disagrees with your LLM on at most α = 5% of what it serves (90% confidence) on traffic like the logged traffic; realised 3.0–6.0% in our runs, above α only where the traffic mix shifted (CLINC150)</td>
 <td><code>results/b6_compare_openai_banking77.json</code></td>
 <td></td>
 <td></td>
@@ -1653,7 +1753,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1673,7 +1773,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1683,7 +1783,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1713,7 +1813,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1773,7 +1873,7 @@
 <td></td>
 <td>Kev-0.8B (llama.cpp GGUF)</td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1783,7 +1883,7 @@
 <td></td>
 <td>Laya 421M</td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1793,7 +1893,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1903,7 +2003,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1933,7 +2033,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1943,7 +2043,7 @@
 <td></td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -1954,6 +2054,46 @@
 <td>gpt-4.1-mini (OpenAI)</td>
 <td>Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit</td>
 <td>2026-10-08</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>pong.agreement</code></td>
+<td>99.8%</td>
+<td><code>arena/results/pong_eval.json</code></td>
+<td>pong, simulated matches</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>pong.kb</code></td>
+<td>6 KB</td>
+<td><code>arena/results/pong_eval.json</code></td>
+<td>pong, simulated matches</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>pong.rows</code></td>
+<td>3,000</td>
+<td><code>arena/results/pong_eval.json</code></td>
+<td>pong, simulated matches</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node</td>
+<td>2026-10-12</td>
+<td>new</td>
+</tr>
+<tr>
+<td class="c-key"><code>pong.us</code></td>
+<td>1.5 µs</td>
+<td><code>arena/results/pong_eval.json</code></td>
+<td>pong, simulated matches</td>
+<td>hosted LLM</td>
+<td>Apple M5 Pro (15-core CPU, 16-core GPU, 24 GB unified memory), macOS 26.6, Node</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2103,7 +2243,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2113,7 +2253,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2123,7 +2263,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2133,7 +2273,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2143,7 +2283,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2153,7 +2293,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2163,7 +2303,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2173,7 +2313,7 @@
 <td>BANKING77</td>
 <td></td>
 <td>Apple M5 Pro (15 cores, 24 GB), macOS</td>
-<td>2026-10-08</td>
+<td>2026-10-12</td>
 <td>new</td>
 </tr>
 <tr>
@@ -2189,7 +2329,7 @@
 </tbody>
 </table></div>
 <!-- numbers:end provenance -->
-    <div class="docfoot"><span>Updated 2026-10-09</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Benchmarks%20%26%20evidence&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/benchmarks.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="benchmarks.md">View as Markdown</a></div>
+    <div class="docfoot"><span>Updated 2026-10-12</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Benchmarks%20%26%20evidence&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/benchmarks.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="benchmarks.md">View as Markdown</a></div>
     <nav class="pager" aria-label="Previous and next page"><a href="scale.html" rel="prev"><small>← Previous</small>Scale: options, size, speed</a><a class="next" href="compare.html" rel="next"><small>Next →</small>How it compares</a></nav>
   </article>
   <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
