@@ -169,7 +169,7 @@ pre { margin: 0; overflow-x: auto; background: var(--code-bg); border: 1px solid
 /* ---------- footer ---------- */
 footer { border-top: 1px solid var(--line); padding: 44px 0 52px; color: var(--text-dim); font-size: 14px; }
 footer .wrap { display: grid; grid-template-columns: 1.2fr 2fr; gap: 28px; }
-footer .fcols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+footer .fcols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 footer h6 { margin: 0 0 10px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .14em; color: var(--text-dim); }
 footer .fcols a { display: block; color: var(--text); padding: 3px 0; }
 footer a { color: var(--text-dim); } footer a:hover { color: var(--accent-ink); }
@@ -891,3 +891,4 @@ footer .fbrand p.fsocial { margin-top: 8px; font-size: 13px; }
 .duel-hud .brain span { color: #fff; font-size: 12.5px; } .duel-hud .brain b { color: var(--orange); font-size: 13px; }
 @media (max-width: 900px) { .duel-shell { grid-template-columns: 1fr; } .duel-hud .brain { display: none; } }
 .game-card img { width: 100%; height: auto; display: block; border-radius: 10px; aspect-ratio: 16 / 9; object-fit: cover; }
+@media (max-width: 640px) { footer .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
