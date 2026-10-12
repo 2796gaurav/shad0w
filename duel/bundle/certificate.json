@@ -6,7 +6,7 @@
   "alpha": 0.05,
   "delta": 0.1,
   "statement": "On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. The bound is against the teacher, not the truth, and does not survive a shift in the traffic mix without re-certification.",
-  "created_utc": "2026-10-12T15:14:37+00:00",
+  "created_utc": "2026-10-12T16:27:06+00:00",
   "questions": {
     "move": {
       "type": "choice",
@@ -18,15 +18,15 @@
         "hold",
         "to_cover"
       ],
-      "n_records": 8000,
-      "n_fit": 5600,
-      "data_sha256": "cc919e47ac5d7c5f3ae2c8b44c0d47e8d502639ed9601239a62920db8485a60f",
+      "n_records": 12000,
+      "n_fit": 9000,
+      "data_sha256": "879517371c39e0b0143fc8875041046ca9b2af5728f87faf883baf793bcfcd5b",
       "calibration": "held-out-split",
-      "n_calibration": 2400,
-      "agreement_with_teacher": 0.9183333333333333,
-      "threshold": 0.6483669281005859,
-      "certified_share_on_calibration": 0.86625,
-      "disagreement_on_certified_calibration": 0.034151034151034154,
+      "n_calibration": 3000,
+      "agreement_with_teacher": 0.916,
+      "threshold": 0.6080207824707031,
+      "certified_share_on_calibration": 0.9053333333333333,
+      "disagreement_on_certified_calibration": 0.03939617083946981,
       "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
     },
     "stance": {
@@ -36,15 +36,15 @@
         "crouch",
         "jump"
       ],
-      "n_records": 8000,
-      "n_fit": 5600,
-      "data_sha256": "f155a4f20c9973cd32ef2cdc913d5185d0f4d2ce12db427b9ec28a874156ed3e",
+      "n_records": 12000,
+      "n_fit": 9000,
+      "data_sha256": "47d482cb3fc9dd1f0af3bcd3a6a0d2fb566ecae6a541551d35de2abbad399687",
       "calibration": "held-out-split",
-      "n_calibration": 2400,
-      "agreement_with_teacher": 0.9041666666666667,
-      "threshold": 0.7541041374206543,
-      "certified_share_on_calibration": 0.8475,
-      "disagreement_on_certified_calibration": 0.04031465093411996,
+      "n_calibration": 3000,
+      "agreement_with_teacher": 0.911,
+      "threshold": 0.7882662415504456,
+      "certified_share_on_calibration": 0.8453333333333334,
+      "disagreement_on_certified_calibration": 0.04140378548895899,
       "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
     },
     "fire": {
@@ -54,15 +54,15 @@
         "hold_fire",
         "reload"
       ],
-      "n_records": 8000,
-      "n_fit": 5600,
-      "data_sha256": "4ac2657c145857373b0f8ee46efa8890b067f353731125b9e7de9a99e9cf3e43",
+      "n_records": 12000,
+      "n_fit": 9000,
+      "data_sha256": "9f763c8aff35da224123cb687cdc827a5d2b3e4726eb62ba773408d3c0db6c02",
       "calibration": "held-out-split",
-      "n_calibration": 2400,
-      "agreement_with_teacher": 0.9883333333333333,
-      "threshold": 0.5608032941818237,
+      "n_calibration": 3000,
+      "agreement_with_teacher": 0.99,
+      "threshold": 0.5052164196968079,
       "certified_share_on_calibration": 1.0,
-      "disagreement_on_certified_calibration": 0.011666666666666667,
+      "disagreement_on_certified_calibration": 0.01,
       "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)"
     }
   }

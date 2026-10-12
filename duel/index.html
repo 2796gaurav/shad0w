@@ -47,7 +47,7 @@
   <div class="section-head" style="max-width:880px;margin-bottom:26px">
     <div class="kicker">play · a 1v1 rifle duel · shad0w runs in this tab</div>
     <h1 class="arena-title">You vs shad0w.<br><span class="hl">One rifle. Sixty decisions a second.</span></h1>
-    <p>A first-person duel on a small three-lane desert map. Your opponent's brain is a shad0w table that learned tactics from an LLM's answers: when to push, sidestep, crouch, jump, fire or reload. Here it runs in your browser, with no server and no network, and makes those three calls every frame in microseconds. The LLM it learned from needs over a second per decision; at this speed it would still be thinking about your first peek.</p>
+    <p>A first-person duel with Counter-Strike 1.6's rifle rules (a head shot kills, the first shot is accurate only when you stand still, the spray climbs) on a small three-lane desert map with the classic callouts: Long A, Short, Mid Doors, B Tunnels. No enemy on the radar: listen for its footsteps. Your opponent's brain is a shad0w table that learned tactics from an LLM's answers: when to push, sidestep, crouch, jump, fire or reload. Here it runs in your browser, with no server and no network, and makes those three calls every frame in microseconds. The LLM it learned from needs over a second per decision; at this speed it would still be thinking about your first peek.</p>
   </div>
 
   <div class="pong-shell duel-shell">
@@ -58,14 +58,17 @@
         <div class="hit" id="hit"></div>
         <div class="dmg" id="dmg"></div>
         <div class="banner" id="banner" hidden></div>
-        <canvas class="mini" id="mini"></canvas>
-        <div class="vitals"><span><i>health</i><b id="hp">100</b></span><span><i>ammo</i><b id="ammo">30 / 30</b></span><span><i>time</i><b id="timer">75</b></span></div>
+        <div class="radar"><canvas class="mini" id="mini"></canvas><span id="where"></span></div>
+        <div class="feed" id="feed"></div>
+        <div class="clock" id="timer">1:15</div>
+        <div class="vit hp"><i>✚</i><b id="hp">100</b></div>
+        <div class="vit am"><b id="ammo">30</b></div>
         <div class="brain"><i>shad0w is deciding</i><span id="brain">–</span></div>
       </div>
       <div class="pong-score"><span><i>you</i><b id="sYou">0</b></span><span><b id="sShad">0</b><i>shad0w</i></span></div>
       <div class="pong-over" id="over">
         <b id="overTitle">Ready?</b>
-        <span id="overSub">WASD to move · mouse to aim · click to shoot · Space to jump · Ctrl or C to crouch · R to reload. Head shots kill at once. First to 5 rounds.</span>
+        <span id="overSub">WASD to move · mouse to aim · click to shoot · Shift to walk silently · Space to jump · Ctrl or C to crouch · R to reload. Its footsteps tell you where it is: there is no enemy on the radar. Head shots kill. First to 5 rounds.</span>
         <button class="btn primary" id="start" type="button">Play →</button>
       </div>
     </div>
@@ -98,7 +101,7 @@
 
   <section class="arena-sec">
     <div class="section-head"><div class="kicker">its brain, against other brains</div><h2>Same opponent, different brains.</h2>
-      <p>Before going live, every brain played the same 400 rounds against the same scripted opponent, with the same hand. Win rates are from those rounds.</p></div>
+      <p>Before going live, every brain played against the same scripted opponent with the same hand: 400 rounds each for shad0w and the hand-written rules, 10 each for the LLM itself (every one of its rounds costs real calls). The LLM, with the game paused, decides 10 times a second; its student decides 60. A brain is only as good as its teacher's choices, and a well-tuned hand-written bot is still a strong baseline.</p></div>
     <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
   </section>
 
@@ -128,8 +131,8 @@ $("howList").innerHTML = [
   `<b>Play again.</b> The tables run here, in your browser, 60 times a second. When a table is not sure, it still answers (there is no time to ask the LLM mid-fight); the panel shows how often it was certified.`,
 ].map((s) => `<li>${s}</li>`).join("");
 $("honest").innerHTML = `<b>What is and isn't shad0w here.</b> shad0w makes the decisions: push or retreat, sidestep or hold, stand, crouch or jump, fire, hold fire or reload. The aiming is mechanical, like a human hand: once it sees you, its crosshair turns towards your chest after a reaction delay and at a limited speed. That hand is what the difficulty changes. Shots have the same spread and recoil rules for both of you.`;
-$("evalTable").innerHTML = `<tr><th>brain</th><th>wins</th><th>losses</th><th>draws</th><th>win rate</th><th>time per decision</th></tr>` +
-  ev.rows.map((r) => `<tr${r.hl ? ' class="hl"' : ""}><td>${r.name}</td><td>${r.win}</td><td>${r.loss}</td><td>${r.draw}</td><td><b>${r.rate}%</b></td><td>${r.time}</td></tr>`).join("");
+$("evalTable").innerHTML = `<tr><th>brain</th><th>rounds</th><th>wins</th><th>losses</th><th>draws</th><th>win rate</th><th>time per decision</th></tr>` +
+  ev.rows.map((r) => `<tr${r.hl ? ' class="hl"' : ""}><td>${r.name}</td><td>${r.rounds}</td><td>${r.win}</td><td>${r.loss}</td><td>${r.draw}</td><td><b>${r.rate}%</b></td><td>${r.time}</td></tr>`).join("");
 </script>
 <script type="module" src="../assets/duel-play.mjs"></script>
 </body>

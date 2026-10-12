@@ -875,13 +875,19 @@ footer .fbrand p.fsocial { margin-top: 8px; font-size: 13px; }
 .duel-hud .dmg { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse at center, transparent 45%, rgba(200,20,20,.55)); }
 .duel-hud .banner { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); padding: 10px 18px; border-radius: 10px; background: rgba(0,0,0,.6);
   color: #fff; font: 600 clamp(14px, 1.8vw, 22px) var(--display); letter-spacing: -.01em; white-space: nowrap; }
-.duel-hud .mini { position: absolute; left: 12px; top: 12px; width: clamp(120px, 20%, 176px); height: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35); }
-.duel-hud .vitals { position: absolute; left: 14px; bottom: 12px; display: flex; gap: 18px; }
-.duel-hud .vitals span, .duel-hud .brain { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 8px; background: rgba(0,0,0,.45); }
-.duel-hud i { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.7); }
-.duel-hud b { color: #fff; font-size: clamp(14px, 1.6vw, 20px); font-variant-numeric: tabular-nums; }
-.duel-hud .brain { position: absolute; right: 12px; bottom: 12px; text-align: right; }
-.duel-hud .brain span { color: #fff; font-size: 12.5px; }
-.duel-hud .brain b { color: var(--orange); font-size: 13px; }
+.duel-hud .radar { position: absolute; left: 12px; top: 12px; width: clamp(120px, 20%, 176px); }
+.duel-hud .mini { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35); }
+.duel-hud #where { display: block; margin-top: 4px; font: 600 12px var(--mono); color: var(--orange); text-shadow: 0 1px 2px #000; letter-spacing: .04em; }
+.duel-hud .feed { position: absolute; right: 12px; top: 12px; display: grid; gap: 4px; justify-items: end; font: 600 12.5px var(--mono); }
+.duel-hud .feed div { padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.55); color: #fff; }
+.duel-hud .feed .o { color: var(--orange); } .duel-hud .feed i { font-style: normal; color: rgba(255,255,255,.75); padding: 0 6px; }
+.duel-hud .clock { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font: 700 clamp(16px, 2vw, 24px) var(--mono); color: var(--orange); text-shadow: 0 2px 3px #000; }
+.duel-hud .vit { position: absolute; bottom: 10px; display: flex; align-items: baseline; gap: 8px; font: 700 clamp(22px, 3vw, 38px) var(--mono); color: var(--orange); text-shadow: 0 2px 4px #000; }
+.duel-hud .vit.hp { left: 16px; } .duel-hud .vit.am { right: 16px; }
+.duel-hud .vit i { font-style: normal; font-size: .8em; color: var(--orange); letter-spacing: 0; text-transform: none; }
+.duel-hud .vit b { color: var(--orange); font-size: 1em; } .duel-hud .vit small { font-size: .55em; opacity: .85; }
+.duel-hud .brain { position: absolute; right: 12px; bottom: 64px; text-align: right; display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 8px; background: rgba(0,0,0,.45); }
+.duel-hud .brain i { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.7); }
+.duel-hud .brain span { color: #fff; font-size: 12.5px; } .duel-hud .brain b { color: var(--orange); font-size: 13px; }
 @media (max-width: 900px) { .duel-shell { grid-template-columns: 1fr; } .duel-hud .brain { display: none; } }
 .game-card img { width: 100%; height: auto; display: block; border-radius: 10px; aspect-ratio: 16 / 9; object-fit: cover; }

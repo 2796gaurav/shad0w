@@ -47,7 +47,7 @@
   <div class="section-head" style="max-width:900px;margin-bottom:26px">
     <div class="kicker">arena · Doom · System 0 vs an LLM, at game speed · recorded and replayed</div>
     <h1 class="arena-title">Can System 0 run Doom?<br><span class="hl">It decides every tic.</span></h1>
-    <p>Doom runs at 35 tics a second. An LLM played it with the game paused, one answer per tic, and shad0w learned its choices into a <b id="kb">–</b> table. Then everyone played the same games with the clock running: the table answers in microseconds, the LLM in seconds. While an answer is on its way, the marine stands still. Every frame below is real ViZDoom (Freedoom assets), replayed move for move from the recordings.</p>
+    <p>Doom runs at 35 tics a second. An LLM played it with the game paused, and shad0w learned its choices into a <b id="kb">–</b> table. Then six decision makers played the same games <b>in real time</b>: shad0w, two hosted LLMs, and three open System One decision models (Julia-1, Laya, Kev-4B) served by llama.cpp on the same laptop. While a lane's answer is on its way, its marine stands still. Every frame below is real ViZDoom (Freedoom assets), replayed move for move from the recordings.</p>
   </div>
 
   <div class="panel" style="padding:10px">
@@ -58,7 +58,7 @@
   </div>
 
   <section class="arena-sec">
-    <div class="section-head"><div class="kicker">the whole picture</div><h2>Same games. The clock decides.</h2>
+    <div class="section-head"><div class="kicker">the whole picture · all in real time</div><h2>Same games. The clock decides.</h2>
       <p id="resLead"></p></div>
     <div class="panel"><div class="chart-scroll"><svg id="killChart" class="arena-chart" role="img" aria-label="Average kills per game for each decision maker"></svg></div></div>
     <div class="panel" style="margin-top:14px"><div class="table-wrap"><table class="arena-table" id="resTable"></table></div></div>
@@ -96,13 +96,12 @@
 const $ = (id) => document.getElementById(id);
 const D = await (await fetch("doom.json")).json();
 const L = D.lanes, t = D.train, fmt = (ms) => ms < 1 ? `${(ms * 1000).toFixed(1)} µs` : `${Math.round(ms).toLocaleString("en-US")} ms`;
-const sh = L.find((r) => r.lane === "shad0w"), live = L.filter((r) => r.lane.startsWith("llm")), paused = L.find((r) => r.lane.startsWith("paused"));
+const sh = L.find((r) => r.lane === "shad0w"), live = L.filter((r) => r.lane.startsWith("llm") || r.lane.startsWith("s1")), paused = L.find((r) => r.lane.startsWith("paused"));
 $("kb").textContent = `${t.table_kb} KB`;
 $("filmNote").textContent = `One recorded game (seed ${D.film_seed ?? sh.seeds[0]}), all lanes from the same start, shown in game time. The bar at the bottom of a panel means that lane's answer had not arrived yet that tic.${paused ? ` The paused lane's game took ${paused.wall_minutes[paused.seeds.indexOf(D.film_seed ?? 1)]} minutes of real time to play.` : ""} ${D.machine}.`;
 const onSeeds = (r, seeds) => { const k = r.seeds.map((s, i) => [s, r.kills_all[i]]).filter(([s]) => seeds.includes(s)).map(([, k]) => k); return +(k.reduce((a, b) => a + b, 0) / k.length).toFixed(1); };
-$("resLead").innerHTML = `Average kills per game: ${sh.games} recorded games for each lane, the same seeds for every lane` +
-  (paused ? `, except the paused LLM, which played ${paused.games} (seeds ${paused.seeds.join(", ")}): each of its games took ${Math.min(...paused.wall_minutes)}–${Math.max(...paused.wall_minutes)} minutes of real calls. On those same ${paused.games} games shad0w averaged <b>${onSeeds(sh, paused.seeds)}</b> kills and the LLM it learned from <b>${paused.kills}</b>` : "") +
-  `. With the clock running, ${live.map((r) => `${r.name.split(",")[0]} averaged ${r.kills}`).join(" and ")}.`;
+$("resLead").innerHTML = `Average kills per game over the same ${sh.games} recorded games, everyone in real time: shad0w <b>${sh.kills}</b>; ` +
+  live.map((r) => `${r.name.split(",")[0]} ${r.kills}`).join(", ") + `. In real time, the first thing that decides a game is who answers before the next tic.`;
 const colors = { shad0w: "var(--orange)" };
 // kills chart
 {
@@ -137,7 +136,8 @@ $("howList").innerHTML = [
   `<b>Race.</b> Every lane played the same seeds with the clock running. A lane's answer lands on the first tic after it arrives; until then the marine does nothing. Latency is measured on every real call.`,
 ].map((s) => `<li>${s}</li>`).join("");
 $("honest").innerHTML = `<b>What this does and doesn't show.</b> The table is only as good as the LLM's choices: with the game paused, the LLM is the teacher's true skill, and shad0w's edge is speed, not wisdom. ` +
-  `The LLM lanes are real calls to a hosted a hosted LLM and gpt-4.1 from this laptop, so their latency includes the network, as any hosted model's would. "shad0w, 10 times a second" is the same table asked at the rate the Jev team published for its Doom demo; it shows what the decision rate alone is worth, and is not a measurement of Jev. ` +
+  `The LLM lanes are real calls to a hosted a hosted LLM and gpt-4.1 from this laptop, so their latency includes the network, as any hosted model's would. ` +
+  `The decision models ran on this laptop's CPU through llama.cpp's /v1/systemone (Julia-1 and Laya at Q8_0, Kev-4B at Q4_K_M), with the LLM's instructions as their question; on a data-centre GPU llama.cpp publishes medians of 3 to 12 ms for them, inside one tic, and their scores would then depend on their choices rather than their speed. Jev itself is hosted and was not measured here. ` +
   `One scenario (${D.scenario}). ${D.machine}.`;
 </script>
 </body>

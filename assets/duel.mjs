@@ -11,7 +11,10 @@ export const EYE_STAND = 1.6, EYE_CROUCH = 1.05, RADIUS = 0.3;
 export const MOVES = ["push", "retreat", "strafe_left", "strafe_right", "hold", "to_cover"];
 export const STANCES = ["stand", "crouch", "jump"];
 export const FIRES = ["fire", "hold_fire", "reload"];
-export const GUN = { dmgBody: 27, dmgHead: 100, rpm: 600, mag: 30, reload: 2.4, range: 60 };
+// Counter-Strike 1.6's AK-47 (Liquipedia): 36 damage, x4 to the head, x1.25 stomach, x0.75 legs; 600 rounds a minute; 30 a magazine
+export const GUN = { dmg: 36, head: 4, chest: 1, stomach: 1.25, legs: 0.75, rpm: 600, mag: 30, reload: 2.5, range: 60 };
+// CS 1.6 speeds with a rifle: about 215 units a second (4.1 m), walking 0.52x, crouching 0.34x
+export const SPEED = { run: 4.1, walk: 2.1, crouch: 1.4 };
 
 // ---------- the map ----------
 export const MW = 44, MH = 30;
@@ -47,6 +50,12 @@ export function buildMap() {
   return h;
 }
 export const MAP = buildMap();
+// callouts, as CS players name the classic three-lane desert map's places (first match wins)
+export const ZONES = [[21, 7, 22, 8, "Xbox"], [17, 1, 26, 5, "CT Spawn"], [12, 2, 17, 3, "CT Ramp"], [2, 1, 4, 3, "Goose"], [2, 1, 12, 8, "A Site"],
+  [26, 4, 31, 5, "CT to B"], [38, 1, 41, 3, "B Platform"], [31, 1, 41, 8, "B Site"], [2, 16, 5, 19, "Long Doors"], [2, 8, 5, 22, "Long A"],
+  [2, 23, 15, 25, "Outside Long"], [15, 23, 28, 28, "T Spawn"], [38, 8, 41, 17, "Lower Tunnels"], [38, 18, 41, 25, "Upper Tunnels"], [28, 26, 41, 28, "Outside Tunnels"],
+  [19, 5, 24, 10, "Top Mid"], [19, 11, 24, 15, "Mid Doors"], [19, 16, 24, 23, "Lower Mid"], [10, 8, 19, 11, "Short"], [31, 15, 34, 17, "B Doors"], [24, 15, 38, 17, "Mid to B"]];
+export function callout(x, y) { for (const [x0, y0, x1, y1, n] of ZONES) if (x >= x0 && x < x1 + 1 && y >= y0 && y < y1 + 1) return n; return ""; }
 export const SPAWNS = { T: [[21.5, 27.2], [16.5, 27.5], [27.5, 27.5]], CT: [[21.5, 1.6], [18.5, 2.0], [25.5, 2.0]] };
 export const hAt = (x, y) => (x < 0 || y < 0 || x >= MW || y >= MH) ? H_WALL : MAP[(y | 0) * MW + (x | 0)];
 
@@ -66,7 +75,7 @@ export function clearLine(x0, y0, z0, x1, y1, z1) {
 // ---------- fighters ----------
 export function fighter(side, x, y, yaw) {
   return { side, x, y, z: 0, vz: 0, yaw, pitch: 0, hp: 100, ammo: GUN.mag, reloadT: 0, cool: 0, crouch: false, recoil: 0,
-           vx: 0, vy: 0, lastSeenT: -99, seenX: null, seenY: null, sawSince: -1, kills: 0, shots: 0, hits: 0, heard: -99 };
+           vx: 0, vy: 0, lastSeenT: -99, seenX: null, seenY: null, sawSince: -1, kills: 0, shots: 0, hits: 0, heard: -99, spray: 0, stepT: 0, walk: false };
 }
 export const eye = (f) => f.z + (f.crouch ? EYE_CROUCH : EYE_STAND);
 export const headZ = (f) => eye(f) + 0.05;
@@ -90,11 +99,12 @@ function blocked(x, y) {
     if (hAt(x + ox, y + oy) > 0) return true;
   return false;
 }
-export function move(f, wishX, wishY, wantCrouch, wantJump) {
+export function move(f, wishX, wishY, wantCrouch, wantJump, wantWalk = false) {
   // wishX/wishY: desired direction in the world (any length, normalised here)
   if (wantJump && !airborne(f) && !f.crouch) f.vz = 4.3;
   f.crouch = wantCrouch && !airborne(f);
-  const speed = f.crouch ? 2.0 : 4.6, l = Math.hypot(wishX, wishY), ctrl = airborne(f) ? 0.12 : 0.35;
+  f.walk = wantWalk && !f.crouch;
+  const speed = f.crouch ? SPEED.crouch : f.walk ? SPEED.walk : SPEED.run, l = Math.hypot(wishX, wishY), ctrl = airborne(f) ? 0.12 : 0.35;
   const tx = l > 1e-6 ? wishX / l * speed : 0, ty = l > 1e-6 ? wishY / l * speed : 0;
   f.vx += (tx - f.vx) * ctrl; f.vy += (ty - f.vy) * ctrl;
   const nx = f.x + f.vx * DT, ny = f.y + f.vy * DT;
@@ -104,19 +114,22 @@ export function move(f, wishX, wishY, wantCrouch, wantJump) {
 }
 
 // ---------- shooting ----------
-export function spreadDeg(f) {
-  let s = f.crouch ? 0.35 : 0.7;
-  if (moving(f)) s += f.crouch ? 1.2 : 2.6;
-  if (airborne(f)) s += 6;
-  return s + f.recoil;
+export function spreadDeg(f) {   // CS 1.6: the first shot is accurate only when you stand still; running and jumping ruin it
+  const v = Math.hypot(f.vx, f.vy);
+  let s = f.crouch ? 0.15 : 0.25;
+  if (v > 0.6) s += f.crouch ? 0.8 : v > SPEED.walk + 0.3 ? 3.6 : 1.1;
+  if (airborne(f)) s += 8;
+  return s + f.recoil * 0.6;
 }
+// the AK's spray: the first shots climb, then it sways left and right
+export function sprayKick(n) { return [n < 1 ? 0 : Math.min(7, 0.9 * n) * (n > 9 ? 0.92 : 1), n > 6 ? Math.sin((n - 6) * 0.65) * 1.6 : 0]; }
 // fire one round from f along (yaw, pitch) with spread; returns {hit, head, x, y, z} of the impact
 export function shoot(f, target, rnd) {
   if (f.cool > 0 || f.reloadT > 0 || f.ammo <= 0) return null;
   f.ammo--; f.shots++; f.cool = 60 / GUN.rpm;
-  const sp = spreadDeg(f) * Math.PI / 180, a = rnd() * 2 * Math.PI, m = Math.sqrt(rnd()) * sp;
-  const yaw = f.yaw + Math.cos(a) * m, pitch = f.pitch + Math.sin(a) * m - f.recoil * 0.4 * Math.PI / 180;
-  f.recoil = Math.min(4, f.recoil + 0.45);
+  const sp = spreadDeg(f) * Math.PI / 180, a = rnd() * 2 * Math.PI, m = Math.sqrt(rnd()) * sp, [up, side] = sprayKick(f.spray);
+  const yaw = f.yaw + Math.cos(a) * m + side * Math.PI / 180, pitch = f.pitch + Math.sin(a) * m + up * Math.PI / 180 * 0.55;
+  f.recoil = Math.min(4, f.recoil + 0.45); f.spray++;
   const dx = Math.cos(yaw) * Math.cos(pitch), dy = Math.sin(yaw) * Math.cos(pitch), dz = Math.sin(pitch);
   const ex = f.x, ey = f.y, ez = eye(f);
   // where does the ray meet a wall? march until the height grid is above the ray
@@ -131,10 +144,12 @@ export function shoot(f, target, rnd) {
   let res = { hit: false, head: false, x: ex + dx * wallT, y: ey + dy * wallT, z: ez + dz * wallT };
   const best = th !== null && (tb === null || th <= tb) ? ["head", th] : tb !== null ? ["body", tb] : null;
   if (best && best[1] < wallT) {
-    const head = best[0] === "head";
-    target.hp -= head ? GUN.dmgHead : GUN.dmgBody;
+    const head = best[0] === "head", hz = ez + dz * best[1] - target.z, h = eye(target) - target.z;
+    const zone = head ? "head" : hz < 0.45 * h ? "legs" : hz < 0.65 * h ? "stomach" : "chest";
+    const dmg = Math.round(GUN.dmg * GUN[zone]);
+    target.hp -= dmg;
     f.hits++;
-    res = { hit: true, head, x: ex + dx * best[1], y: ey + dy * best[1], z: ez + dz * best[1] };
+    res = { hit: true, head, zone, dmg, x: ex + dx * best[1], y: ey + dy * best[1], z: ez + dz * best[1] };
   }
   return res;
 }
@@ -237,12 +252,14 @@ export function step(m, botAct, humanAct, skill = SKILL.normal) {
   else { b.sawSince = -1; if (Math.hypot(wish[0], wish[1]) > 0.1) aim(b, b.x + wish[0], b.y + wish[1], eye(b), false, t, skill, m.r); }
   // the human (or the scripted opponent)
   const h = typeof humanAct === "function" ? humanAct(m, e, b) : humanAct;
-  move(e, h.wishX, h.wishY, h.crouch, h.jump);
+  move(e, h.wishX, h.wishY, h.crouch, h.jump, h.walk);
   if (h.yaw !== undefined) { e.yaw = h.yaw; e.pitch = h.pitch; }
   // guns
   for (const [f, act, other] of [[b, botAct.fire, e], [e, h.fire ? "fire" : h.reload ? "reload" : "hold_fire", b]]) {
     f.cool = Math.max(0, f.cool - DT);
     f.recoil = Math.max(0, f.recoil - (f.cool > 0 ? 0.6 : 3.2) * DT);
+    if (act !== "fire" && f.cool === 0) f.spray = Math.max(0, f.spray - 30 * DT);   // the spray resets when you stop
+    if (moving(f) && !airborne(f) && !f.crouch && !f.walk) { f.stepT -= DT; if (f.stepT <= 0) { f.stepT = 0.36; events.push({ kind: "step", who: f === b ? "bot" : "human", x: f.x, y: f.y }); } }
     if (f.reloadT > 0) { f.reloadT -= DT; if (f.reloadT <= 0) { f.reloadT = 0; f.ammo = GUN.mag; } }
     if (act === "reload" && f.reloadT === 0 && f.ammo < GUN.mag) { f.reloadT = GUN.reload; events.push({ kind: "reload", who: f === b ? "bot" : "human" }); }
     if (act === "fire" && f.ammo === 0 && f.reloadT === 0) f.reloadT = GUN.reload;
