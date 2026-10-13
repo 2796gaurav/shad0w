@@ -7,10 +7,10 @@
   "section": 0.9779559118236473,
   "topic": 0.875751503006012,
   "dollars_section": 0.9909992365573467,
-  "section_certified_share": 1.0,
-  "section_certified_agreement": 0.9779559118236473,
-  "topic_certified_share": 0.8937875751503006,
-  "topic_certified_agreement": 0.9461883408071748
+  "section_certified_share": 0.8296593186372746,
+  "section_certified_agreement": 1.0,
+  "topic_certified_share": 0.32665330661322645,
+  "topic_certified_agreement": 1.0
  },
  "topics": 47,
  "sections": 10,
@@ -19,33 +19,38 @@
   "train_events": 162165,
   "test_events": 14117,
   "rows": 18784,
-  "test_rows": 229269,
+  "test_rows": 229594,
   "cutoff": "2026-09-29",
   "newest": "2026-10-13",
   "train_s": 1628.0,
-  "alpha": 0.05,
+  "alpha": {
+   "section": 0.02,
+   "topic": 0.05
+  },
   "table_kb": 2187.8,
   "py_us_per_text": 9.17,
   "calibration": {
    "section": {
-    "agreement": 0.971,
-    "certified_share": 1.0
+    "agreement": 0.90775,
+    "certified_share": 0.6865,
+    "alpha": 0.02
    },
    "topic": {
-    "agreement": 0.9443333333333334,
-    "certified_share": 0.961
+    "agreement": 0.7515,
+    "certified_share": 0.4,
+    "alpha": 0.05
    }
   },
   "test": {
    "section": {
-    "agreement": 0.9082,
-    "certified_share": 0.9999,
-    "certified_agreement": 0.9083
+    "agreement": 0.9084,
+    "certified_share": 0.5775,
+    "certified_agreement": 0.9968
    },
    "topic": {
-    "agreement": 0.7268,
-    "certified_share": 0.7848,
-    "certified_agreement": 0.8718
+    "agreement": 0.7271,
+    "certified_share": 0.2602,
+    "certified_agreement": 0.9989
    }
   }
  }

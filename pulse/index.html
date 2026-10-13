@@ -40,18 +40,44 @@
   </div>
 </div></nav>
 <main class="wrap pmk" style="padding-top:56px;padding-bottom:100px">
-  <div class="section-head" style="max-width:900px;margin-bottom:22px">
-    <div class="kicker">live · real money · runs only in your browser</div>
-    <h1 class="arena-title">One minute of Polymarket,<br><span class="hl">read as it happens.</span></h1>
-    <p>Press start and your browser pulls every trade on Polymarket: the last ~20,000 first, then each new one as it lands, for 60 seconds. A shad0w table reads each market's question and files it under a section and a topic in microseconds. You watch where the money goes, and every label is checked against Polymarket's own tags as you go. No server of ours is involved: your browser talks to Polymarket's public API, and nothing you see is sent anywhere.</p>
+
+  <!-- 1. what this is, in one breath -->
+  <div class="pm-hero">
+    <div>
+      <div class="kicker">live · real money · runs only in your browser</div>
+      <h1 class="arena-title">Watch shad0w read<br><span class="hl">Polymarket's money, live.</span></h1>
+      <p class="pm-lead">Every trade on Polymarket is a <b>sentence</b> ("Will Galatasaray win on Oct 13?") plus <b>dollars</b>. To know where the money is going, someone has to read every sentence and file it under a topic. Thousands of them, every few minutes.</p>
+      <p class="pm-lead">shad0w does that reading. It files each sentence in <b>a few millionths of a second</b>, inside this browser tab: no server, no GPU, no per-call bill. Press start and watch a minute of real trades get sorted as they happen.</p>
+      <p><button class="btn primary pm-go" id="go" type="button">▶ Start the 60-second live analysis</button> <a class="btn" href="#try">or try one sentence first ↓</a></p>
+    </div>
+    <ol class="pm-steps" aria-label="How it works">
+      <li><i>1</i><div><b>A trade happens</b><span>somewhere in the world, someone buys "Yes" for $40</span></div></li>
+      <li><i>2</i><div><b>shad0w reads its sentence</b><span>and picks a section and a topic, in microseconds</span></div></li>
+      <li><i>3</i><div><b>You see where money flows</b><span>a live map, a tape, the biggest markets, every label checkable</span></div></li>
+    </ol>
   </div>
 
+  <!-- 2. the live run -->
   <section class="pulse-run panel" id="run">
     <div class="pulse-top">
-      <button class="btn primary" id="go" type="button">Start the 60-second analysis →</button>
       <div class="pulse-clock"><b id="clock">60</b><small>seconds left</small></div>
-      <div class="pulse-phase" id="phase">Ready. One minute, then a report you can download.</div>
+      <div class="pulse-phase" id="phase">Ready. Press start: one minute, then a report you can download.</div>
     </div>
+
+    <div class="pm-pipe" id="pipe" aria-live="off">
+      <div class="pp-step pp-in"><small>a trade comes in</small><b id="pIn">“Counter-Strike: Vitality vs NAVI – Map 1 Winner”</b><span id="pUsd">$120 · bought Vitality</span></div>
+      <div class="pp-arrow" aria-hidden="true"></div>
+      <div class="pp-step pp-brain"><small>shad0w reads it</small><b class="o" id="pUs">7 µs</b><span>no LLM call, no server</span></div>
+      <div class="pp-arrow" aria-hidden="true"></div>
+      <div class="pp-step pp-out"><small>it files it</small><div class="pp-chips" id="pOut"><em style="--c:var(--s-esports);--ink:var(--i-esports)">Esports</em><em class="t">Counter-Strike</em></div><span id="pCert">certified ✓</span></div>
+    </div>
+
+    <div class="pm-race" aria-label="shad0w against an LLM labelling the same trades one call at a time">
+      <div class="pr-row me"><span>shad0w, in this tab</span><div class="pr-track"><div class="pr-fill" id="rMe"></div></div><b id="rMeN">0</b></div>
+      <div class="pr-row"><span>an LLM, one call a second</span><div class="pr-track"><div class="pr-fill" id="rLlm"></div></div><b id="rLlmN">0</b></div>
+      <p class="muted pr-note" id="rNote">Trades labelled so far. One call a second is generous: the hosted LLM calls we measured took 1.1–2.4 s each.</p>
+    </div>
+
     <div class="pulse-kpis">
       <div><small>trades read</small><b id="kTrades">0</b></div>
       <div><small>money in those trades</small><b id="kUsd">$0</b></div>
@@ -60,22 +86,27 @@
       <div><small>of the minute spent labelling</small><b id="kShare">–</b></div>
       <div><small>agrees with Polymarket's tags</small><b id="kAgree">–</b></div>
     </div>
+
+    <div class="pm-crumbs" id="crumbs"><span>Showing:</span> <button type="button" class="crumb on" data-f="">everything</button></div>
+
     <div class="pulse-grid">
       <div class="pulse-map">
-        <div class="pulse-h"><b>Where the money went</b><span>by section, then topic · area = dollars traded</span></div>
-        <div class="treemap" id="map" role="img" aria-label="Treemap of dollars traded by section and topic"><p class="muted">The map fills in as trades arrive.</p></div>
-        <div class="pulse-h" style="margin-top:14px"><b>Dollars a second, by section</b><span>history first, then live</span></div>
-        <canvas class="flow" id="flow" height="120" aria-label="Dollars a second by section"></canvas>
-        <div class="legend" id="legend"></div>
+        <div class="pulse-h"><b>Where the money went</b><span>area = dollars · <u>click a block to focus on it</u></span></div>
+        <div class="treemap" id="map" role="group" aria-label="Treemap of dollars by section and topic; click a block to filter"><p class="muted">Press start and the map fills in as trades arrive.</p></div>
+        <div class="pulse-h" style="margin-top:14px"><b>Dollars a second</b><span>history first, then live · hover for details</span></div>
+        <div class="flow-wrap"><canvas class="flow" id="flow" height="120" aria-label="Dollars a second by section"></canvas><div class="flow-tip" id="flowTip" hidden></div></div>
+        <div class="legend" id="legend" aria-label="Sections; click one to filter"></div>
       </div>
       <div class="pulse-tape">
-        <div class="pulse-h"><b>The tape</b><span>newest first · big trades in orange</span></div>
+        <div class="pulse-h"><b>The tape</b><span id="tapeNote">newest first · big trades in orange · click one</span></div>
         <ol class="tape" id="tape"></ol>
       </div>
     </div>
+
     <div class="pulse-grid2">
       <div class="panel-in">
-        <div class="pulse-h"><b>Checked against Polymarket's own tags</b><span id="chkNote">each market's event tags, fetched live</span></div>
+        <div class="pulse-h"><b>Is it right? Checked against Polymarket's own tags</b></div>
+        <p class="muted" style="font-size:12.5px;margin:0 0 8px">Polymarket tags every event itself. While you watch, this page fetches those tags for each market and compares.</p>
         <dl class="kv" id="chk">
           <dt>markets checked</dt><dd id="cN">–</dd>
           <dt>section agrees</dt><dd id="cSec">–</dd>
@@ -83,35 +114,79 @@
           <dt>certified labels: section agrees</dt><dd id="cCert">–</dd>
           <dt>share of dollars correctly filed</dt><dd id="cUsd">–</dd>
         </dl>
-        <details class="dis"><summary>Where it disagreed (<span id="cDisN">0</span>) · check them yourself</summary><ol id="cDis"></ol></details>
+        <details class="dis"><summary>Where it disagreed (<span id="cDisN">0</span>) · click to check each one yourself</summary><ol id="cDis"></ol></details>
       </div>
       <div class="panel-in">
-        <div class="pulse-h"><b>Biggest markets right now</b><span>by dollars in this minute</span></div>
+        <div class="pulse-h"><b>Biggest markets</b><span id="topNote">by dollars in this minute · click one</span></div>
         <ol class="top" id="top"></ol>
       </div>
     </div>
+
     <div class="pulse-report" id="report" hidden>
       <h3 id="rTitle">The minute in one paragraph</h3>
       <p id="rText"></p>
-      <p><button class="btn" id="dlCsv" type="button">Download the labelled trades (CSV)</button> <button class="btn" id="dlJson" type="button">Download the report (JSON)</button> <button class="btn primary" id="again" type="button">Run another minute →</button></p>
+      <p><button class="btn" id="dlCsv" type="button">Download every labelled trade (CSV)</button> <button class="btn" id="dlJson" type="button">Download the report (JSON)</button> <button class="btn primary" id="again" type="button">Run another minute →</button></p>
     </div>
   </section>
 
-  <section class="arena-sec">
-    <div class="section-head"><div class="kicker">how the labels were made</div><h2>No LLM in the loop. Polymarket's own tags taught it.</h2>
-      <p>Polymarket tags every event it lists ("Soccer", "Fed Rates", "Ukraine Map"…). We mapped those tags to 9 sections and <span data-n="topics">…</span> topics, and shad0w compiled <span data-n="rows">…</span> market questions into a <span data-n="kb">…</span> table. Then two tests: the trades of a few recorded minutes of the live feed (what this page shows you; long-running markets in it may also be in the training data), and every market in the events created in the last two weeks before the data was collected (<span data-n="test_rows">…</span> questions, including thousands of near-identical sports props).</p></div>
-    <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
-    <p class="muted" style="font-size:13.5px;margin-top:10px">"Certified" means the table's answer passed its calibration test (it may differ from the tags on at most 5% of certified answers, with 90% confidence). Uncertified answers are still shown, marked as such. The certificate is calibrated on the mix it trained on; on the two-week set, dominated by large sports events with hundreds of prop markets each, certified answers agree less than it promises. Sections are broad; topics are finer and overlap (a Fed market tagged "Trump").</p>
+  <!-- the market drawer -->
+  <aside class="pm-drawer" id="drawer" hidden aria-label="Market details">
+    <button class="pm-x" id="dClose" type="button" aria-label="Close">×</button>
+    <div id="dBody"></div>
+  </aside>
+
+  <!-- 3. try it -->
+  <section class="arena-sec" id="try">
+    <div class="section-head"><div class="kicker">try it yourself</div><h2>Type any market question.</h2>
+      <p>This is the same table the live run uses, already loaded in your tab. Type anything and it answers as you type, with how sure it is.</p></div>
+    <div class="panel pm-try">
+      <input id="tryIn" type="text" autocomplete="off" spellcheck="false" placeholder="Will Bitcoin close above $150k on December 31?" aria-label="A market question">
+      <div class="pm-ex" id="tryEx"></div>
+      <div class="pm-tryout" id="tryOut"></div>
+    </div>
   </section>
 
+  <!-- 4. what you get -->
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">what shad0w gives you</div><h2>Three things you can hold in your hand.</h2></div>
+    <div class="pm-gets">
+      <div class="panel"><i>⚡</i><b>A label on every item, the moment it arrives</b><p>Not a sample, not a nightly batch. Each trade is filed before the next one lands, and the whole backlog of 20,000 takes well under a second.</p></div>
+      <div class="panel"><i>✓</i><b>A promise you can check</b><p>Each answer says whether it is <em>certified</em>: confident enough that, tested in advance, such answers disagree with the truth at most 2% of the time (sections) or 5% (topics). The rest are marked, so you know what to double-check. And this page checks it live, against Polymarket's own tags, with every mismatch listed for you to click.</p></div>
+      <div class="panel"><i>0</i><b>No server, no GPU, no bill per item</b><p>The table is a file of a couple of megabytes. It runs in a browser tab, on a laptop, on a phone, or next to your database. Labelling a million items costs electricity.</p></div>
+    </div>
+  </section>
+
+  <!-- 5. the edge -->
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">why this wasn't practical before</div><h2>Reading every trade, live, used to need a server and a bill.</h2>
+      <p>Polymarket's live feed runs at about 35–45 trades a second. Here is what it takes to label all of them as they come, four ways.</p></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table pm-cmp">
+      <tr><th></th><th>time per label</th><th>to keep up with the live feed</th><th>the 20,000-trade backlog</th><th>where it runs</th></tr>
+      <tr><td>a person</td><td>~5 s</td><td>~200 people, nonstop</td><td>~28 hours</td><td>an office</td></tr>
+      <tr><td>a hosted LLM</td><td>1.1–2.4 s (measured)</td><td>~40–100 calls in flight, all day, each one billed</td><td>~6–13 hours, one call at a time</td><td>someone's GPU cluster, over the network</td></tr>
+      <tr><td>a small decision model on a laptop CPU</td><td>0.3–15 s (measured)</td><td>can't, on a CPU (on a GPU: 3–12 ms, published)</td><td>hours</td><td>a GPU server</td></tr>
+      <tr class="hl"><td>shad0w</td><td><b id="cmpUs">~7 µs</b></td><td>about <b id="cmpShare">0.03%</b> of one CPU core</td><td><b id="cmpBack">under a second</b></td><td>this browser tab</td></tr>
+    </table></div></div>
+    <p class="muted" style="font-size:13.5px;margin-top:10px">LLM and decision-model times are our measurements on a laptop with a hosted API and llama.cpp (see <a href="../doom/">the Doom race</a>); the GPU figure is llama.cpp's published one. The person is a rough guess. shad0w's time is measured in Node and again in your tab during a run. The trade-off: an LLM can label anything you ask; shad0w knows only what it was taught, and says when it isn't sure.</p>
+  </section>
+
+  <!-- 6. how the labels were made -->
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how it learned</div><h2>No LLM in the loop. Polymarket's own tags taught it.</h2>
+      <p>Polymarket tags every event it lists ("Soccer", "Fed Rates", "Ukraine Map"…). We mapped those tags to 9 sections and <span data-n="topics">…</span> topics, and shad0w compiled <span data-n="rows">…</span> market questions into a <span data-n="kb">…</span> table. Then two tests: the trades of a few recorded minutes of the live feed (what this page shows you; long-running markets in it may also be in the training data), and every market in the events created in the last two weeks before the data was collected (<span data-n="test_rows">…</span> questions, including thousands of near-identical sports props).</p></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
+    <p class="muted" style="font-size:13.5px;margin-top:10px">"Certified" means the answer is confident enough to pass a test set in advance: a certified section may differ from the tags on at most 2% of answers, a certified topic on at most 5% (90% confidence). The test was run on 4,000 older markets the table never trained on. Everything else is still answered and shown, marked "not certified": in a real system those go to a person or an LLM. Sections are broad; topics are finer and overlap (a Fed market tagged "Trump"), so fewer of them are certified.</p>
+  </section>
+
+  <!-- 7. your feed -->
   <section class="arena-sec">
     <div class="section-head"><div class="kicker">use it on your own feed</div><h2>Any stream of short text, labelled as it arrives.</h2>
-      <p>Prediction markets are one feed. The same table works on support tickets, news wires, chat, product reviews, transactions or logs. It labels them in microseconds, on a laptop, a server or in a browser tab, without a GPU or a per-call bill. If you already have labels (tags, queues, CRM fields), shad0w compiles them directly, as here. If you don't, it learns them from your LLM's answers and takes over the cases it is certified on.</p></div>
+      <p>Prediction markets are one feed. The same kind of table works on support tickets, news, chat, reviews, transactions or logs. If you already have labels (tags, queues, CRM fields), shad0w compiles them directly, as here. If you don't, it learns them from your LLM's answers and takes over the cases it is certified on.</p></div>
     <div class="usecases">
-      <div class="panel"><b>Newsrooms and research desks</b><p>File every incoming market, headline or filing by beat, and alert when money moves on a topic you follow.</p></div>
-      <div class="panel"><b>Risk and compliance</b><p>Tag flows by category in real time: sports vs elections vs crypto exposure, minute by minute, with every label auditable.</p></div>
-      <div class="panel"><b>Data products</b><p>Enrich a firehose with labels before it hits your warehouse. At microseconds a label, the labelling costs less than the network.</p></div>
-      <div class="panel"><b>Support and operations</b><p>Route tickets, chats and alerts the moment they arrive; send only the uncertain ones to a person or an LLM.</p></div>
+      <div class="panel"><b>Newsrooms and research desks</b><p>File every incoming market, headline or filing by beat, and get alerted when money moves on a topic you follow.</p></div>
+      <div class="panel"><b>Risk and compliance</b><p>See sports vs elections vs crypto exposure minute by minute, with every label auditable.</p></div>
+      <div class="panel"><b>Data products</b><p>Enrich a firehose with labels before it reaches your warehouse. The labelling costs less than the network.</p></div>
+      <div class="panel"><b>Support and operations</b><p>Route tickets and alerts the moment they arrive; send only the uncertain ones to a person or an LLM.</p></div>
     </div>
 <pre class="code"><code>pip install shad0wllm
 # one line per labelled example: {"text": "...", "section": "...", "topic": "..."}
@@ -123,7 +198,7 @@ python -c "import shad0w; print(shad0w.load('bundle/').decide('Will the Fed cut 
   <section class="arena-sec">
     <div class="section-head"><div class="kicker">fine print</div><h2>What this is, and isn't.</h2></div>
     <ul class="fine">
-      <li><b>Real trades.</b> Everything comes from Polymarket's public API at the moment you press start: the latest 20,000 trades (the most it serves, roughly the last 15–30 minutes) and the live feed after that. Volumes go up and down with the hour.</li>
+      <li><b>Real trades.</b> Everything comes from Polymarket's public API when you press start: the latest 20,000 trades (the most it serves, roughly the last 15–30 minutes) and the live feed after that.</li>
       <li><b>Dollars</b> are shares × price for each trade, as Polymarket reports them.</li>
       <li><b>No trader is shown.</b> The public feed includes wallets and profile names; this page never displays or stores them, and the download leaves them out.</li>
       <li><b>The check</b> uses each market's event tags from Polymarket, mapped with the same rules used to build the table. Tags are Polymarket's editorial choice, and a few events carry mixed tags.</li>
@@ -148,7 +223,7 @@ const $ = (id) => document.getElementById(id);
 const info = await (await fetch("pulse.json")).json();
 const pct = (x) => x == null ? "–" : `${(100 * x).toFixed(1)}%`;
 const t = info.train.test;
-const N = { topics: info.topics, rows: info.train.rows.toLocaleString("en-US"), kb: `${info.train.table_kb} KB`, test_rows: info.train.test_rows.toLocaleString("en-US") };
+const N = { topics: info.topics, rows: info.train.rows.toLocaleString("en-US"), kb: `${(info.train.table_kb / 1024).toFixed(1)} MB`, test_rows: info.train.test_rows.toLocaleString("en-US") };
 document.querySelectorAll("[data-n]").forEach((e) => { e.textContent = N[e.dataset.n]; });
 const L = info.live, rows = [];
 if (L) rows.push([`live trades (${L.trades.toLocaleString("en-US")} trades, ${L.markets} markets)`, "section", L.section, L.section_certified_share, L.section_certified_agreement, L.dollars_section, true],
