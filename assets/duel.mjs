@@ -231,6 +231,23 @@ export function describe(m, exact = false) {
   return parts.join(" ");
 }
 
+// "checking the corner": follow the path towards the goal and aim at the last point of it still in view, which is where the
+// enemy would step out. Players call it pre-aiming; it uses only the map and the goal the bot already walks to.
+const pathField = new Map();
+function checkPoint(m, f, goal) {
+  const key = (goal[0] | 0) + "," + (goal[1] | 0); let fld = pathField.get(key);
+  if (!fld) { fld = field(goal[0], goal[1]); if (pathField.size > 64) pathField.clear(); pathField.set(key, fld); }
+  let x = f.x, y = f.y, last = null;
+  if (fld[(f.y | 0) * MW + (f.x | 0)] > 10) return null;   // only within ~10 m of walking: further out, aiming along the path measured better
+  for (let k = 0; k < 30; k++) {
+    const d = downhill(fld, x, y); if (!d[0] && !d[1]) break;
+    x = (x | 0) + 0.5 + Math.sign(Math.round(d[0] * 2)) * 1; y = (y | 0) + 0.5 + Math.sign(Math.round(d[1] * 2)) * 1;
+    if (!clearLine(f.x, f.y, eye(f), x, y, EYE_STAND)) break;
+    last = [x, y];
+  }
+  return last && Math.hypot(last[0] - f.x, last[1] - f.y) > 2.5 ? last : null;
+}
+
 // ---------- one tick ----------
 // botAct: {move, stance, fire}; humanAct: {wishX, wishY, crouch, jump, fire, reload, yaw, pitch} (yaw/pitch absolute) or an AI function
 export function step(m, botAct, humanAct, skill = SKILL.normal) {
@@ -244,13 +261,13 @@ export function step(m, botAct, humanAct, skill = SKILL.normal) {
   const goal = sees || b.seenX !== null ? [sees ? e.x : b.seenX, sees ? e.y : b.seenY] : [e.x, e.y];   // never seen: hunt by map knowledge
   if (botAct.move === "push") { m._f = m._fk === goal.map((v) => v | 0).join() ? m._f : field(goal[0], goal[1]); m._fk = goal.map((v) => v | 0).join(); wish = downhill(m._f, b.x, b.y); }
   else if (botAct.move === "retreat") { wish = [-fwd[0], -fwd[1]]; }
-  else if (botAct.move === "strafe_left") { wish = [-fwd[1], fwd[0]]; }
-  else if (botAct.move === "strafe_right") { wish = [fwd[1], -fwd[0]]; }
+  else if (botAct.move === "strafe_left") { wish = [-fwd[1], fwd[0]]; }   // into a wall this means standing still, which is when a rifle is accurate:
+  else if (botAct.move === "strafe_right") { wish = [fwd[1], -fwd[0]]; }   // stepping the other way instead was measured and lost rounds (32% vs 61%)
   else if (botAct.move === "to_cover") { const c = coverCell(b, e.x, e.y, eye(e)); if (c) { if (!m._cf || m._ck !== `${c.x},${c.y}`) { m._cf = field(c.x, c.y); m._ck = `${c.x},${c.y}`; } wish = downhill(m._cf, b.x, b.y); } }
   move(b, wish[0], wish[1], botAct.stance === "crouch", botAct.stance === "jump");
   // aim: at the enemy's chest when seen, else along the path
   if (sees) aim(b, e.x, e.y, eye(e) - (skill.aimZ ?? 0.3), true, t, skill, m.r);
-  else { b.sawSince = -1; if (Math.hypot(wish[0], wish[1]) > 0.1) aim(b, b.x + wish[0], b.y + wish[1], eye(b), false, t, skill, m.r); }
+  else { b.sawSince = -1; const c = checkPoint(m, b, goal); if (c) aim(b, c[0], c[1], eye(b), false, t, skill, m.r); else if (Math.hypot(wish[0], wish[1]) > 0.1) aim(b, b.x + wish[0], b.y + wish[1], eye(b), false, t, skill, m.r); }
   // the human (or the scripted opponent)
   const h = typeof humanAct === "function" ? humanAct(m, e, b) : humanAct;
   move(e, h.wishX, h.wishY, h.crouch, h.jump, h.walk);
