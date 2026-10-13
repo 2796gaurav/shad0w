@@ -1,0 +1,52 @@
+{
+ "live": {
+  "trades": 10503,
+  "from": "2026-10-13T11:06:55.000Z",
+  "to": "2026-10-13T11:10:21.000Z",
+  "markets": 499,
+  "section": 0.9779559118236473,
+  "topic": 0.875751503006012,
+  "dollars_section": 0.9909992365573467,
+  "section_certified_share": 1.0,
+  "section_certified_agreement": 0.9779559118236473,
+  "topic_certified_share": 0.8937875751503006,
+  "topic_certified_agreement": 0.9461883408071748
+ },
+ "topics": 47,
+ "sections": 10,
+ "train": {
+  "events": 218824,
+  "train_events": 162165,
+  "test_events": 14117,
+  "rows": 18784,
+  "test_rows": 229269,
+  "cutoff": "2026-09-29",
+  "newest": "2026-10-13",
+  "train_s": 1628.0,
+  "alpha": 0.05,
+  "table_kb": 2187.8,
+  "py_us_per_text": 9.17,
+  "calibration": {
+   "section": {
+    "agreement": 0.971,
+    "certified_share": 1.0
+   },
+   "topic": {
+    "agreement": 0.9443333333333334,
+    "certified_share": 0.961
+   }
+  },
+  "test": {
+   "section": {
+    "agreement": 0.9082,
+    "certified_share": 0.9999,
+    "certified_agreement": 0.9083
+   },
+   "topic": {
+    "agreement": 0.7268,
+    "certified_share": 0.7848,
+    "certified_agreement": 0.8718
+   }
+  }
+ }
+}

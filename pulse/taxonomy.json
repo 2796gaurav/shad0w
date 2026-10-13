@@ -1,0 +1,726 @@
+{
+ "note": "Maps Polymarket's own event tags to a section and a topic. First match wins, in the order listed (US politics appears twice: its US-only tags win over world tags). Used to build the labels and, in the browser, to check them live.",
+ "sections": [
+  {
+   "id": "esports",
+   "name": "Esports",
+   "tags": [
+    "esports",
+    "counter strike 2",
+    "cs2",
+    "valorant",
+    "val",
+    "vct",
+    "league of legends",
+    "lol",
+    "dota 2",
+    "dota",
+    "overwatch",
+    "rocket league",
+    "call of duty",
+    "rainbow six"
+   ]
+  },
+  {
+   "id": "sports",
+   "name": "Sports",
+   "tags": [
+    "sports",
+    "soccer",
+    "football",
+    "nfl",
+    "nfl (all)",
+    "nba",
+    "mlb",
+    "nhl",
+    "hockey",
+    "basketball",
+    "baseball",
+    "tennis",
+    "table tennis",
+    "cricket",
+    "international cricket",
+    "f1",
+    "formula 1",
+    "ufc",
+    "mma",
+    "boxing",
+    "golf",
+    "chess",
+    "ncaaf",
+    "cfb (all)",
+    "ncaa football",
+    "ncaab",
+    "epl",
+    "ucl",
+    "la liga",
+    "mls",
+    "wnba",
+    "olympics",
+    "cycling",
+    "rugby"
+   ]
+  },
+  {
+   "id": "crypto",
+   "name": "Crypto",
+   "tags": [
+    "crypto",
+    "crypto prices",
+    "bitcoin",
+    "ethereum",
+    "solana",
+    "xrp",
+    "ripple",
+    "token launch",
+    "fdv",
+    "pre-market",
+    "airdrops",
+    "memecoins",
+    "stablecoins"
+   ]
+  },
+  {
+   "id": "economy",
+   "name": "Economy & markets",
+   "tags": [
+    "economy",
+    "finance",
+    "business",
+    "ipos",
+    "ipo",
+    "fed",
+    "fed rates",
+    "inflation",
+    "cpi",
+    "gdp",
+    "macro indicators",
+    "global rates",
+    "economic policy",
+    "commodities",
+    "gold",
+    "stocks",
+    "earnings",
+    "tariffs",
+    "privates",
+    "kevin warsh",
+    "jobs report",
+    "recession",
+    "equities",
+    "kpis"
+   ]
+  },
+  {
+   "id": "tech",
+   "name": "Tech & AI",
+   "tags": [
+    "tech",
+    "ai",
+    "big tech",
+    "openai",
+    "anthropic",
+    "claude",
+    "google",
+    "apple",
+    "microsoft",
+    "nvidia",
+    "meta",
+    "tesla",
+    "ai rankings",
+    "ai releases",
+    "ai benchmarks",
+    "ai safety",
+    "ai regulation",
+    "sam altman",
+    "google search",
+    "spacex",
+    "elon musk"
+   ]
+  },
+  {
+   "id": "science",
+   "name": "Science & weather",
+   "tags": [
+    "weather",
+    "climate & science",
+    "science",
+    "climate",
+    "space",
+    "natural disasters",
+    "math",
+    "health",
+    "pandemic",
+    "hurricanes",
+    "earthquakes",
+    "global temp"
+   ]
+  },
+  {
+   "id": "culture",
+   "name": "Culture",
+   "tags": [
+    "culture",
+    "pop culture",
+    "celebrities",
+    "music",
+    "movies",
+    "awards",
+    "oscars",
+    "oscars 2027",
+    "tv",
+    "grammys",
+    "mentions",
+    "tweets",
+    "youtube",
+    "netflix",
+    "box office",
+    "best of 2026",
+    "time person of the year",
+    "religion",
+    "tweet markets"
+   ]
+  },
+  {
+   "id": "politics",
+   "name": "US politics",
+   "tags": [
+    "us election",
+    "midterms",
+    "senate elections",
+    "house elections",
+    "governor elections",
+    "congress",
+    "key house races",
+    "key senate races",
+    "trump presidency"
+   ]
+  },
+  {
+   "id": "world",
+   "name": "World",
+   "tags": [
+    "geopolitics",
+    "world",
+    "global elections",
+    "world elections",
+    "international election props",
+    "middle east",
+    "iran",
+    "israel",
+    "ukraine",
+    "ukraine map",
+    "russia",
+    "putin",
+    "china",
+    "taiwan",
+    "foreign policy",
+    "military",
+    "military actions",
+    "military strikes",
+    "yemen",
+    "houthis",
+    "gaza",
+    "saudi arabia",
+    "strait of hormuz",
+    "u.s. x iran",
+    "israel x iran",
+    "venezuela",
+    "mexico",
+    "brazil",
+    "canada",
+    "france",
+    "germany",
+    "uk",
+    "united kingdom",
+    "europe",
+    "japan",
+    "south korea",
+    "india",
+    "africa",
+    "nigeria",
+    "australia",
+    "sweden"
+   ]
+  },
+  {
+   "id": "politics",
+   "name": "US politics",
+   "tags": [
+    "politics",
+    "elections",
+    "us election",
+    "midterms",
+    "trump",
+    "trump presidency",
+    "congress",
+    "courts",
+    "senate",
+    "senate elections",
+    "house elections",
+    "governor elections",
+    "united states",
+    "scotus",
+    "doge",
+    "epstein",
+    "mayoral elections",
+    "mayoral"
+   ]
+  }
+ ],
+ "topics": [
+  {
+   "id": "cs2",
+   "name": "Counter-Strike",
+   "section": "esports",
+   "tags": [
+    "counter strike 2",
+    "cs2"
+   ]
+  },
+  {
+   "id": "valorant",
+   "name": "Valorant",
+   "section": "esports",
+   "tags": [
+    "valorant",
+    "val",
+    "vct"
+   ]
+  },
+  {
+   "id": "lol",
+   "name": "League of Legends",
+   "section": "esports",
+   "tags": [
+    "league of legends",
+    "lol"
+   ]
+  },
+  {
+   "id": "dota",
+   "name": "Dota 2",
+   "section": "esports",
+   "tags": [
+    "dota 2",
+    "dota"
+   ]
+  },
+  {
+   "id": "esports_other",
+   "name": "Other esports",
+   "section": "esports",
+   "tags": []
+  },
+  {
+   "id": "nfl",
+   "name": "NFL",
+   "section": "sports",
+   "tags": [
+    "nfl",
+    "nfl (all)"
+   ]
+  },
+  {
+   "id": "college_football",
+   "name": "College football",
+   "section": "sports",
+   "tags": [
+    "ncaaf",
+    "cfb (all)",
+    "ncaa football"
+   ]
+  },
+  {
+   "id": "nba",
+   "name": "Basketball",
+   "section": "sports",
+   "tags": [
+    "nba",
+    "basketball",
+    "wnba",
+    "ncaab"
+   ]
+  },
+  {
+   "id": "mlb",
+   "name": "Baseball",
+   "section": "sports",
+   "tags": [
+    "mlb",
+    "baseball"
+   ]
+  },
+  {
+   "id": "nhl",
+   "name": "Hockey",
+   "section": "sports",
+   "tags": [
+    "nhl",
+    "hockey"
+   ]
+  },
+  {
+   "id": "table_tennis",
+   "name": "Table tennis",
+   "section": "sports",
+   "tags": [
+    "table tennis"
+   ]
+  },
+  {
+   "id": "tennis",
+   "name": "Tennis",
+   "section": "sports",
+   "tags": [
+    "tennis",
+    "atp",
+    "wta"
+   ]
+  },
+  {
+   "id": "cricket",
+   "name": "Cricket",
+   "section": "sports",
+   "tags": [
+    "cricket",
+    "international cricket"
+   ]
+  },
+  {
+   "id": "f1",
+   "name": "Formula 1",
+   "section": "sports",
+   "tags": [
+    "f1",
+    "formula 1"
+   ]
+  },
+  {
+   "id": "fighting",
+   "name": "UFC & boxing",
+   "section": "sports",
+   "tags": [
+    "ufc",
+    "mma",
+    "boxing"
+   ]
+  },
+  {
+   "id": "golf",
+   "name": "Golf",
+   "section": "sports",
+   "tags": [
+    "golf",
+    "pga"
+   ]
+  },
+  {
+   "id": "soccer",
+   "name": "Soccer",
+   "section": "sports",
+   "tags": [
+    "soccer",
+    "epl",
+    "ucl",
+    "la liga",
+    "mls",
+    "fa cup",
+    "uel",
+    "champions league"
+   ]
+  },
+  {
+   "id": "sports_other",
+   "name": "Other sports",
+   "section": "sports",
+   "tags": []
+  },
+  {
+   "id": "bitcoin",
+   "name": "Bitcoin",
+   "section": "crypto",
+   "tags": [
+    "bitcoin"
+   ]
+  },
+  {
+   "id": "ethereum",
+   "name": "Ethereum",
+   "section": "crypto",
+   "tags": [
+    "ethereum"
+   ]
+  },
+  {
+   "id": "solana",
+   "name": "Solana",
+   "section": "crypto",
+   "tags": [
+    "solana"
+   ]
+  },
+  {
+   "id": "xrp",
+   "name": "XRP",
+   "section": "crypto",
+   "tags": [
+    "xrp",
+    "ripple"
+   ]
+  },
+  {
+   "id": "token_launch",
+   "name": "Token launches",
+   "section": "crypto",
+   "tags": [
+    "token launch",
+    "fdv",
+    "pre-market",
+    "airdrops"
+   ]
+  },
+  {
+   "id": "crypto_other",
+   "name": "Other crypto",
+   "section": "crypto",
+   "tags": []
+  },
+  {
+   "id": "ai",
+   "name": "AI",
+   "section": "tech",
+   "tags": [
+    "ai",
+    "openai",
+    "anthropic",
+    "claude",
+    "ai rankings",
+    "ai releases",
+    "ai benchmarks",
+    "ai safety",
+    "ai regulation",
+    "sam altman"
+   ]
+  },
+  {
+   "id": "space",
+   "name": "Space",
+   "section": "tech",
+   "tags": [
+    "spacex",
+    "space"
+   ]
+  },
+  {
+   "id": "tech_other",
+   "name": "Big tech & other",
+   "section": "tech",
+   "tags": []
+  },
+  {
+   "id": "fed",
+   "name": "Fed & rates",
+   "section": "economy",
+   "tags": [
+    "fed",
+    "fed rates",
+    "global rates",
+    "economic policy",
+    "kevin warsh"
+   ]
+  },
+  {
+   "id": "macro",
+   "name": "Inflation & data",
+   "section": "economy",
+   "tags": [
+    "inflation",
+    "cpi",
+    "gdp",
+    "macro indicators",
+    "jobs report",
+    "recession"
+   ]
+  },
+  {
+   "id": "stocks",
+   "name": "Stocks & IPOs",
+   "section": "economy",
+   "tags": [
+    "ipos",
+    "ipo",
+    "stocks",
+    "earnings",
+    "privates"
+   ]
+  },
+  {
+   "id": "commodities",
+   "name": "Oil & commodities",
+   "section": "economy",
+   "tags": [
+    "oil",
+    "gold",
+    "commodities"
+   ]
+  },
+  {
+   "id": "economy_other",
+   "name": "Other economy",
+   "section": "economy",
+   "tags": []
+  },
+  {
+   "id": "weather",
+   "name": "Weather & climate",
+   "section": "science",
+   "tags": [
+    "weather",
+    "climate",
+    "climate & science",
+    "natural disasters",
+    "hurricanes",
+    "global temp"
+   ]
+  },
+  {
+   "id": "science_other",
+   "name": "Science & health",
+   "section": "science",
+   "tags": []
+  },
+  {
+   "id": "film_tv",
+   "name": "Film, TV & awards",
+   "section": "culture",
+   "tags": [
+    "movies",
+    "tv",
+    "oscars",
+    "oscars 2027",
+    "awards",
+    "netflix",
+    "box office"
+   ]
+  },
+  {
+   "id": "music",
+   "name": "Music",
+   "section": "culture",
+   "tags": [
+    "music",
+    "grammys"
+   ]
+  },
+  {
+   "id": "social",
+   "name": "Posts & mentions",
+   "section": "culture",
+   "tags": [
+    "mentions",
+    "tweets",
+    "youtube",
+    "tweet markets"
+   ]
+  },
+  {
+   "id": "culture_other",
+   "name": "Celebrities & other",
+   "section": "culture",
+   "tags": []
+  },
+  {
+   "id": "middle_east",
+   "name": "Middle East",
+   "section": "world",
+   "tags": [
+    "middle east",
+    "iran",
+    "israel",
+    "yemen",
+    "houthis",
+    "gaza",
+    "saudi arabia",
+    "strait of hormuz",
+    "u.s. x iran",
+    "israel x iran"
+   ]
+  },
+  {
+   "id": "ukraine_russia",
+   "name": "Ukraine & Russia",
+   "section": "world",
+   "tags": [
+    "ukraine",
+    "ukraine map",
+    "russia",
+    "putin"
+   ]
+  },
+  {
+   "id": "china",
+   "name": "China & Taiwan",
+   "section": "world",
+   "tags": [
+    "china",
+    "taiwan"
+   ]
+  },
+  {
+   "id": "world_elections",
+   "name": "Elections abroad",
+   "section": "world",
+   "tags": [
+    "global elections",
+    "world elections",
+    "international election props"
+   ]
+  },
+  {
+   "id": "world_other",
+   "name": "Other world",
+   "section": "world",
+   "tags": []
+  },
+  {
+   "id": "midterms",
+   "name": "Midterms & Congress",
+   "section": "politics",
+   "tags": [
+    "midterms",
+    "house elections",
+    "senate elections",
+    "congress",
+    "senate",
+    "governor elections"
+   ]
+  },
+  {
+   "id": "trump",
+   "name": "Trump administration",
+   "section": "politics",
+   "tags": [
+    "trump",
+    "trump presidency",
+    "doge"
+   ]
+  },
+  {
+   "id": "us_elections",
+   "name": "2028 & other races",
+   "section": "politics",
+   "tags": [
+    "us election",
+    "elections",
+    "mayoral elections",
+    "mayoral"
+   ]
+  },
+  {
+   "id": "politics_other",
+   "name": "Other US politics",
+   "section": "politics",
+   "tags": []
+  }
+ ]
+}

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>One minute of Polymarket, labelled live in your browser · shad0w</title>
+<meta name="description" content="Press start: your browser reads every Polymarket trade for 60 seconds and a shad0w table files each one by section and topic in microseconds, checked live against Polymarket&#x27;s own tags.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/pulse/">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="One minute of Polymarket, labelled live in your browser · shad0w">
+<meta property="og:description" content="Press start: your browser reads every Polymarket trade for 60 seconds and a shad0w table files each one by section and topic in microseconds, checked live against Polymarket&#x27;s own tags."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/pulse/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og-pulse.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="One minute of Polymarket, labelled live in your browser · shad0w">
+<meta name="twitter:description" content="Press start: your browser reads every Polymarket trade for 60 seconds and a shad0w table files each one by section and topic in microseconds, checked live against Polymarket&#x27;s own tags."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og-pulse.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../demo/">Playground</a>
+    <a href="../games/" class=active>Games</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap pmk" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:900px;margin-bottom:22px">
+    <div class="kicker">live · real money · runs only in your browser</div>
+    <h1 class="arena-title">One minute of Polymarket,<br><span class="hl">read as it happens.</span></h1>
+    <p>Press start and your browser pulls every trade on Polymarket: the last ~20,000 first, then each new one as it lands, for 60 seconds. A shad0w table reads each market's question and files it under a section and a topic in microseconds. You watch where the money goes, and every label is checked against Polymarket's own tags as you go. No server of ours is involved: your browser talks to Polymarket's public API, and nothing you see is sent anywhere.</p>
+  </div>
+
+  <section class="pulse-run panel" id="run">
+    <div class="pulse-top">
+      <button class="btn primary" id="go" type="button">Start the 60-second analysis →</button>
+      <div class="pulse-clock"><b id="clock">60</b><small>seconds left</small></div>
+      <div class="pulse-phase" id="phase">Ready. One minute, then a report you can download.</div>
+    </div>
+    <div class="pulse-kpis">
+      <div><small>trades read</small><b id="kTrades">0</b></div>
+      <div><small>money in those trades</small><b id="kUsd">$0</b></div>
+      <div><small>labels made</small><b id="kLabels">0</b></div>
+      <div><small>time per trade (measured here)</small><b id="kUs">–</b></div>
+      <div><small>of the minute spent labelling</small><b id="kShare">–</b></div>
+      <div><small>agrees with Polymarket's tags</small><b id="kAgree">–</b></div>
+    </div>
+    <div class="pulse-grid">
+      <div class="pulse-map">
+        <div class="pulse-h"><b>Where the money went</b><span>by section, then topic · area = dollars traded</span></div>
+        <div class="treemap" id="map" role="img" aria-label="Treemap of dollars traded by section and topic"><p class="muted">The map fills in as trades arrive.</p></div>
+        <div class="pulse-h" style="margin-top:14px"><b>Dollars a second, by section</b><span>history first, then live</span></div>
+        <canvas class="flow" id="flow" height="120" aria-label="Dollars a second by section"></canvas>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="pulse-tape">
+        <div class="pulse-h"><b>The tape</b><span>newest first · big trades in orange</span></div>
+        <ol class="tape" id="tape"></ol>
+      </div>
+    </div>
+    <div class="pulse-grid2">
+      <div class="panel-in">
+        <div class="pulse-h"><b>Checked against Polymarket's own tags</b><span id="chkNote">each market's event tags, fetched live</span></div>
+        <dl class="kv" id="chk">
+          <dt>markets checked</dt><dd id="cN">–</dd>
+          <dt>section agrees</dt><dd id="cSec">–</dd>
+          <dt>topic agrees</dt><dd id="cTop">–</dd>
+          <dt>certified labels: section agrees</dt><dd id="cCert">–</dd>
+          <dt>share of dollars correctly filed</dt><dd id="cUsd">–</dd>
+        </dl>
+        <details class="dis"><summary>Where it disagreed (<span id="cDisN">0</span>) · check them yourself</summary><ol id="cDis"></ol></details>
+      </div>
+      <div class="panel-in">
+        <div class="pulse-h"><b>Biggest markets right now</b><span>by dollars in this minute</span></div>
+        <ol class="top" id="top"></ol>
+      </div>
+    </div>
+    <div class="pulse-report" id="report" hidden>
+      <h3 id="rTitle">The minute in one paragraph</h3>
+      <p id="rText"></p>
+      <p><button class="btn" id="dlCsv" type="button">Download the labelled trades (CSV)</button> <button class="btn" id="dlJson" type="button">Download the report (JSON)</button> <button class="btn primary" id="again" type="button">Run another minute →</button></p>
+    </div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how the labels were made</div><h2>No LLM in the loop. Polymarket's own tags taught it.</h2>
+      <p>Polymarket tags every event it lists ("Soccer", "Fed Rates", "Ukraine Map"…). We mapped those tags to 9 sections and <span data-n="topics">…</span> topics, and shad0w compiled <span data-n="rows">…</span> market questions into a <span data-n="kb">…</span> table. Then two tests: the trades of a few recorded minutes of the live feed (what this page shows you; long-running markets in it may also be in the training data), and every market in the events created in the last two weeks before the data was collected (<span data-n="test_rows">…</span> questions, including thousands of near-identical sports props).</p></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table" id="evalTable"></table></div></div>
+    <p class="muted" style="font-size:13.5px;margin-top:10px">"Certified" means the table's answer passed its calibration test (it may differ from the tags on at most 5% of certified answers, with 90% confidence). Uncertified answers are still shown, marked as such. The certificate is calibrated on the mix it trained on; on the two-week set, dominated by large sports events with hundreds of prop markets each, certified answers agree less than it promises. Sections are broad; topics are finer and overlap (a Fed market tagged "Trump").</p>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">use it on your own feed</div><h2>Any stream of short text, labelled as it arrives.</h2>
+      <p>Prediction markets are one feed. The same table works on support tickets, news wires, chat, product reviews, transactions or logs. It labels them in microseconds, on a laptop, a server or in a browser tab, without a GPU or a per-call bill. If you already have labels (tags, queues, CRM fields), shad0w compiles them directly, as here. If you don't, it learns them from your LLM's answers and takes over the cases it is certified on.</p></div>
+    <div class="usecases">
+      <div class="panel"><b>Newsrooms and research desks</b><p>File every incoming market, headline or filing by beat, and alert when money moves on a topic you follow.</p></div>
+      <div class="panel"><b>Risk and compliance</b><p>Tag flows by category in real time: sports vs elections vs crypto exposure, minute by minute, with every label auditable.</p></div>
+      <div class="panel"><b>Data products</b><p>Enrich a firehose with labels before it hits your warehouse. At microseconds a label, the labelling costs less than the network.</p></div>
+      <div class="panel"><b>Support and operations</b><p>Route tickets, chats and alerts the moment they arrive; send only the uncertain ones to a person or an LLM.</p></div>
+    </div>
+<pre class="code"><code>pip install shad0wllm
+# one line per labelled example: {"text": "...", "section": "...", "topic": "..."}
+shad0w train --log labelled.jsonl --out bundle/
+python -c "import shad0w; print(shad0w.load('bundle/').decide('Will the Fed cut rates in December?', probabilities=False))"</code></pre>
+    <p class="muted" style="font-size:13.5px">In a browser: <code>npm i shad0wllm</code>, then <code>(await Bundle.load(url)).decide(text)</code>, exactly what this page does. <a href="../docs/">Docs →</a></p>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">fine print</div><h2>What this is, and isn't.</h2></div>
+    <ul class="fine">
+      <li><b>Real trades.</b> Everything comes from Polymarket's public API at the moment you press start: the latest 20,000 trades (the most it serves, roughly the last 15–30 minutes) and the live feed after that. Volumes go up and down with the hour.</li>
+      <li><b>Dollars</b> are shares × price for each trade, as Polymarket reports them.</li>
+      <li><b>No trader is shown.</b> The public feed includes wallets and profile names; this page never displays or stores them, and the download leaves them out.</li>
+      <li><b>The check</b> uses each market's event tags from Polymarket, mapped with the same rules used to build the table. Tags are Polymarket's editorial choice, and a few events carry mixed tags.</li>
+      <li><b>Timing</b> is measured in your tab: trades are labelled in blocks and the total divided, because browser clocks are too coarse to time one label.</li>
+      <li>Context only, not advice. shad0w is not affiliated with Polymarket.</li>
+    </ul>
+  </section>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../demo/">Playground</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Games</h6><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const info = await (await fetch("pulse.json")).json();
+const pct = (x) => x == null ? "–" : `${(100 * x).toFixed(1)}%`;
+const t = info.train.test;
+const N = { topics: info.topics, rows: info.train.rows.toLocaleString("en-US"), kb: `${info.train.table_kb} KB`, test_rows: info.train.test_rows.toLocaleString("en-US") };
+document.querySelectorAll("[data-n]").forEach((e) => { e.textContent = N[e.dataset.n]; });
+const L = info.live, rows = [];
+if (L) rows.push([`live trades (${L.trades.toLocaleString("en-US")} trades, ${L.markets} markets)`, "section", L.section, L.section_certified_share, L.section_certified_agreement, L.dollars_section, true],
+                 [`live trades`, "topic", L.topic, L.topic_certified_share, L.topic_certified_agreement, null]);
+rows.push(["every unseen market, two weeks", "section", t.section.agreement, t.section.certified_share, t.section.certified_agreement, null],
+          ["every unseen market, two weeks", "topic", t.topic.agreement, t.topic.certified_share, t.topic.certified_agreement, null]);
+$("evalTable").innerHTML = `<tr><th>test</th><th>question</th><th>agrees with the tags</th><th>certified share</th><th>certified answers that agree</th><th>share of dollars</th></tr>` +
+  rows.map(([n, q, ag, cs, ca, usd, hl]) => `<tr${hl ? ' class="hl"' : ""}><td>${n}</td><td>${q}</td><td><b>${pct(ag)}</b></td><td>${pct(cs)}</td><td>${pct(ca)}</td><td>${usd == null ? "–" : pct(usd)}</td></tr>`).join("");
+</script>
+<script type="module" src="../assets/pulse.mjs"></script>
+</body>
+</html>

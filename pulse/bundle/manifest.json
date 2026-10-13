@@ -1,0 +1,97 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "Polymarket's own tags",
+    "alpha": 0.05,
+    "delta": 0.1
+  },
+  "questions": {
+    "section": {
+      "type": "choice",
+      "options": [
+        "esports",
+        "sports",
+        "crypto",
+        "economy",
+        "tech",
+        "science",
+        "culture",
+        "politics",
+        "world"
+      ],
+      "threshold": 0.21961767971515656,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.6387056112289429,
+        "base": 0.029000000000000026,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    },
+    "topic": {
+      "type": "choice",
+      "options": [
+        "cs2",
+        "valorant",
+        "lol",
+        "dota",
+        "esports_other",
+        "nfl",
+        "college_football",
+        "nba",
+        "mlb",
+        "nhl",
+        "table_tennis",
+        "tennis",
+        "cricket",
+        "f1",
+        "fighting",
+        "golf",
+        "soccer",
+        "sports_other",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp",
+        "token_launch",
+        "crypto_other",
+        "ai",
+        "space",
+        "tech_other",
+        "fed",
+        "macro",
+        "stocks",
+        "commodities",
+        "economy_other",
+        "weather",
+        "science_other",
+        "film_tv",
+        "music",
+        "social",
+        "culture_other",
+        "middle_east",
+        "ukraine_russia",
+        "china",
+        "world_elections",
+        "world_other",
+        "midterms",
+        "trump",
+        "us_elections",
+        "politics_other"
+      ],
+      "threshold": 0.5258451104164124,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.5969387888908386,
+        "base": 0.05566666666666664,
+        "window": 500,
+        "margin": 0.03
+      },
+      "calibrated": true
+    }
+  }
+}
