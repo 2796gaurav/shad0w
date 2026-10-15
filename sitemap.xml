@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-  <url><loc>https://2796gaurav.github.io/shad0w/</loc><lastmod>2026-10-13</lastmod><video:video><video:thumbnail_loc>https://2796gaurav.github.io/shad0w/assets/film-poster.jpg</video:thumbnail_loc><video:title>How shad0w works, in two minutes</video:title><video:description>Your LLM spends seconds on answers it has given many times. shad0w watches those answers, compiles them into a small table, proves how often it agrees with your LLM, and answers the repeats in microseconds. The rest still go to your LLM.</video:description><video:content_loc>https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4</video:content_loc><video:duration>120</video:duration><video:publication_date>2026-10-12T00:00:00+05:30</video:publication_date></video:video></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/</loc><lastmod>2026-10-15</lastmod><video:video><video:thumbnail_loc>https://2796gaurav.github.io/shad0w/assets/film-poster.jpg</video:thumbnail_loc><video:title>How shad0w works, in two minutes</video:title><video:description>Your LLM spends seconds on answers it has given many times. shad0w watches those answers, compiles them into a small table, proves how often it agrees with your LLM, and answers the repeats in microseconds. The rest still go to your LLM.</video:description><video:content_loc>https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4</video:content_loc><video:duration>120</video:duration><video:publication_date>2026-10-12T00:00:00+05:30</video:publication_date></video:video></url>
   <url><loc>https://2796gaurav.github.io/shad0w/demo/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/pong/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/arena/</loc><lastmod>2026-10-09</lastmod></url>
-  <url><loc>https://2796gaurav.github.io/shad0w/games/</loc><lastmod>2026-10-13</lastmod></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/playground/</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/pulse/</loc><lastmod>2026-10-13</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/duel/</loc><lastmod>2026-10-13</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/doom/</loc><lastmod>2026-10-12</lastmod></url>
@@ -34,7 +34,7 @@
   <url><loc>https://2796gaurav.github.io/shad0w/docs/limits.html</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/faq.html</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/reference.html</loc><lastmod>2026-10-09</lastmod></url>
-  <url><loc>https://2796gaurav.github.io/shad0w/docs/changelog.html</loc><lastmod>2026-10-13</lastmod></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/changelog.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/game-speed.html</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/honest-numbers.html</loc><lastmod>2026-10-09</lastmod></url>
