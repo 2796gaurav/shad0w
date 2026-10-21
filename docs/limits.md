@@ -16,7 +16,7 @@ shad0w answers fixed-choice questions: one answer from a list per question. Chat
 
 The table learns from words and character patterns. It is strong on intents, routes, topics and policies that have distinctive wording. It is weak on:
 
-- **sentiment, tone, sarcasm and emotion:** about 79% accuracy on SST-2, even trained on perfect labels;
+- **sentiment, tone, sarcasm and emotion**, for the linear table: about 79% accuracy on SST-2, even trained on perfect labels. Since 0.4 the [deep table](deep-table.html) models word pairs and negation and certified 74% of SST-2 (labels as the teacher), so sentiment is now in reach, at a few µs and a few MB;
 - **world knowledge and reasoning:** "is this claim true?";
 - **long documents where one clause decides:** legal clause types reached only 13% served in our tests.
 

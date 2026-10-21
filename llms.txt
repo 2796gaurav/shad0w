@@ -27,7 +27,9 @@
 - [Training & retraining](https://2796gaurav.github.io/shad0w/docs/training.html): Markdown at https://2796gaurav.github.io/shad0w/docs/training.md
 - [Command line](https://2796gaurav.github.io/shad0w/docs/cli.html): Markdown at https://2796gaurav.github.io/shad0w/docs/cli.md
 - [Troubleshooting](https://2796gaurav.github.io/shad0w/docs/troubleshooting.html): Markdown at https://2796gaurav.github.io/shad0w/docs/troubleshooting.md
+- [Images, guard, video, extraction](https://2796gaurav.github.io/shad0w/docs/experimental.html): Markdown at https://2796gaurav.github.io/shad0w/docs/experimental.md
 - [The guarantee](https://2796gaurav.github.io/shad0w/docs/guarantee.html): Markdown at https://2796gaurav.github.io/shad0w/docs/guarantee.md
+- [The deep table (0.4)](https://2796gaurav.github.io/shad0w/docs/deep-table.html): Markdown at https://2796gaurav.github.io/shad0w/docs/deep-table.md
 - [Scale: options, size, speed](https://2796gaurav.github.io/shad0w/docs/scale.html): Markdown at https://2796gaurav.github.io/shad0w/docs/scale.md
 - [Benchmarks & evidence](https://2796gaurav.github.io/shad0w/docs/benchmarks.html): Markdown at https://2796gaurav.github.io/shad0w/docs/benchmarks.md
 - [How it compares](https://2796gaurav.github.io/shad0w/docs/compare.html): Markdown at https://2796gaurav.github.io/shad0w/docs/compare.md
@@ -48,6 +50,7 @@
 - [How shad0w works, in two minutes (film)](https://2796gaurav.github.io/shad0w/#film): MP4 at https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4
 - [Snake arena](https://2796gaurav.github.io/shad0w/arena/): shad0w, small decision models and a hosted LLM play the same snake games at game speed
 - [Can System 0 run Doom?](https://2796gaurav.github.io/shad0w/doom/): an LLM plays ViZDoom with the game paused; shad0w learns its choices and plays every tic in microseconds, against the LLM in real time (recorded, replayed)
+- [Decision Bench](https://2796gaurav.github.io/shad0w/bench/): shad0w against five open decision models on six public tasks, CPU only, same rows and same 5% certifier; every prediction saved
 - [Playground](https://2796gaurav.github.io/shad0w/playground/): every live demo and game in one place
 - [One minute of Polymarket, labelled live](https://2796gaurav.github.io/shad0w/pulse/): press start and the browser reads every Polymarket trade for 60 seconds; a shad0w table built from Polymarket's own tags files each by section and topic in microseconds, checked live against those tags, with a downloadable CSV
 - [Duel: a 1v1 rifle fight against shad0w](https://2796gaurav.github.io/shad0w/duel/): a first-person browser game whose opponent's tactics were learned from an LLM and decided 60 times a second

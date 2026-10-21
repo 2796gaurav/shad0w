@@ -41,6 +41,8 @@ Words used on this page. **The table** (or **bundle**, the folder that holds it)
 | [`report`](#report) | Print a bundle's certificate |
 | [`certify`](#certify) | Re-certify a bundle on fresh answers it never trained on |
 | [`calibrate`](#calibrate) | Certify a bundle against human labels |
+| [`votes`](#votes) | Ask your LLM k times per message and keep the majority, for calibration rows |
+| [`sign`](#sign-and-verify) / [`verify`](#sign-and-verify) | Sign a certificate with your key, and check it later |
 | [`compile`](#compile) | Build a table from human labels or from unlabelled text |
 | [`shadow`](#shadow) | Train with an explicit schema (the older form of `train`) |
 
@@ -122,6 +124,7 @@ Checks what most often goes wrong and prints one line each: `[ok]`, `[--]` (a wa
 | `--upstream` | — | An OpenAI-compatible base URL to probe (`<url>/models`) |
 | `--bundle` | — | A bundle to load; reports each question's options, threshold and α |
 | `--log` | — | A log to count against `min_rows` |
+| `--teacher-noise N` | — | Re-ask your LLM on N logged rows (needs `--log`) and report how often it gives the same answer. If it changes its mind more often than α, nothing can certify, whatever the table |
 | `--config` | `./shad0w.toml` | Config file to read and validate |
 
 ```bash
@@ -178,6 +181,8 @@ Train and certify a table from logged answers. Questions and options are detecte
 | `--min-rows` | the `min_rows` setting (`1000`) | Refuse smaller logs (exit 1); 100 is the hard minimum |
 | `--max-mb` | the `max_mb` setting (none) | Size budget per table, in MB |
 | `--rename OLD=NEW` | — | Rename a label in the log while training; repeatable. Without `--schema`, the previous bundle's `schema.json` is reused with the names renamed |
+| `--student` | the `student` setting (`auto`) | Table shape: `linear` (additive, exact robustness radius), `deep` (a hidden layer: negation, word pairs) or `auto` (the one that certifies more held-out rows). See [The deep table](deep-table.html) |
+| `--hidden` | 32–128 by option count | Width of the deep table's hidden layer |
 | `--gate` | off | Keep the existing bundle unless the new one certifies at least 80% of its share (exit 3 when kept) |
 | `--teacher` | `unspecified` | A name for your LLM, recorded in the certificate |
 | `--config` | `./shad0w.toml` | Config file to read (including `[questions.<name>]`) |
@@ -186,6 +191,7 @@ Train and certify a table from logged answers. Questions and options are detecte
 shad0w train --dir shad0w --question intent
 shad0w train --log log.jsonl --out bundle --schema schema.json --alpha 0.02 --max-mb 1
 shad0w train --log log.jsonl --out bundle --rename lost_card=card_lost   # the old schema is renamed for you
+shad0w train --dir shad0w --question sentiment --student deep              # force the deep table
 ```
 
 ### report
@@ -208,6 +214,37 @@ Keep the table, and refresh its threshold and certificate on fresh answers it ne
 | `--delta` | `0.1` | Chance the certificate itself is wrong |
 | `--teacher` | the bundle's | A name for your LLM |
 | `--force` | off | Certify even with fewer than 100 rows (it then usually stops serving) |
+| `--sign` | off | Also write `certificate.sig`, an HMAC-SHA256 with the key in `$SHAD0W_CERT_KEY` |
+
+### votes
+
+Majority-vote calibration rows. Asks your LLM `k` times per message (optionally at a temperature, and in shuffled option orders) and writes the majority answer as audit rows that `shad0w train` certifies on. At temperature 0.7, disagreement with the temperature-0 answer fell from 5.6% to 4.3% with 3 votes. The certificate records the vote count.
+
+| Flag | Default | What it does |
+|---|---|---|
+| `--question` | required | The decision to label |
+| `--out` | required | JSON Lines file for the majority rows |
+| `--texts` | — | Fresh messages, one per line (preferred: never fitted on) |
+| `--log` | — | A decision log to sample messages from (`--replace` rewrites it with the majority rows; a `.bak` is kept) |
+| `--votes`, `-k` | `3` | Askings per message |
+| `--n` | `300` | How many messages |
+| `--temperature` | `0` | Sampling temperature for each asking |
+| `--stabilise` | `0` | Extra option-order permutations per asking |
+| `--llm` | the `llm` setting | `provider/model` |
+
+```bash
+shad0w votes --question intent --log shad0w/intent/log.jsonl --out votes.jsonl --votes 3
+```
+
+### sign and verify
+
+Prove that a certificate was issued by you and not edited since. `sign` (or `certify --sign`) writes `certificate.sig`, an HMAC-SHA256 of `certificate.json` with the key in `$SHAD0W_CERT_KEY`. `verify` checks it, and with `--teacher` also checks that the certificate and the manifest name that teacher.
+
+```bash
+export SHAD0W_CERT_KEY=...            # keep it out of the repository
+shad0w sign --bundle shad0w/intent/bundle
+shad0w verify --bundle shad0w/intent/bundle --teacher gpt-4.1-mini
+```
 
 ### calibrate
 

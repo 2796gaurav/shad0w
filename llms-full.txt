@@ -2788,6 +2788,8 @@ Words used on this page. **The table** (or **bundle**, the folder that holds it)
 | [`report`](#report) | Print a bundle's certificate |
 | [`certify`](#certify) | Re-certify a bundle on fresh answers it never trained on |
 | [`calibrate`](#calibrate) | Certify a bundle against human labels |
+| [`votes`](#votes) | Ask your LLM k times per message and keep the majority, for calibration rows |
+| [`sign`](#sign-and-verify) / [`verify`](#sign-and-verify) | Sign a certificate with your key, and check it later |
 | [`compile`](#compile) | Build a table from human labels or from unlabelled text |
 | [`shadow`](#shadow) | Train with an explicit schema (the older form of `train`) |
 
@@ -2869,6 +2871,7 @@ Checks what most often goes wrong and prints one line each: `[ok]`, `[--]` (a wa
 | `--upstream` | — | An OpenAI-compatible base URL to probe (`<url>/models`) |
 | `--bundle` | — | A bundle to load; reports each question's options, threshold and α |
 | `--log` | — | A log to count against `min_rows` |
+| `--teacher-noise N` | — | Re-ask your LLM on N logged rows (needs `--log`) and report how often it gives the same answer. If it changes its mind more often than α, nothing can certify, whatever the table |
 | `--config` | `./shad0w.toml` | Config file to read and validate |
 
 ```bash
@@ -2925,6 +2928,8 @@ Train and certify a table from logged answers. Questions and options are detecte
 | `--min-rows` | the `min_rows` setting (`1000`) | Refuse smaller logs (exit 1); 100 is the hard minimum |
 | `--max-mb` | the `max_mb` setting (none) | Size budget per table, in MB |
 | `--rename OLD=NEW` | — | Rename a label in the log while training; repeatable. Without `--schema`, the previous bundle's `schema.json` is reused with the names renamed |
+| `--student` | the `student` setting (`auto`) | Table shape: `linear` (additive, exact robustness radius), `deep` (a hidden layer: negation, word pairs) or `auto` (the one that certifies more held-out rows). See [The deep table](deep-table.html) |
+| `--hidden` | 32–128 by option count | Width of the deep table's hidden layer |
 | `--gate` | off | Keep the existing bundle unless the new one certifies at least 80% of its share (exit 3 when kept) |
 | `--teacher` | `unspecified` | A name for your LLM, recorded in the certificate |
 | `--config` | `./shad0w.toml` | Config file to read (including `[questions.<name>]`) |
@@ -2933,6 +2938,7 @@ Train and certify a table from logged answers. Questions and options are detecte
 shad0w train --dir shad0w --question intent
 shad0w train --log log.jsonl --out bundle --schema schema.json --alpha 0.02 --max-mb 1
 shad0w train --log log.jsonl --out bundle --rename lost_card=card_lost   # the old schema is renamed for you
+shad0w train --dir shad0w --question sentiment --student deep              # force the deep table
 ```
 
 ### report
@@ -2955,6 +2961,37 @@ Keep the table, and refresh its threshold and certificate on fresh answers it ne
 | `--delta` | `0.1` | Chance the certificate itself is wrong |
 | `--teacher` | the bundle's | A name for your LLM |
 | `--force` | off | Certify even with fewer than 100 rows (it then usually stops serving) |
+| `--sign` | off | Also write `certificate.sig`, an HMAC-SHA256 with the key in `$SHAD0W_CERT_KEY` |
+
+### votes
+
+Majority-vote calibration rows. Asks your LLM `k` times per message (optionally at a temperature, and in shuffled option orders) and writes the majority answer as audit rows that `shad0w train` certifies on. At temperature 0.7, disagreement with the temperature-0 answer fell from 5.6% to 4.3% with 3 votes. The certificate records the vote count.
+
+| Flag | Default | What it does |
+|---|---|---|
+| `--question` | required | The decision to label |
+| `--out` | required | JSON Lines file for the majority rows |
+| `--texts` | — | Fresh messages, one per line (preferred: never fitted on) |
+| `--log` | — | A decision log to sample messages from (`--replace` rewrites it with the majority rows; a `.bak` is kept) |
+| `--votes`, `-k` | `3` | Askings per message |
+| `--n` | `300` | How many messages |
+| `--temperature` | `0` | Sampling temperature for each asking |
+| `--stabilise` | `0` | Extra option-order permutations per asking |
+| `--llm` | the `llm` setting | `provider/model` |
+
+```bash
+shad0w votes --question intent --log shad0w/intent/log.jsonl --out votes.jsonl --votes 3
+```
+
+### sign and verify
+
+Prove that a certificate was issued by you and not edited since. `sign` (or `certify --sign`) writes `certificate.sig`, an HMAC-SHA256 of `certificate.json` with the key in `$SHAD0W_CERT_KEY`. `verify` checks it, and with `--teacher` also checks that the certificate and the manifest name that teacher.
+
+```bash
+export SHAD0W_CERT_KEY=...            # keep it out of the repository
+shad0w sign --bundle shad0w/intent/bundle
+shad0w verify --bundle shad0w/intent/bundle --teacher gpt-4.1-mini
+```
 
 ### calibrate
 
@@ -3266,6 +3303,82 @@ PIP_INDEX_URL=https://pypi.org/simple pip install "shad0wllm[compile]"
 Run with `SHAD0W_LOG=debug` to print one line per decision (question, answer, source, confidence, flag, latency), and open an issue with that output and `shad0w doctor`'s.
 
 
+<!-- https://2796gaurav.github.io/shad0w/docs/experimental.html -->
+
+# Experimental layers
+
+<p class="lead">The same idea, a small table plus a certificate that says when to trust it, applied beyond text questions. Each layer below works and is tested, but is new in 0.4 and may change. Every number was measured; misses are stated.</p>
+
+## Images
+
+Asking a vision model to pick one label for an image? The same loop works on pixels. Tier 0 uses no neural network: a 32×32 thumbnail, 256 random pixel-comparison ferns, a coarse colour grid and a 64-bit difference hash become items for the same table and certificate. An optional tier 1 quantises a frozen image encoder's embedding (CLIP, SigLIP, or your own via `register_embedder`). One certificate covers the whole cascade.
+
+```python
+from shad0w.vision import ImageSpec, EmbedSpec
+photo = shad0w.decision("category", options=[...], llm="openai/gpt-4.1-mini", image=True)            # ferns only
+photo = shad0w.decision("category", options=[...], llm="openai/gpt-4.1-mini",
+                        image=[ImageSpec(), EmbedSpec("openai/clip-vit-base-patch32")])              # a cascade
+photo(pixels)      # numpy array or PIL image
+photo.train()
+```
+
+| one CPU core, α = 5%, unseen images | answered locally | disagreement on those | cost per image |
+|---|---|---|---|
+| product photos (Fashion-MNIST), ferns | **64%** | 3.1% | **4–7 µs** (C) |
+| natural photos (CIFAR-10), ferns | 0% (correctly defers everything) | — | 4–7 µs |
+| natural photos (CIFAR-10), ferns → CLIP B/32 table | **73%** | 5.5% (95% CI ≈ 3.6–8%) | ~28 ms instead of 2.6 s |
+
+Microseconds assume pixels already in memory: decoding a JPEG or PNG costs 0.3–3 ms. `pip install "shad0wllm[vision]"` for image files. C API: `s0_decide_image`.
+
+## Guardrails
+
+`shad0w.guard.Guard` puts a learned table in front of your LLM as a prompt-injection gate that can **block** in microseconds but **never allows** on the table's word: anything it does not block goes to your model.
+
+```python
+from shad0w.guard import Guard
+gate = Guard(shad0w.decision("injection", options={"attack": "...", "safe": "..."}, llm="openai/gpt-4.1-mini"))
+gate.calibrate(fresh_texts, llm_answers)   # a block-only certificate: among inputs it blocks, disagreement <= alpha
+v = gate.check(text)                       # "block" or "ask_model", never "allow"
+```
+
+The input is normalised first (Unicode forms, zero-width, bidi and tag characters, homoglyphs, leetspeak, spaced letters, base64 and hex payloads); anything the normaliser had to undo goes to your model. On ~9,400 held-out texts labelled by an LLM:
+
+| | measured |
+|---|---|
+| blocked by the table, without an LLM call | 14% of all traffic, 57% of the attacks |
+| blocks the model called safe | 2.6% (block-only certificate at α = 5%) |
+| smuggled variants of blocked attacks allowed | **0%**: all go to the model |
+| benign inputs sent to the model because they looked obfuscated | 1.0% |
+| latency, normaliser + table (Python) | ~155 µs median, against ~1.1 s for the model |
+
+It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own, which is why it never allows.
+
+**Streaming replies** (`StreamGuard`) check a reply as it streams, at 16, 32, 64, 128, 256 words and then every 256, and block on the first certified prefix. Honest result on BeaverTails: a word table certifies nothing at α = 5%; at α = 10% it blocks 50% of unsafe replies after 47% of their words and over-blocks 4.8% of safe ones. Use it as an early cut-off in front of a real guard model.
+
+## Video frames
+
+`shad0w.stream.Stream` reuses a certified answer across consecutive frames: a small yes/no table, scored on the change since the last keyframe, decides whether the answer still holds; otherwise the frame table or your vision model answers. The certificate counts one frame per block, because adjacent frames are not independent.
+
+On UCSD Ped2, reuse answered 65–66% of test frames at 2.3–3.6% disagreement in 2 of 3 clip splits, and only at a block size chosen after the fact. The pre-registered setting certified nothing: the teacher changed its own answer on 2–9% of identical frames. `examples/stream_bench.py` measures that flicker first.
+
+## Structured extraction
+
+`shad0w.extract.compile({field: options}, records)` builds one certified table per enum field and decides all fields from one hashing pass. `decide(text)` returns the certified `values` and the `deferred` fields; `prompt(text, fields)` asks your LLM for only those, and `merge()` folds its JSON back in.
+
+- Per-field certificates are not record-level: on MultiWOZ, per-field α = 5% left 16% of records with a wrong field.
+- `record_alpha=0.10` splits α across fields: 60% of records were served whole and 5.2% had any wrong field.
+
+## A steadier teacher
+
+- **Option-order voting** (`llm_teacher(..., stabilise=2)`): each input is asked in 3 option orders and the majority kept. On BANKING77, flips against a fourth order fell from 17.3% to 13.0%, for 3× the calls.
+- **Majority-vote calibration** ([`shad0w votes`](cli.html#votes)): at temperature 0.7, disagreement with the temperature-0 answer fell from 5.6% to 4.3%.
+- **Is your LLM consistent?** `shad0w doctor --log L --teacher-noise 50` re-asks it and reports how often it repeats itself. Above α, nothing can certify.
+
+## Signed certificates
+
+`SHAD0W_CERT_KEY=... shad0w certify --sign` (or `shad0w sign`) writes an HMAC of the certificate; `shad0w verify --teacher <name>` checks it and the teacher id. See [sign and verify](cli.html#sign-and-verify).
+
+
 <!-- https://2796gaurav.github.io/shad0w/docs/guarantee.html -->
 
 # The guarantee
@@ -3413,6 +3526,63 @@ The code is in `shad0w/reliability.py` (`SelectiveRiskController`, `binom_ucb`) 
 - Schroeder et al., *vCache: Verified Semantic Prompt Caching*, ICLR 2026. [arXiv:2502.03771](https://arxiv.org/abs/2502.03771) (a cache with a user-set error bound; it replays past answers, shad0w generalises to new wording)
 - Chen et al., *FrugalGPT*, 2023. [arXiv:2305.05176](https://arxiv.org/abs/2305.05176)
 - Joulin et al., *Bag of Tricks for Efficient Text Classification*, 2016. [arXiv:1607.01759](https://arxiv.org/abs/1607.01759)
+
+
+<!-- https://2796gaurav.github.io/shad0w/docs/deep-table.html -->
+
+# The deep table
+
+<p class="lead">A linear table adds one score per word, so "not good" can never mean the opposite of "good". The deep table keeps the same lookups but turns each row into a small hidden vector, then applies a ReLU and one dense layer. It learns negation and word pairs, and still answers in microseconds.</p>
+
+**TL;DR**: you don't have to do anything. With `student = "auto"` (the default) training builds both and keeps the deep table only when it certifies more held-out rows. It made sentiment, the classic weak spot, work.
+
+## What changed, measured
+
+Measured through the full pipeline at α = 5% (labels as the teacher):
+
+| task | linear table: certified | deep table: certified | disagreement on served | deep table | C p50 / p99 |
+|---|---|---|---|---|---|
+| SST-2 sentiment (32k rows) | 0% | **74%** | 4.3% | H = 32, 2.7 MB | 1 / 5 µs |
+| AG News topics (29k rows) | 81% | **83%** | 4.5% | H = 32, 5.7 MB | 6 / 13 µs |
+| BANKING77 intents (77 options) | 81% | **87%** | 3.0% | H = 128, 3.1 MB | 4 / 13 µs |
+| prompt-injection set (LLM labels) | 97.0% | 98.1% | 3.3% | auto kept linear | |
+
+## How it works
+
+Each word or n-gram of the input is hashed to a row, exactly as before. In a linear table a row holds one score per option and the rows are added. In a deep table a row holds `H` numbers (32 to 128, chosen from the number of options); they are added, passed through a ReLU, and one small dense layer turns them into option scores. That one non-linearity is what lets "not" change the meaning of "good".
+
+It is file format 2. The C core, numpy and JavaScript read it and compute the same scores bit for bit: deep tables are summed in the C core's order everywhere. Only the final exp is each platform's own, so a probability can differ in its last bit; answers and certified flags match.
+
+## Choosing
+
+| `student` | What you get |
+|---|---|
+| `"auto"` (default) | Both are trained; the held-out fitting slice is split in two, one half tunes, the other judges which certifies more. The certificate records the choice. |
+| `"linear"` | Always the additive table, with its exact robustness radius |
+| `"deep"` | Always the deep table |
+
+```python
+intent = shad0w.decision("sentiment", options=["positive", "negative"], llm="openai/gpt-6-luna", student="auto")
+```
+```bash
+shad0w train --dir shad0w --question sentiment --student deep --hidden 64
+```
+
+## What it costs
+
+- **Time.** A deep row is `H` bytes instead of one per option, so long texts cost more: about 1–4 µs on short texts and 6 µs on news articles in C.
+- **Size.** `max_mb` caps a deep table by keeping its most frequent items, but that costs coverage: SST-2 fell from 74% to 58.5% at 0.7 MB.
+- **No exact radius.** A deep table reports no robustness radius, so exposed mode defers it and the [prompt-injection guard](experimental.html#guardrails) never allows on it. Set `student = "linear"` where you need the radius.
+
+## Also new in 0.4
+
+- **Script-aware text** (the default for new bundles). Every Chinese and Japanese character becomes its own item, plus character bigrams; Latin-1, Greek and Cyrillic capitals are folded. ASCII hashes exactly as before, and older bundles keep their old text handling everywhere. Japanese intents (MASSIVE-ja): 30.7% → 52.0% certified; Japanese news 93.0% → 95.3%.
+- **Unseen words.** Every answer now reports `unseen`, the share of the input's items the table has never seen. `max_unseen = 0.3` sends mostly-unseen inputs (junk, another language) to your LLM.
+- **`distil(texts)`**. `sh.distil(texts)` asks your LLM about a corpus you supply and logs the answers as fit-only rows: extra context for the deep table on nuanced questions, never used for the certificate.
+- **Faster training.** Linear tables take their temperature from a held-out slice: 2 fits instead of 6 (AG News 218 s → 100 s, BANKING77 140 s → 65 s, same or better coverage).
+- **Folded word vectors.** `static="potion-8M"` now folds the word vectors into the table rows exactly, so serving needs no extra file. Mixed results (a small SST-2 log 0% → 15% certified, BANKING77 84% → 79%), so it stays opt-in.
+
+See also: [Decision Bench](../bench/), where `shad0w-auto` chose the deep table on three of six tasks (AG News, BANKING77, CLINC150).
 
 
 <!-- https://2796gaurav.github.io/shad0w/docs/scale.html -->
@@ -3797,12 +3967,16 @@ Result: 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%). Th
 
 "cascade acc − teacher acc" is the change in accuracy against gold, in points, from putting the table in front of the teacher.
 
+## Decision Bench: against open decision models on a CPU (0.4)
+
+Six public tasks, answered by shad0w and by five open decision models run zero-shot on the CPU only (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide), with the same rows and the same 5% certifier for every model. Every prediction is saved, so anyone can re-score it without running a model. Full results, charts and caveats: **[the Decision Bench page](../bench/)**.
+
 ## Where shad0w loses
 
 - **Other learned methods served more on BANKING77.** The kNN router answered 69% and the fine-tuned head 75%, against the table's 61%. Both run an embedding model on every message (7.2 ms vs 4.0 µs) and ship a much larger model. If milliseconds are fine and you already host embeddings, they are a reasonable choice.
 - **CLINC150: realised disagreement above α, because the traffic mix moved.** CLINC150's test split has far more out-of-scope messages than its training split, and the training split is what the log looks like here. The certificate was computed on mostly in-scope traffic, then served a test set full of off-topic messages. Realised disagreement went above α on every seed (the top of the 3.0–6.0% range), and 5% of out-of-scope messages were answered with a real intent. This is the "traffic like the calibration traffic" condition failing, not a bug: calibrated on a test-like mix, the bound held again at a lower served share. In a live deployment the drift guard flags this shift after a few hundred decisions and defers those messages; this benchmark compares methods without the guard, so it shows the unguarded number. What to do: [limits](limits.html#it-assumes-traffic-like-the-calibration-traffic).
 - **AG News: two of three seeds landed slightly above α at α = 5%** (5.1% and 5.6%; the third 3.5%), though the mean stayed below it. This is the δ allowance at work, and why spot checks exist.
-- **Sentiment (SST-2): 0% served.** The table tops out near 79% accuracy on sentiment, so it never certifies and defers everything.
+- **Sentiment (SST-2): 0% served by the linear table.** It tops out near 79% accuracy on sentiment, so it defers everything. The 0.4 [deep table](deep-table.html) certified 74% of SST-2 with the labels as the teacher; this page's runs have not been repeated with it yet.
 - **Legal clauses (LEDGAR): 13% served** in an earlier run. Long texts where one clause decides are hard for a word-pattern table.
 - **A noisy LLM is hard to copy.** With a small local model (qwen3.5 4B through Ollama) as the LLM on 77 intents, the table certified little or nothing: when the LLM is inconsistent, no threshold keeps disagreement under α.
 - **Accuracy is capped by your LLM.** Kev-0.8B alone scored 80.0% against gold, more than the table-plus-gpt-4.1-mini (OpenAI) cascade (76.5%). The table can only be as accurate as the model it copies.
@@ -4011,7 +4185,7 @@ shad0w answers fixed-choice questions: one answer from a list per question. Chat
 
 The table learns from words and character patterns. It is strong on intents, routes, topics and policies that have distinctive wording. It is weak on:
 
-- **sentiment, tone, sarcasm and emotion:** about 79% accuracy on SST-2, even trained on perfect labels;
+- **sentiment, tone, sarcasm and emotion**, for the linear table: about 79% accuracy on SST-2, even trained on perfect labels. Since 0.4 the [deep table](deep-table.html) models word pairs and negation and certified 74% of SST-2 (labels as the teacher), so sentiment is now in reach, at a few µs and a few MB;
 - **world knowledge and reasoning:** "is this claim true?";
 - **long documents where one clause decides:** legal clause types reached only 13% served in our tests.
 
@@ -4315,6 +4489,7 @@ A frozen dataclass returned by every decide call. `str(d)` is the answer.
 
 | Flag | Meaning |
 |---|---|
+| `unseen_items` | most of the input's words were never seen in training (above max_unseen): asked your model |
 | `no_bundle` | no trained table yet: asked your model |
 | `low_confidence` | table not sure enough to stay inside the certified bound: asked your model |
 | `low_radius` | input could be flipped by a few edits (exposed mode): asked your model |
@@ -4330,6 +4505,7 @@ A frozen dataclass returned by every decide call. `str(d)` is the answer.
 | `options_changed` | your options include ones the table never learned: asked your model until you retrain |
 | `new_options_served` | served although you added options the table never learned (on_new_option="serve"): NOT covered by the certificate |
 | `option_removed` | the table picked an option you removed: asked your model |
+| `audit_breach` | live spot checks show the table disagreeing with your model more than alpha: asked your model until you re-train |
 
 ## `shad0w.decide`
 
@@ -4448,6 +4624,10 @@ Every setting works as a keyword in code, as `SHAD0W_<NAME>` in the environment,
 | `timeout` | `120.0` | `SHAD0W_TIMEOUT` | Proxy: upstream request timeout in seconds. |
 | `on_new_option` | `defer` | `SHAD0W_ON_NEW_OPTION` | Options added after training: 'defer' asks your LLM until you retrain; 'serve' keeps serving known ones. |
 | `max_mb` | `none` | `SHAD0W_MAX_MB` | Size budget for each table in MB. Many options or a huge vocabulary? Cap it; the certificate is computed on the capped table. |
+| `static` | `none` | `SHAD0W_STATIC` | Static word vectors (potion-8M) as extra table items; 'auto' keeps them only when they serve more. Helps paraphrases. |
+| `max_unseen` | `none` | `SHAD0W_MAX_UNSEEN` | Defer when more than this share of the input's words/n-grams was never seen in training (junk, gibberish). None = off. |
+| `student` | `auto` | `SHAD0W_STUDENT` | Table shape: 'linear' (additive, exact radius), 'deep' (hidden layer: sentiment, negation, word pairs; no radius), 'auto'. |
+| `hidden` | `none` | `SHAD0W_HIDDEN` | Width of the deep student's hidden layer (rows are this wide instead of one per option). |
 | `rename` | `{}` | `SHAD0W_RENAME` | Rename labels without retraining, e.g. {lost_card = "card_lost"}. Applied to the table and, at the next train, to the log. |
 | `llm` | `none` | `SHAD0W_LLM` | Default LLM for decision(), as "provider/model", e.g. "openai/gpt-6-luna". |
 | `base_url` | `none` | `SHAD0W_BASE_URL` | Base URL of an OpenAI-compatible server for that LLM (default: the provider's). |
@@ -4748,6 +4928,63 @@ Every command takes `--help`. Flags and examples: [command line](cli.html).
 
 <!-- generated by build_site.py from shad0w-src/CHANGELOG.md; edit that file -->
 # Changelog
+
+## 0.4.0 (2026-10-21)
+
+A deep table that models interactions between words, script-aware text, and experimental video, extraction and
+streaming-guard layers. Every number below was measured; misses are stated.
+
+### Added
+- **Deep table (format 2).** Rows are H wide (32–128, from the option count) and feed a ReLU and one dense layer.
+  C, numpy and JavaScript read it and compute the same scores bit for bit. `student="auto"` (default) keeps it only when it certifies more
+  held-out fitting rows; otherwise the linear table. SST-2 0% → 74% certified, AG News 81% → 83%, BANKING77 81% → 87%
+  (labels as teacher, α = 5%). It has no exact radius: exposed mode defers it and `Guard` never allows on it.
+  Settings `student`, `hidden`; `shad0w train --student/--hidden`; the certificate records the student and its choice.
+- **Script-aware text items (text_kind 2, default for new bundles).** Han and kana characters become their own
+  items, with bigrams; Latin-1, Greek and Cyrillic capitals are folded; ASCII is unchanged. Bundles without
+  `meta.text_kind` stay kind 1 everywhere.
+- **`Shadow.distil(texts)`**: teacher answers on a corpus you supply, logged as fit-only rows (`source="distil"`).
+- **Unseen-item share.** Every answer reports `unseen`, and `max_unseen` defers mostly-unseen inputs. C:
+  `s0_decide_counts` / `s0_decide_items_counts`.
+- **`static=` folds word vectors into the table rows** (exact); old `.s0w` bundles still load and serve.
+- **`shad0w.stream`**: certified answer reuse across video frames, with block calibration and transition reporting.
+- **`shad0w.extract`**: one certified table per enum field, a record-level Bonferroni option, and partial deferral.
+- **`guard.StreamGuard`**: block-only checks on streaming replies at a fixed prefix grid, with a per-reply certificate.
+- **`LLMTeacher(stabilise=n)`**, `shad0w votes`, `SelectiveRiskController(procedure="betting")` (optional; it
+  certified less than Clopper–Pearson in every measurement), `shad0w certify --sign` / `shad0w verify`.
+
+- **Decision Bench (`bench/`)**: shad0w against five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B,
+  GLiNER2.5-Decide), run zero-shot on the CPU only. Six public tasks, the same rows and the same certifier for every
+  model, and every prediction saved so the numbers can be re-scored offline. `bench/site/index.html` shows the results,
+  and the summary tables in both READMEs are regenerated by `bench/score.py`.
+- **`examples/end_to_end.py`**: log, train, serve through C, JavaScript parity, `shad0w train --student deep` and
+  the proxy's System One endpoint, with a stand-in LLM (no network, no key). Exits non-zero on any mismatch.
+
+### Changed
+- The held-out fitting slice is split in two: one half tunes (C, early stopping), the other judges linear vs deep.
+- Deep tables score in the C core's summation order in numpy too (bit-identical); builds pass -ffp-contract=off.
+- Linear training takes its temperature from the held-out fitting slice (2 fits instead of 6; `oof_folds=5` restores
+  the old way). L-BFGS uses scipy below 1.5M weights and torch above.
+- Temperatures are rounded to float32 at compile, so a table scores identically before and after save/load.
+- JavaScript softmax is computed in float32, like C and numpy.
+
+### Fixed
+- One option with no logged answers turned off the held-out slice, so the student choice and temperature were
+  scored on training rows.
+- `distil()` and synthetic rows counted toward `min_rows`.
+- Static word vectors could push a table past its `max_mb` budget.
+- A pruned linear table kept the unpruned table's temperature.
+- JavaScript accepted tables that Python and C refuse (unsorted or out-of-range keys, non-finite weights).
+- JavaScript hashed lone surrogates differently from Python.
+- An empty item list scored NaN in numpy and JavaScript; it is now the empty-input item, as in C.
+- The proxy now forwards unknown System One question types and non-text `state` parts upstream untouched.
+- `Guard(allow_safe=True)` on a deep table would have allowed everything, because its missing radius read as
+  infinite.
+- Without torch, the deep table's numpy trainer skipped the bag dropout used with static word vectors, so words seen
+  only through their vectors carried less meaning than with torch; both trainers now drop item rows the same way.
+- `examples/end_to_end.py` called `python -m shad0w` from a folder holding a `shad0w/` data folder, which Python
+  imported instead of the package (an editable install shows it); it now runs the installed `shad0w` command.
+- `examples/doodle_live.py` uses any OpenAI-compatible endpoint (`OPENAI_API_KEY`, optional `OPENAI_BASE_URL`).
 
 ## 0.3.3
 

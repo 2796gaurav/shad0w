@@ -282,12 +282,16 @@ Result: 0.0–8.1% of certificates exceeded α in simulation (δ allows 10%). Th
 
 "cascade acc − teacher acc" is the change in accuracy against gold, in points, from putting the table in front of the teacher.
 
+## Decision Bench: against open decision models on a CPU (0.4)
+
+Six public tasks, answered by shad0w and by five open decision models run zero-shot on the CPU only (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide), with the same rows and the same 5% certifier for every model. Every prediction is saved, so anyone can re-score it without running a model. Full results, charts and caveats: **[the Decision Bench page](../bench/)**.
+
 ## Where shad0w loses
 
 - **Other learned methods served more on BANKING77.** The kNN router answered 69% and the fine-tuned head 75%, against the table's 61%. Both run an embedding model on every message (7.2 ms vs 4.0 µs) and ship a much larger model. If milliseconds are fine and you already host embeddings, they are a reasonable choice.
 - **CLINC150: realised disagreement above α, because the traffic mix moved.** CLINC150's test split has far more out-of-scope messages than its training split, and the training split is what the log looks like here. The certificate was computed on mostly in-scope traffic, then served a test set full of off-topic messages. Realised disagreement went above α on every seed (the top of the 3.0–6.0% range), and 5% of out-of-scope messages were answered with a real intent. This is the "traffic like the calibration traffic" condition failing, not a bug: calibrated on a test-like mix, the bound held again at a lower served share. In a live deployment the drift guard flags this shift after a few hundred decisions and defers those messages; this benchmark compares methods without the guard, so it shows the unguarded number. What to do: [limits](limits.html#it-assumes-traffic-like-the-calibration-traffic).
 - **AG News: two of three seeds landed slightly above α at α = 5%** (5.1% and 5.6%; the third 3.5%), though the mean stayed below it. This is the δ allowance at work, and why spot checks exist.
-- **Sentiment (SST-2): 0% served.** The table tops out near 79% accuracy on sentiment, so it never certifies and defers everything.
+- **Sentiment (SST-2): 0% served by the linear table.** It tops out near 79% accuracy on sentiment, so it defers everything. The 0.4 [deep table](deep-table.html) certified 74% of SST-2 with the labels as the teacher; this page's runs have not been repeated with it yet.
 - **Legal clauses (LEDGAR): 13% served** in an earlier run. Long texts where one clause decides are hard for a word-pattern table.
 - **A noisy LLM is hard to copy.** With a small local model (qwen3.5 4B through Ollama) as the LLM on 77 intents, the table certified little or nothing: when the LLM is inconsistent, no threshold keeps disagreement under α.
 - **Accuracy is capped by your LLM.** Kev-0.8B alone scored 80.0% against gold, more than the table-plus-gpt-4.1-mini (OpenAI) cascade (76.5%). The table can only be as accurate as the model it copies.

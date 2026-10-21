@@ -178,6 +178,7 @@ A frozen dataclass returned by every decide call. `str(d)` is the answer.
 
 | Flag | Meaning |
 |---|---|
+| `unseen_items` | most of the input's words were never seen in training (above max_unseen): asked your model |
 | `no_bundle` | no trained table yet: asked your model |
 | `low_confidence` | table not sure enough to stay inside the certified bound: asked your model |
 | `low_radius` | input could be flipped by a few edits (exposed mode): asked your model |
@@ -193,6 +194,7 @@ A frozen dataclass returned by every decide call. `str(d)` is the answer.
 | `options_changed` | your options include ones the table never learned: asked your model until you retrain |
 | `new_options_served` | served although you added options the table never learned (on_new_option="serve"): NOT covered by the certificate |
 | `option_removed` | the table picked an option you removed: asked your model |
+| `audit_breach` | live spot checks show the table disagreeing with your model more than alpha: asked your model until you re-train |
 
 ## `shad0w.decide`
 
@@ -311,6 +313,10 @@ Every setting works as a keyword in code, as `SHAD0W_<NAME>` in the environment,
 | `timeout` | `120.0` | `SHAD0W_TIMEOUT` | Proxy: upstream request timeout in seconds. |
 | `on_new_option` | `defer` | `SHAD0W_ON_NEW_OPTION` | Options added after training: 'defer' asks your LLM until you retrain; 'serve' keeps serving known ones. |
 | `max_mb` | `none` | `SHAD0W_MAX_MB` | Size budget for each table in MB. Many options or a huge vocabulary? Cap it; the certificate is computed on the capped table. |
+| `static` | `none` | `SHAD0W_STATIC` | Static word vectors (potion-8M) as extra table items; 'auto' keeps them only when they serve more. Helps paraphrases. |
+| `max_unseen` | `none` | `SHAD0W_MAX_UNSEEN` | Defer when more than this share of the input's words/n-grams was never seen in training (junk, gibberish). None = off. |
+| `student` | `auto` | `SHAD0W_STUDENT` | Table shape: 'linear' (additive, exact radius), 'deep' (hidden layer: sentiment, negation, word pairs; no radius), 'auto'. |
+| `hidden` | `none` | `SHAD0W_HIDDEN` | Width of the deep student's hidden layer (rows are this wide instead of one per option). |
 | `rename` | `{}` | `SHAD0W_RENAME` | Rename labels without retraining, e.g. {lost_card = "card_lost"}. Applied to the table and, at the next train, to the log. |
 | `llm` | `none` | `SHAD0W_LLM` | Default LLM for decision(), as "provider/model", e.g. "openai/gpt-6-luna". |
 | `base_url` | `none` | `SHAD0W_BASE_URL` | Base URL of an OpenAI-compatible server for that LLM (default: the provider's). |

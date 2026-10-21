@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Experimental layers · shad0w</title>
+<meta name="description" content="Images, a prompt-injection guard, streaming-reply checks, video frames, structured extraction, option-order voting and signed certificates. What each does, how to use it, and what it measured, including where it did not work.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/docs/experimental.html">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Experimental layers · shad0w">
+<meta property="og:description" content="Images, a prompt-injection guard, streaming-reply checks, video frames, structured extraction, option-order voting and signed certificates. What each does, how to use it, and what it measured, including where it did not work."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/docs/experimental.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Experimental layers · shad0w">
+<meta name="twitter:description" content="Images, a prompt-injection guard, streaming-reply checks, video frames, structured extraction, option-order voting and signed certificates. What each does, how to use it, and what it measured, including where it did not work."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Experimental layers", "description": "Images, a prompt-injection guard, streaming-reply checks, video frames, structured extraction, option-order voting and signed certificates. What each does, how to use it, and what it measured, including where it did not work.", "url": "https://2796gaurav.github.io/shad0w/docs/experimental.html", "dateModified": "2026-10-21", "proficiencyLevel": "Expert", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "isPartOf": {"@type": "WebSite", "name": "shad0w", "url": "https://2796gaurav.github.io/shad0w/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Docs", "item": "https://2796gaurav.github.io/shad0w/docs/"}, {"@type": "ListItem", "position": 3, "name": "Images, guard, video, extraction", "item": "https://2796gaurav.github.io/shad0w/docs/experimental.html"}]}</script><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/docs/experimental.md">
+</head>
+<body class="docspage">
+<a class="skip" href="#doc">Skip to content</a>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../playground/">Playground</a>
+    <a href="../bench/">Bench</a>
+    <a href="../docs/" class=active>Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<div class="wrap docs">
+  <aside class="sidebar" aria-label="Docs">
+    <div class="dsearch" role="search">
+      <svg class="dsi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="dsearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" aria-controls="dresults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+      <kbd aria-hidden="true">/</kbd>
+      <div class="dresults" id="dresults" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <details class="dmenu" open><summary><span class="dm-ico" aria-hidden="true"></span><span class="dm-l">Docs menu</span><span class="dm-cur">Images, guard, video, extraction</span></summary>
+      <nav class="dnav" aria-label="Docs pages"><div class="dsec"><h5>Start</h5><a href="./">Get started in 5 minutes</a><a href="decisions-api.html">Decisions API & System One (zero code)</a><a href="connect-your-llm.html">Connect your LLM</a><a href="proxy.html">The proxy</a></div><div class="dsec"><h5>Use it from</h5><a href="python.html">Python</a><a href="javascript.html">JavaScript & TypeScript</a><a href="http.html">HTTP</a><a href="c.html">C & other languages</a><a href="frameworks.html">LangChain, LiteLLM, AI SDK…</a></div><div class="dsec"><h5>Run it</h5><a href="configuration.html">Configuration</a><a href="tuning.html">Tuning & fine-tuning</a><a href="options.html">Changing your options</a><a href="without-llm.html">Running without an LLM</a><a href="rollout.html">Rollout: shadow → canary → serve</a><a href="observability.html">Monitoring</a><a href="training.html">Training & retraining</a><a href="cli.html">Command line</a><a href="troubleshooting.html">Troubleshooting</a><a href="experimental.html" class=active aria-current=page>Images, guard, video, extraction</a></div><div class="dsec"><h5>Understand</h5><a href="guarantee.html">The guarantee</a><a href="deep-table.html">The deep table (0.4)</a><a href="scale.html">Scale: options, size, speed</a><a href="benchmarks.html">Benchmarks & evidence</a><a href="compare.html">How it compares</a><a href="limits.html">Limits</a><a href="faq.html">FAQ</a><a href="reference.html">Reference</a><a href="changelog.html">Changelog</a></div></nav></details>
+    <script>if (matchMedia("(max-width: 900px)").matches) document.currentScript.previousElementSibling.removeAttribute("open")</script>
+  </aside>
+  <article class="prose" id="doc">
+    <div class="crumbs"><a href="./">Docs</a><span aria-hidden="true">/</span>Run it<span class="rt">4 min read</span></div>
+    <h1 id="experimental-layers">Experimental layers<a class="headerlink" href="#experimental-layers" title="Link to this section">#</a></h1>
+<p class="lead">The same idea, a small table plus a certificate that says when to trust it, applied beyond text questions. Each layer below works and is tested, but is new in 0.4 and may change. Every number was measured; misses are stated.</p>
+
+<h2 id="images">Images<a class="headerlink" href="#images" title="Link to this section">#</a></h2>
+<p>Asking a vision model to pick one label for an image? The same loop works on pixels. Tier 0 uses no neural network: a 32×32 thumbnail, 256 random pixel-comparison ferns, a coarse colour grid and a 64-bit difference hash become items for the same table and certificate. An optional tier 1 quantises a frozen image encoder's embedding (CLIP, SigLIP, or your own via <code>register_embedder</code>). One certificate covers the whole cascade.</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageSpec</span><span class="p">,</span> <span class="n">EmbedSpec</span>
+<span class="n">photo</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"category"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4.1-mini"</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>            <span class="c1"># ferns only</span>
+<span class="n">photo</span> <span class="o">=</span> <span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"category"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4.1-mini"</span><span class="p">,</span>
+                        <span class="n">image</span><span class="o">=</span><span class="p">[</span><span class="n">ImageSpec</span><span class="p">(),</span> <span class="n">EmbedSpec</span><span class="p">(</span><span class="s2">"openai/clip-vit-base-patch32"</span><span class="p">)])</span>              <span class="c1"># a cascade</span>
+<span class="n">photo</span><span class="p">(</span><span class="n">pixels</span><span class="p">)</span>      <span class="c1"># numpy array or PIL image</span>
+<span class="n">photo</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th>one CPU core, α = 5%, unseen images</th>
+<th>answered locally</th>
+<th>disagreement on those</th>
+<th>cost per image</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>product photos (Fashion-MNIST), ferns</td>
+<td><strong>64%</strong></td>
+<td>3.1%</td>
+<td><strong>4–7 µs</strong> (C)</td>
+</tr>
+<tr>
+<td>natural photos (CIFAR-10), ferns</td>
+<td>0% (correctly defers everything)</td>
+<td>—</td>
+<td>4–7 µs</td>
+</tr>
+<tr>
+<td>natural photos (CIFAR-10), ferns → CLIP B/32 table</td>
+<td><strong>73%</strong></td>
+<td>5.5% (95% CI ≈ 3.6–8%)</td>
+<td>~28 ms instead of 2.6 s</td>
+</tr>
+</tbody>
+</table></div>
+<p>Microseconds assume pixels already in memory: decoding a JPEG or PNG costs 0.3–3 ms. <code>pip install "shad0wllm[vision]"</code> for image files. C API: <code>s0_decide_image</code>.</p>
+<h2 id="guardrails">Guardrails<a class="headerlink" href="#guardrails" title="Link to this section">#</a></h2>
+<p><code>shad0w.guard.Guard</code> puts a learned table in front of your LLM as a prompt-injection gate that can <strong>block</strong> in microseconds but <strong>never allows</strong> on the table's word: anything it does not block goes to your model.</p>
+<div class="codehilite" data-lang="python"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">shad0w.guard</span><span class="w"> </span><span class="kn">import</span> <span class="n">Guard</span>
+<span class="n">gate</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">shad0w</span><span class="o">.</span><span class="n">decision</span><span class="p">(</span><span class="s2">"injection"</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"attack"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"safe"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">},</span> <span class="n">llm</span><span class="o">=</span><span class="s2">"openai/gpt-4.1-mini"</span><span class="p">))</span>
+<span class="n">gate</span><span class="o">.</span><span class="n">calibrate</span><span class="p">(</span><span class="n">fresh_texts</span><span class="p">,</span> <span class="n">llm_answers</span><span class="p">)</span>   <span class="c1"># a block-only certificate: among inputs it blocks, disagreement &lt;= alpha</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>                       <span class="c1"># "block" or "ask_model", never "allow"</span>
+</code></pre></div>
+
+<p>The input is normalised first (Unicode forms, zero-width, bidi and tag characters, homoglyphs, leetspeak, spaced letters, base64 and hex payloads); anything the normaliser had to undo goes to your model. On ~9,400 held-out texts labelled by an LLM:</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead>
+<tr>
+<th></th>
+<th>measured</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blocked by the table, without an LLM call</td>
+<td>14% of all traffic, 57% of the attacks</td>
+</tr>
+<tr>
+<td>blocks the model called safe</td>
+<td>2.6% (block-only certificate at α = 5%)</td>
+</tr>
+<tr>
+<td>smuggled variants of blocked attacks allowed</td>
+<td><strong>0%</strong>: all go to the model</td>
+</tr>
+<tr>
+<td>benign inputs sent to the model because they looked obfuscated</td>
+<td>1.0%</td>
+</tr>
+<tr>
+<td>latency, normaliser + table (Python)</td>
+<td>~155 µs median, against ~1.1 s for the model</td>
+</tr>
+</tbody>
+</table></div>
+<p>It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own, which is why it never allows.</p>
+<p><strong>Streaming replies</strong> (<code>StreamGuard</code>) check a reply as it streams, at 16, 32, 64, 128, 256 words and then every 256, and block on the first certified prefix. Honest result on BeaverTails: a word table certifies nothing at α = 5%; at α = 10% it blocks 50% of unsafe replies after 47% of their words and over-blocks 4.8% of safe ones. Use it as an early cut-off in front of a real guard model.</p>
+<h2 id="video-frames">Video frames<a class="headerlink" href="#video-frames" title="Link to this section">#</a></h2>
+<p><code>shad0w.stream.Stream</code> reuses a certified answer across consecutive frames: a small yes/no table, scored on the change since the last keyframe, decides whether the answer still holds; otherwise the frame table or your vision model answers. The certificate counts one frame per block, because adjacent frames are not independent.</p>
+<p>On UCSD Ped2, reuse answered 65–66% of test frames at 2.3–3.6% disagreement in 2 of 3 clip splits, and only at a block size chosen after the fact. The pre-registered setting certified nothing: the teacher changed its own answer on 2–9% of identical frames. <code>examples/stream_bench.py</code> measures that flicker first.</p>
+<h2 id="structured-extraction">Structured extraction<a class="headerlink" href="#structured-extraction" title="Link to this section">#</a></h2>
+<p><code>shad0w.extract.compile({field: options}, records)</code> builds one certified table per enum field and decides all fields from one hashing pass. <code>decide(text)</code> returns the certified <code>values</code> and the <code>deferred</code> fields; <code>prompt(text, fields)</code> asks your LLM for only those, and <code>merge()</code> folds its JSON back in.</p>
+<ul>
+<li>Per-field certificates are not record-level: on MultiWOZ, per-field α = 5% left 16% of records with a wrong field.</li>
+<li><code>record_alpha=0.10</code> splits α across fields: 60% of records were served whole and 5.2% had any wrong field.</li>
+</ul>
+<h2 id="a-steadier-teacher">A steadier teacher<a class="headerlink" href="#a-steadier-teacher" title="Link to this section">#</a></h2>
+<ul>
+<li><strong>Option-order voting</strong> (<code>llm_teacher(..., stabilise=2)</code>): each input is asked in 3 option orders and the majority kept. On BANKING77, flips against a fourth order fell from 17.3% to 13.0%, for 3× the calls.</li>
+<li><strong>Majority-vote calibration</strong> (<a href="cli.html#votes"><code>shad0w votes</code></a>): at temperature 0.7, disagreement with the temperature-0 answer fell from 5.6% to 4.3%.</li>
+<li><strong>Is your LLM consistent?</strong> <code>shad0w doctor --log L --teacher-noise 50</code> re-asks it and reports how often it repeats itself. Above α, nothing can certify.</li>
+</ul>
+<h2 id="signed-certificates">Signed certificates<a class="headerlink" href="#signed-certificates" title="Link to this section">#</a></h2>
+<p><code>SHAD0W_CERT_KEY=... shad0w certify --sign</code> (or <code>shad0w sign</code>) writes an HMAC of the certificate; <code>shad0w verify --teacher &lt;name&gt;</code> checks it and the teacher id. See <a href="cli.html#sign-and-verify">sign and verify</a>.</p>
+    <div class="docfoot"><span>Updated 2026-10-21</span><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Images%2C%20guard%2C%20video%2C%20extraction&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/experimental.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit on GitHub</a><a href="experimental.md">View as Markdown</a></div>
+    <nav class="pager" aria-label="Previous and next page"><a href="troubleshooting.html" rel="prev"><small>← Previous</small>Troubleshooting</a><a class="next" href="guarantee.html" rel="next"><small>Next →</small>The guarantee</a></nav>
+  </article>
+  <aside class="toc" aria-label="On this page"><b>On this page</b><div class="toc-list">
+<ul>
+<li><a href="#images">Images</a></li>
+<li><a href="#guardrails">Guardrails</a></li>
+<li><a href="#video-frames">Video frames</a></li>
+<li><a href="#structured-extraction">Structured extraction</a></li>
+<li><a href="#a-steadier-teacher">A steadier teacher</a></li>
+<li><a href="#signed-certificates">Signed certificates</a></li>
+</ul>
+</div>
+<div class="toc-foot"><a href="#" data-top>↑ Back to top</a><a href="https://github.com/2796gaurav/shad0w/issues/new?title=Docs%3A%20Images%2C%20guard%2C%20video%2C%20extraction&amp;body=Page%3A%20https%3A//2796gaurav.github.io/shad0w/docs/experimental.html%0A%0AWhat%20is%20unclear%20or%20wrong%3A%0A">Suggest an edit</a></div></aside>
+</div>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script>window.SHAD0W_DEFAULTS={"alpha":0.05,"delta":0.1,"min_rows":1000,"cal_fraction":0.3,"max_cal":3000,"audit_rate":0.01,"auto_train":0,"retrain":"gated","mode":"serve","canary":1.0,"never_serve":[],"min_confidence":null,"force_threshold":null,"drift_window":500,"drift_margin":0.03,"cost_per_call":null,"llm_latency_ms":null,"folder":"shad0w","exposed":false,"trace":null,"capture":["header","model","tools","decisions"],"timeout":120.0,"on_new_option":"defer","max_mb":null,"static":null,"max_unseen":null,"student":"auto","hidden":null,"rename":{},"llm":null,"base_url":null,"api_key_env":null}</script>
+<script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

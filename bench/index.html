@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Decision Bench: shad0w vs open decision models on a CPU · shad0w</title>
+<meta name="description" content="Six public tasks, five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide) and shad0w, with the same rows and the same 5% certifier. Every prediction saved; re-score it without running a model.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/bench/">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Decision Bench: shad0w vs open decision models on a CPU · shad0w">
+<meta property="og:description" content="Six public tasks, five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide) and shad0w, with the same rows and the same 5% certifier. Every prediction saved; re-score it without running a model."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/bench/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og-bench.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Decision Bench: shad0w vs open decision models on a CPU · shad0w">
+<meta name="twitter:description" content="Six public tasks, five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide) and shad0w, with the same rows and the same 5% certifier. Every prediction saved; re-score it without running a model."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og-bench.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../playground/">Playground</a>
+    <a href="../bench/" class=active>Bench</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap bench" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:920px;margin-bottom:22px">
+    <div class="kicker">decision bench · six public tasks · CPU only · every prediction saved</div>
+    <h1 class="arena-title">Same rows. Same certifier.<br><span class="hl">Microseconds against seconds.</span></h1>
+    <p>Decision models answer "pick one of these options" for your app. We put shad0w next to five open ones (Julia-1, Laya, Kev-0.8B, Decider-0.8B and GLiNER2.5-Decide) on six public tasks, on a laptop CPU with no GPU. Every system answers the same test rows, one at a time, and every system's confidence goes through the same 5% certificate. Every answer is saved, so anyone can re-check the numbers without running a model.</p>
+  </div>
+
+  <div class="bn-heads" id="heads"></div>
+
+  <section class="panel bn-run">
+    <div class="bn-tabs" role="tablist" id="tabs"></div>
+    <p class="bn-what" id="what"></p>
+    <div class="bn-grid">
+      <div>
+        <div class="pulse-h"><b>Accuracy against time per decision</b><span>log time axis · hover or tap a point</span></div>
+        <div class="bn-chart" id="chart"></div>
+        <div class="legend bn-legend"><span><i class="bn-k me"></i>shad0w (learned from the task's training split)</span><span><i class="bn-k dm"></i>open decision model (zero-shot)</span><span><i class="bn-k ci"></i>95% interval</span></div>
+      </div>
+      <div class="bn-side">
+        <div class="pulse-h"><b>shad0w in front of each model</b><span>shad0w answers what it certifies; the model answers the rest</span></div>
+        <div id="cascade"></div>
+      </div>
+    </div>
+    <div class="pulse-h" style="margin-top:18px"><b>Every system on this task</b><span>sorted by accuracy · click a column to sort</span></div>
+    <div class="table-wrap"><table class="arena-table bn-table" id="table"></table></div>
+    <p class="muted bn-note" id="note"></p>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">all six at a glance</div><h2>The summary.</h2></div>
+    <div class="panel"><div class="table-wrap"><table class="arena-table" id="summary"></table></div></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">read this before quoting a number</div><h2>What it shows, and what it doesn't.</h2></div>
+    <div class="pm-gets">
+      <div class="panel"><i>≠</i><b>Different training</b><p>shad0w learns each task from its training split; the decision models answer zero-shot. A decision model fine-tuned on the task would score higher than here.</p></div>
+      <div class="panel"><i>✓</i><b>Labels as the teacher</b><p>Here the teacher is the dataset's labels. In your app shad0w learns from your LLM's answers, and its certificate is against that LLM, not the truth.</p></div>
+      <div class="panel"><i>1</i><b>One machine, batch size 1</b><p>Decision-model times include localhost HTTP and are on a CPU. They would be lower in-process, and much lower on a GPU (llama.cpp publishes 3–12 ms there).</p></div>
+    </div>
+    <ul class="fine" style="margin-top:18px">
+      <li><b>Rows.</b> 500 test rows per task, a fixed random sample of the test split; 500 calibration rows from the training split, held out from training. A model that takes over 1 s per decision answers the first 150 rows, marked "150 rows".</li>
+      <li><b>Certified</b> uses Learn-then-Test with a Clopper–Pearson bound (α = 5%, δ = 10%) for every system: a confidence threshold picked on the calibration rows. Coverage is the share of test rows at or above it; served error is the error on those rows. A system whose confidence cannot separate right from wrong certifies 0%.</li>
+      <li><b>Time</b> is the wall time of one call with one input, after 20 warm-up calls. shad0w runs in-process on one thread through the C core. Decision models run with <span id="threads">5</span> threads; their single-thread time is shown where it was measured.</li>
+      <li><b>Left out:</b> Laya-multilingual, Laya-typed-decisions and d1-omni-600M did not load in this llama.cpp build. The 4B–9B models take seconds per decision on a CPU and are optional in the harness.</li>
+    </ul>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">reproduce</div><h2>Check every number, with or without the models.</h2>
+      <p>Every answer of every system is saved, one JSON line per row (<code>{"split": "test", "i": 17, "y": 3, "pred": 3, "conf": 0.9981, "us": 2.41}</code>). Re-scoring needs no model, no network and no GPU.</p></div>
+<pre class="code"><code>git clone https://github.com/2796gaurav/shad0w && cd shad0w
+pip install -e ".[compile]"
+python bench/score.py     # every number on this page, from the saved predictions
+python bench/run.py       # or re-run everything (llama.cpp's llama-server on PATH; about two hours on a laptop CPU)</code></pre>
+    <p class="muted" style="font-size:13.5px">Protocol and caveats: <a href="https://github.com/2796gaurav/shad0w/tree/main/bench">bench/README.md</a> · raw results: <a href="results.json">results.json</a> · machine: <span id="hw"></span></p>
+  </section>
+</main>
+<div class="bn-tip" id="tip" hidden></div>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module" src="../assets/bench.mjs"></script>
+</body>
+</html>
