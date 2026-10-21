@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "LLM web agent",
+    "alpha": 0.05,
+    "delta": 0.1,
+    "text_kind": 2
+  },
+  "questions": {
+    "action": {
+      "type": "choice",
+      "options": [
+        "click:accept-cookies",
+        "click:reject-cookies",
+        "type:q=product",
+        "click:search",
+        "click:p-mug",
+        "click:p-lamp",
+        "click:p-tee",
+        "click:p-hoodie",
+        "click:p-shoes",
+        "click:p-bottle",
+        "click:p-backpack",
+        "click:p-headphones",
+        "click:p-notebook",
+        "click:p-plant",
+        "click:p-chair",
+        "click:p-kettle",
+        "select:variant=variant",
+        "type:qty=qty",
+        "click:add",
+        "click:nav-cart",
+        "click:checkout",
+        "type:email=email",
+        "type:password=password",
+        "click:login",
+        "type:city=city",
+        "click:place-order",
+        "click:retry",
+        "done",
+        "fail:out-of-stock"
+      ],
+      "threshold": 1.0,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.0,
+        "base": 0.0,
+        "window": 500,
+        "margin": 0.03,
+        "n_cal": 985
+      },
+      "calibrated": true
+    }
+  }
+}

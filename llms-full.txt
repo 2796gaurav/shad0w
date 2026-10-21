@@ -3372,6 +3372,16 @@ On UCSD Ped2, reuse answered 65–66% of test frames at 2.3–3.6% disagreement 
 - Per-field certificates are not record-level: on MultiWOZ, per-field α = 5% left 16% of records with a wrong field.
 - `record_alpha=0.10` splits α across fields: 60% of records were served whole and 5.2% had any wrong field.
 
+## Web agents
+
+Not a new module: a pattern built from `shad0w.decision`. Turn each page's HTML into short text (title, heading, fields and whether they match the task, buttons), make the next action a fixed-choice question, and log your LLM agent's choices. Once trained, the table answers the steps it is certified on, and your agent asks the LLM for the rest. Add two checks around it: if the page has an element or pop-up the table never saw in training, ask the LLM; if a table action changed nothing (compare the page without its link lists, which change on every render), ask the LLM. Keep irreversible actions (paying, deleting, sending) behind the LLM or a person.
+
+- On a small shop site, after 300 errands taught by an LLM, the table ran 100 new errands with 0 LLM calls and 100% success. That is about 11 µs a step instead of about 2 s.
+- When the site changed (a new pop-up, a new checkbox), the table stayed certified and success fell to 44%. With the novelty check it was 100%, with 72–73% of steps still answered by the table, and the same held on 100 fresh errands.
+- On websites it never saw (Mind2Web), it chose the right element first time on 6.8% of steps and certified none. Use it for repeated workflows on sites you know, not to find the way on new ones.
+
+[Try it in your browser](../webagent/) · [the full write-up](../blog/table-drives-a-browser.html)
+
 ## A steadier teacher
 
 - **Option-order voting** (`llm_teacher(..., stabilise=2)`): each input is asked in 3 option orders and the majority kept. On BANKING77, flips against a fourth order fell from 17.3% to 13.0%, for 3× the calls.
