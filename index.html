@@ -24,7 +24,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/site.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this just a cache?", "acceptedAnswer": {"@type": "Answer", "text": "No. A cache only answers texts it has seen before. shad0w answers new wordings of a question it has learned, and its certificate covers new messages that look like your traffic. Exact repeats are free on top."}}, {"@type": "Question", "name": "What does \"certified\" mean?", "acceptedAnswer": {"@type": "Answer", "text": "Before it answers anything, the table is tested on answers it never trained on and picks a confidence line. Above it, the table differs from your LLM on at most α of what it answers, checked with 90% confidence. α is the most disagreement you allow: the default 5% means at most 1 in 20 answers. In our runs it actually differed 3.0–6.0% of the time: a 90% promise can miss, so live spot checks keep watching."}}, {"@type": "Question", "name": "What if my LLM is wrong?", "acceptedAnswer": {"@type": "Answer", "text": "Then the table is wrong in the same way. The certificate is agreement with your LLM, not with the truth. For a bound against the truth, certify on a few hundred human-labelled examples instead."}}, {"@type": "Question", "name": "How many examples does it need, and what does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "About 1,000 logged answers per question to start; with 77 intents it answered 60% at 10,000 answers, and the share keeps growing. It costs nothing: Apache-2.0, the Python runtime needs only numpy, the JavaScript and C runtimes need nothing, and your logs stay on your machine."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "shad0w", "version": "0.4.0", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"], "runtimePlatform": ["CPython", "Node.js", "browsers"], "license": "https://www.apache.org/licenses/LICENSE-2.0", "author": {"@type": "Person", "name": "Gaurav Chauhan"}, "dateModified": "2026-10-21"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "shad0w", "alternateName": "shad0wllm", "url": "https://2796gaurav.github.io/shad0w/", "description": "Open source: learns your LLM's or vision model's fixed-choice answers (intents, routing, moderation, prompt attacks, images, video frames) and serves the repeats in microseconds on CPU, at most 5% disagreement. pip or npm.", "publisher": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "inLanguage": "en"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoObject", "name": "shad0w in 42 seconds", "description": "shad0w learns your model's repeat decisions and answers them in microseconds with a certificate: text, images, prompt attacks, live data and the Decision Bench. Every number and guess on screen is real.", "thumbnailUrl": ["https://2796gaurav.github.io/shad0w/assets/film04-poster.jpg"], "uploadDate": "2026-10-21T00:00:00+05:30", "duration": "PT42S", "contentUrl": "https://2796gaurav.github.io/shad0w/assets/shad0w-0.4.mp4", "embedUrl": "https://2796gaurav.github.io/shad0w/#film", "inLanguage": "en", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this just a cache?", "acceptedAnswer": {"@type": "Answer", "text": "No. A cache only answers texts it has seen before. shad0w answers new wordings of a question it has learned, and its guarantee covers new messages that look like your traffic. Exact repeats are free on top."}}, {"@type": "Question", "name": "What does \"certified\" mean?", "acceptedAnswer": {"@type": "Answer", "text": "Before it answers anything, shad0w is tested on answers it never trained on and picks a confidence line. Above it, shad0w differs from your LLM on at most α of what it answers, checked with 90% confidence. α is the most disagreement you allow: the default 5% means at most 1 in 20 answers. In our runs, shad0w actually differed 3.0–6.0% of the time: a 90% promise can miss, so live spot checks keep watching."}}, {"@type": "Question", "name": "How many examples does it need?", "acceptedAnswer": {"@type": "Answer", "text": "About 1,000 logged answers per question to start. More options need more: with 77 intents it answered 60% at 10,000 answers. The share keeps growing as your LLM keeps answering."}}, {"@type": "Question", "name": "What if my LLM is wrong?", "acceptedAnswer": {"@type": "Answer", "text": "Then shad0w is wrong in the same way. The guarantee is agreement with your LLM, not with the truth. For a bound against the truth, certify on a few hundred human-labelled examples instead."}}, {"@type": "Question", "name": "What does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing. It is Apache-2.0 open source. The Python runtime needs only numpy; the JavaScript and C runtimes need nothing. Your data and logs stay on your machine."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "shad0w", "version": "0.4.0", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"], "runtimePlatform": ["CPython", "Node.js", "browsers"], "license": "https://www.apache.org/licenses/LICENSE-2.0", "author": {"@type": "Person", "name": "Gaurav Chauhan"}, "dateModified": "2026-10-21"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "shad0w", "alternateName": "shad0wllm", "url": "https://2796gaurav.github.io/shad0w/", "description": "Open source: learns your LLM's or vision model's fixed-choice answers (intents, routing, moderation, prompt attacks, images, video frames) and serves the repeats in microseconds on CPU, at most 5% disagreement. pip or npm.", "publisher": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "inLanguage": "en"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoObject", "name": "shad0w in 42 seconds", "description": "shad0w learns your model's repeat decisions and answers them in microseconds with a certificate: text, images, prompt attacks, live data and the Decision Bench. Every number and guess on screen is real.", "thumbnailUrl": ["https://2796gaurav.github.io/shad0w/assets/film04-poster.jpg"], "uploadDate": "2026-10-21T00:00:00+05:30", "duration": "PT42S", "contentUrl": "https://2796gaurav.github.io/shad0w/assets/shad0w-0.4.mp4", "embedUrl": "https://2796gaurav.github.io/shad0w/#film", "inLanguage": "en", "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}}</script>
 </head>
 <body class="landing">
 <nav class="nav"><div class="wrap">
@@ -43,19 +43,25 @@
 /* ---------- landing only. Palette and motion tokens live in assets/style.css ---------- */
 .landing .nav { background: transparent; border-color: transparent; transition: background var(--t-base), border-color var(--t-base); }
 .landing .nav.scrolled { background: color-mix(in srgb, var(--bg) 80%, transparent); border-color: var(--line); }
+.dark-island { --bg: var(--black); --bg-elev: color-mix(in srgb, var(--prussian) 50%, var(--black)); --surface: var(--prussian);
+  --line: color-mix(in srgb, var(--alab) 12%, transparent); --line-strong: color-mix(in srgb, var(--alab) 24%, transparent);
+  --text: var(--alab); --text-strong: var(--white); --text-dim: color-mix(in srgb, var(--alab) 70%, var(--black));
+  --accent-ink: var(--orange); --shadow-ink: color-mix(in srgb, var(--prussian) 80%, transparent); color: var(--text); }
 
 /* hero */
-.hero { position: relative; padding: 48px 0 64px; overflow: hidden; }
+.hero { position: relative; padding: 56px 0 88px; overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 0; pointer-events: none;
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 64px 64px;
   -webkit-mask-image: radial-gradient(ellipse 60% 70% at 74% 34%, #000 10%, transparent 72%); mask-image: radial-gradient(ellipse 60% 70% at 74% 34%, #000 10%, transparent 72%); }
-.hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 56px; align-items: start; }
-.hero .kicker { display: block; margin: 8px 0 0; }
-.hero h1 { font: 700 clamp(42px, 5.4vw, 74px)/.98 var(--display); letter-spacing: -.045em; margin: 16px 0 22px; color: var(--text-strong); text-shadow: .06em .06em 0 var(--shadow-ink); }
+.hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.announce { display: inline-flex; align-items: center; gap: 10px; padding: 4px 14px 4px 4px; border: 1px solid var(--line-strong); border-radius: 99px; color: var(--text); font-size: 14px; background: color-mix(in srgb, var(--bg) 70%, transparent); transition: border-color var(--t-fast); }
+.announce:hover { text-decoration: none; border-color: var(--orange); }
+.hero .kicker { display: block; margin: 30px 0 0; }
+.hero h1 { font: 700 clamp(44px, 5.6vw, 78px)/.98 var(--display); letter-spacing: -.045em; margin: 16px 0 24px; color: var(--text-strong); text-shadow: .06em .06em 0 var(--shadow-ink); }
 .hero h1 .hl { white-space: nowrap; }
-.lede { font-size: clamp(18px, 1.6vw, 20px); color: var(--text-dim); max-width: 600px; margin: 0 0 24px; }
+.lede { font-size: clamp(18px, 1.6vw, 20px); color: var(--text-dim); max-width: 560px; margin: 0 0 26px; }
 .lede b { color: var(--text); font-weight: 600; }
-.hchips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
+.hchips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; }
 .hchips span { font-size: 13.5px; white-space: nowrap; color: var(--text-dim); border: 1px solid var(--line-strong); border-radius: 99px; padding: 6px 14px; background: color-mix(in srgb, var(--bg) 70%, transparent); }
 .hchips b { color: var(--text-strong); font: 500 14px var(--mono); }
 .hchips span:first-child b { color: var(--accent-ink); }
@@ -67,21 +73,32 @@
 .install code { flex: 1; min-width: 0; padding: 0 14px; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none; border: 0; color: var(--white); }
 .install code::before { content: "$ "; color: var(--orange); }
 .install .copy { margin-right: 8px; flex: none; }
-.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
 
-/* hero: the live fork. a real message -> the table answers it (orange, microseconds) or sends it to your LLM (steel, slow) */
+/* hero: the live pipeline. message -> shad0w -> answered instantly (orange) or sent on to your LLM (steel, slow) */
 .pw { position: relative; border: 1px solid var(--line-strong); border-radius: var(--r); background: var(--bg-elev); box-shadow: 8px 8px 0 var(--shadow-ink); padding: 16px; }
 .pw-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; font: 12px var(--mono); color: var(--text-dim); padding: 0 2px 12px; border-bottom: 1px solid var(--line); }
-.pw-bar .on { color: var(--orange); white-space: nowrap; } .pw-bar .on::before { content: "● "; animation: blink 1.4s steps(2) infinite; }
-.pw-bar .what { text-align: right; }
+.pw-bar .on { color: var(--orange); } .pw-bar .on::before { content: "● "; animation: blink 1.4s steps(2) infinite; }
 @keyframes blink { 50% { opacity: .25; } }
 @media (max-width: 480px) { .hide-s { display: none; } }
 .pw-stage { position: relative; padding: 18px 2px 4px; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; background-position: center top; }
 .pw-k { display: flex; justify-content: space-between; gap: 10px; font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--text-dim); }
 .pw-in { border: 1px solid var(--line-strong); border-radius: 12px; background: var(--bg); padding: 12px 14px; }
-.pw-in p { margin: 6px 0 0; font-size: 15px; line-height: 1.45; color: var(--text-strong); min-height: 2.9em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pw-in p { margin: 6px 0 0; font-size: 15px; line-height: 1.45; color: var(--text-strong); min-height: 2.9em; }
+@media (max-width: 560px) { .pw-in p { min-height: 4.35em; } .pw-card .pw-k span + span { display: none; } .pw-ring { width: 32px; height: 32px; } }
 .pw-in.enter { animation: pwin var(--t-base) var(--e-out); }
 @keyframes pwin { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+.pw-wire { position: relative; width: 2px; height: 26px; margin: 0 auto; background: var(--line-strong); }
+.pw-wire i { position: absolute; left: -3px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--alab); opacity: 0; }
+.pw-node { position: relative; display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; margin: 0 auto; padding: 10px 16px 10px 12px; border: 1px solid color-mix(in srgb, var(--orange) 45%, transparent); border-radius: 99px; background: var(--black); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 6%, transparent), 0 10px 40px -12px color-mix(in srgb, var(--orange) 45%, transparent); }
+.pw-node.pulse { animation: pwpulse 480ms var(--e-out); }
+@keyframes pwpulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--orange) 55%, transparent), 0 10px 40px -12px color-mix(in srgb, var(--orange) 45%, transparent); } 100% { box-shadow: 0 0 0 14px transparent, 0 10px 40px -12px color-mix(in srgb, var(--orange) 45%, transparent); } }
+.pw-mark { position: relative; flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 18px color-mix(in srgb, var(--orange) 55%, transparent); }
+.pw-mark::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--black); transform: translate(15%, 15%) scale(.8); }
+.pw-nt { display: grid; line-height: 1.2; }
+.pw-nt b { font-size: 16px; color: var(--white); }
+.pw-nt span { font: 12px var(--mono); color: var(--text-dim); }
+.pw-us { font: 500 13px var(--mono); color: var(--orange); min-width: 4.5em; text-align: right; }
 .pw-fork { display: block; width: 100%; height: 44px; }
 .pw-fork path { fill: none; vector-effect: non-scaling-stroke; stroke-width: 1.5; }
 .pw-fork .base.l { stroke: color-mix(in srgb, var(--orange) 50%, transparent); }
@@ -91,26 +108,20 @@
 .pw-fork .hot.l.on { opacity: 1; }
 .pw-fork .hot.r { stroke: var(--llm); stroke-dasharray: 14 100; stroke-dashoffset: 14; }
 .pw-out { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.pw-card { position: relative; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); padding: 12px 14px; min-width: 0; display: grid; align-content: start; gap: 6px; min-height: 128px; transition: border-color var(--t-base); }
-.pw-card .who { display: flex; align-items: center; gap: 10px; }
-.pw-card .who b { font: 700 16px var(--display); color: var(--text-strong); letter-spacing: -.01em; }
-.pw-mark { position: relative; flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 14px color-mix(in srgb, var(--orange) 55%, transparent); }
-.pw-mark::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--black); transform: translate(15%, 15%) scale(.8); }
-.pw-card .ans { font: 500 15px/1.35 var(--mono); color: var(--text-strong); min-height: 2.7em; overflow-wrap: anywhere; }
-.pw-card .ans.dim { color: var(--text-dim); font-size: 14px; }
-.pw-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; font: 12px var(--mono); color: var(--text-dim); align-self: end; }
-.pw-meta .hot { color: var(--orange); }
-.pw-card.srv { border-color: color-mix(in srgb, var(--orange) 45%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 6%, transparent); }
-.pw-card.srv.pulse { animation: pwpulse 480ms var(--e-out); }
-@keyframes pwpulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--orange) 55%, transparent); } 100% { box-shadow: 0 0 0 14px transparent; } }
-.pw-card.srv.flash { animation: flash 120ms steps(1) both; }
+.pw-card { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); padding: 12px 14px; min-width: 0; display: grid; align-content: start; gap: 6px; transition: border-color var(--t-base); }
+.pw-card b { font: 500 15px/1.35 var(--mono); color: var(--text-strong); min-height: 2.7em; overflow-wrap: anywhere; }
+.pw-card .pw-meta { align-self: end; }
+.pw-card.ans { border-color: color-mix(in srgb, var(--orange) 40%, transparent); }
+.pw-card.ans .pw-k span:first-child { color: var(--orange); }
+.pw-card.ans.flash { animation: flash 120ms steps(1) both; }
 @keyframes flash { 0% { background: var(--accent-soft); outline: 1px solid var(--orange); } 100% { background: var(--bg); outline: 0 solid transparent; } }
-.pw-stamp { position: absolute; top: -11px; right: 12px; transform: rotate(-3deg); font: 600 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--orange); border: 1.5px solid var(--orange); border-radius: 4px; padding: 4px 7px; background: var(--black); }
 .pw-card.llm { border-color: color-mix(in srgb, var(--llm) 30%, transparent); }
-.pw-card.llm .who b { color: var(--llm); }
+.pw-card.llm .pw-k span:first-child { color: var(--llm); }
 .pw-card.llm.done { border-color: color-mix(in srgb, var(--llm) 60%, transparent); }
+.pw-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; font: 12px var(--mono); color: var(--text-dim); }
+.pw-meta .hot { color: var(--orange); }
 .pw-llm { display: flex; align-items: center; gap: 10px; font: 12px var(--mono); color: var(--text-dim); white-space: nowrap; }
-.pw-ring { width: 36px; height: 36px; flex: none; transform: rotate(-90deg); }
+.pw-ring { width: 40px; height: 40px; flex: none; transform: rotate(-90deg); }
 .pw-ring circle { fill: none; stroke-width: 2.5; }
 .pw-ring .bg { stroke: color-mix(in srgb, var(--llm) 20%, transparent); }
 .pw-ring .fg { stroke: var(--llm); stroke-dasharray: 0 100; stroke-linecap: round; }
@@ -121,44 +132,15 @@
 .pw .stats b { display: block; font: 500 20px/1.15 var(--mono); color: var(--text-strong); white-space: nowrap; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .pw .stats div:first-child b { color: var(--orange); }
 .pw .stats span { font-size: 11.5px; color: var(--text-dim); line-height: 1.25; display: block; margin-top: 3px; }
-@media (max-width: 560px) { .pw-out { grid-template-columns: minmax(0, 1fr); } .pw-fork { display: none; } .pw-ring { display: none; } .pw-card { min-height: 0; } .pw-bar .what { font-size: 11px; } }
+.ill { display: block; width: 100%; height: auto; margin: -4px 0 14px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); }
+.ill .mono { font-family: var(--mono); }
+.speed { margin-top: 18px; }
 
-/* also: one row of the other things it does */
-.also { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 18px 0 0; font-size: 14px; color: var(--text-dim); }
-.also span { font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .12em; margin-right: 4px; }
-
-/* how it works: one diagram, three captions, five words */
-.flow { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 18px 18px 8px; box-shadow: 6px 6px 0 var(--shadow-ink); }
-.flow svg { display: block; width: 100%; height: auto; }
-.flow svg text { font-family: var(--mono); fill: var(--text); }
-.flow svg .lbl { font-size: 11px; fill: var(--text-dim); letter-spacing: .08em; text-transform: uppercase; }
-.flow svg .big { font-size: 15px; font-weight: 600; fill: var(--text-strong); }
-.flow svg .on { fill: var(--orange); }
-.flow svg .llmc { fill: var(--llm); }
-.flow svg .box { fill: var(--bg); stroke: var(--line-strong); }
-.flow svg .boxo { fill: var(--bg); stroke: var(--orange); stroke-width: 1.5; }
-.flow svg .boxl { fill: var(--bg); stroke: var(--llm); stroke-width: 1.5; }
-.flow svg .wire { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
-.flow svg .wire.o { stroke: var(--orange); stroke-width: 2; }
-.flow svg .wire.b { stroke: var(--llm); stroke-dasharray: 5 4; stroke-width: 1.5; }
-.flow svg .wire.back { stroke: var(--text-dim); stroke-dasharray: 3 5; }
-.flow svg .stamp { font-size: 9.5px; font-weight: 600; fill: var(--orange); letter-spacing: .1em; }
-.flow .wide { display: block; } .flow .narrow { display: none; }
-.steps3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
-.step { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 18px 20px; }
-.step .n { font: 500 12px var(--mono); color: var(--accent-ink); letter-spacing: .14em; }
-.step h3 { font: 700 21px var(--display); letter-spacing: -.02em; margin: 6px 0 4px; }
-.step p { color: var(--text-dim); font-size: 15px; margin: 0; }
-.glossary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
-.glossary div { border-left: 3px solid var(--orange); background: var(--bg-elev); border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 14px; color: var(--text-dim); line-height: 1.45; }
-.glossary dfn { font-style: normal; display: block; font: 600 15px var(--display); color: var(--text-strong); margin-bottom: 3px; }
-.glossary a { grid-column: 1 / -1; justify-self: start; }
-
-/* measured */
+/* proof strip: bento */
 .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
-.tile { grid-column: span 3; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 24px; display: grid; align-content: space-between; gap: 16px; min-height: 210px; }
+.tile { grid-column: span 3; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 26px; display: grid; align-content: space-between; gap: 18px; min-height: 230px; }
 .tile.wide { grid-column: span 6; background: var(--prussian); border-color: color-mix(in srgb, var(--orange) 30%, transparent); color: var(--alab); }
-.tile .big { font: 500 clamp(40px, 5vw, 60px)/1 var(--mono); letter-spacing: -.05em; color: var(--text-strong); }
+.tile .big { font: 500 clamp(40px, 5vw, 64px)/1 var(--mono); letter-spacing: -.05em; color: var(--text-strong); }
 .tile.wide .big { color: var(--orange); }
 .tile .vs { font: 500 18px var(--mono); color: color-mix(in srgb, var(--alab) 70%, transparent); margin-top: 10px; }
 .tile .vs s { text-decoration-color: var(--orange); text-decoration-thickness: 2px; }
@@ -166,14 +148,71 @@
 .tile.wide p { color: color-mix(in srgb, var(--alab) 80%, transparent); }
 .tile .lbl { font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--accent-ink); }
 .tile.wide .lbl { color: var(--orange); }
-.proof-foot { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; align-items: baseline; margin-top: 16px; }
-.cmp-wrap { margin-top: 28px; }
-.cmp-wrap h3 { font: 700 22px var(--display); letter-spacing: -.02em; margin: 0 0 4px; }
-.cmp-wrap > p { color: var(--text-dim); font-size: 15px; margin: 0 0 14px; }
-.cmp-wrap .arena-table tr:nth-child(n+5) { display: none; }  /* header + 3 tasks */
-.cmp-note { margin-top: 12px; font-size: 14.5px; color: var(--text-dim); max-width: 820px; }
+.proof-foot { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; align-items: baseline; margin-top: 18px; }
+
+.speed-out { margin-top: 14px; font-size: 15px; color: var(--text-dim); min-height: 24px; }
+.speed-out .bars2 { display: grid; gap: 8px; margin-top: 12px; }
+.speed-out .bars2 div { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: center; font: 12px var(--mono); }
+.speed-out .bars2 i { display: block; height: 12px; border-radius: 3px; background: var(--orange); min-width: 3px; }
+.speed-out .bars2 i.slow { background: var(--llm); }
+.speed-out b { color: var(--text-strong); }
+
+/* how: the threshold line */
+.steps4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+.step { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 22px; }
+.step .n { font: 500 12px var(--mono); color: var(--accent-ink); letter-spacing: .14em; }
+.step h3 { font: 700 24px var(--display); letter-spacing: -.02em; margin: 8px 0 6px; }
+.step p { color: var(--text-dim); font-size: 15px; margin: 0; }
+/* it tunes itself: the loop */
+.tunes { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px; align-items: center; }
+.loop { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 18px; box-shadow: 6px 6px 0 var(--shadow-ink); }
+.loop svg { display: block; width: 100%; max-width: 420px; margin: 0 auto; height: auto; }
+.loop .mono { font-family: var(--mono); }
+.loop-run { transform-box: view-box; transform-origin: 160px 160px; animation: looprun 6s linear infinite; }
+@keyframes looprun { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+.loop-nodes rect { fill: var(--bg-elev); stroke: var(--line-strong); transition: stroke var(--t-base), fill var(--t-base); }
+.loop-nodes text { fill: var(--text); font-family: var(--mono); transition: fill var(--t-base); }
+.loop-nodes g.on rect { stroke: var(--orange); fill: color-mix(in srgb, var(--orange) 14%, var(--bg)); }
+.loop-nodes g.on text { fill: var(--white); }
+.tlist { display: grid; gap: 4px; }
+.ti { display: grid; gap: 4px; padding: 16px 0 16px 18px; border-left: 2px solid var(--line-strong); }
+.ti b { color: var(--text-strong); font-size: 17px; }
+.ti span { color: var(--text-dim); font-size: 15.5px; }
+.ti code { font-size: 12.5px; }
+.more-row { display: flex; gap: 22px; flex-wrap: wrap; margin: 6px 0 0; }
+.more-row .more { margin: 0; }
+.define { margin: 24px 0 0; padding: 16px 18px; border-left: 3px solid var(--orange); background: var(--bg-elev); border-radius: 0 10px 10px 0; font-size: 16px; }
+.define b { color: var(--text-strong); }
+@media (max-width: 1020px) { .tunes { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+@media (prefers-reduced-motion: reduce) { .loop-run { animation: none; transform: rotate(-90deg); } }
+
+/* race: µs vs seconds */
+.race { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line-strong); box-shadow: 8px 8px 0 var(--shadow-ink); }
+.rlane { padding: 26px; min-width: 0; display: grid; gap: 16px; align-content: start; min-height: 290px; }
+.rlane.llm { background: var(--prussian); }
+.rlane.s0 { background: var(--black); border-left: 1px solid color-mix(in srgb, var(--alab) 14%, transparent); }
+.rlane .who { display: flex; justify-content: space-between; gap: 10px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .12em; color: color-mix(in srgb, var(--alab) 70%, transparent); }
+.rlane.s0 .who b { color: var(--orange); font-weight: 500; }
+.rlane .q { font-size: 15px; color: color-mix(in srgb, var(--alab) 80%, transparent); }
+.rlane .out { font: 500 17px/1.5 var(--mono); color: var(--white); min-height: 54px; padding: 12px 14px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--alab) 14%, transparent); background: color-mix(in srgb, var(--black) 35%, transparent); overflow-wrap: anywhere; }
+.rlane .out .caret { display: inline-block; width: .55em; height: 1.1em; background: var(--llm); vertical-align: -.2em; animation: blink 1.06s steps(2) infinite; margin-left: 2px; }
+.rlane.s0 .out.flash { animation: flash 120ms steps(1) both; }
+.rlane .clock { font: 500 clamp(40px, 5.4vw, 68px)/1 var(--mono); letter-spacing: -.05em; color: var(--white); }
+.rlane.s0 .clock { color: var(--orange); }
+.rlane.llm .clock { color: var(--llm); }
+.rlane .prog { height: 4px; background: color-mix(in srgb, var(--alab) 14%, transparent); border-radius: 2px; overflow: hidden; }
+.rlane .prog i { display: block; height: 100%; background: var(--llm); transform-origin: left; transform: scaleX(0); }
+.rlane.s0 .prog i { background: var(--orange); }
+.rlane .note { font-size: 13px; color: color-mix(in srgb, var(--alab) 65%, transparent); }
+.race-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 20px; }
+.chart { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 24px 24px 18px; }
+.chart h3 { font: 700 20px var(--display); margin: 0 0 4px; letter-spacing: -.015em; }
+.chart .sub { color: var(--text-dim); font-size: 14px; margin: 0 0 16px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart svg text { font-family: var(--mono); fill: var(--text-dim); }
 
 /* code */
+.code-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .code-tabs .tabbar { background: var(--bg-elev); }
 .code-tabs .tabpanel { padding: 0; }
 .code-tabs { border: 0; background: none; overflow: visible; }
@@ -181,34 +220,85 @@
 .code-tabs .codewin { border-radius: 0 0 var(--r) var(--r); }
 .code-tabs .codewin pre { font-size: 14.5px; padding: 22px 24px; }
 .code-tabs .after { padding: 14px 4px 0; font-size: 15px; color: var(--text-dim); }
+.others { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; align-items: center; }
+.others span { font: 500 12px var(--mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: .12em; margin-right: 6px; }
 
-/* fits, limits, faq */
+/* fits */
 .fits { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
-.fitcol { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 22px 24px; }
-.fitcol h3 { margin: 0 0 12px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .14em; color: var(--accent-ink); }
+.fitcol { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 24px; }
+.fitcol h3 { margin: 0 0 16px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .14em; color: var(--accent-ink); }
 .fitcol.no h3 { color: var(--text-dim); }
-.io { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.io { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
 .io:last-child { border-bottom: 0; }
 .io b { font-weight: 600; color: var(--text-strong); }
 .io code { font-size: 12.5px; color: var(--accent-ink); background: var(--accent-soft); border-color: transparent; white-space: nowrap; }
+.io small { grid-column: 1 / -1; color: var(--text-dim); font-size: 13.5px; }
 .fitcol.no .io code { color: var(--text-dim); background: none; border: 1px solid var(--line-strong); }
-.faq { max-width: 860px; margin: 26px auto 0; border-top: 1px solid var(--line); }
-.faq details { border-bottom: 1px solid var(--line); padding: 18px 4px; }
-.faq summary { cursor: pointer; font: 600 18px var(--display); letter-spacing: -.01em; list-style: none; display: flex; justify-content: space-between; gap: 20px; color: var(--text-strong); }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; font: 500 22px/1 var(--mono); color: var(--accent-ink); transition: transform var(--t-base) var(--e-out); }
-.faq details[open] summary::after { transform: rotate(45deg); }
-.faq details p { color: var(--text-dim); margin: 12px 0 0; max-width: 760px; }
+.checker { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); }
+.checker > summary { cursor: pointer; padding: 18px 22px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; color: var(--text-strong); }
+.checker > summary::after { content: "+"; font: 500 20px/1 var(--mono); color: var(--accent-ink); transition: transform var(--t-base) var(--e-out); }
+.checker[open] > summary::after { transform: rotate(45deg); }
+.checker .fit { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; padding: 0 22px 22px; }
+.fit .qs { display: grid; gap: 8px; }
+.fit label { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; background: var(--bg); font-size: 15px; cursor: pointer; }
+.fit label input { width: 17px; height: 17px; accent-color: var(--orange); margin-top: 3px; }
+.fit label small { display: block; color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+.fit .verdict { border: 1px solid var(--line-strong); border-radius: var(--r); background: var(--bg); padding: 22px; align-self: start; }
+.fit .verdict b { display: block; font: 700 24px/1.15 var(--display); letter-spacing: -.02em; margin-bottom: 8px; color: var(--text-strong); }
+.fit .verdict .ok b { color: var(--accent-ink); }
+.fit .verdict p { color: var(--text-dim); margin: 0 0 14px; }
 
-/* film + close */
+/* compare */
+.cmp-wrap { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 6px 10px; overflow-x: auto; }
+.cmp-wrap .ntable th:nth-child(4), .cmp-wrap .ntable td:nth-child(4), .cmp-wrap .ntable th:nth-child(7), .cmp-wrap .ntable td:nth-child(7) { display: none; }
+.cmp-wrap .ntable td:nth-child(2), .cmp-wrap .ntable td:nth-child(5), .cmp-wrap .ntable td:nth-child(6) { font-family: var(--mono); font-size: 13.5px; }
+.cmp-wrap > .src { display: none; }
+.cmp-wrap .ntable tbody tr:nth-child(n+7) { display: none; }
+.cmp-note { margin-top: 16px; font-size: 15px; color: var(--text-dim); max-width: 820px; }
+
+/* where it loses */
+.loses { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: start; }
+.lose { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.lose:first-child { padding-top: 0; }
+.lose:last-child { border-bottom: 0; }
+.lose .v { font: 500 34px/1 var(--mono); letter-spacing: -.04em; color: var(--text-strong); }
+.lose .v small { display: block; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-top: 8px; }
+.lose b { display: block; font-size: 17px; color: var(--text-strong); margin-bottom: 4px; }
+.lose span { color: var(--text-dim); font-size: 15px; }
+
+/* production pipeline */
+.pipe { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.pipe::before { content: ""; position: absolute; left: 8%; right: 8%; top: 44px; height: 2px; background: repeating-linear-gradient(90deg, var(--line-strong) 0 6px, transparent 6px 12px); }
+.pipe .pulse { position: absolute; top: 39px; left: 8%; width: 12px; height: 12px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--accent-soft); animation: travel 4.8s var(--e-inout) infinite; }
+@keyframes travel { 0% { left: 8%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { left: calc(92% - 12px); opacity: 0; } }
+.stage { position: relative; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg-elev); padding: 22px; }
+.stage .dot { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: 1px solid var(--line-strong); font: 500 14px var(--mono); color: var(--text-strong); margin-bottom: 16px; position: relative; z-index: 1; }
+.stage:last-child .dot { background: var(--orange); color: var(--black); border-color: var(--orange); }
+.stage h3 { margin: 0 0 6px; font: 700 22px var(--display); letter-spacing: -.02em; }
+.stage p { margin: 0; color: var(--text-dim); font-size: 15px; }
+.stage code { font-size: 12.5px; }
+.ops { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+
+/* film + faq + close */
+.film-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+.film { max-width: 520px; justify-self: end; width: 100%; }
+.watch-points { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; color: var(--text-dim); font-size: 15px; }
+.watch-points li::before { content: "→ "; color: var(--orange); font-family: var(--mono); }
 .film { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line-strong); background: var(--black); aspect-ratio: 16 / 9; box-shadow: 8px 8px 0 var(--shadow-ink); }
 .film img, .film video { width: 100%; height: 100%; display: block; object-fit: cover; }
 .film button { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--black) 25%, transparent); border: 0; cursor: pointer; }
 .film button span { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: var(--orange); box-shadow: 5px 5px 0 var(--shadow-ink); transition: transform var(--t-fast) var(--e-snap), box-shadow var(--t-fast) var(--e-snap); }
 .film button:hover span { transform: translate(3px, 3px); box-shadow: none; }
-.closing { position: relative; text-align: center; padding: 96px 0 88px; overflow: hidden; border-top: 1px solid var(--line); }
-.closing h2 { position: relative; font: 700 clamp(40px, 6vw, 80px)/.95 var(--display); letter-spacing: -.045em; margin: 0 0 16px; text-shadow: .06em .06em 0 var(--shadow-ink); }
-.closing p { position: relative; color: var(--text-dim); font-size: 18px; margin: 0 0 26px; }
+.faq { max-width: 860px; margin: 0 auto; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); padding: 20px 4px; }
+.faq summary { cursor: pointer; font: 600 19px var(--display); letter-spacing: -.01em; list-style: none; display: flex; justify-content: space-between; gap: 20px; color: var(--text-strong); }
+.faq summary::-webkit-details-marker, .checker > summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 500 22px/1 var(--mono); color: var(--accent-ink); transition: transform var(--t-base) var(--e-out); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--text-dim); margin: 12px 0 0; max-width: 760px; }
+.closing { position: relative; text-align: center; padding: 150px 0 140px; overflow: hidden; border-top: 1px solid var(--line); }
+.closing h2 { position: relative; font: 700 clamp(44px, 7vw, 92px)/.95 var(--display); letter-spacing: -.045em; margin: 0 0 18px; text-shadow: .06em .06em 0 var(--shadow-ink); }
+.closing p { position: relative; color: var(--text-dim); font-size: 18px; margin: 0 0 30px; }
 .closing .install { position: relative; margin: 0 auto 6px; text-align: left; }
 .closing .cta { justify-content: center; position: relative; }
 
@@ -216,154 +306,190 @@
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .tile, .tile.wide { grid-column: span 6; }
   .tile.wide { grid-column: span 12; }
-  .steps3 { grid-template-columns: minmax(0, 1fr); }
-  .glossary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fits { grid-template-columns: minmax(0, 1fr); }
-  .flow .wide { display: none; } .flow .narrow { display: block; max-width: 420px; margin: 0 auto; }
+  .steps4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .loses, .fits, .checker .fit, .film-row { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 680px) {
-  .hero { padding: 28px 0 56px; }
+  .hero { padding: 28px 0 64px; }
   .tile, .tile.wide { grid-column: span 12; min-height: 0; }
-  .glossary { grid-template-columns: minmax(0, 1fr); }
+  .steps4, .pipe, .race { grid-template-columns: minmax(0, 1fr); }
+  .rlane.s0 { border-left: 0; border-top: 1px solid color-mix(in srgb, var(--alab) 14%, transparent); }
+  .rlane { min-height: 0; }
+  .pipe::before, .pipe .pulse { display: none; }
   .install { flex-wrap: wrap; } .install .sw { width: 100%; border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--alab) 14%, transparent); overflow-x: auto; }
   .install code { padding: 12px 14px; }
+  .lose { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .conf { height: 150px; }
+  .cmp-wrap { padding: 0; overflow: visible; background: none; border: 0; }
+  .cmp-wrap .ntable thead { display: none; }
+  .cmp-wrap .ntable, .cmp-wrap .ntable tbody, .cmp-wrap .ntable tr, .cmp-wrap .ntable td { display: block; width: 100%; }
+  .cmp-wrap .ntable tr { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); margin-bottom: 10px; padding: 6px 4px; }
+  .cmp-wrap .ntable td { display: grid; grid-template-columns: minmax(0, 46%) minmax(0, 1fr); gap: 10px; border: 0; padding: 5px 12px; font-size: 13.5px; }
+  .cmp-wrap .ntable td::before { content: attr(data-label); font: 500 11.5px/1.45 var(--mono); color: var(--text-dim); }
+  .cmp-wrap .ntable td:first-child { display: block; font-weight: 700; font-size: 16px; color: var(--text-strong); padding-top: 8px; }
+  .cmp-wrap .ntable td:first-child::before { content: none; }
+  .cmp-wrap .ntable tbody tr:first-child { border-color: var(--orange); }
+  .cmp-wrap .ntable tbody tr:first-child td { background: none; box-shadow: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pw-bar .on::before { animation: none !important; }
-  .pw-card.srv.flash, .pw-card.srv.pulse { animation: none; box-shadow: inset 3px 0 0 var(--orange); }
+  .pipe .pulse, .pw-bar .on::before { animation: none !important; }
+  .pw-card.ans.flash { animation: none; box-shadow: inset 3px 0 0 var(--orange); }
+  .rlane.s0 .out.flash { animation: none; box-shadow: inset 3px 0 0 var(--orange); }
 }
 </style>
 
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="kicker">open source · free · runs in your app or your browser</span>
-      <h1>Your LLM's repeat decisions, served in <span class="hl">microseconds</span>.</h1>
-      <p class="lede">shad0w learns the answers your LLM keeps giving, proves it matches them, and serves those in microseconds. Anything new still goes to your LLM.</p>
-      <div class="hchips"><span title="Python with the C core, one question, Apple M5 Pro. A call to a hosted LLM took 1416 ms."><b>2.4 µs</b> per answer</span><span title="On 3 public datasets with a hosted LLM as the teacher; the rest still went to the LLM."><b>61–86%</b> answered without the LLM</span><span title="α, the most disagreement you allow: 5% means shad0w may differ from your LLM on at most 1 in 20 answers it gives, on traffic like the traffic it learned from, at 90% confidence. Realised in our runs: 3.0–6.0%."><b>≤ 5%</b> disagreement, certified</span></div>
+      <a class="announce" href="webagent/"><span class="badge-c">New</span>Web agents from raw HTML: record once, replay at table speed →</a>
+      <span class="kicker">System 0 · your model's shadow · text, images, video</span>
+      <h1>Your AI's repeat decisions, in <span class="hl">microseconds</span>.</h1>
+      <p class="lede"><b>shad0w is your model's shadow.</b> It learns your LLM's repeat decisions and answers them in microseconds, with a certificate that says when to trust it. Everything else still goes to your model.</p>
+      <div class="hchips"><span title="Python with the C core, one question, Apple M5 Pro"><b>2.4 µs</b> per answer</span><span title="α, the most disagreement you allow: 5% means shad0w may differ from your LLM on at most 1 in 20 answers it gives, on traffic like the traffic it learned from. Realised in our runs: 3.0–6.0%."><b>≤ 5%</b> differs from your LLM, 90% confidence</span><span><b>1 line</b> of code, or none</span></div>
       <div class="install" data-install>
         <div class="sw"><button class="on" type="button" data-cmd='pip install "shad0wllm[compile]"'>pip</button><button type="button" data-cmd="npm i shad0wllm">npm</button><button type="button" data-cmd="shad0w proxy --upstream https://api.openai.com/v1">proxy</button></div>
         <code>pip install "shad0wllm[compile]"</code>
         <button class="copy" type="button">copy</button>
       </div>
       <div class="cta">
-        <a class="btn primary" href="docs/">Start in 5 minutes →</a>
-        <a class="btn" href="demo/">Try it on real messages</a>
+        <a class="btn primary" href="playground/">Open the playground →</a>
+        <a class="btn" href="docs/">Start in 5 minutes</a>
         <a class="btn" href="https://github.com/2796gaurav/shad0w"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.2-.3-.6-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>GitHub</a>
       </div>
     </div>
-    <div class="pw" aria-label="Live: real banking messages decided in this tab by a real 77-intent table. Messages it is sure of are answered in microseconds; the rest are sent to your LLM, which takes over a second.">
-      <div class="pw-bar"><span class="on">live</span><span class="what"><span class="hide-s">real messages · </span>a table learned from an open model · 77 intents · in this tab</span></div>
+    <div class="pw" aria-label="Live: real banking messages decided by a real 77-intent shad0w in this tab. Messages it is sure of are answered in microseconds; the rest go to your LLM, which takes over a second.">
+      <div class="pw-bar"><span class="on">live</span><span style="white-space:nowrap"><span class="hide-s">real messages · </span>77 intents · in this tab</span></div>
       <div class="pw-stage">
-        <div class="pw-in" id="pwIn"><div class="pw-k"><span>incoming message</span><span id="pwN"></span></div><p id="pwMsg">Loading a real 77-intent table…</p></div>
-        <svg class="pw-fork" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true">
-          <path class="base l" d="M200 0 C200 24 100 20 100 44"/><path class="base r" d="M200 0 C200 24 300 20 300 44"/>
-          <path id="pwL" class="hot l" d="M200 0 C200 24 100 20 100 44"/><path id="pwR" class="hot r" d="M200 0 C200 24 300 20 300 44" pathLength="100"/>
+        <div class="pw-in" id="pwIn"><div class="pw-k"><span>incoming message</span><span id="pwN"></span></div><p id="pwMsg">Loading a real 77-intent model…</p></div>
+        <div class="pw-wire"><i id="pwDot"></i></div>
+        <div class="pw-node" id="pwNode"><span class="pw-mark" aria-hidden="true"></span><div class="pw-nt"><b>shad0w</b><span id="pwSure">your LLM's shadow</span></div><span class="pw-us" id="pwUs"></span></div>
+        <svg class="pw-fork" viewBox="0 0 400 56" preserveAspectRatio="none" aria-hidden="true">
+          <path class="base l" d="M200 0 C200 30 100 26 100 56"/><path class="base r" d="M200 0 C200 30 300 26 300 56"/>
+          <path id="pwL" class="hot l" d="M200 0 C200 30 100 26 100 56"/><path id="pwR" class="hot r" d="M200 0 C200 30 300 26 300 56" pathLength="100"/>
         </svg>
         <div class="pw-out">
-          <div class="pw-card srv" id="pwA"><span class="pw-stamp">certified ≤ 5%</span><div class="who"><span class="pw-mark" aria-hidden="true"></span><b>shad0w table</b></div><div class="ans" id="pwAi">–</div><div class="pw-meta"><span id="pwAc"></span><span id="pwAu" class="hot"></span></div></div>
-          <div class="pw-card llm" id="pwB"><div class="who"><b>your LLM</b></div>
+          <div class="pw-card ans" id="pwA"><div class="pw-k"><span>answered by shad0w</span><span id="pwAn"></span></div><b id="pwAi">–</b><div class="pw-meta"><span id="pwAc"></span><span id="pwAu" class="hot"></span></div></div>
+          <div class="pw-card llm" id="pwB"><div class="pw-k"><span>your LLM</span><span id="pwBn"></span></div>
             <div class="pw-llm"><svg class="pw-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="bg"/><circle cx="24" cy="24" r="21" class="fg" id="pwRing" pathLength="100"/><rect x="15" y="15" width="18" height="5" rx="1.5"/><rect x="15" y="22" width="18" height="5" rx="1.5"/><rect x="15" y="29" width="18" height="5" rx="1.5"/><circle cx="29.5" cy="17.5" r="1" class="led"/><circle cx="29.5" cy="24.5" r="1" class="led"/><circle cx="29.5" cy="31.5" r="1" class="led"/></svg><span id="pwBs">idle</span></div>
-            <div class="ans dim" id="pwBi">–</div><div class="pw-meta"><span id="pwBc"></span><span id="pwBu"></span></div></div>
+            <b id="pwBi">–</b><div class="pw-meta"><span id="pwBc"></span><span id="pwBu"></span></div></div>
         </div>
       </div>
-      <div class="stats"><div><b id="sT">–</b><span>answered by the table</span></div><div><b id="sC">–</b><span>LLM calls avoided</span></div><div><b id="sW">–</b><span>LLM waiting avoided</span></div></div>
+      <div class="stats"><div><b id="sT">–</b><span>of messages answered by shad0w</span></div><div><b id="sU">–</b><span>per shad0w answer</span></div><div><b id="sW">–</b><span>LLM waiting avoided</span></div></div>
     </div>
   </div>
 </header>
 
+
 <section class="section film-one" id="film">
   <div class="wrap">
-    <div class="film reveal" data-film="assets/shad0w-0.4.mp4" data-poster="assets/film04-poster.jpg"><img src="assets/film04-poster.jpg" alt="The shad0w film: text, images, prompt attacks, live data and the Decision Bench" width="1280" height="720" loading="lazy"><button type="button" aria-label="Play the film"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#000" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span></button></div>
+    <div class="film reveal" data-film="assets/shad0w-0.4.mp4" data-poster="assets/film04-poster.jpg"><img src="assets/film04-poster.jpg" alt="The shad0w film: text, images, prompt attacks, live data and the Decision Bench" width="1280" height="720" loading="lazy"><button type="button" aria-label="Play the 42-second film"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#000" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span></button></div>
     <p class="muted film-cap">42 seconds, sound on. Every number and every guess on screen is real.</p>
-    <p class="also reveal"><span>also</span><a class="chip" href="doodle/">images</a><a class="chip" href="guard/">prompt guard</a><a class="chip" href="webagent/">web agents</a><a class="chip" href="pulse/">live streams</a><a class="chip" href="doom/">games</a><a class="more" style="margin:0 0 0 6px" href="playground/">Everything in the playground →</a></p>
+  </div>
+</section>
+
+<section class="section" id="modes">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">try it</span><h2>One reflex, <span class="hl">every input.</span></h2><p>Five of these run in your browser.</p></div>
+    <div class="modes">
+      <a class="mode reveal" href="demo/"><span class="m-ic">Aa</span><b>Text decisions</b><p>Intents, routing, topics, spam. 2–10 µs an answer.</p><em>Type a message →</em></a>
+      <a class="mode reveal" href="webagent/"><span class="m-ic">⌘</span><b>Web agents</b><p>Replays an LLM agent's clicks from raw HTML; anything new goes back to the LLM.</p><em>Watch it shop →</em></a>
+      <a class="mode reveal" href="guard/"><span class="m-ic">⛔</span><b>Guardrails</b><p>Blocks known prompt attacks. Never allows on its own word.</p><em>Try the guard →</em></a>
+      <a class="mode reveal" href="doodle/"><span class="m-ic">✎</span><b>Images</b><p>Pixels in, a certified label out. No neural network.</p><em>Play Doodle Duel →</em></a>
+      <a class="mode reveal" href="pulse/"><span class="m-ic">≈</span><b>Live streams</b><p>A minute of real Polymarket trades, labelled as they land.</p><em>Start the minute →</em></a>
+      <a class="mode reveal" href="docs/experimental.html"><span class="m-ic">▶</span><b>Video and fields</b><p>Reuse answers across video frames; fill structured fields. Experimental.</p><em>Read how →</em></a>
+    </div>
+    <p class="more-row reveal"><a class="btn" href="playground/">Everything in the playground →</a></p>
   </div>
 </section>
 
 <section class="section band" id="how">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">how it works</span><h2>Learn. Certify. <span class="hl">Serve.</span></h2><p>Your LLM keeps answering. shad0w writes the answers down, learns a small table from them, proves where it agrees, and answers the repeats.</p></div>
-    <div class="flow reveal">
-      <svg class="wide" viewBox="0 0 800 300" role="img" aria-label="Flow: a message goes to the shad0w table. When it is sure, it answers in microseconds. When it is not, your LLM answers and the answer is logged; the log trains and certifies the table.">
-        <rect class="box" x="16" y="113" width="150" height="64" rx="12"/><text class="lbl" x="30" y="136">your app</text><text class="big" x="30" y="160">“my card was stolen”</text>
-        <path class="wire" d="M166 145 H 236"/><path class="wire" d="M228 140 L 236 145 L 228 150"/>
-        <rect class="boxo" x="236" y="103" width="176" height="84" rx="12"/><text class="lbl" x="252" y="128">shad0w table</text><text class="big on" x="252" y="152">on your CPU</text><text x="252" y="172" font-size="12" fill="var(--text-dim)">1.5 MB, no GPU</text>
-        <g transform="rotate(-6 372 108)"><rect x="338" y="97" width="70" height="20" rx="4" fill="var(--black)" stroke="var(--orange)" stroke-width="1.5"/><text class="stamp" x="373" y="111" text-anchor="middle">CERTIFIED ≤5%</text></g>
-        <path class="wire o" d="M412 125 C 500 125, 520 55, 604 55"/><path class="wire o" d="M596 50 L 604 55 L 596 60"/><text class="lbl on" x="470" y="78">sure</text>
-        <rect class="boxo" x="604" y="22" width="180" height="66" rx="12"/><text class="lbl on" x="620" y="46">answered</text><text class="big on" x="620" y="72">2.4 µs</text>
-        <path class="wire b" d="M412 165 C 450 165, 460 229, 482 229"/><path class="wire b" d="M474 224 L 482 229 L 474 234"/><text class="lbl llmc" x="416" y="198">not sure: defer</text>
-        <rect class="boxl" x="482" y="196" width="152" height="66" rx="12"/><text class="lbl llmc" x="498" y="220">your LLM</text><text class="big llmc" x="498" y="246">1416 ms</text>
-        <path class="wire" d="M634 229 H 664"/><path class="wire" d="M656 224 L 664 229 L 656 234"/>
-        <rect class="box" x="664" y="196" width="120" height="66" rx="12"/><text class="lbl" x="680" y="220">logged</text><text x="680" y="244" font-size="12" fill="var(--text-dim)">for training</text>
-        <path class="wire back" d="M724 262 V 284 H 324 V 187"/><path class="wire back" d="M319 195 L 324 187 L 329 195"/>
-        <text x="520" y="296" font-size="11" fill="var(--text-dim)" text-anchor="middle">train on the log · certify on answers it never trained on</text>
-      </svg>
-      <svg class="narrow" viewBox="0 0 360 470" aria-hidden="true">
-        <rect class="box" x="90" y="10" width="180" height="56" rx="12"/><text class="lbl" x="104" y="32">your app</text><text class="big" x="104" y="54">“my card was stolen”</text>
-        <path class="wire" d="M180 66 V 96"/><path class="wire" d="M175 88 L 180 96 L 185 88"/>
-        <rect class="boxo" x="80" y="96" width="200" height="76" rx="12"/><text class="lbl" x="96" y="120">shad0w table</text><text class="big on" x="96" y="144">on your CPU</text><text x="96" y="162" font-size="12" fill="var(--text-dim)">1.5 MB, no GPU</text>
-        <g transform="rotate(-6 236 100)"><rect x="202" y="90" width="70" height="20" rx="4" fill="var(--black)" stroke="var(--orange)" stroke-width="1.5"/><text class="stamp" x="237" y="104" text-anchor="middle">CERTIFIED ≤5%</text></g>
-        <path class="wire o" d="M130 172 C 130 200, 90 200, 90 226"/><path class="wire o" d="M85 218 L 90 226 L 95 218"/><text class="lbl on" x="20" y="206">sure</text>
-        <rect class="boxo" x="10" y="226" width="160" height="60" rx="12"/><text class="lbl on" x="24" y="248">answered</text><text class="big on" x="24" y="272">2.4 µs</text>
-        <path class="wire b" d="M230 172 C 230 200, 270 200, 270 226"/><path class="wire b" d="M265 218 L 270 226 L 275 218"/><text class="lbl llmc" x="236" y="206">not sure</text>
-        <rect class="boxl" x="190" y="226" width="160" height="60" rx="12"/><text class="lbl llmc" x="204" y="248">your LLM</text><text class="big llmc" x="204" y="272">1416 ms</text>
-        <path class="wire" d="M270 286 V 316"/><path class="wire" d="M265 308 L 270 316 L 275 308"/>
-        <rect class="box" x="190" y="316" width="160" height="56" rx="12"/><text class="lbl" x="204" y="338">logged</text><text x="204" y="358" font-size="12" fill="var(--text-dim)">for training</text>
-        <path class="wire back" d="M190 344 H 60 V 134 H 80"/><path class="wire back" d="M72 129 L 80 134 L 72 139"/>
-        <text x="180" y="400" font-size="11" fill="var(--text-dim)" text-anchor="middle">train on the log</text>
-        <text x="180" y="418" font-size="11" fill="var(--text-dim)" text-anchor="middle">certify on answers it never trained on</text>
-      </svg>
+    <div class="section-head reveal"><span class="kicker">how it works</span><h2>Watch. Learn. Prove. <span class="hl">Serve.</span></h2><p>It watches your LLM, learns, proves where it agrees, then answers the repeats.</p></div>
+    <div class="steps4">
+      <div class="step reveal">
+        <svg class="ill" viewBox="0 0 240 120" aria-hidden="true">
+          <rect x="16" y="18" width="74" height="64" rx="12" fill="none" stroke="var(--llm)" stroke-width="1.5"/>
+          <g fill="var(--llm)" opacity=".85"><rect x="28" y="30" width="50" height="9" rx="2"/><rect x="28" y="44" width="50" height="9" rx="2"/><rect x="28" y="58" width="50" height="9" rx="2"/></g>
+          <g fill="var(--black)"><circle cx="71" cy="34.5" r="1.6"/><circle cx="71" cy="48.5" r="1.6"/><circle cx="71" cy="62.5" r="1.6"/></g>
+          <text x="55" y="104" font-size="11" fill="var(--text-dim)" text-anchor="middle" class="mono">your LLM</text>
+          <rect x="104" y="41" width="36" height="16" rx="8" fill="var(--llm-soft)" stroke="var(--llm)"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.7;1" dur="3s" repeatCount="indefinite"/></rect>
+          <rect x="150" y="14" width="80" height="92" rx="8" fill="var(--bg)" stroke="var(--line-strong)"/>
+          <text x="158" y="28" font-size="8.5" fill="var(--text-dim)" class="mono">log.jsonl</text>
+          <g fill="var(--orange)">
+            <rect x="158" y="38" height="5" rx="2.5" width="0"><animate attributeName="width" values="0;56;56" keyTimes="0;.2;1" dur="3s" repeatCount="indefinite"/></rect>
+            <rect x="158" y="52" height="5" rx="2.5" width="0"><animate attributeName="width" values="0;0;44;44" keyTimes="0;.25;.45;1" dur="3s" repeatCount="indefinite"/></rect>
+            <rect x="158" y="66" height="5" rx="2.5" width="0"><animate attributeName="width" values="0;0;60;60" keyTimes="0;.5;.7;1" dur="3s" repeatCount="indefinite"/></rect>
+            <rect x="158" y="80" height="5" rx="2.5" width="0"><animate attributeName="width" values="0;0;38;38" keyTimes="0;.75;.95;1" dur="3s" repeatCount="indefinite"/></rect>
+          </g>
+        </svg>
+        <span class="n">01</span><h3>Watch</h3><p>Your LLM keeps answering. Its shadow writes down every question and answer.</p></div>
+      <div class="step reveal">
+        <svg class="ill" viewBox="0 0 240 120" aria-hidden="true">
+          <g fill="var(--text-dim)"><rect x="12" y="30" width="70" height="5" rx="2.5"/><rect x="12" y="44" width="56" height="5" rx="2.5"/><rect x="12" y="58" width="74" height="5" rx="2.5"/><rect x="12" y="72" width="48" height="5" rx="2.5"/><rect x="12" y="86" width="64" height="5" rx="2.5"/>
+            <animate attributeName="opacity" values="1;.25;1" dur="3.2s" repeatCount="indefinite"/></g>
+          <path d="M 98 60 L 124 60 M 118 54 L 125 60 L 118 66" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"/>
+          <g id="learnGrid"></g>
+          <text x="186" y="112" font-size="9" fill="var(--text-dim)" text-anchor="middle" class="mono">a tiny model</text>
+        </svg>
+        <span class="n">02</span><h3>Learn</h3><p>About 1,000 answers become a tiny model. No labels, no GPU.</p></div>
+      <div class="step reveal">
+        <svg class="ill" viewBox="0 0 240 120" aria-hidden="true">
+          <line x1="10" y1="62" x2="230" y2="62" stroke="var(--white)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="230" y="78" font-size="8.5" fill="var(--text-dim)" text-anchor="end" class="mono">certified line</text>
+          <g id="proveTicks"></g>
+        </svg>
+        <span class="n">03</span><h3>Prove</h3><p>On answers it never saw, it finds the confidence line above which it agrees with your LLM.</p></div>
+      <div class="step reveal">
+        <svg class="ill" viewBox="0 0 240 120" aria-hidden="true">
+          <path id="sv0" d="M 6 60 L 96 60" fill="none" stroke="var(--line-strong)" stroke-dasharray="3 5"/>
+          <path id="svU" d="M 96 60 C 130 60, 140 28, 186 28" fill="none" stroke="var(--orange)" stroke-opacity=".5" stroke-width="2"/>
+          <path id="svD" d="M 96 60 C 130 60, 140 94, 180 94" fill="none" stroke="var(--llm)" stroke-opacity=".5" stroke-width="2" stroke-dasharray="4 4"/>
+          <rect x="186" y="14" width="46" height="28" rx="9" fill="#000" stroke="var(--orange)" stroke-width="1.5"/><text x="209" y="32" font-size="9" fill="var(--orange)" text-anchor="middle" class="mono">shad0w</text>
+          <rect x="180" y="80" width="54" height="28" rx="12" fill="var(--llm)"/><text x="207" y="98" font-size="9" fill="#000" text-anchor="middle" class="mono">LLM</text>
+          <g id="serveDots"></g>
+        </svg>
+        <span class="n">04</span><h3>Serve</h3><p>Above the line, shad0w answers. Below it, your LLM does, and shad0w learns.</p></div>
     </div>
-    <div class="steps3">
-      <div class="step reveal"><span class="n">01</span><h3>Learn</h3><p>About 1,000 logged answers become a table. No labels, no GPU, under a minute.</p></div>
-      <div class="step reveal"><span class="n">02</span><h3>Certify</h3><p>On answers it never trained on, it finds the confidence above which it differs from your LLM on at most 5%, at 90% confidence.</p></div>
-      <div class="step reveal"><span class="n">03</span><h3>Serve</h3><p>Above that line the table answers in microseconds. Below it your LLM answers, and the table keeps learning. 1% is spot-checked live.</p></div>
-    </div>
-    <div class="glossary reveal">
-      <div><dfn>table</dfn>the small thing shad0w learns. It ships in a folder, the bundle.</div>
-      <div><dfn>teacher</dfn>the model it learns from: your LLM or a decision model.</div>
-      <div><dfn>certified</dfn>tested on answers it never trained on; differs from the teacher on at most α of what it serves, 90% confidence.</div>
-      <div><dfn>defer</dfn>the table is not sure, so this one goes to the teacher and is logged.</div>
-      <div><dfn>α</dfn>the disagreement you allow. Default 5%: at most 1 in 20.</div>
-      <a class="more" href="docs/guarantee.html">What the certificate promises, exactly →</a>
-    </div>
+    <p class="define reveal"><b>Certified</b> = tested on answers it never trained on: it differs from your LLM on at most 5% of what it answers (90% confidence). <a href="docs/guarantee.html">How →</a></p>
   </div>
 </section>
 
 <section class="section" id="proof">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">measured</span><h2>Measured, not promised.</h2><p>Public datasets, a real hosted LLM as the teacher. Every number is rebuilt from a result file.</p></div>
+    <div class="section-head reveal"><span class="kicker">proof</span><h2>Measured, not promised.</h2><p>Public datasets, a real hosted LLM. Every number is rebuilt from a result file.</p></div>
     <div class="bento">
-      <div class="tile wide reveal"><span class="lbl">time per answer</span><div><div class="big">2.4 µs</div><div class="vs">vs <s>1416 ms</s> for one call to your LLM</div></div><p>Inside your app. No network hop, no GPU. 1.0 µs in C, 10 µs in JavaScript.</p></div>
-      <div class="tile reveal"><span class="lbl">3 public datasets</span><div class="big">61–86%</div><p>of messages answered by the table instead of your LLM, at α = 5%.</p></div>
-      <div class="tile reveal"><span class="lbl">on those answers</span><div class="big">3.0–6.0%</div><p>differed from your LLM. The promise was at most 5%; a 90% promise can miss, so live spot checks keep watching.</p></div>
+      <div class="tile wide hard reveal"><span class="lbl">time per answer</span><div><div class="big">2.4 µs</div><div class="vs">vs <s>1416 ms</s> for one call to your LLM</div></div><p>shad0w runs inside your app. No network hop, no GPU.</p></div>
+      <div class="tile spot reveal"><span class="lbl">8 intents</span><div class="big" data-tick>94.3%</div><p>of messages answered by shad0w instead of your LLM. On those, it agreed with your LLM 97.2% of the time.</p></div>
+      <div class="tile spot reveal"><span class="lbl">3 public datasets</span><div class="big">61–86%</div><p>of messages answered by shad0w instead of your LLM. On those, it gave a different answer than your LLM 3.0–6.0% of the time.</p></div>
     </div>
     <div class="proof-foot"><p class="src">teacher: a hosted LLM through the official OpenAI client · agreement re-checked by asking the LLM directly</p><a class="more" href="docs/benchmarks.html">All benchmarks →</a></div>
-    <div class="cmp-wrap reveal">
-      <h3>Against open decision models, on a CPU.</h3>
-      <p>Decision Bench: six public tasks, the same rows and the same 5% certificate for every system. shad0w was trained on each task; the decision models answered zero-shot.</p>
-      <div class="table-wrap"><table class="arena-table"><tr><th>task</th><th>shad0w: accuracy · time</th><th>best open decision model, zero-shot</th><th>more accurate</th></tr><tr><td><a href="bench/#banking77">BANKING77 · 77 intents</a></td><td class="me"><b>94.0%</b> · 6.0 µs</td><td>Kev-0.8B: 83.3% · 2.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#clinc150">CLINC150 · 150 intents</a></td><td class="me"><b>84.6%</b> · 6.5 µs</td><td>Decider-0.8B: 83.3% · 5.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#ag_news">AG News · topics</a></td><td class="me"><b>91.2%</b> · 10.1 µs</td><td>Laya: 93.8% · 124 ms</td><td>Laya</td></tr><tr><td><a href="bench/#sst2">SST-2 · sentiment</a></td><td class="me"><b>83.2%</b> · 3.0 µs</td><td>Laya: 91.6% · 49 ms</td><td>Laya</td></tr><tr><td><a href="bench/#sms_spam">SMS spam</a></td><td class="me"><b>97.8%</b> · 1.9 µs</td><td>Decider-0.8B: 95.3% · 3.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#prompt_injection">Prompt injection</a></td><td class="me"><b>98.8%</b> · 2.4 µs</td><td>GLiNER2.5-Decide: 94.6% · 113 ms</td><td>shad0w</td></tr></table></div>
-      <p class="cmp-note">Three of six tasks shown. Decision models ran on the CPU with 5 threads; shad0w on one thread through the C core. <a href="bench/">All six tasks, every chart and caveat →</a></p>
-    </div>
   </div>
 </section>
 
-<section class="section band" id="code">
+<section class="section band" id="bench">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">integrate</span><h2>One line, <span class="hl">or zero.</span></h2><p>Wrap the question you already ask, or point <code>base_url</code> at the proxy.</p></div>
+    <div class="section-head reveal"><span class="kicker">decision bench</span><h2>Against open decision models, <span class="hl">on a CPU.</span></h2><p>Six public tasks, the same rows and the same 5% certifier for every system. Every prediction is saved.</p></div>
+    <div class="cmp-wrap reveal"><div class="table-wrap"><table class="arena-table"><tr><th>task</th><th>shad0w: accuracy · time</th><th>best open decision model, zero-shot</th><th>more accurate</th></tr><tr><td><a href="bench/#banking77">BANKING77 · 77 intents</a></td><td class="me"><b>94.0%</b> · 6.0 µs</td><td>Kev-0.8B: 83.3% · 2.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#clinc150">CLINC150 · 150 intents</a></td><td class="me"><b>84.6%</b> · 6.5 µs</td><td>Decider-0.8B: 83.3% · 5.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#ag_news">AG News · topics</a></td><td class="me"><b>91.2%</b> · 10.1 µs</td><td>Laya: 93.8% · 124 ms</td><td>Laya</td></tr><tr><td><a href="bench/#sst2">SST-2 · sentiment</a></td><td class="me"><b>83.2%</b> · 3.0 µs</td><td>Laya: 91.6% · 49 ms</td><td>Laya</td></tr><tr><td><a href="bench/#sms_spam">SMS spam</a></td><td class="me"><b>97.8%</b> · 1.9 µs</td><td>Decider-0.8B: 95.3% · 3.6 s</td><td>shad0w</td></tr><tr><td><a href="bench/#prompt_injection">Prompt injection</a></td><td class="me"><b>98.8%</b> · 2.4 µs</td><td>GLiNER2.5-Decide: 94.6% · 113 ms</td><td>shad0w</td></tr></table></div></div>
+    <p class="cmp-note">Decision models ran on the CPU with 5 threads over localhost; shad0w on one thread through the C core. They'd be faster on a GPU, and better if fine-tuned on each task. <a href="bench/">Every task, chart and caveat →</a></p>
+  </div>
+</section>
+
+<section class="section" id="code">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">integrate</span><h2>One line, <span class="hl">or zero.</span></h2><p>Wrap your call, or point <code>base_url</code> at the proxy.</p></div>
     <div class="tabs code-tabs reveal">
       <div class="tabbar" role="tablist"><button aria-selected="true">Python</button><button aria-selected="false">JavaScript</button><button aria-selected="false">Proxy · zero code</button></div>
       <div class="tabpanel on">
         <div class="codewin"><div class="bar"><span class="lang">python</span><span>support_router.py</span><button class="copy" type="button">copy</button></div>
 <pre><code data-lang="py">import shad0w
 
-intent = shad0w.decision("intent", llm="openai/gpt-4.1-mini",
+intent = shad0w.decision("intent", llm="openai/gpt-6-luna",
     options=["refund", "lost_card", "balance", "other"])
 
 intent("my card was stolen").answer   # your LLM answers; shad0w logs it
-intent.train()                        # after ~1,000 answers: learn + certify
+intent.train()                        # after ~1,000 answers
 intent("my card was stolen")          # Decision(answer='lost_card', source='table')</code></pre></div>
-        <p class="after">Any OpenAI-compatible model, the OpenAI Decisions API, a decision model like Jev, or your own function: <code>shad0w.Shadow("bundle/", llm=my_fn)</code>. Async: <code>await intent.adecide(text)</code>.</p>
+        <p class="after">Async: <code>await intent.adecide(text)</code>. Bring your own LLM function: <code>shad0w.Shadow("bundle/", teacher=my_fn)</code>.</p>
       </div>
       <div class="tabpanel">
         <div class="codewin"><div class="bar"><span class="lang">javascript</span><span>route.mjs</span><button class="copy" type="button">copy</button></div>
@@ -371,11 +497,11 @@ intent("my card was stolen")          # Decision(answer='lost_card', source='tab
 
 const intent = await decision("intent", {
   options: ["refund", "lost_card", "balance", "other"],
-  llm: "openai/gpt-4.1-mini", bundle: "shad0w/intent/bundle" });
+  llm: "openai/gpt-6-luna", bundle: "shad0w/intent/bundle" });
 
 const d = await intent.decide("my card was stolen");
 // { answer: "lost_card", source: "table", certified: true }</code></pre></div>
-        <p class="after">Zero dependencies. Node, browsers, Workers, Deno, Bun. The same answers as Python from the same table.</p>
+        <p class="after">Zero dependencies. Node, browsers, Workers, Deno, Bun. Same answers as Python on the same trained shad0w.</p>
       </div>
       <div class="tabpanel">
         <div class="codewin"><div class="bar"><span class="lang">shell + python</span><span>no code change</span><button class="copy" type="button">copy</button></div>
@@ -386,18 +512,18 @@ const d = await intent.decide("my card was stolen");
 client = OpenAI(base_url="http://localhost:8010/v1")
 client.decisions.create(model="gpt-6-luna", input="my card was stolen", questions=[...])
 
-# answers the table is sure of come back instantly, same JSON shape;
-# the rest go upstream and are logged so the table keeps learning</code></pre></div>
-        <p class="after">Works for the OpenAI Decisions API, System One servers (Jev, Kev, Laya) and chat completions marked with the <code>X-Shad0w-Question</code> header.</p>
+# answers shad0w is sure of come back instantly, same JSON shape;
+# the rest go upstream and are logged so shad0w keeps learning</code></pre></div>
+        <p class="after">Works for the Decisions API, System One servers and chat completions (mark a call with the <code>X-Shad0w-Question</code> header).</p>
       </div>
     </div>
-    <p class="muted" style="margin-top:16px"><a class="more" href="docs/">5-minute guide →</a> <span style="margin-left:18px">also <a href="docs/http.html">HTTP</a> · <a href="docs/c.html">C</a> · <a href="docs/frameworks.html">LangChain, LiteLLM, Vercel AI SDK</a></span></p>
+    <div class="others reveal"><span>also</span><a class="chip" href="docs/http.html">HTTP</a><a class="chip" href="docs/c.html">C &amp; FFI</a><a class="chip" href="docs/decisions-api.html">Decisions API</a><a class="chip" href="docs/frameworks.html">LangChain</a><a class="chip" href="docs/frameworks.html">LiteLLM</a><a class="chip" href="docs/frameworks.html">Vercel AI SDK</a><a class="more" style="margin:0 0 0 8px" href="docs/">5-minute guide →</a></div>
   </div>
 </section>
 
-<section class="section" id="fit">
+<section class="section band" id="fit">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">where it fits, where it stops</span><h2>Built for lists, <span class="hl">not essays.</span></h2><p>If your LLM picks from a fixed list, shad0w can learn it. If it writes, it can't.</p></div>
+    <div class="section-head reveal"><span class="kicker">fit and limits</span><h2>Built for lists, <span class="hl">not essays.</span></h2><p>If your LLM picks from a fixed list, shad0w can learn it. If it writes, it can't.</p></div>
     <div class="fits">
       <div class="fitcol reveal">
         <h3>fits</h3>
@@ -422,11 +548,18 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
       <div><b>0%</b><span>of steps certified on websites it never saw: new sites stay with the LLM</span></div>
       <a class="more" href="blog/honest-numbers.html">Honest numbers, in full →</a>
     </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head center reveal"><span class="kicker">faq</span><h2>Questions people ask</h2></div>
     <div class="faq reveal">
-      <details><summary>Is this just a cache?</summary><p>No. A cache only answers texts it has seen before. shad0w answers new wordings of a question it has learned, and its certificate covers new messages that look like your traffic. Exact repeats are free on top.</p></details>
-      <details><summary>What does "certified" mean?</summary><p>Before it answers anything, the table is tested on answers it never trained on and picks a confidence line. Above it, the table differs from your LLM on at most α of what it answers, checked with 90% confidence. α is the most disagreement you allow: the default 5% means at most 1 in 20 answers. In our runs it actually differed 3.0–6.0% of the time: a 90% promise can miss, so live spot checks keep watching.</p></details>
-      <details><summary>What if my LLM is wrong?</summary><p>Then the table is wrong in the same way. The certificate is agreement with your LLM, not with the truth. For a bound against the truth, certify on a few hundred human-labelled examples instead.</p></details>
-      <details><summary>How many examples does it need, and what does it cost?</summary><p>About 1,000 logged answers per question to start; with 77 intents it answered 60% at 10,000 answers, and the share keeps growing. It costs nothing: Apache-2.0, the Python runtime needs only numpy, the JavaScript and C runtimes need nothing, and your logs stay on your machine.</p></details>
+      <details><summary>Is this just a cache?</summary><p>No. A cache only answers texts it has seen before. shad0w answers new wordings of a question it has learned, and its guarantee covers new messages that look like your traffic. Exact repeats are free on top.</p></details>
+      <details><summary>What does "certified" mean?</summary><p>Before it answers anything, shad0w is tested on answers it never trained on and picks a confidence line. Above it, shad0w differs from your LLM on at most α of what it answers, checked with 90% confidence. α is the most disagreement you allow: the default 5% means at most 1 in 20 answers. In our runs, shad0w actually differed 3.0–6.0% of the time: a 90% promise can miss, so live spot checks keep watching.</p></details>
+      <details><summary>How many examples does it need?</summary><p>About 1,000 logged answers per question to start. More options need more: with 77 intents it answered 60% at 10,000 answers. The share keeps growing as your LLM keeps answering.</p></details>
+      <details><summary>What if my LLM is wrong?</summary><p>Then shad0w is wrong in the same way. The guarantee is agreement with your LLM, not with the truth. For a bound against the truth, certify on a few hundred human-labelled examples instead.</p></details>
+      <details><summary>What does it cost?</summary><p>Nothing. It is Apache-2.0 open source. The Python runtime needs only numpy; the JavaScript and C runtimes need nothing. Your data and logs stay on your machine.</p></details>
     </div>
   </div>
 </section>
@@ -445,7 +578,7 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
 
 <footer><div class="wrap">
   <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
-    <p>System 0: your LLM's repeat decisions, in microseconds. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
     <div><h6>Product</h6><a href="docs/">Get started</a><a href="playground/">Playground</a><a href="bench/">Decision Bench</a><a href="docs/benchmarks.html">Benchmarks</a><a href="docs/compare.html">Compare</a></div>
@@ -460,11 +593,14 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (id) => document.getElementById(id);
   const NB = window.SHAD0W_NUMBERS || { charts: {}, n: {} }, CH = NB.charts || {};
-  const LLM_MS = CH.llm_ms || 1400, JS_US = parseFloat("10 µs") || 10;
+  const HERO_US = CH.hero_us || 2.4, LLM_MS = CH.llm_ms || 1400;
   const usLabel = (v) => v < 10 ? v.toFixed(1) + " µs" : v < 1000 ? v.toFixed(0) + " µs" : (v / 1000) < 100 ? (v / 1000).toFixed(1) + " ms" : (v / 1000).toFixed(0) + " ms";
+  const fmt = (n) => n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e4 ? (n / 1e3).toFixed(0) + "k" : Math.round(n).toLocaleString();
   const dur = (s) => s < 60 ? s.toFixed(s < 10 ? 1 : 0) + " s" : s < 3600 ? (s / 60).toFixed(1) + " min" : s < 86400 ? (s / 3600).toFixed(1) + " h" : (s / 86400).toFixed(1) + " days";
   const onView = (el, fn, th = 0.3) => { if (!el) return; if (!("IntersectionObserver" in window)) return fn(); const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), { threshold: th }); io.observe(el); };
   const visible = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && !document.hidden; };
+  const short = (t, n) => t.length > n ? t.slice(0, n - 1) + "…" : t;
+  const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   const nav = document.querySelector(".nav");
   const navBg = () => nav.classList.toggle("scrolled", scrollY > 20);
@@ -488,11 +624,12 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
   };
   document.querySelectorAll("[data-tick]").forEach((el) => onView(el, () => tick(el), 0.5));
 
-  // ---------- one real table for the page: the 77-intent BANKING77 demo bundle, decided in this tab ----------
-  const LIVE = { b: null, msgs: [], q: "intent" };
+  // ---------- one real table for the whole page (the 77-intent BANKING77 demo bundle) ----------
+  const LIVE = { b: null, msgs: [], q: "intent", thr: 1 };
   function timeDecide(text, reps) {  // browsers round performance.now(), so time a batch and divide
+    // three small batches, keep the fastest: one batch stalled by garbage collection or a busy tab is not the speed
     let a, us = Infinity;
-    for (let k = 0; k < 3; k++) {  // three small batches, keep the fastest: a batch stalled by garbage collection is not the speed
+    for (let k = 0; k < 3; k++) {
       const t0 = performance.now();
       for (let i = 0; i < reps; i++) a = LIVE.b.decide(text, { questions: [LIVE.q] }).answers[LIVE.q];
       const v = (performance.now() - t0) * 1000 / reps;
@@ -511,58 +648,58 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
     LIVE.b = await Bundle.load(new URL("demo/bundle", location.href).href);
     const r = await (await fetch("demo/replay.json")).json();
     LIVE.msgs = r.messages.map((m) => m[0]);
+    const t = LIVE.b.manifest.questions[LIVE.q].threshold;
+    LIVE.thr = t == null ? 1 : t;
     for (let i = 0; i < 4000; i++) LIVE.b.decide(LIVE.msgs[i % LIVE.msgs.length], { questions: [LIVE.q] });  // warm the JIT first
   })();
   ready.catch((e) => console.warn("shad0w demo table did not load", e));
 
-  // ---------- hero: one real message at a time. The table answers it in one frame, or hands it to your LLM ----------
+  // ---------- hero: the live pipeline. One real message at a time: shad0w answers in one frame, or hands it to your LLM ----------
   (function pipeline() {
     const box = document.querySelector(".pw"); if (!box) return;
     const pretty = (c) => c.replaceAll("_", " ");
     const crawl = (x) => 1 - Math.pow(1 - x, 1.6) * (1 - x * .35);  // slow, uneven: an LLM call
-    let n = 0, nt = 0, k = 0, llmBusy = false, decided = 0;
-    const recent = [];  // the last real timings; the median is what we show
+    let n = 0, nt = 0, sumUs = 0, k = 0, llmBusy = false;
     const pool = () => LIVE.msgs.filter((t) => t.length >= 18 && t.length <= 110);
     let msgs = [];
     function decide() {
       const text = msgs[k++ % msgs.length];
-      let { a, us } = timeDecide(text, 200), est = false;
-      if (!isFinite(us) || us > 200) { us = JS_US; est = true; }  // this tab's clock stalled or is too coarse: show the figure measured in Node
-      decided++;
-      n++; if (a.certified) { nt++; if (!est && decided > 3) { recent.push(us); if (recent.length > 5) recent.shift(); } }
-      return { text, a, us, est };
+      let { a, us } = timeDecide(text, 200);
+      if (!isFinite(us)) us = parseFloat("10 µs");  // clock unusable here: show the measured JS figure
+      n++; if (a.certified) { nt++; sumUs += us; }
+      return { text, a, us };
     }
-    const med = () => { if (!recent.length) return null; const s = [...recent].sort((x, y) => x - y); return s[s.length >> 1]; };
     function stats() {
       $("sT").textContent = n ? Math.round(100 * nt / n) + "%" : "–";
-      $("sC").textContent = nt ? nt.toLocaleString() : "–";
-      $("sW").textContent = nt ? dur(nt * LLM_MS / 1000) : "–";
+      $("sU").textContent = nt ? usLabel(sumUs / nt) : "–";
+      $("sW").textContent = dur(nt * LLM_MS / 1000);
+      $("pwAn").textContent = nt ? "#" + nt : "";
+      $("pwBn").textContent = n - nt ? "#" + (n - nt) : "";
     }
     const pc = (v) => Math.round(100 * v) + "% sure";
-    const usText = (d) => (d.est ? "≈ " : "") + usLabel(d.us);
     function showIn(d, animate) {
       $("pwMsg").textContent = "“" + d.text + "”"; $("pwN").textContent = "#" + n;
       if (animate) { $("pwIn").classList.remove("enter"); void $("pwIn").offsetWidth; $("pwIn").classList.add("enter"); }
+      $("pwSure").textContent = pc(d.a.confidence);
+      $("pwUs").textContent = usLabel(d.us);
     }
-    function answer(d) {
-      $("pwAi").textContent = pretty(d.a.choice); $("pwAc").textContent = pc(d.a.confidence);
-      const m = med(); $("pwAu").textContent = m != null && !d.est ? usLabel(m) : usText(d);
-      $("pwAu").title = d.est ? "this tab's clock is too coarse to time one answer; measured in Node" : "median of the last few answers, timed in this tab";
-    }
+    function answer(d) { $("pwAi").textContent = pretty(d.a.choice); $("pwAc").textContent = pc(d.a.confidence); $("pwAu").textContent = usLabel(d.us); }
     function llmDone(d) {
-      $("pwBi").textContent = "answered by your LLM"; $("pwBc").textContent = "the table was only " + pc(d.a.confidence);
+      $("pwBi").textContent = pretty(d.a.choice); $("pwBc").textContent = "shad0w was " + pc(d.a.confidence);
       $("pwBu").textContent = usLabel(LLM_MS * 1000); $("pwBs").textContent = "answered"; $("pwB").classList.add("done");
     }
     function step() {
       if (llmBusy) return;  // one message at a time, so you can follow it
       const d = decide();
       showIn(d, true); stats();
+      $("pwDot").animate([{ top: "0px", opacity: 1 }, { top: "18px", opacity: 1 }, { top: "18px", opacity: 0 }], { duration: 300, delay: 220, easing: "cubic-bezier(.16,1,.3,1)" });
       setTimeout(() => {
+        $("pwNode").classList.remove("pulse"); void $("pwNode").offsetWidth; $("pwNode").classList.add("pulse");
         if (d.a.certified) {  // the reflex: one frame, no tween
           $("pwL").classList.add("on"); setTimeout(() => $("pwL").classList.remove("on"), 140);
-          answer(d); $("pwA").classList.remove("flash", "pulse"); void $("pwA").offsetWidth; $("pwA").classList.add("flash", "pulse");
+          answer(d); $("pwA").classList.remove("flash"); void $("pwA").offsetWidth; $("pwA").classList.add("flash");
         } else {
-          llmBusy = true; $("pwB").classList.remove("done"); $("pwBi").textContent = "sent to your LLM…"; $("pwBc").textContent = "the table was only " + pc(d.a.confidence); $("pwBu").textContent = "";
+          llmBusy = true; $("pwB").classList.remove("done"); $("pwBi").textContent = "…"; $("pwBc").textContent = ""; $("pwBu").textContent = "";
           $("pwBs").textContent = "incoming";
           $("pwR").animate([{ strokeDashoffset: 14 }, { strokeDashoffset: -100 }], { duration: 700, easing: "cubic-bezier(.45,0,.9,.6)" }).onfinish = () => {
             $("pwBs").textContent = "thinking";
@@ -576,7 +713,7 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
             requestAnimationFrame(tick);
           };
         }
-      }, 420);
+      }, 520);
     }
     ready.then(() => {
       msgs = pool(); k = Math.floor(Math.random() * msgs.length);
@@ -585,7 +722,188 @@ client.decisions.create(model="gpt-6-luna", input="my card was stolen", question
       showIn(lastIn, false); if (lastA) answer(lastA); if (lastB) { llmDone(lastB); $("pwB").classList.remove("done"); $("pwBs").textContent = "idle"; }
       stats();
       if (!reduce) setInterval(() => { if (visible(box)) step(); }, 1500);
-    }).catch(() => { $("pwMsg").textContent = "The live table could not load in this browser."; });
+    });
+  })();
+
+  // ---------- it tunes itself: the loop log -> train -> certify -> serve -> spot-check ----------
+  (function loop() {
+    const g = document.querySelector(".loop-nodes"); if (!g) return;
+    const names = ["log", "train", "certify", "serve", "spot-check"], NS = "http://www.w3.org/2000/svg";
+    const nodes = names.map((nm, i) => {
+      const ang = -Math.PI / 2 + i * 2 * Math.PI / names.length, x = 160 + 112 * Math.cos(ang), y = 160 + 112 * Math.sin(ang), w = nm.length * 8 + 22;
+      const e = document.createElementNS(NS, "g");
+      e.innerHTML = `<rect x="${(x - w / 2).toFixed(1)}" y="${(y - 14).toFixed(1)}" width="${w}" height="28" rx="14"/><text x="${x.toFixed(1)}" y="${(y + 4.5).toFixed(1)}">${nm}</text>`;
+      g.appendChild(e); return e;
+    });
+    let i = 0;
+    const on = () => { nodes.forEach((e, j) => e.classList.toggle("on", j === i % nodes.length)); i++; };
+    on();
+    if (!reduce) setInterval(on, 1200);
+  })();
+
+  // ---------- how it works: small SMIL illustrations (Learn grid, Prove ticks, Serve split) ----------
+  (function ills() {
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, a, parent) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); parent && parent.appendChild(e); return e; };
+    const grid = $("learnGrid");
+    if (grid) for (let r = 0; r < 5; r++) for (let c = 0; c < 7; c++) {
+      const i = r * 7 + c, on = (i * 7) % 5 < 3;
+      const cell = mk("rect", { x: 136 + c * 13.5, y: 22 + r * 14, width: 11, height: 11, rx: 2, fill: on ? "var(--orange)" : "var(--line-strong)", opacity: on ? 0 : 1 }, grid);
+      if (on) mk("animate", { attributeName: "opacity", values: "0;1;1;0", keyTimes: `0;${(0.1 + (i % 9) * 0.06).toFixed(2)};.85;1`, dur: "3.2s", repeatCount: "indefinite" }, cell);
+    }
+    const ticks = $("proveTicks");
+    if (ticks) for (let i = 0; i < 10; i++) {
+      const x = 18 + i * 21, ok = ![3, 7].includes(i), y = ok ? 38 : 88, t0 = (i * 0.08).toFixed(2);
+      const g = mk("g", { opacity: 0 }, ticks);
+      if (ok) mk("path", { d: `M ${x - 5} ${y} l 4 4 l 7 -9`, fill: "none", stroke: "var(--orange)", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round" }, g);
+      else mk("path", { d: `M ${x - 4} ${y - 4} l 8 8 M ${x + 4} ${y - 4} l -8 8`, stroke: "var(--llm)", "stroke-width": 2.5, "stroke-linecap": "round" }, g);
+      mk("animate", { attributeName: "opacity", values: "0;0;1;1;0", keyTimes: `0;${t0};${(+t0 + 0.04).toFixed(2)};.9;1`, dur: "3.6s", repeatCount: "indefinite" }, g);
+    }
+    const dots = $("serveDots");
+    if (dots) for (let i = 0; i < 6; i++) {
+      const up = i % 3 !== 2, begin = (i * 0.55).toFixed(2) + "s";
+      const c = mk("circle", { r: 4.5, fill: up ? "var(--orange)" : "var(--llm)" }, dots);
+      mk("animateMotion", { dur: up ? "1.2s" : "3.3s", begin, repeatCount: "indefinite", path: up ? "M 6 60 L 96 60 C 130 60, 140 28, 186 28" : "M 6 60 L 96 60 C 130 60, 140 94, 180 94",
+        keyPoints: up ? "0;.55;1" : "0;.3;1", keyTimes: up ? "0;.6;1" : "0;.25;1", calcMode: "linear" }, c);
+    }
+    if (reduce) document.querySelectorAll(".ill").forEach((s) => { try { s.pauseAnimations(); s.setCurrentTime(2.6); } catch (e) {} });
+  })();
+
+
+  // ---------- race: µs vs seconds. The LLM crawls; the shadow cuts ----------
+  (function race() {
+    const box = $("raceBox"); if (!box) return;
+    const answer = '{"intent": "lost_card"}';
+    let timers = [], raf = 0;
+    const clear = () => { timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); };
+    function final() {
+      $("rlOut").textContent = answer; $("rlClock").textContent = usLabel(LLM_MS * 1000); $("rlState").textContent = "done";
+      $("rlProg").style.transform = "scaleX(1)";
+      $("rsOut").textContent = answer; $("rsClock").textContent = usLabel(HERO_US); $("rsState").textContent = "done"; $("rsProg").style.transform = "scaleX(1)";
+    }
+    function run() {
+      clear();
+      if (reduce) return final();
+      const out = $("rlOut"), clock = $("rlClock"), prog = $("rlProg");
+      out.innerHTML = '<span class="caret"></span>'; clock.textContent = "0 ms"; prog.style.transform = "scaleX(0)"; $("rlState").textContent = "thinking…";
+      $("rsOut").classList.remove("flash"); $("rsOut").innerHTML = "&nbsp;"; $("rsClock").textContent = "–"; $("rsProg").style.transform = "scaleX(0)"; $("rsState").textContent = "ready";
+      // the shadow: one frame, no tween
+      timers.push(setTimeout(() => {
+        $("rsOut").textContent = answer; void $("rsOut").offsetWidth; $("rsOut").classList.add("flash");
+        $("rsClock").textContent = usLabel(HERO_US); $("rsProg").style.transform = "scaleX(1)"; $("rsState").textContent = "done";
+      }, 260));
+      // the LLM: waits for its first token, then types ~25 chars/s; the clock ticks in real time
+      const t0 = performance.now() + 250, typeMs = Math.min(LLM_MS * 0.55, answer.length * 40), firstTok = LLM_MS - typeMs;
+      const ease = (x) => x * x * (3 - 2 * x) * 0.5 + x * 0.5;
+      const step = (t) => {
+        const el = Math.max(0, t - t0);
+        clock.textContent = Math.min(LLM_MS, el).toFixed(0) + " ms";
+        prog.style.transform = `scaleX(${ease(Math.min(1, el / LLM_MS)).toFixed(3)})`;
+        if (el > firstTok) { const c = Math.min(answer.length, Math.ceil((el - firstTok) / typeMs * answer.length)); out.innerHTML = esc(answer.slice(0, c)) + (c < answer.length ? '<span class="caret"></span>' : ""); $("rlState").textContent = c < answer.length ? "typing…" : "done"; }
+        if (el < LLM_MS) raf = requestAnimationFrame(step);
+        else { clock.textContent = usLabel(LLM_MS * 1000); out.textContent = answer; $("rlState").textContent = "done"; }
+      };
+      raf = requestAnimationFrame(step);
+    }
+    $("raceBtn").addEventListener("click", run);
+    final();
+    onView(box, run, 0.5);
+  })();
+
+  // ---------- charts (drawn at the width they are shown at, redrawn when the layout width changes) ----------
+  const NS = "http://www.w3.org/2000/svg";
+  const svgEl = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+  const charts = [];
+  const fresh = (arr) => arr.some((r) => !r.legacy) ? arr.filter((r) => !r.legacy) : arr;
+  function chart(id, draw) {
+    const s = $(id); if (!s) return;
+    const c = { s, draw, w: 0 };
+    c.render = (animate) => { const w = Math.round(Math.max(280, Math.min(1100, s.parentElement.clientWidth - 2))); c.w = w; s.innerHTML = ""; draw(s, w, animate && !reduce); };
+    c.render(false); charts.push(c);
+    onView(s, () => c.render(true), 0.35);
+  }
+  let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => charts.forEach((c) => { const w = Math.round(Math.max(280, Math.min(1100, c.s.parentElement.clientWidth - 2))); if (w !== c.w) c.render(false); }), 150); }, { passive: true });
+
+  const SPEED = fresh(CH.speed || []).map((r) => [r.hl ? r.name : r.name.replace(/gpt-[\w.-]+( \(OpenAI\))?/, "a hosted LLM"), r.us, r.label, r.hl]).sort((a, b) => a[1] - b[1]);
+  if (SPEED.length) chart("chSpeed", (s, W, animate) => {
+    const narrow = W < 520, rh = 34, lw = narrow ? Math.round(W * 0.42) : 250, x0 = lw + 12, valw = 76, bw = W - x0 - valw, H = SPEED.length * rh + 30;
+    s.setAttribute("viewBox", `0 0 ${W} ${H}`); s.setAttribute("width", W); s.setAttribute("height", H);
+    const lo = Math.log10(Math.min(...SPEED.map((r) => r[1]))) - 0.3, hi = Math.log10(Math.max(...SPEED.map((r) => r[1]))) + 0.1;
+    const X = (v) => (Math.log10(v) - lo) / (hi - lo) * bw;
+    [1, 1e3, 1e6].forEach((v, i) => { if (Math.log10(v) < lo || Math.log10(v) > hi) return; const x = x0 + X(v); s.appendChild(svgEl("line", { x1: x, x2: x, y1: 0, y2: H - 22, stroke: "var(--grid)", "stroke-width": 1 })); s.appendChild(svgEl("text", { x, y: H - 6, "text-anchor": "middle", "font-size": 11 }, ["1 µs", "1 ms", "1 s"][i])); });
+    const maxChars = Math.floor(lw / 6.8);
+    SPEED.forEach(([name, v, label, hl], i) => {
+      const cy = 4 + i * rh + rh / 2;
+      const t = svgEl("text", { x: lw, y: cy + 4, "text-anchor": "end", "font-size": narrow ? 11 : 12.5, fill: hl ? "var(--text-strong)" : "var(--text-dim)" }, name.length > maxChars ? name.slice(0, maxChars - 1) + "…" : name);
+      t.appendChild(svgEl("title", {}, name)); s.appendChild(t);
+      const w = Math.max(3, X(v));
+      const r = svgEl("rect", { x: x0, y: cy - 8, width: w, height: 16, rx: 2, fill: hl ? "var(--series-1)" : "var(--llm)" });
+      s.appendChild(r);
+      const lab = svgEl("text", { x: x0 + w + 8, y: cy + 4, "font-size": 12.5, fill: hl ? "var(--accent-ink)" : "var(--text)", "font-weight": 500 }, label);
+      s.appendChild(lab);
+      if (animate) {  // the shadow's bars cut in; the slow ones crawl
+        if (hl) r.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1, delay: 120, fill: "backwards" });
+        else r.animate([{ width: "0px" }, { width: w + "px" }], { duration: 2400, delay: i * 60, easing: "cubic-bezier(.45,0,.9,.6)", fill: "backwards" });
+      }
+    });
+  });
+  Object.entries(CH.src || {}).forEach(([k, v]) => document.querySelectorAll(`[data-src="${k}"]`).forEach((el) => (el.textContent = "source: " + v.replace(/ · (grey = earlier run|earlier runs \(grey\)).*$/, "").replace(/gpt-[\w.-]+( \(OpenAI\))?/g, "hosted LLM"))));
+
+  // learning curve: direct end labels; shad0w series in orange (solid) and alabaster/prussian
+  const SIZE = { BANKING77: "77 intents", "AG News": "4 topics", CLINC150: "150 intents", "SST-2": "sentiment" };
+  const GROW = fresh((CH.grow || {}).series || []).map((q) => ({ ds: q.name.split(" · ")[0], points: q.points }))
+    .sort((a, b) => a.points[a.points.length - 1][1] - b.points[b.points.length - 1][1])
+    .map((q, i, arr) => ({ ...q, label: q.ds + (SIZE[q.ds] ? " · " + SIZE[q.ds] : ""), color: i === arr.length - 1 ? "var(--series-1)" : "var(--series-2)", width: i === arr.length - 1 ? 2.5 : 1.5, dash: i === arr.length - 1 ? "" : "6 4" }));
+  const kfmt = (n) => n >= 1000 ? (n / 1000) + "k" : String(n);
+  chart("chGrow", (s, W, animate) => {
+    if (!GROW.length) return;
+    const narrow = W < 480, H = narrow ? 290 : 280, L = 40, T = narrow ? 50 : 14, B = 32, R = narrow ? 16 : 96;
+    s.setAttribute("viewBox", `0 0 ${W} ${H}`); s.setAttribute("width", W); s.setAttribute("height", H);
+    const Ns = [...new Set(GROW.flatMap((q) => q.points.map((p) => p[0])))].sort((a, b) => a - b), n0 = Ns[0], n1 = Ns[Ns.length - 1];
+    const X = (n) => L + (Math.log10(n) - Math.log10(n0)) / Math.max(1e-9, Math.log10(n1) - Math.log10(n0)) * (W - L - R);
+    const Y = (v) => T + (1 - v) * (H - T - B);
+    [0, .25, .5, .75, 1].forEach((v) => {
+      s.appendChild(svgEl("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: v === 0 ? "var(--line-strong)" : "var(--grid)", "stroke-width": 1 }));
+      s.appendChild(svgEl("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 11 }, Math.round(v * 100) + "%"));
+    });
+    Ns.forEach((n) => s.appendChild(svgEl("text", { x: X(n), y: H - B + 18, "text-anchor": "middle", "font-size": 11 }, kfmt(n))));
+    const clip = svgEl("clipPath", { id: "growClip" }), cr = svgEl("rect", { x: 0, y: 0, width: W, height: H }); clip.appendChild(cr); s.appendChild(clip);
+    const plot = svgEl("g", { "clip-path": "url(#growClip)" }); s.appendChild(plot);
+    const labels = svgEl("g", {});
+    GROW.forEach((q, qi) => {
+      const d = q.points.map(([n, v], i) => (i ? "L" : "M") + X(n).toFixed(1) + "," + Y(v).toFixed(1)).join(" ");
+      plot.appendChild(svgEl("path", { d, fill: "none", stroke: q.color, "stroke-width": q.width, "stroke-dasharray": q.dash, "stroke-linejoin": "round" }));
+      q.points.forEach(([n, v]) => { const m = svgEl("circle", { cx: X(n), cy: Y(v), r: 3.5, fill: "var(--bg-elev)", stroke: q.color, "stroke-width": 1.5 }); m.appendChild(svgEl("title", {}, `${q.label}: ${Math.round(v * 100)}% after ${n.toLocaleString()} logged answers`)); plot.appendChild(m); });
+      const [ln, lv] = q.points[q.points.length - 1];
+      if (!narrow) {
+        labels.appendChild(svgEl("text", { x: X(ln) + 10, y: Y(lv) + 4, "font-size": 14, "font-weight": 500, fill: q.color === "var(--series-1)" ? "var(--accent-ink)" : "var(--text)" }, Math.round(lv * 100) + "%"));
+        labels.appendChild(svgEl("text", { x: X(ln) + 10, y: Y(lv) + 19, "font-size": 11, fill: "var(--text)" }, q.ds));
+        labels.appendChild(svgEl("text", { x: X(ln) + 10, y: Y(lv) + 32, "font-size": 11, fill: "var(--text-dim)" }, SIZE[q.ds] || ""));
+      } else {
+        const y = 12 + qi * 18;
+        labels.appendChild(svgEl("line", { x1: L, x2: L + 24, y1: y, y2: y, stroke: q.color, "stroke-width": q.width + 0.5, "stroke-dasharray": q.dash }));
+        labels.appendChild(svgEl("text", { x: L + 32, y: y + 4, "font-size": 11, fill: "var(--text)" }, `${q.label} · ${Math.round(lv * 100)}% at ${kfmt(ln)}`));
+      }
+    });
+    s.appendChild(labels);
+    if (animate) { cr.animate([{ width: "0px" }, { width: W + "px" }], { duration: 1400, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" }); labels.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, delay: 1200, fill: "backwards" }); }
+  });
+
+  // ---------- is it for me ----------
+  (function fit() {
+    const qs = $("fitQs"), out = $("fitOut"); if (!qs) return;
+    const render = () => {
+      const c = [...qs.querySelectorAll("input")].map((i) => i.checked);
+      const good = c.slice(0, 4).filter(Boolean).length;
+      let cls, head, body;
+      if (c[5]) { cls = "no"; head = "No: shad0w picks, it does not write."; body = "Generated text stays with your LLM. Use shad0w for the choice-shaped calls around it."; }
+      else if (c[4]) { cls = "no"; head = "Probably not for this one."; body = "Tone and world knowledge are where shad0w stops. It would certify almost nothing: correct, but no savings."; }
+      else if (good === 4) { cls = "ok"; head = "Yes. Start in shadow mode."; body = "Your LLM keeps answering for a week while the dashboard shows what shad0w would have saved. Then canary, then serve."; }
+      else if (good >= 2) { cls = "ok"; head = "Worth a shadow run."; body = "Less volume or less repetition means a smaller share. Shadow mode costs nothing and tells you the real number."; }
+      else { cls = "no"; head = "Not yet."; body = "Without a fixed list and repeated traffic there is nothing to learn."; }
+      out.innerHTML = `<div class="${cls}"><b>${head}</b><p>${body}</p><a class="btn ${cls === "ok" ? "primary" : ""}" href="${cls === "ok" ? "docs/rollout.html" : "docs/limits.html"}">${cls === "ok" ? "Rollout guide →" : "Read the limits →"}</a></div>`;
+    };
+    qs.addEventListener("change", render); render();
   })();
 
   // ---------- film: poster first, video only on click (plays inline; fullscreen only if you ask) ----------

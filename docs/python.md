@@ -307,23 +307,6 @@ m.decide("I lost my card, block it now!")
 
 The low-level model applies no rollout settings and calls no LLM: serve an answer when `certified` is true, otherwise ask your LLM.
 
-### Load a bundle from the Hugging Face Hub
-
-A bundle path can be `hf://user/repo` (or `hf://user/repo@revision`). The bundle files (manifest, tables, certificate, schema) are fetched into the local Hugging Face cache once, then it is a local bundle like any other. This needs `pip install "shad0wllm[hf]"`; the same path works for `bundle=` in `decision()` and `Shadow`, and for `--bundle` in `shad0w serve`, `decide`, `try`, `report`, `doctor` and `proxy`.
-
-```python
-model = shad0w.load("hf://2796gauravc/shad0w-banking77")   # the Decision Bench table, certified against the dataset's labels
-model.decide("my card has not arrived yet")
-```
-
-In JavaScript, `Bundle.load` takes the directory URL that holds `manifest.json` (a trailing slash is optional):
-
-```js
-const bundle = await Bundle.load("https://huggingface.co/2796gauravc/shad0w-banking77/resolve/main/");
-```
-
-The published bundles are at [huggingface.co/2796gauravc](https://huggingface.co/2796gauravc): one per Decision Bench task, each with its certificate and the exact command that produced it.
-
 ## Thread safety
 
 `Shadow`, `Model` and the HTTP servers are safe to share across threads. The C core is guarded by a lock per question. Create a decider once (at import time in a web app) and reuse it.

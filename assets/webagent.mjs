@@ -47,7 +47,7 @@ const label = (a) => a.replace("click:", "click ").replace("type:", "type ").rep
 function stats() {
   const tUs = log.filter((x) => x.by === "table").reduce((s, x) => s + x.us, 0), llm = log.filter((x) => x.by === "llm").length;
   const done = ep.over ? (ep.ok ? `<b class="wa-ok">✓ errand done right</b>` : `<b class="wa-bad">✗ ${ep.final ? "finished wrong" : `stuck: gave up after ${MAX_STEPS} steps`}</b>`) : "";
-  $("wStats").innerHTML = !ep.steps ? "" : `<div><b>${ep.steps}</b><span>steps</span></div><div><b class="o">${ep.served}</b><span>by the table</span></div>`
+  $("wStats").innerHTML = `<div><b>${ep.steps}</b><span>steps</span></div><div><b class="o">${ep.served}</b><span>by the table</span></div>`
     + `<div><b class="l">${llm}</b><span>by the LLM</span></div><div><b>${tUs < 1000 ? Math.round(tUs) + " µs" : (tUs / 1000).toFixed(1) + " ms"}</b><span>table time, all its steps</span></div>`
     + `<div><b>${(llm * LLM_S).toFixed(1)} s</b><span>LLM time (at ${LLM_S} s a call)</span></div><div><b>${(ep.steps * LLM_S).toFixed(0)} s</b><span>if the LLM did every step</span></div>${done ? `<div class="wa-done">${done}</div>` : ""}`;
 }

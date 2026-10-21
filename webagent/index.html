@@ -41,14 +41,10 @@
 </div></nav>
 <main class="wrap wap" style="padding-top:56px;padding-bottom:100px">
   <div class="section-head" style="max-width:900px;margin-bottom:22px">
-    <div class="kicker">playground · web agent · raw HTML</div>
-    <h1 class="arena-title">Record once with your LLM.<br><span class="hl">Replay at table speed.</span></h1>
-    <p>An LLM agent ran a shopping errand 300 times, reading each page's HTML (no screenshots). The table learned its clicks and now runs the errand in microseconds a step, handing anything new, uncertain or stuck back to the LLM.</p>
+    <div class="kicker">playground · web agent · raw HTML · runs in your browser</div>
+    <h1 class="arena-title">Your agent did this errand 300 times.<br><span class="hl">Let a table do the next one.</span></h1>
+    <p>An LLM web agent bought things on a small shop website 300 times, one click or keystroke per step, about 2 seconds a step. shad0w learned its choices from the pages' HTML. Now the table runs the same errand in microseconds a step, and hands the step back to the LLM when it isn't certified, when the page has something it has never seen, or when its last action changed nothing. No screenshots: the agent only reads HTML.</p>
   </div>
-  <figure class="post-video wa-video">
-    <video controls playsinline preload="metadata" poster="../assets/webagent-demo-poster.jpg" src="../assets/webagent-demo.mp4" aria-label="Screen recording: the table runs the errand, gets stuck when the site changes, and finishes once the novelty check is on"></video>
-    <figcaption>71 seconds from this page: the errand, the site changing, the table getting stuck, and the check that fixes it. Or run it yourself below.</figcaption>
-  </figure>
 
   <section class="panel wa-run" aria-label="The web agent, live">
     <div class="wa-top">
@@ -73,7 +69,7 @@
       </div>
       <div class="wa-side">
         <div class="wa-dec" id="wDec" aria-live="polite"><span class="muted">Press <b>Run</b> or <b>Step</b>.</span></div>
-        <details class="wa-read" open><summary>What the agent reads from this page's HTML</summary><pre id="wText">Press Run: the text the agent reads from the page appears here.</pre></details>
+        <details class="wa-read" open><summary>What the agent reads from this page's HTML</summary><pre id="wText"></pre></details>
       </div>
     </div>
     <div class="wa-tl" id="wTl" aria-label="Steps so far"></div>
@@ -127,16 +123,10 @@ if new_elements(page) or no_progress(prev, page) or d.answer in IRREVERSIBLE:
     d = ask_llm(page_text)         # the two checks from this page</code></pre>
     <p class="muted" style="font-size:13.5px"><a href="../blog/table-drives-a-browser.html">The full write-up, with every number →</a></p>
   </section>
-
-  <section class="arena-sec cta-block">
-    <div class="section-head"><span class="kicker">use it in your app</span><h2>Your LLM's repeat decisions, <span class="hl">in microseconds.</span></h2>
-      <p>One line of Python, or a proxy with no code change. Open source, Apache-2.0. Your logs stay on your machine.</p></div>
-    <p class="cta"><a class="btn primary" href="../docs/">Start in 5 minutes →</a><a class="btn" href="https://github.com/2796gaurav/shad0w">GitHub</a><a class="btn" href="../">Home</a></p>
-  </section>
 </main>
 <footer><div class="wrap">
   <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
-    <p>System 0: your LLM's repeat decisions, in microseconds. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
     <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>

@@ -327,7 +327,7 @@ HTTP decisions from a bundle, without an LLM: `POST /v1/decide`, `/v1/decisions`
 
 | Flag | Default | What it does |
 |---|---|---|
-| `--bundle` | required | The bundle folder, or `hf://user/repo` for a bundle on the Hugging Face Hub (needs `shad0wllm[hf]`) |
+| `--bundle` | required | The bundle folder |
 | `--host` | `127.0.0.1` | Address to listen on |
 | `--port` | `8010` | Port |
 | `--token-env NAME` / `--token-file PATH` | `$SHAD0W_PROXY_TOKEN` | Access token every route but `/v1/health` needs |
@@ -361,7 +361,7 @@ An OpenAI-compatible gateway in front of your LLM. Requests marked as decisions 
 | `--capture` | the `capture` setting (`header,model,tools,decisions`) | How requests are recognised as decisions; add `json_schema`; repeatable |
 | `--timeout` | the `timeout` setting (`120`) | Upstream timeout in seconds |
 | `--trace` | — | JSON Lines file receiving every decision |
-| `--bundle Q=PATH` | `<dir>/<Q>/bundle` | Use the bundle at PATH for question Q; repeatable. PATH may be `hf://user/repo` (needs `shad0wllm[hf]`) |
+| `--bundle Q=PATH` | `<dir>/<Q>/bundle` | Use the bundle at PATH for question Q; repeatable |
 | `--schema` | — | A `schema.json` naming each question's options |
 | `--cost-per-call` | — | Cost of one LLM call, for "money saved" |
 | `--llm-latency-ms` | — | Assumed LLM latency until measured, for "time saved" |

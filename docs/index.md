@@ -25,15 +25,13 @@ print(intent("someone stole my card at the airport").answer)   # lost_card  (you
 intent.train()                                                  # the table now answers what it is certified on
 ```
 
-### Five words you will see everywhere {#glossary}
+Three words you will see everywhere:
 
 | Word | Meaning |
 |---|---|
-| **the table** | the small thing shad0w learns. It ships in a folder (the *bundle*) and needs no GPU and no network. |
-| **the teacher** | the model the table learns from: your LLM, or a decision model such as the OpenAI Decisions API or Jev. |
-| **certified** | the table was tested on answers it never trained on, and only answers where it differs from the teacher on at most α of what it serves (α = 5% by default, at 90% confidence). See [The guarantee](guarantee.html). |
-| **defer** | the table is not sure enough, so the message goes to the teacher instead, and is logged. |
-| **α** | the disagreement you allow. The default 5% means at most 1 in 20 served answers. |
+| **the table** | shad0w's small learned model. It lives in a folder (the *bundle*) and needs no GPU and no network. |
+| **certified** | the table was tested on answers it never trained on, and only answers where it disagrees with your LLM on at most α of them (α = 5% by default, at 90% confidence). See [The guarantee](guarantee.html). |
+| **defer** | the table is not sure enough, so the message goes to your LLM instead. |
 
 ## 1. Install
 
