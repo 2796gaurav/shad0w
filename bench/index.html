@@ -41,12 +41,13 @@
 </div></nav>
 <main class="wrap bench" style="padding-top:56px;padding-bottom:100px">
   <div class="section-head" style="max-width:920px;margin-bottom:22px">
-    <div class="kicker">decision bench · six public tasks · CPU only · every prediction saved</div>
+    <div class="kicker">decision bench · six public tasks · CPU only</div>
     <h1 class="arena-title">Same rows. Same certifier.<br><span class="hl">Microseconds against seconds.</span></h1>
-    <p>Decision models answer "pick one of these options" for your app. We put shad0w next to five open ones (Julia-1, Laya, Kev-0.8B, Decider-0.8B and GLiNER2.5-Decide) on six public tasks, on a laptop CPU with no GPU. Every system answers the same test rows, one at a time, and every system's confidence goes through the same 5% certificate. Every answer is saved, so anyone can re-check the numbers without running a model.</p>
+    <p>Five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide) and shad0w answer the same test rows of six public tasks, one at a time on a laptop CPU, through the same 5% certificate. shad0w was trained on each task; the decision models answered zero-shot. Every answer is saved.</p>
   </div>
 
   <div class="bn-heads" id="heads"></div>
+  <p class="muted fine-note">shad0w comes in two forms: <b>linear</b> (one hashed table) and <b>deep</b> (a small hidden layer on top). <b>auto</b> keeps whichever certifies more, and that is the row called shad0w. Decision models answer in milliseconds to seconds; the table in microseconds.</p>
 
   <section class="panel bn-run">
     <div class="bn-tabs" role="tablist" id="tabs"></div>
@@ -96,11 +97,17 @@ python bench/score.py     # every number on this page, from the saved prediction
 python bench/run.py       # or re-run everything (llama.cpp's llama-server on PATH; about two hours on a laptop CPU)</code></pre>
     <p class="muted" style="font-size:13.5px">Protocol and caveats: <a href="https://github.com/2796gaurav/shad0w/tree/main/bench">bench/README.md</a> · raw results: <a href="results.json">results.json</a> · machine: <span id="hw"></span></p>
   </section>
+
+  <section class="arena-sec cta-block">
+    <div class="section-head"><span class="kicker">use it in your app</span><h2>Your LLM's repeat decisions, <span class="hl">in microseconds.</span></h2>
+      <p>One line of Python, or a proxy with no code change. Open source, Apache-2.0. Your logs stay on your machine.</p></div>
+    <p class="cta"><a class="btn primary" href="../docs/">Start in 5 minutes →</a><a class="btn" href="https://github.com/2796gaurav/shad0w">GitHub</a><a class="btn" href="../">Home</a></p>
+  </section>
 </main>
 <div class="bn-tip" id="tip" hidden></div>
 <footer><div class="wrap">
   <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
-    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p>System 0: your LLM's repeat decisions, in microseconds. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
     <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>

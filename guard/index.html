@@ -68,15 +68,21 @@
       <li>It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own: keep your model's own safeguards.</li>
     </ul>
 <pre class="code"><code>from shad0w.guard import Guard
-gate = Guard(shad0w.decision("injection", options={"attack": "...", "safe": "..."}, llm="openai/a hosted LLM"))
+gate = Guard(shad0w.decision("injection", options={"attack": "...", "safe": "..."}, llm="openai/gpt-4.1-mini"))
 gate.calibrate(fresh_texts, llm_answers)   # block-only certificate
 gate.check(text)                           # "block" or "ask_model", never "allow"</code></pre>
     <p class="muted" style="font-size:13.5px"><a href="../docs/experimental.html#guardrails">Guardrails in the docs →</a></p>
   </section>
+
+  <section class="arena-sec cta-block">
+    <div class="section-head"><span class="kicker">use it in your app</span><h2>Your LLM's repeat decisions, <span class="hl">in microseconds.</span></h2>
+      <p>One line of Python, or a proxy with no code change. Open source, Apache-2.0. Your logs stay on your machine.</p></div>
+    <p class="cta"><a class="btn primary" href="../docs/">Start in 5 minutes →</a><a class="btn" href="https://github.com/2796gaurav/shad0w">GitHub</a><a class="btn" href="../">Home</a></p>
+  </section>
 </main>
 <footer><div class="wrap">
   <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
-    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p>System 0: your LLM's repeat decisions, in microseconds. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
     <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
