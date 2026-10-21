@@ -166,3 +166,78 @@ class Auditor:
                 self._move(-5)
             elif u < self.alpha:
                 self._move(+1)
+
+
+def majority_labels(teacher, texts: list, k: int = 3, workers: int = 1, first=None) -> list[dict]:
+    """Ask the teacher k times per text (at whatever temperature it is configured with) and keep the majority answer.
+
+    Returns one dict per text: {"answer": majority or None, "votes": k, "agreement": share of the k askings that gave
+    the majority answer (None when every asking failed), "answers": the individual answers that came back}. Ties go
+    to the earliest asking (shad0w.llm.majority). `first` can supply an already-logged first answer per text
+    (a list aligned with texts) so only k - 1 more askings are made. `workers` threads run the askings in parallel.
+
+    Certifying a table against majority-of-k labels instead of single answers removes part of the teacher's own
+    sampling noise from the calibration set: a table can never certify below the teacher's self-disagreement rate
+    (see teacher_self_agreement), and the majority of k answers disagrees with itself less often than one answer."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from .llm import majority
+    if k < 1:
+        raise ValueError("k must be at least 1")
+    first = list(first) if first is not None else [None] * len(texts)
+    if len(first) != len(texts):
+        raise ValueError("first must align with texts")
+
+    def one(i):
+        answers = [] if first[i] is None else [first[i]]
+        for _ in range(k - len(answers)):
+            try:
+                answers.append(teacher(texts[i]))
+            except Exception:
+                continue
+        if not answers:
+            return {"answer": None, "votes": k, "agreement": None, "answers": []}
+        m = majority(answers)
+        return {"answer": m, "votes": k, "agreement": sum(a == m for a in answers) / len(answers), "answers": answers}
+
+    if workers > 1 and len(texts) > 1:
+        with ThreadPoolExecutor(workers) as ex:
+            return list(ex.map(one, range(len(texts))))
+    return [one(i) for i in range(len(texts))]
+
+
+def teacher_self_agreement(teacher, rows: list[dict], name: str, n: int = 50, seed: int = 0,
+                           alpha: float = 0.05, delta: float = 0.1) -> dict:
+    """Ask the teacher again on `n` logged rows and measure how often it repeats its own logged answer.
+
+    The table is certified against the teacher, so the teacher's own consistency caps what can be certified: if it
+    gives a different answer to the same input a fraction e of the time, any table disagrees with it at least about
+    e of the time on those inputs. When e is surely above alpha nothing will certify, whatever the features.
+    Text rows only (image rows keep item ids, not the image)."""
+    import random
+
+    from scipy.stats import beta
+
+    from .api import to_bool
+    rows = [r for r in rows if r.get("text") and r.get(name) is not None]
+    sample = random.Random(seed).sample(rows, min(n, len(rows)))
+
+    def same(a, b):
+        if isinstance(a, bool) or isinstance(b, bool):
+            return to_bool(a) == to_bool(b)
+        return str(a).strip().lower() == str(b).strip().lower()
+
+    agree = failed = 0
+    for r in sample:
+        try:
+            agree += same(teacher(r["text"]), r[name])
+        except Exception:
+            failed += 1
+    asked = len(sample) - failed
+    if not asked:
+        return {"asked": 0, "failed": failed, "self_agreement": None, "noise_lower": None, "noise_upper": None,
+                "blocks_certificate": False}
+    k = asked - agree  # repeats that came back different
+    lower = 0.0 if k == 0 else float(beta.ppf(delta, k, asked - k + 1))  # one-sided Clopper-Pearson bounds
+    return {"asked": asked, "failed": failed, "self_agreement": agree / asked, "noise_lower": lower,
+            "noise_upper": binom_ucb(k, asked, delta), "blocks_certificate": lower > alpha}

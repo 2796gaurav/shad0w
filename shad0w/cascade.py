@@ -91,8 +91,11 @@ class Decision:
         return w
 
 
+FIT_ONLY_SOURCES = ("synthetic", "distil")  # rows an LLM wrote or labelled on request: they never calibrate
+
 _FLAG_WORDS = {
     None: "certified: answered by the table",
+    "unseen_items": "most of the input's words were never seen in training (above max_unseen): asked your model",
     "no_bundle": "no trained table yet: asked your model",
     "low_confidence": "table not sure enough to stay inside the certified bound: asked your model",
     "low_radius": "input could be flipped by a few edits (exposed mode): asked your model",
@@ -108,6 +111,8 @@ _FLAG_WORDS = {
     "options_changed": "your options include ones the table never learned: asked your model until you retrain",
     "new_options_served": "served although you added options the table never learned (on_new_option=\"serve\"): NOT covered by the certificate",
     "option_removed": "the table picked an option you removed: asked your model",
+    "audit_breach": "live spot checks show the table disagreeing with your model more than alpha: asked your model "
+                    "until you re-train",
 }
 
 
@@ -152,6 +157,11 @@ class Shadow:
     api_key      the LLM key: a string or a zero-argument function (called on every request). Never printed.
     api_key_env  the NAME of the environment variable that holds the key
     base_url     an OpenAI-compatible server for the llm string
+    image        decide on images instead of text: True (default featurizer) or a `shad0w.vision.ImageSpec`. Pass
+                 pixels (a numpy array or a PIL image) to decide(); your model receives the image itself, the log
+                 receives its item ids and a sha256 of its pixels (never the image). Taken from the bundle when omitted.
+                 A list, e.g. [ImageSpec(), EmbedSpec()], is a cascade: each tier answers what it is sure of, the next
+                 tier (an image encoder, milliseconds) the rest, your model what is left; one certificate covers all.
 
     Every other keyword is a setting (see `shad0w.config.DEFAULTS`): alpha, delta, min_rows, audit_rate,
     auto_train, retrain, mode, canary, never_serve, min_confidence, force_threshold, drift_window, drift_margin,
@@ -164,7 +174,8 @@ class Shadow:
                  api_key_env: str | None = None, base_url: str | None = None, seed: int | None = None,
                  schema: dict | None = None, on_decision: Callable[[Decision, str], Any] | None = None,
                  trace: str | TraceWriter | None = None, metrics: Metrics | None = None, probabilities: bool = False,
-                 config: str | None = None, settings: _config.Settings | None = None, fallback: Any = _NO_FALLBACK, **kw):
+                 config: str | None = None, settings: _config.Settings | None = None, fallback: Any = _NO_FALLBACK,
+                 image: Any = None, **kw):
         llm_kw = {k: kw.pop(k) for k in list(kw) if k in _TEACHER_KW}
         unknown = set(kw) - set(_config.DEFAULTS)
         if unknown or (settings is not None and kw):
@@ -203,9 +214,13 @@ class Shadow:
         self.trace = trace if isinstance(trace, TraceWriter) else (TraceWriter(trace) if trace else None)
         self.model: Model | None = None
         self._audits: set = set()  # spot checks in flight (they run off the request path)
+        self._monitor, self._breach = None, False  # anytime-valid check of live disagreement (see _watch)
         if schema is None and hasattr(teacher, "criteria"):  # an llm_teacher knows the options
             schema = {"type": teacher.qtype, "criteria": dict(teacher.criteria)}
         self.schema = schema
+        self.image_spec, self._train_tiers = _image_tiers(image)
+        self._serve_tiers: list = []  # [(question, spec)] of the loaded bundle when it is a cascade
+        self._last_embed = (None, None)
         self._cert: dict = {}
         self.bundle_path = os.fspath(bundle) if isinstance(bundle, (str, os.PathLike)) else None
         exists = self.bundle_path is None or os.path.exists(os.path.join(self.bundle_path, "manifest.json"))
@@ -274,6 +289,18 @@ class Shadow:
             elif self.question not in model.questions:
                 raise ValueError(f"question {self.question!r} is not in the bundle ({names})")
             q = model.questions[self.question]
+            spec = model.image_spec
+            if spec is not None and self.image_spec is not None and spec != self.image_spec:
+                raise ValueError(f"the bundle featurises images with {spec}, not {self.image_spec}: its certificate only "
+                                 "holds for images featurised the same way (omit image= to use the bundle's)")
+            if spec is None and self.image_spec is not None:
+                raise ValueError("this bundle was trained on text; it cannot decide images (train a new one with image=...)")
+            if spec is not None:
+                self.image_spec = spec
+            from .vision import spec_from_dict
+            self._serve_tiers = [(t["question"], spec_from_dict(t["spec"])) for t in model.meta.get("tiers") or []]
+            if self._serve_tiers and self._train_tiers is None:  # loaded without image=: train the same tiers again
+                self._train_tiers = [t for _, t in self._serve_tiers]
             s = self.settings
             if (s.drift_window, s.drift_margin) != (_config.DEFAULTS["drift_window"], _config.DEFAULTS["drift_margin"]):
                 q.guard.reconfigure(s.drift_window, s.drift_margin)
@@ -281,6 +308,8 @@ class Shadow:
                 log.warning("force_threshold=%s is below the certified threshold %.3f for %r: answers between them are "
                             "served with certified=False", s.force_threshold, q.threshold, self.question)
             self.metrics.set_alpha(self.question, q.alpha)
+            from .audit import BettingUCB
+            self._monitor, self._breach = BettingUCB(self.settings.delta), False  # a new table starts a new watch
             if self.schema is None:
                 self.schema = {"type": q.qtype, "criteria": {o: None for o in q.options}} if q.qtype == "choice" else {"type": "yesno"}
             log.info("loaded bundle for %r: %d options, alpha=%s, C core=%s", self.question, len(q.options), q.alpha,
@@ -303,12 +332,42 @@ class Shadow:
         return self
 
     # -- deciding ---------------------------------------------------------------------------------------------
+    def _items(self, x):
+        """An image's item ids (uint32) under this wrapper's ImageSpec; item ids pass through."""
+        from .vision import image_items, is_image
+        if isinstance(x, np.ndarray) and x.dtype == np.uint32 and x.ndim == 1:
+            return x
+        if isinstance(x, str) or not (is_image(x) or isinstance(x, (bytes, bytearray, os.PathLike))):
+            raise TypeError(f"this decision takes images (a numpy array or a PIL image), got {type(x).__name__}")
+        return image_items(x, self.image_spec)
+
+    def _embed(self, x, spec):
+        """The image's embedding for an EmbedSpec tier (computed once per image object per call chain)."""
+        from .vision import embed_vector
+        if self._last_embed[0] is x:
+            return self._last_embed[1]
+        v = embed_vector(x, spec.model)
+        self._last_embed = (x, v)
+        return v
+
     def _table(self, text: str, probabilities: bool | None = None, observe: bool = True):
         """(raw table result, local answer) for one text; the model must be loaded."""
         name = self.question or "decision"
-        r = self.model.decide(text, exposed=self.exposed, questions={name: {}},
-                              probabilities=self.probabilities if probabilities is None else probabilities,
-                              observe=observe)["answers"][name]
+        probs = self.probabilities if probabilities is None else probabilities
+        if len(self._serve_tiers) > 1:  # a cascade: the first tier that is certified answers
+            from .vision import EmbedSpec
+            for k, (qn, spec) in enumerate(self._serve_tiers):
+                its = spec.items(self._embed(text, spec)) if isinstance(spec, EmbedSpec) else self._items(text)
+                r = self.model.decide(its, exposed=self.exposed, questions={qn: {}}, probabilities=probs,
+                                      observe=observe)["answers"][qn]
+                r = {**r, "tier": k}
+                if r["certified"]:
+                    break
+        else:
+            if self.image_spec is not None:
+                text = self._items(text)
+            r = self.model.decide(text, exposed=self.exposed, questions={name: {}}, probabilities=probs,
+                                  observe=observe)["answers"][name]
         ren = self.settings.rename
         if ren and "choice" in r:
             ren = dict(ren)
@@ -327,8 +386,12 @@ class Shadow:
         if self.options_removed and local in self.options_removed:
             return False, False, "option_removed"
         certified, flag = r["certified"], r["flag"]
+        if certified and self._breach:
+            certified, flag = False, "audit_breach"
         if certified and s.min_confidence is not None and r["confidence"] < s.min_confidence:
             certified, flag = False, "min_confidence"
+        if certified and s.max_unseen is not None and r.get("unseen", 0.0) > s.max_unseen:
+            certified, flag = False, "unseen_items"
         if certified and s.never_serve and _named(local, s.never_serve):
             certified, flag = False, "never_serve"
         if certified and s.canary < 1.0 and self._rng.random() >= s.canary:
@@ -408,6 +471,8 @@ class Shadow:
                 if flag == "shadow":
                     self._counts["would_serve"] += 1
                     self._counts["shadow_disagreements"] += int(_norm(answer) != _norm(local))
+            if flag == "shadow":
+                self._watch(_norm(answer) != _norm(local))
 
     def peek(self, text: str, *, probabilities: bool | None = None) -> Decision | None:
         """The table's answer when it would be served (counted and traced like any table decision), else None.
@@ -490,23 +555,23 @@ class Shadow:
                 return self._done(d, text, name, None, 0)
         t = time.perf_counter()
         try:
-            answer = await teacher(text)
+            answer, probs = _unpack(await teacher(text))
         except Exception as e:
             _add_why(e, flag)
             raise
         took = time.perf_counter() - t
-        self._record(text, self._src(), name, answer)
+        self._record(text, self._src(), name, answer, probs)
         if r is not None:
             self._shadow_count(flag, r, answer, local)
         return self._done(self._mk(answer, "teacher", r, False, flag, t0), text, name, took, 0)
 
     async def _aaudit(self, teacher, text, name, local):
         try:
-            truth = await teacher(text)
+            truth, probs = _unpack(await teacher(text))
         except Exception as e:
             log.warning("audit call failed for %r: %s", name, e)
             return
-        self._record(text, "audit", name, truth)
+        self._record(text, "audit", name, truth, probs)
         self._audit_result(name, local, truth, text)
 
     def decide_many(self, texts, concurrency: int = 8, teacher: Callable[[str], Any] | None = None) -> list[Decision]:
@@ -546,6 +611,61 @@ class Shadow:
             async with sem:
                 return await self._adecide_pre(t, teacher, pre)
         return list(await asyncio.gather(*(one(t, p) for t, p in zip(texts, pres))))
+
+    def synthesize(self, per_option: int = 20, teacher=None) -> dict:
+        """Ask the LLM to write `per_option` example messages for every option and log them with source="synthetic".
+        They are used to FIT the table only, never to certify it, so the guarantee is unchanged; they let the first
+        certificate come from fewer real logged answers. Returns {"written": n, "per_option": {...}}."""
+        t = teacher or self.teacher
+        if not hasattr(t, "generate"):
+            raise TypeError("synthesize() needs an LLM teacher (llm=\"provider/model\"), which can write examples")
+        schema = self.schema or {}
+        if schema.get("type", "choice") != "choice" or not schema.get("criteria"):
+            raise ValueError("synthesize() needs the options (a choice question)")
+        name = self.question or "decision"
+        rows, per = [], {}
+        for opt, desc in schema["criteria"].items():
+            prompt = (f"Write {per_option} different, realistic messages a user might send that a classifier for "
+                      f"\"{name}\" should label as \"{opt}\"" + (f" ({desc})" if desc else "") +
+                      ". Vary length, wording and tone. One message per line, no numbering, no quotes, nothing else.")
+            try:
+                out = t.generate(prompt)
+            except Exception as e:
+                log.warning("synthesize %r: %s", opt, e)
+                continue
+            lines = [ln.strip().lstrip("-*0123456789.) ").strip().strip('"') for ln in str(out).splitlines()]
+            lines = [ln for ln in lines if 3 <= len(ln) <= 500][:per_option]
+            rows += [{"text": ln, name: opt} for ln in lines]
+            per[opt] = len(lines)
+        rep = self.warm_start(rows, source="synthetic") if rows else {"imported": 0}
+        return {"written": rep.get("imported", 0), "per_option": per}
+
+    def distil(self, texts, teacher=None, concurrency: int = 8) -> dict:
+        """Ask the teacher about texts YOU supply (an unlabelled corpus: old tickets, a public dataset, paraphrases) and
+        log its answers, with its probabilities when the LLM reports them, under source="distil". Like synthesize(),
+        these rows FIT the table only and never certify it: they were not drawn like live traffic. A few thousand of
+        them give the deep student the context it needs on nuanced questions (sentiment, tone), as in Sparse
+        Distillation (Ye et al. 2022). Returns {"asked": n, "logged": n, "failed": n}."""
+        t = teacher or self.teacher
+        if t is None:
+            raise TypeError("distil() needs a teacher (teacher=... or llm=...)")
+        name = self.question or "decision"
+        texts = [x for x in texts if isinstance(x, str) and x.strip()]
+        before = self.log_rows()
+        failed = 0
+
+        def one(x):
+            try:
+                self._ask(t, x, "distil", name)
+            except Exception as e:  # one bad call must not stop the corpus
+                log.warning("distil: %s", e)
+                return 1
+            return 0
+
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=max(1, concurrency)) as ex:
+            failed = sum(ex.map(one, texts))
+        return {"asked": len(texts), "logged": self.log_rows() - before, "failed": failed}
 
     def warm_start(self, rows_or_path, text: str = "text", label: str | None = None, *, source: str = "import") -> dict:
         """Import answers you already have (an old LLM's log, human labels) into this decision's log, so `train()`
@@ -667,11 +787,31 @@ class Shadow:
         with self._lock:
             self._counts["audits"] += 1
             self._counts["audit_disagreements"] += int(dis)
+        self._watch(dis)
         self.metrics.record_audit(name, dis)
         if dis:
-            log.info("audit disagreement on %r: table=%r model=%r text=%r", name, local, truth, text[:80])
+            log.info("audit disagreement on %r: table=%r model=%r text=%r", name, local, truth, _show(text)[:80])
+
+    def _watch(self, disagreed: bool) -> None:
+        """Feed one checked answer (a spot check, or a shadow-mode comparison) to the live monitor. It keeps an
+        anytime-valid LOWER confidence bound on the disagreement rate of answers the table serves (a betting
+        confidence sequence, Waudby-Smith & Ramdas 2024, run on 1 - disagreement). When that bound rises above alpha,
+        the evidence that the certificate no longer holds is significant at delta however long it has been watched,
+        so the table stops serving (flag "audit_breach") until it is re-trained or reloaded."""
+        m = self._monitor
+        if m is None or self.model is None:
+            return
+        alpha = self.model.questions[self.question].alpha
+        with self._lock:
+            m.update(1.0 - float(disagreed))
+            lower = 1.0 - m.ucb()
+            if not self._breach and m.n >= 20 and lower > alpha:
+                self._breach = True
+                log.warning("%s: live spot checks put disagreement above alpha=%s (lower bound %.3f after %d checks); "
+                            "the table stops serving until you re-train", self.question, alpha, lower, m.n)
 
     def _done(self, d: Decision, text: str, name: str, teacher_s: float | None, ns0: int) -> Decision:
+        raw, text = text, _show(text)
         with self._lock:
             self._counts[d.source] += 1
         self.metrics.record(name, d.source, d.answer, d.latency_us / 1e6, d.confidence, d.flag, text, teacher_s)
@@ -686,7 +826,7 @@ class Shadow:
             emit_span(name, d, ns0, time.time_ns(), getattr(self.teacher, "name", None))
         if self.on_decision is not None:
             try:
-                self.on_decision(d, text)
+                self.on_decision(d, raw)
             except Exception as e:
                 log.warning("on_decision hook failed: %s", e)
         return d
@@ -703,6 +843,9 @@ class Shadow:
         n, k = c["audits"], c["audit_disagreements"]
         c["audit_disagreement"] = k / n if n else None
         c["audit_disagreement_upper"] = _cp_upper(k, n, delta) if n else None
+        m = self._monitor
+        c["audit_disagreement_lower_anytime"] = (1.0 - m.ucb()) if m is not None and m.n else None
+        c["audit_breach"] = self._breach
         q = self.metrics.snapshot(delta)["questions"].get(self.question or "decision", {})
         c.update({k: q.get(k) for k in ("table_p50_us", "table_p99_us", "llm_p50_ms", "llm_p99_ms", "flags")})
         c["alpha"] = self.model.questions[self.question].alpha if self.model is not None else None
@@ -717,12 +860,16 @@ class Shadow:
             raise RuntimeError("the table did not answer and this Shadow has no teacher: pass teacher=... (or llm=...), "
                                "or fallback=... to run without an LLM")
         t = time.perf_counter()
-        answer = teacher(text)
+        if hasattr(teacher, "answer_with_probabilities"):  # an LLMTeacher that can report its probabilities
+            answer = teacher.answer_with_probabilities(text)
+        else:
+            answer = teacher(text)
         took = time.perf_counter() - t
         if inspect.isawaitable(answer):
             getattr(answer, "close", lambda: None)()
             raise TypeError("this llm is async: call `await shadow.adecide(text)` (or adecide_many) instead of decide()")
-        self._record(text, source, name, answer)
+        answer, probs = _unpack(answer)
+        self._record(text, source, name, answer, probs)
         return answer, took
 
     def _loggable(self, answer):
@@ -748,14 +895,28 @@ class Shadow:
             return answer
         return match_option(answer if isinstance(answer, str) else str(answer), opts)
 
-    def _record(self, text: str, source: str, name: str, answer) -> None:
-        """Append one teacher answer to the log (the training data) and trigger auto_train when due."""
+    def _record(self, text: str, source: str, name: str, answer, probs: dict | None = None) -> None:
+        """Append one teacher answer to the log (the training data) and trigger auto_train when due. `probs`: the
+        teacher's probabilities per option when it reports them; training fits on them (soft labels)."""
         if answer is not None:
             raw, answer = answer, self._loggable(answer)
             if answer is None:
                 log.warning("%s: answer %r matches no option; not logged", name, raw)
         if self.log and answer is not None:
-            row = json.dumps({"text": text, name: answer, "source": source, "ts": round(time.time(), 3)},
+            if self.image_spec is not None:  # the image's item ids and identity, never its pixels
+                from .vision import image_digest
+                inp = {"items": self._items(text).tolist(), "image": image_digest(text)}
+                from .vision import EmbedSpec
+                emb = next((t for t in self._train_tiers or [] if isinstance(t, EmbedSpec)), None)
+                if emb is not None:
+                    inp["embed"] = np.round(self._embed(text, emb), 5).tolist()
+            else:
+                inp = {"text": text}
+            extra = {}
+            if probs:
+                extra["probs"] = {str(k): round(float(v), 5) for k, v in probs.items()
+                                  if isinstance(v, (int, float)) and math.isfinite(v) and v >= 0}
+            row = json.dumps({**inp, name: answer, **extra, "source": source, "ts": round(time.time(), 3)},
                              ensure_ascii=False, default=str)
             due = False
             with self._lock, open(self.log, "a", encoding="utf-8") as f:
@@ -795,9 +956,11 @@ class Shadow:
         min_rows = s.min_rows if min_rows is None else min_rows
         with self._train_lock:
             rows, schema = rows_for_training(read_jsonl(self.log), name, self.schema, rename=s.rename_map)
-            if len(rows) < min_rows:
-                raise ValueError(f"{len(rows)} usable answers logged for {name!r}; need {min_rows} "
-                                 f"(pass min_rows=... to try with fewer; 100 is the hard minimum)")
+            syn = [r for r in rows if r.get("source") in FIT_ONLY_SOURCES]  # not live traffic: fitting only, never calibration
+            rows = [r for r in rows if r.get("source") not in FIT_ONLY_SOURCES]
+            if len(rows) < min_rows:  # only live teacher answers count: fit-only rows never certify anything
+                raise ValueError(f"{len(rows)} usable answers logged for {name!r} (plus {len(syn)} fit-only rows); need "
+                                 f"{min_rows} (pass min_rows=... to try with fewer; 100 is the hard minimum)")
             cal = [r for r in rows if r.get("source") == "audit"]
             fit_rows, cal_rows = rows, None
             if len(cal) >= MIN_UNIFORM_CAL:
@@ -809,11 +972,22 @@ class Shadow:
                          name, len(cal), MIN_UNIFORM_CAL)
             t = time.time()
             try:
-                model, cert = shadow_compile({name: schema}, fit_rows, alpha=alpha, delta=delta,
-                                             cal_fraction=s.cal_fraction, max_cal=s.max_cal,
-                                             teacher=getattr(self.teacher, "name", "unspecified"),
-                                             cal_records=cal_rows, drift_window=s.drift_window, drift_margin=s.drift_margin,
-                                             max_mb=s.max_mb)
+                if self._train_tiers and len(self._train_tiers) > 1:
+                    from .shadow import cascade_compile
+                    model, cert = cascade_compile(name, schema, self._train_tiers, fit_rows, alpha=alpha, delta=delta,
+                                                  cal_fraction=s.cal_fraction, max_cal=s.max_cal,
+                                                  teacher=getattr(self.teacher, "name", "unspecified"),
+                                                  cal_records=cal_rows, drift_window=s.drift_window,
+                                                  drift_margin=s.drift_margin)
+                else:
+                    model, cert = shadow_compile({name: schema}, fit_rows, alpha=alpha, delta=delta,
+                                                 cal_fraction=s.cal_fraction, max_cal=s.max_cal,
+                                                 teacher=getattr(self.teacher, "name", "unspecified"),
+                                                 cal_records=cal_rows, drift_window=s.drift_window,
+                                                 drift_margin=s.drift_margin, max_mb=s.max_mb,
+                                                 image=None if self.image_spec is None else self.image_spec.to_dict(),
+                                                 static=s.static if self.image_spec is None else None, fit_extra=syn,
+                                                 student=s.student, hidden=s.hidden)
             except ModuleNotFoundError as e:
                 if (e.name or "").split(".")[0] in ("sklearn", "scipy", "torch"):
                     raise ImportError('training needs: pip install "shad0wllm[compile]" (scipy, scikit-learn)') from e
@@ -851,7 +1025,8 @@ def rows_for_training(records: list[dict], name: str, schema: dict | None, renam
     """Teacher answers usable for `name` (answers outside the options are dropped) and the schema to train with.
     Without a schema the options are the answers seen in the log. `rename` maps old labels in the log to new ones,
     so renaming an option never throws its history away."""
-    rows = [r for r in records if name in r and r.get("text") and r[name] is not None and r.get("source") != "table"]
+    rows = [r for r in records if name in r and (r.get("text") or r.get("items")) and r[name] is not None
+            and r.get("source") != "table"]
     if rename:
         rows = [{**r, name: rename.get(r[name], r[name])} if isinstance(r[name], str) else r for r in rows]
     if schema is None:
@@ -882,7 +1057,48 @@ def rows_for_training(records: list[dict], name: str, schema: dict | None, renam
     return rows, schema
 
 
-_SHADOW_PARAMS = {"seed", "schema", "on_decision", "trace", "metrics", "probabilities", "config", "settings", "fallback",
+def _unpack(answer):
+    """(answer, probabilities or None) from a teacher's return value: a plain answer, an (answer, probs) pair from
+    LLMTeacher.answer_with_probabilities, or a dict {"answer": ..., "probabilities": {option: p}}."""
+    if isinstance(answer, tuple) and len(answer) == 2 and (answer[1] is None or isinstance(answer[1], dict)):
+        return answer
+    if isinstance(answer, dict) and "answer" in answer:
+        p = answer.get("probabilities")
+        return answer["answer"], (p if isinstance(p, dict) else None)
+    return answer, None
+
+
+def _image_tiers(image):
+    """(first ImageSpec or None, list of tiers or None) for image=None / True / an ImageSpec / its dict / a list."""
+    if image is None or image is False:
+        return None, None
+    from .vision import EmbedSpec, ImageSpec, spec_from_dict
+    if image is True:
+        return ImageSpec(), None
+    if isinstance(image, ImageSpec):
+        return image, None
+    if isinstance(image, dict):
+        return spec_from_dict(image), None
+    if isinstance(image, (list, tuple)) and image:
+        tiers = [spec_from_dict(t) if isinstance(t, dict) else (ImageSpec() if t is True else t) for t in image]
+        if not isinstance(tiers[0], ImageSpec) or not all(isinstance(t, (ImageSpec, EmbedSpec)) for t in tiers):
+            raise TypeError("an image cascade starts with an ImageSpec (microseconds) and adds EmbedSpec tiers")
+        return tiers[0], (tiers if len(tiers) > 1 else None)
+    raise TypeError("image= takes True, a shad0w.vision.ImageSpec, an EmbedSpec cascade list, or a spec dict")
+
+
+def _show(x) -> str:
+    """How an input appears in traces, metrics and log lines: the text, or a short id for an image."""
+    if isinstance(x, str):
+        return x
+    try:
+        from .vision import image_digest
+        return f"<image {image_digest(x)[:12]}>"
+    except Exception:
+        return f"<{type(x).__name__}>"
+
+
+_SHADOW_PARAMS = {"seed", "image", "schema", "on_decision", "trace", "metrics", "probabilities", "config", "settings", "fallback",
                   "llm", "api_key", "api_key_env", "base_url", "question", "teacher", "log", "bundle", "folder", "options",
                   "name"}
 

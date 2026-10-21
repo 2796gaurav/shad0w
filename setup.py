@@ -23,7 +23,7 @@ class OptionalBuildExt(build_ext):
 
 setup(
     ext_modules=[Extension("shad0w._reflex", ["shad0w/_native/reflex.c"], define_macros=[("SHAD0W_PYEXT", "1")],
-                           extra_compile_args=[] if __import__("sys").platform == "win32" else ["-O3"],
+                           extra_compile_args=[] if __import__("sys").platform == "win32" else ["-O3", "-ffp-contract=off"],  # no FMA: numpy parity
                            libraries=[] if __import__("sys").platform == "win32" else ["m"])],
     cmdclass={"build_ext": OptionalBuildExt},
 )

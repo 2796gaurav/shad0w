@@ -74,6 +74,7 @@ class Metrics:
         self._q: dict[str, dict] = {}
         self._recent = deque(maxlen=recent)
         self.passthrough = 0
+        self.non_text = 0  # marked decisions forwarded because they carry an image, audio or a file
         self.errors = 0
 
     def _question(self, name: str) -> dict:
@@ -147,7 +148,7 @@ class Metrics:
             "cost_per_call": self.cost_per_call,
             "cost_saved": None if self.cost_per_call is None else round(tot["table"] * self.cost_per_call, 6),
             "audits": tot["audits"], "audit_disagreements": tot["audit_disagreements"],
-            "passthrough": self.passthrough, "errors": self.errors,
+            "passthrough": self.passthrough, "non_text": self.non_text, "errors": self.errors,
             "questions": out_q, "recent": recent,
         }
 
@@ -186,6 +187,8 @@ class Metrics:
         if snap["cost_saved"] is not None:
             metric("shad0w_cost_saved_total", "counter", "Estimated LLM cost saved (calls saved x cost per call).", [({}, snap["cost_saved"])])
         metric("shad0w_passthrough_total", "counter", "Proxy requests forwarded untouched (not decisions).", [({}, snap["passthrough"])])
+        metric("shad0w_non_text_total", "counter", "Decision requests forwarded because they carry an image, audio or a file.",
+               [({}, snap.get("non_text", 0))])
         metric("shad0w_errors_total", "counter", "Requests that failed.", [({}, snap["errors"])])
         L.append("# HELP shad0w_latency_seconds End-to-end decision latency (LLM time for teacher answers).")
         L.append("# TYPE shad0w_latency_seconds histogram")

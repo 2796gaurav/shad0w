@@ -1,0 +1,1784 @@
+{
+ "benchmark": "shad0w decision bench",
+ "version": 1,
+ "alpha": 0.05,
+ "delta": 0.1,
+ "hardware": {
+  "cpu": "Apple M5 Pro",
+  "cores": 15,
+  "performance_cores": "5",
+  "memory_gb": 24,
+  "os": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.10.21",
+  "numpy": "2.2.6",
+  "dm_threads": 5,
+  "date": "2026-10-19",
+  "shad0w": "0.3.3"
+ },
+ "tasks": {
+  "ag_news": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.8533,
+     "accuracy_ci95": [
+      0.7879,
+      0.9011
+     ],
+     "p50_us": 3845415.58,
+     "p99_us": 4706961.71,
+     "mean_us": 3884588.23,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.732,
+     "accuracy_ci95": [
+      0.6915,
+      0.7689
+     ],
+     "p50_us": 187327.83,
+     "p99_us": 238814.42,
+     "mean_us": 185533.35,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 136926.541
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.828,
+     "accuracy_ci95": [
+      0.7925,
+      0.8585
+     ],
+     "p50_us": 50134.71,
+     "p99_us": 76033.88,
+     "mean_us": 49033.49,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 81560.75
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.88,
+     "accuracy_ci95": [
+      0.8183,
+      0.9227
+     ],
+     "p50_us": 268869.19,
+     "p99_us": 394483.78,
+     "mean_us": 270243.23,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 673540.792
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.938,
+     "accuracy_ci95": [
+      0.9133,
+      0.956
+     ],
+     "p50_us": 124374.46,
+     "p99_us": 208460.58,
+     "mean_us": 126591.86,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": 0.773482,
+     "certified_coverage": 0.872,
+     "served_error": 0.0344,
+     "single_thread_p50_us": 421118.375
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 32,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 30000,
+     "subset": false,
+     "accuracy": 0.912,
+     "accuracy_ci95": [
+      0.8839,
+      0.9338
+     ],
+     "p50_us": 10.08,
+     "p99_us": 17.58,
+     "mean_us": 10.1,
+     "train_s": 90.52,
+     "size_mb": 5.7,
+     "c_core_p50_us": 7.0,
+     "c_core_mean_us": 7.551,
+     "certified_threshold": 0.924368,
+     "certified_coverage": 0.66,
+     "served_error": 0.0182
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 32,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 30000,
+     "subset": false,
+     "accuracy": 0.912,
+     "accuracy_ci95": [
+      0.8839,
+      0.9338
+     ],
+     "p50_us": 21.9,
+     "p99_us": 90.56,
+     "mean_us": 24.42,
+     "train_s": 51.06,
+     "size_mb": 5.7,
+     "c_core_p50_us": 11.0,
+     "c_core_mean_us": 15.736,
+     "certified_threshold": 0.924368,
+     "certified_coverage": 0.66,
+     "served_error": 0.0182
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 30000,
+     "subset": false,
+     "accuracy": 0.918,
+     "accuracy_ci95": [
+      0.8906,
+      0.939
+     ],
+     "p50_us": 14.58,
+     "p99_us": 27.68,
+     "mean_us": 15.3,
+     "train_s": 164.18,
+     "size_mb": 1.27,
+     "c_core_p50_us": 9.0,
+     "c_core_mean_us": 11.448,
+     "certified_threshold": 0.939737,
+     "certified_coverage": 0.614,
+     "served_error": 0.0163
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.64,
+     "accuracy": 0.8667,
+     "decision_model_alone_accuracy": 0.8533,
+     "mean_us": 1415675.6,
+     "decision_model_alone_mean_us": 3884588.23,
+     "speedup": 2.7
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.66,
+     "accuracy": 0.852,
+     "decision_model_alone_accuracy": 0.732,
+     "mean_us": 63115.4,
+     "decision_model_alone_mean_us": 185533.35,
+     "speedup": 2.9
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.66,
+     "accuracy": 0.87,
+     "decision_model_alone_accuracy": 0.828,
+     "mean_us": 16786.8,
+     "decision_model_alone_mean_us": 49033.49,
+     "speedup": 2.9
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.64,
+     "accuracy": 0.8867,
+     "decision_model_alone_accuracy": 0.88,
+     "mean_us": 97671.1,
+     "decision_model_alone_mean_us": 270243.23,
+     "speedup": 2.8
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.66,
+     "accuracy": 0.942,
+     "decision_model_alone_accuracy": 0.938,
+     "mean_us": 43080.6,
+     "decision_model_alone_mean_us": 126591.86,
+     "speedup": 2.9
+    }
+   }
+  },
+  "banking77": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.7667,
+     "accuracy_ci95": [
+      0.6928,
+      0.8272
+     ],
+     "p50_us": 4429967.44,
+     "p99_us": 5086587.07,
+     "mean_us": 4441715.87,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.646,
+     "accuracy_ci95": [
+      0.6031,
+      0.6867
+     ],
+     "p50_us": 1857139.29,
+     "p99_us": 2071085.31,
+     "mean_us": 1864524.93,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 2750742.917
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.628,
+     "accuracy_ci95": [
+      0.5848,
+      0.6692
+     ],
+     "p50_us": 197084.65,
+     "p99_us": 313100.77,
+     "mean_us": 204377.45,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 347450.542
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.8333,
+     "accuracy_ci95": [
+      0.7655,
+      0.8845
+     ],
+     "p50_us": 2619171.79,
+     "p99_us": 2728245.99,
+     "mean_us": 2624656.55,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 6533362.5
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.378,
+     "accuracy_ci95": [
+      0.3366,
+      0.4213
+     ],
+     "p50_us": 621139.5,
+     "p99_us": 723845.6,
+     "mean_us": 615176.19,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 1847648.5
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 128,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 9503,
+     "subset": false,
+     "accuracy": 0.94,
+     "accuracy_ci95": [
+      0.9156,
+      0.9577
+     ],
+     "p50_us": 5.96,
+     "p99_us": 17.88,
+     "mean_us": 6.79,
+     "train_s": 59.72,
+     "size_mb": 3.08,
+     "c_core_p50_us": 4.0,
+     "c_core_mean_us": 5.065,
+     "certified_threshold": 0.70116,
+     "certified_coverage": 0.888,
+     "served_error": 0.0203
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 128,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 9503,
+     "subset": false,
+     "accuracy": 0.94,
+     "accuracy_ci95": [
+      0.9156,
+      0.9577
+     ],
+     "p50_us": 6.27,
+     "p99_us": 18.84,
+     "mean_us": 7.19,
+     "train_s": 18.79,
+     "size_mb": 3.08,
+     "c_core_p50_us": 5.0,
+     "c_core_mean_us": 5.547,
+     "certified_threshold": 0.70116,
+     "certified_coverage": 0.888,
+     "served_error": 0.0203
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 9503,
+     "subset": false,
+     "accuracy": 0.924,
+     "accuracy_ci95": [
+      0.8974,
+      0.9441
+     ],
+     "p50_us": 4.0,
+     "p99_us": 13.89,
+     "mean_us": 4.62,
+     "train_s": 76.57,
+     "size_mb": 1.89,
+     "c_core_p50_us": 3.0,
+     "c_core_mean_us": 3.124,
+     "certified_threshold": 0.742072,
+     "certified_coverage": 0.874,
+     "served_error": 0.0206
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.8733,
+     "accuracy": 0.9,
+     "decision_model_alone_accuracy": 0.7667,
+     "mean_us": 558476.8,
+     "decision_model_alone_mean_us": 4441715.87,
+     "speedup": 8.0
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.888,
+     "accuracy": 0.924,
+     "decision_model_alone_accuracy": 0.646,
+     "mean_us": 208712.5,
+     "decision_model_alone_mean_us": 1864524.93,
+     "speedup": 8.9
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.888,
+     "accuracy": 0.918,
+     "decision_model_alone_accuracy": 0.628,
+     "mean_us": 23540.8,
+     "decision_model_alone_mean_us": 204377.45,
+     "speedup": 8.7
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.8733,
+     "accuracy": 0.9133,
+     "decision_model_alone_accuracy": 0.8333,
+     "mean_us": 334538.0,
+     "decision_model_alone_mean_us": 2624656.55,
+     "speedup": 7.8
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.888,
+     "accuracy": 0.906,
+     "decision_model_alone_accuracy": 0.378,
+     "mean_us": 69024.3,
+     "decision_model_alone_mean_us": 615176.19,
+     "speedup": 8.9
+    }
+   }
+  },
+  "clinc150": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.8333,
+     "accuracy_ci95": [
+      0.7655,
+      0.8845
+     ],
+     "p50_us": 5565211.27,
+     "p99_us": 6284611.34,
+     "mean_us": 5593389.38,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.5267,
+     "accuracy_ci95": [
+      0.4471,
+      0.6049
+     ],
+     "p50_us": 2315877.42,
+     "p99_us": 2386157.93,
+     "mean_us": 2313331.97,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 3806715.25
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.274,
+     "accuracy_ci95": [
+      0.2367,
+      0.3147
+     ],
+     "p50_us": 314149.43,
+     "p99_us": 464892.75,
+     "mean_us": 319626.68,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 697704.417
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.58,
+     "accuracy_ci95": [
+      0.5,
+      0.656
+     ],
+     "p50_us": 3770632.4,
+     "p99_us": 3884014.09,
+     "mean_us": 3761250.93,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 9498138.25
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.406,
+     "accuracy_ci95": [
+      0.3638,
+      0.4496
+     ],
+     "p50_us": 1096501.77,
+     "p99_us": 1138393.2,
+     "mean_us": 1093673.97,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 3998542.084
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 128,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 14750,
+     "subset": false,
+     "accuracy": 0.846,
+     "accuracy_ci95": [
+      0.8117,
+      0.875
+     ],
+     "p50_us": 6.46,
+     "p99_us": 10.04,
+     "mean_us": 6.63,
+     "train_s": 82.91,
+     "size_mb": 4.57,
+     "c_core_p50_us": 5.0,
+     "c_core_mean_us": 5.014,
+     "certified_threshold": 0.586094,
+     "certified_coverage": 0.864,
+     "served_error": 0.0833
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 128,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 14750,
+     "subset": false,
+     "accuracy": 0.846,
+     "accuracy_ci95": [
+      0.8117,
+      0.875
+     ],
+     "p50_us": 7.94,
+     "p99_us": 14.0,
+     "mean_us": 8.15,
+     "train_s": 36.17,
+     "size_mb": 4.57,
+     "c_core_p50_us": 5.0,
+     "c_core_mean_us": 5.543,
+     "certified_threshold": 0.586094,
+     "certified_coverage": 0.864,
+     "served_error": 0.0833
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 14750,
+     "subset": false,
+     "accuracy": 0.848,
+     "accuracy_ci95": [
+      0.8139,
+      0.8768
+     ],
+     "p50_us": 7.29,
+     "p99_us": 14.43,
+     "mean_us": 7.6,
+     "train_s": 149.34,
+     "size_mb": 5.37,
+     "c_core_p50_us": 5.0,
+     "c_core_mean_us": 5.245,
+     "certified_threshold": 0.73891,
+     "certified_coverage": 0.78,
+     "served_error": 0.0513
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.8667,
+     "accuracy": 0.9133,
+     "decision_model_alone_accuracy": 0.8333,
+     "mean_us": 746893.8,
+     "decision_model_alone_mean_us": 5593389.38,
+     "speedup": 7.5
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.8667,
+     "accuracy": 0.8267,
+     "decision_model_alone_accuracy": 0.5267,
+     "mean_us": 307554.7,
+     "decision_model_alone_mean_us": 2313331.97,
+     "speedup": 7.5
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.864,
+     "accuracy": 0.798,
+     "decision_model_alone_accuracy": 0.274,
+     "mean_us": 43211.7,
+     "decision_model_alone_mean_us": 319626.68,
+     "speedup": 7.4
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.8667,
+     "accuracy": 0.8267,
+     "decision_model_alone_accuracy": 0.58,
+     "mean_us": 505235.0,
+     "decision_model_alone_mean_us": 3761250.93,
+     "speedup": 7.4
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.864,
+     "accuracy": 0.804,
+     "decision_model_alone_accuracy": 0.406,
+     "mean_us": 149295.9,
+     "decision_model_alone_mean_us": 1093673.97,
+     "speedup": 7.3
+    }
+   }
+  },
+  "prompt_injection": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.8867,
+     "accuracy_ci95": [
+      0.826,
+      0.928
+     ],
+     "p50_us": 3606514.94,
+     "p99_us": 4307069.35,
+     "mean_us": 3648511.58,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.946,
+     "accuracy_ci95": [
+      0.9226,
+      0.9626
+     ],
+     "p50_us": 112644.9,
+     "p99_us": 749524.03,
+     "mean_us": 143364.29,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": 0.633183,
+     "certified_coverage": 0.95,
+     "served_error": 0.0379,
+     "single_thread_p50_us": 114271.917
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.344,
+     "accuracy_ci95": [
+      0.3037,
+      0.3867
+     ],
+     "p50_us": 14315.17,
+     "p99_us": 475427.07,
+     "mean_us": 44492.18,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 73385.125
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.8333,
+     "accuracy_ci95": [
+      0.7655,
+      0.8845
+     ],
+     "p50_us": 199601.19,
+     "p99_us": 2345278.5,
+     "mean_us": 326161.65,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 494962.584
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.886,
+     "accuracy_ci95": [
+      0.8552,
+      0.911
+     ],
+     "p50_us": 108943.62,
+     "p99_us": 2101826.27,
+     "mean_us": 211925.17,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": 0.90558,
+     "certified_coverage": 0.452,
+     "served_error": 0.0221,
+     "single_thread_p50_us": 342020.625
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 7736,
+     "subset": false,
+     "accuracy": 0.988,
+     "accuracy_ci95": [
+      0.9741,
+      0.9945
+     ],
+     "p50_us": 2.42,
+     "p99_us": 41.56,
+     "mean_us": 4.95,
+     "train_s": 44.63,
+     "size_mb": 0.4,
+     "c_core_p50_us": 1.0,
+     "c_core_mean_us": 3.524,
+     "certified_threshold": 0.524609,
+     "certified_coverage": 1.0,
+     "served_error": 0.012
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 32,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 7736,
+     "subset": false,
+     "accuracy": 0.988,
+     "accuracy_ci95": [
+      0.9741,
+      0.9945
+     ],
+     "p50_us": 5.54,
+     "p99_us": 136.93,
+     "mean_us": 12.58,
+     "train_s": 22.38,
+     "size_mb": 2.39,
+     "c_core_p50_us": 4.0,
+     "c_core_mean_us": 10.793,
+     "certified_threshold": 0.510969,
+     "certified_coverage": 0.998,
+     "served_error": 0.01
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 7736,
+     "subset": false,
+     "accuracy": 0.988,
+     "accuracy_ci95": [
+      0.9741,
+      0.9945
+     ],
+     "p50_us": 2.79,
+     "p99_us": 48.15,
+     "mean_us": 5.78,
+     "train_s": 38.17,
+     "size_mb": 0.4,
+     "c_core_p50_us": 1.0,
+     "c_core_mean_us": 3.967,
+     "certified_threshold": 0.524609,
+     "certified_coverage": 1.0,
+     "served_error": 0.012
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.9933,
+     "decision_model_alone_accuracy": 0.8867,
+     "mean_us": 4.8,
+     "decision_model_alone_mean_us": 3648511.58,
+     "speedup": 762245
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.988,
+     "decision_model_alone_accuracy": 0.946,
+     "mean_us": 4.9,
+     "decision_model_alone_mean_us": 143364.29,
+     "speedup": 28988
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.988,
+     "decision_model_alone_accuracy": 0.344,
+     "mean_us": 4.9,
+     "decision_model_alone_mean_us": 44492.18,
+     "speedup": 8996
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.9933,
+     "decision_model_alone_accuracy": 0.8333,
+     "mean_us": 4.8,
+     "decision_model_alone_mean_us": 326161.65,
+     "speedup": 68142
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.988,
+     "decision_model_alone_accuracy": 0.886,
+     "mean_us": 4.9,
+     "decision_model_alone_mean_us": 211925.17,
+     "speedup": 42852
+    }
+   }
+  },
+  "sms_spam": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.9533,
+     "accuracy_ci95": [
+      0.9068,
+      0.9772
+     ],
+     "p50_us": 3557034.5,
+     "p99_us": 3747329.49,
+     "mean_us": 3556087.46,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.902,
+     "accuracy_ci95": [
+      0.8728,
+      0.9251
+     ],
+     "p50_us": 147417.38,
+     "p99_us": 194647.67,
+     "mean_us": 150665.05,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": 0.743163,
+     "certified_coverage": 0.492,
+     "served_error": 0.0285,
+     "single_thread_p50_us": 97632.708
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.664,
+     "accuracy_ci95": [
+      0.6215,
+      0.704
+     ],
+     "p50_us": 15916.35,
+     "p99_us": 57627.36,
+     "mean_us": 23569.59,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 24650.708
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.9267,
+     "accuracy_ci95": [
+      0.8735,
+      0.9586
+     ],
+     "p50_us": 130381.71,
+     "p99_us": 306962.23,
+     "mean_us": 152914.47,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 308536.5
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.884,
+     "accuracy_ci95": [
+      0.853,
+      0.9092
+     ],
+     "p50_us": 55477.32,
+     "p99_us": 192888.11,
+     "mean_us": 72823.24,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": 0.925586,
+     "certified_coverage": 0.372,
+     "served_error": 0.0323,
+     "single_thread_p50_us": 169967.333
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 3680,
+     "subset": false,
+     "accuracy": 0.978,
+     "accuracy_ci95": [
+      0.961,
+      0.9877
+     ],
+     "p50_us": 1.92,
+     "p99_us": 4.59,
+     "mean_us": 2.15,
+     "train_s": 20.38,
+     "size_mb": 0.26,
+     "c_core_p50_us": 1.0,
+     "c_core_mean_us": 0.849,
+     "certified_threshold": 0.511739,
+     "certified_coverage": 0.998,
+     "served_error": 0.022
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 32,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 3680,
+     "subset": false,
+     "accuracy": 0.978,
+     "accuracy_ci95": [
+      0.961,
+      0.9877
+     ],
+     "p50_us": 3.46,
+     "p99_us": 10.78,
+     "mean_us": 4.27,
+     "train_s": 13.19,
+     "size_mb": 1.56,
+     "c_core_p50_us": 2.0,
+     "c_core_mean_us": 2.63,
+     "certified_threshold": 0.587713,
+     "certified_coverage": 0.998,
+     "served_error": 0.02
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 3680,
+     "subset": false,
+     "accuracy": 0.978,
+     "accuracy_ci95": [
+      0.961,
+      0.9877
+     ],
+     "p50_us": 5.92,
+     "p99_us": 14.23,
+     "mean_us": 6.79,
+     "train_s": 13.12,
+     "size_mb": 0.26,
+     "c_core_p50_us": 2.0,
+     "c_core_mean_us": 2.215,
+     "certified_threshold": 0.511739,
+     "certified_coverage": 0.998,
+     "served_error": 0.022
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.9733,
+     "decision_model_alone_accuracy": 0.9533,
+     "mean_us": 2.1,
+     "decision_model_alone_mean_us": 3556087.46,
+     "speedup": 1704195
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.998,
+     "accuracy": 0.978,
+     "decision_model_alone_accuracy": 0.902,
+     "mean_us": 278.4,
+     "decision_model_alone_mean_us": 150665.05,
+     "speedup": 541
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.998,
+     "accuracy": 0.978,
+     "decision_model_alone_accuracy": 0.664,
+     "mean_us": 27.7,
+     "decision_model_alone_mean_us": 23569.59,
+     "speedup": 850
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 1.0,
+     "accuracy": 0.9733,
+     "decision_model_alone_accuracy": 0.9267,
+     "mean_us": 2.1,
+     "decision_model_alone_mean_us": 152914.47,
+     "speedup": 73282
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.998,
+     "accuracy": 0.976,
+     "decision_model_alone_accuracy": 0.884,
+     "mean_us": 94.3,
+     "decision_model_alone_mean_us": 72823.24,
+     "speedup": 773
+    }
+   }
+  },
+  "sst2": {
+   "systems": {
+    "decider-0.8b": {
+     "system": "decider-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Decider 0.8B (Qwen3.5-0.8B-Base + decision head)",
+      "hf": "Mapika/decider-0.8b",
+      "threads": 5,
+      "runtime": "decider (Python package), CPU"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.9133,
+     "accuracy_ci95": [
+      0.8574,
+      0.9487
+     ],
+     "p50_us": 3620033.44,
+     "p99_us": 5326544.32,
+     "mean_us": 3685535.98,
+     "train_s": 0.0,
+     "size_mb": 1435.12,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null
+    },
+    "gliner2.5-decide": {
+     "system": "gliner2.5-decide",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "GLiNER2.5-Decide (encoder, 0.3B class)",
+      "hf": "fastino/GLiNER2.5-Decide",
+      "threads": 5,
+      "runtime": "gliner2 (Python package), CPU"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.908,
+     "accuracy_ci95": [
+      0.8795,
+      0.9303
+     ],
+     "p50_us": 147513.62,
+     "p99_us": 170006.89,
+     "mean_us": 147782.3,
+     "train_s": 0.0,
+     "size_mb": 1855.69,
+     "certified_threshold": 0.750029,
+     "certified_coverage": 0.714,
+     "served_error": 0.0252,
+     "single_thread_p50_us": 98067.5
+    },
+    "julia-1": {
+     "system": "julia-1",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Julia-1 144M (mmBERT-small encoder)",
+      "gguf": "ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.768,
+     "accuracy_ci95": [
+      0.729,
+      0.8029
+     ],
+     "p50_us": 15515.44,
+     "p99_us": 48770.68,
+     "mean_us": 16907.71,
+     "train_s": 0.0,
+     "size_mb": 160.38,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 26336.166
+    },
+    "kev-0.8b": {
+     "system": "kev-0.8b",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Kev 0.8B (Qwen3.5 + pointer head)",
+      "gguf": "ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 150,
+     "n_cal": 150,
+     "n_train": 0,
+     "subset": true,
+     "accuracy": 0.9067,
+     "accuracy_ci95": [
+      0.8494,
+      0.9436
+     ],
+     "p50_us": 132052.59,
+     "p99_us": 225601.71,
+     "mean_us": 138508.51,
+     "train_s": 0.0,
+     "size_mb": 774.77,
+     "certified_threshold": null,
+     "certified_coverage": 0.0,
+     "served_error": null,
+     "single_thread_p50_us": 326689.458
+    },
+    "laya": {
+     "system": "laya",
+     "kind": "zero-shot",
+     "info": {
+      "family": "decision model",
+      "model": "Laya 421M (ModernBERT-large encoder)",
+      "gguf": "ggml-org/Laya-GGUF/Laya-Q8_0.gguf",
+      "threads": 5,
+      "runtime": "llama.cpp llama-server, --device none",
+      "llama_cpp": "version: 0.6.0 (build 11429, commit d81235049)"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 0,
+     "subset": false,
+     "accuracy": 0.916,
+     "accuracy_ci95": [
+      0.8884,
+      0.9373
+     ],
+     "p50_us": 49155.6,
+     "p99_us": 104410.26,
+     "mean_us": 55425.47,
+     "train_s": 0.0,
+     "size_mb": 428.58,
+     "certified_threshold": 0.953041,
+     "certified_coverage": 0.46,
+     "served_error": 0.0217,
+     "single_thread_p50_us": 173104.333
+    },
+    "shad0w-auto": {
+     "system": "shad0w-auto",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "auto",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 66849,
+     "subset": false,
+     "accuracy": 0.832,
+     "accuracy_ci95": [
+      0.7967,
+      0.8622
+     ],
+     "p50_us": 3.0,
+     "p99_us": 5.21,
+     "mean_us": 3.09,
+     "train_s": 62.32,
+     "size_mb": 0.49,
+     "c_core_p50_us": 1.0,
+     "c_core_mean_us": 1.383,
+     "certified_threshold": 0.777621,
+     "certified_coverage": 0.62,
+     "served_error": 0.0581
+    },
+    "shad0w-deep": {
+     "system": "shad0w-deep",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "deep",
+      "threads": 1,
+      "hidden": 32,
+      "chosen": "deep"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 66849,
+     "subset": false,
+     "accuracy": 0.846,
+     "accuracy_ci95": [
+      0.8117,
+      0.875
+     ],
+     "p50_us": 5.25,
+     "p99_us": 9.67,
+     "mean_us": 5.36,
+     "train_s": 15.72,
+     "size_mb": 2.93,
+     "c_core_p50_us": 3.0,
+     "c_core_mean_us": 3.437,
+     "certified_threshold": 0.826613,
+     "certified_coverage": 0.508,
+     "served_error": 0.0394
+    },
+    "shad0w-linear": {
+     "system": "shad0w-linear",
+     "kind": "learned",
+     "info": {
+      "family": "shad0w",
+      "student": "linear",
+      "threads": 1,
+      "hidden": 0,
+      "chosen": "linear"
+     },
+     "n_test": 500,
+     "n_cal": 500,
+     "n_train": 66849,
+     "subset": false,
+     "accuracy": 0.832,
+     "accuracy_ci95": [
+      0.7967,
+      0.8622
+     ],
+     "p50_us": 2.29,
+     "p99_us": 4.12,
+     "mean_us": 2.36,
+     "train_s": 45.47,
+     "size_mb": 0.49,
+     "c_core_p50_us": 1.0,
+     "c_core_mean_us": 0.95,
+     "certified_threshold": 0.777621,
+     "certified_coverage": 0.62,
+     "served_error": 0.0581
+    }
+   },
+   "shad0w_auto": "shad0w-auto",
+   "cascades": {
+    "decider-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.6,
+     "accuracy": 0.9067,
+     "decision_model_alone_accuracy": 0.9133,
+     "mean_us": 1487300.8,
+     "decision_model_alone_mean_us": 3685535.98,
+     "speedup": 2.5
+    },
+    "gliner2.5-decide": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.62,
+     "accuracy": 0.906,
+     "decision_model_alone_accuracy": 0.908,
+     "mean_us": 57118.1,
+     "decision_model_alone_mean_us": 147782.3,
+     "speedup": 2.6
+    },
+    "julia-1": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.62,
+     "accuracy": 0.836,
+     "decision_model_alone_accuracy": 0.768,
+     "mean_us": 6812.7,
+     "decision_model_alone_mean_us": 16907.71,
+     "speedup": 2.5
+    },
+    "kev-0.8b": {
+     "front": "shad0w-auto",
+     "n": 150,
+     "served_by_shad0w": 0.6,
+     "accuracy": 0.9,
+     "decision_model_alone_accuracy": 0.9067,
+     "mean_us": 58622.4,
+     "decision_model_alone_mean_us": 138508.51,
+     "speedup": 2.4
+    },
+    "laya": {
+     "front": "shad0w-auto",
+     "n": 500,
+     "served_by_shad0w": 0.62,
+     "accuracy": 0.924,
+     "decision_model_alone_accuracy": 0.916,
+     "mean_us": 22414.7,
+     "decision_model_alone_mean_us": 55425.47,
+     "speedup": 2.5
+    }
+   }
+  }
+ }
+}

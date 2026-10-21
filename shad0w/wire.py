@@ -26,7 +26,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
-__all__ = ["WireQ", "dialect_of", "parse", "subset", "parse_answers", "answer_value", "format_answer",
+__all__ = ["WireQ", "dialect_of", "parse", "has_non_text", "subset", "parse_answers", "answer_value", "format_answer",
            "format_response", "teacher_request", "teacher_answer", "DEC_CHOICES", "DEC_VALUE", "DEC_CHOSEN", "DEC_LEVELS"]
 
 # OpenAI Decisions API field names (openai>=3.26: types/decision_create_params.py, types/decision.py)
@@ -71,6 +71,52 @@ def _text_of_messages(msgs) -> str | None:
         if isinstance(c, list):
             parts = [p.get("text", "") for p in c if isinstance(p, dict) and p.get("type") in ("input_text", "text")]
             return "\n".join(x for x in parts if x)
+    return None
+
+
+TEXT_PARTS = ("text", "input_text")
+
+
+def has_non_text(req) -> bool:
+    """True when the last user message carries a part that is not text (an image, audio, a file).
+
+    The table only sees text, so such a request would be decided from its prompt alone: every image sent with the
+    same prompt would hash to the same items and get the same answer. These requests always go to the model."""
+    if not isinstance(req, dict):
+        return False
+    for key in ("messages", "input"):
+        msgs = req.get(key)
+        if not isinstance(msgs, list):
+            continue
+        for m in reversed(msgs):
+            if not isinstance(m, dict) or m.get("role", "user") != "user":
+                continue
+            c = m.get("content")
+            return isinstance(c, list) and any(isinstance(p, dict) and p.get("type") not in TEXT_PARTS for p in c)
+    return False
+
+
+def single_image(req) -> str | None:
+    """The data: URL when the last user message carries exactly one image (as an inline data: URL) and nothing else
+    that is not text; else None (remote image URLs are never fetched by the proxy)."""
+    if not isinstance(req, dict):
+        return None
+    for key in ("messages", "input"):
+        msgs = req.get(key)
+        if not isinstance(msgs, list):
+            continue
+        for m in reversed(msgs):
+            if not isinstance(m, dict) or m.get("role", "user") != "user":
+                continue
+            c = m.get("content")
+            if not isinstance(c, list):
+                return None
+            other = [p for p in c if isinstance(p, dict) and p.get("type") not in TEXT_PARTS]
+            if len(other) != 1 or other[0].get("type") not in ("image_url", "input_image"):
+                return None
+            u = other[0].get("image_url")
+            u = u.get("url") if isinstance(u, dict) else u
+            return u if isinstance(u, str) and u.startswith("data:image/") else None
     return None
 
 
@@ -245,6 +291,28 @@ def teacher_request(dialect: str, model: str, text: str, q: WireQ) -> tuple[str,
     else:
         question = {"type": "choice", "instructions": instr, "criteria": {k: (v or k) for k, v in q.criteria.items()}}
     return "/systemone", {"model": model, "state": text, "questions": {q.name: question}}
+
+
+def answer_probabilities(dialect: str, body: dict, q: WireQ) -> dict | None:
+    """{option: probability} carried by a decision-model reply for `q` (choice or yes/no), or None."""
+    a = parse_answers(dialect, body).get(q.name)
+    if not isinstance(a, dict):
+        return None
+    if q.qtype == "yesno":
+        for k in ("probability", "noul", "p"):
+            if isinstance(a.get(k), (int, float)):
+                p = float(a[k])
+                return {"yes": p, "no": 1.0 - p}
+        return None
+    pr = a.get("probabilities")
+    if isinstance(pr, list):  # OpenAI Decisions: [{"value": ..., "probability": ...}]
+        out = {_val(x.get(DEC_VALUE)): x.get("probability") for x in pr if isinstance(x, dict) and DEC_VALUE in x}
+    elif isinstance(pr, dict):  # System One: {option: p}
+        out = dict(pr)
+    else:
+        return None
+    out = {k: float(v) for k, v in out.items() if k in q.criteria and isinstance(v, (int, float))}
+    return out or None
 
 
 def teacher_answer(dialect: str, body: dict, q: WireQ):

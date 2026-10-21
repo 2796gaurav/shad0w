@@ -5,7 +5,7 @@
 // shad0w/_native/reflex.c exactly; the test suite checks that all three runtimes make identical decisions.
 "use strict";
 
-const BITS = 22, MASK = (1 << BITS) - 1, MAX_WORD = 256, TABLE_VERSION = 1;
+const BITS = 22, MASK = (1 << BITS) - 1, MAX_WORD = 256, TABLE_VERSION = 1, TABLE_VERSION_DEEP = 2;
 const enc = new TextEncoder();
 
 function fnv(prefix, bytes, start, end) {
@@ -14,9 +14,75 @@ function fnv(prefix, bytes, start, end) {
   return (h & MASK) >>> 0;
 }
 
-/** Words: runs of ASCII letters/digits or any byte >= 0x80, ASCII-lowercased (so every script passes through). */
-function words(text) {
-  const b = enc.encode(text);
+const EMPTY_ITEM = fnv(101 /* 'e' */, new Uint8Array(0), 0, 0);  // the item of an empty input
+const TEXT_KINDS = [1, 2];
+function checkKind(kind) {
+  const k = kind === undefined || kind === null ? 1 : Number(kind);
+  if (!TEXT_KINDS.includes(k)) throw new Error(`text_kind ${kind} is not supported (this shad0w knows ${TEXT_KINDS.join(", ")})`);
+  return k;
+}
+/** UTF-8 bytes of a string (or a copy of a Uint8Array / Node Buffer, taken as UTF-8 as it is). */
+function utf8(text) {
+  if (text instanceof Uint8Array) return Uint8Array.from(text);
+  // a lone surrogate becomes "?" (a separator), as Python's encode("utf-8", "replace") does; TextEncoder would emit
+  // U+FFFD, a word byte, and hash such a text differently from Python and C
+  return enc.encode(String(text).replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "?"));
+}
+
+// text_kind 2 (shad0w/features.py): scripts written without spaces give one word per character (no trigrams), and
+// Latin-1 Supplement / Greek / Cyrillic capitals are folded. Identical to kind 1 on ASCII.
+function isCharScript(cp) {
+  return (cp >= 0x2e80 && cp <= 0x2fdf) || (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0x31f0 && cp <= 0x31ff) ||
+    (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff) ||
+    (cp >= 0x20000 && cp <= 0x2fa1f);
+}
+function foldCp(cp) {
+  if ((cp >= 0xc0 && cp <= 0xde && cp !== 0xd7) || (cp >= 0x391 && cp <= 0x3a9 && cp !== 0x3a2) || (cp >= 0x410 && cp <= 0x42f)) return cp + 0x20;
+  if (cp >= 0x400 && cp <= 0x40f) return cp + 0x50;
+  return cp;
+}
+/** Kind 2 words of UTF-8 bytes b: {wb, ws, we, single} with word k at wb[ws[k]..we[k]) (folded, truncated). */
+function spans2(b) {
+  const n = b.length, wb = new Uint8Array(n), ws = [], we = [], single = [];
+  let o = 0, st = -1;  // st: start of the word being built in wb, -1 = none
+  const push = (x) => { if (st < 0) st = o; if (o - st < MAX_WORD) wb[o++] = x; };
+  const flush = () => { if (st >= 0) { ws.push(st); we.push(o); single.push(false); st = -1; } };
+  let i = 0;
+  while (i < n) {
+    let c = b[i];
+    if (c < 0x80) {
+      if (c >= 65 && c <= 90) c += 32;
+      if ((c >= 48 && c <= 57) || (c >= 97 && c <= 122)) push(c); else flush();
+      i++; continue;
+    }
+    let L = 0, cp = 0;
+    if (c >= 0xc2 && c <= 0xdf) { L = 2; cp = c & 0x1f; } else if (c >= 0xe0 && c <= 0xef) { L = 3; cp = c & 0x0f; }
+    else if (c >= 0xf0 && c <= 0xf4) { L = 4; cp = c & 0x07; }
+    if (L && i + L <= n) {
+      for (let k = 1; k < L; k++) { const d = b[i + k]; if ((d & 0xc0) !== 0x80) { L = 0; break; } cp = cp * 64 + (d & 0x3f); }
+    } else L = 0;
+    if (!L) { push(c); i++; continue; }  // not valid UTF-8: one word byte, as kind 1
+    if (isCharScript(cp)) {
+      flush();
+      ws.push(o); for (let k = 0; k < L; k++) wb[o++] = b[i + k]; we.push(o); single.push(true);
+    } else {
+      const f = foldCp(cp);
+      if (f !== cp) { push(0xc0 | (f >> 6)); push(0x80 | (f & 0x3f)); } else for (let k = 0; k < L; k++) push(b[i + k]);
+    }
+    i += L;
+  }
+  flush();
+  return { wb, ws, we, single };
+}
+
+/** Words: runs of ASCII letters/digits or any byte >= 0x80, ASCII-lowercased (so every script passes through).
+ *  kind 2 (a bundle's manifest meta text_kind): Han and kana characters are words of their own. */
+function words(text, kind = 1) {
+  if (checkKind(kind) === 2) {
+    const { wb, ws, we } = spans2(utf8(text));
+    return ws.map((s, k) => wb.slice(s, we[k]));
+  }
+  const b = utf8(text);
   const out = [];
   let cur = [];
   for (let i = 0; i < b.length; i++) {
@@ -38,22 +104,28 @@ function mix(h) {
   h ^= h >>> 16; h = Math.imul(h, 0x7feb352d) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x846ca68b) >>> 0; h ^= h >>> 16;
   return h >>> 0;
 }
-function items(text) {
-  const b = enc.encode(text), n = b.length;
-  const ws = [], we = [];  // word spans [start, end) in b, lowercased in place, truncated to MAX_WORD bytes
-  let i = 0;
-  while (i < n) {
-    let c = b[i];
-    if (c >= 65 && c <= 90) c += 32;
-    if (!((c >= 48 && c <= 57) || (c >= 97 && c <= 122) || c >= 0x80)) { i++; continue; }
-    const st = i;
+/** Item ids of a text (a string, or UTF-8 bytes as a Uint8Array). kind: the bundle's text featurizer (1 or 2). */
+function items(text, kind = 1) {
+  let b, ws, we, single = null;
+  if (checkKind(kind) === 2) {
+    ({ wb: b, ws, we, single } = spans2(utf8(text)));
+  } else {
+    b = utf8(text); ws = []; we = [];  // word spans [start, end) in b, lowercased in place, truncated to MAX_WORD bytes
+    const n = b.length;
+    let i = 0;
     while (i < n) {
-      let d = b[i];
-      if (d >= 65 && d <= 90) { d += 32; b[i] = d; }
-      if (!((d >= 48 && d <= 57) || (d >= 97 && d <= 122) || d >= 0x80)) break;
-      i++;
+      let c = b[i];
+      if (c >= 65 && c <= 90) c += 32;
+      if (!((c >= 48 && c <= 57) || (c >= 97 && c <= 122) || c >= 0x80)) { i++; continue; }
+      const st = i;
+      while (i < n) {
+        let d = b[i];
+        if (d >= 65 && d <= 90) { d += 32; b[i] = d; }
+        if (!((d >= 48 && d <= 57) || (d >= 97 && d <= 122) || d >= 0x80)) break;
+        i++;
+      }
+      ws.push(st); we.push(Math.min(i, st + MAX_WORD));
     }
-    ws.push(st); we.push(Math.min(i, st + MAX_WORD));
   }
   const out = [];
   for (let w = 0; w < ws.length; w++) {
@@ -61,6 +133,7 @@ function items(text) {
     let h = Math.imul(0x811c9dc5 ^ 119, PRIME) >>> 0;          // word: 'w' + bytes
     for (let j = st; j < st + L; j++) h = Math.imul(h ^ b[j], PRIME) >>> 0;
     out.push((h & MASK) >>> 0);
+    if (single && single[w]) continue;                          // one character of a kind-2 character script
     for (let j = 0; j + 3 <= L + 2; j++) {                     // trigrams of " " + word + " ": 'c' + 3 bytes
       let t = Math.imul(0x811c9dc5 ^ 99, PRIME) >>> 0;
       for (let q = j; q < j + 3; q++) t = Math.imul(t ^ (q === 0 || q === L + 1 ? 32 : b[st + q - 1]), PRIME) >>> 0;
@@ -84,26 +157,48 @@ function toArrayBuffer(x) {
   throw new TypeError("expected an ArrayBuffer, a typed array or a Node Buffer");
 }
 
-/** One compiled question: an int8 table over hashed items. */
+/** One compiled question: an int8 table over hashed items. Format 1 is linear (rows K wide); format 2 is "deep":
+ * rows H wide feed relu then a dense H x K layer (same lookups, models item interactions; no robustness radius). */
 class Table {
-  constructor(buffer, labels) {
+  /** opts.textKind: the bundle's text featurizer (manifest meta text_kind; default 1). */
+  constructor(buffer, labels, opts = {}) {
+    this.textKind = checkKind(opts && opts.textKind);
     buffer = toArrayBuffer(buffer);
     if (buffer.byteLength < 20) throw new Error("not a shad0w table (too short)");
     const dv = new DataView(buffer);
     const magic = String.fromCharCode(...new Uint8Array(buffer, 0, 4));
     if (magic !== "S0RX") throw new Error("not a shad0w table");
     const ver = dv.getUint32(4, true), F = dv.getUint32(8, true), K = dv.getUint32(12, true);
-    if (ver !== TABLE_VERSION) throw new Error(`table format version ${ver} is not supported`);
+    if (ver !== TABLE_VERSION && ver !== TABLE_VERSION_DEEP) throw new Error(`table format version ${ver} is not supported`);
     if (K < 2 || K > 1024 || F < 1 || F > (1 << 22)) throw new Error("corrupt table header");
-    if (buffer.byteLength !== 20 + 4 * F + F * K + 8 * K + 4 * K * K) throw new Error("truncated or padded table");
     this.temperature = dv.getFloat32(16, true);
     if (!(this.temperature > 0) || !Number.isFinite(this.temperature)) throw new Error("corrupt table header");
-    let o = 20;
+    let o = 20, H = 0;
+    if (ver === TABLE_VERSION_DEEP) {
+      if (buffer.byteLength < 24) throw new Error("truncated table");
+      H = dv.getUint32(20, true); o = 24;
+      if (H < 1 || H > 1024) throw new Error("corrupt table header");
+    }
+    const W = H || K, tail = H ? 4 * H * K + 4 * K : 4 * K * K;
+    if (buffer.byteLength !== o + 4 * F + F * W + 8 * W + tail) throw new Error("truncated or padded table");
     this.keys = new Uint32Array(buffer.slice(o, o + 4 * F)); o += 4 * F;
-    this.T = new Int8Array(buffer, o, F * K); o += F * K;
-    this.scale = new Float32Array(buffer.slice(o, o + 4 * K)); o += 4 * K;
-    this.bias = new Float32Array(buffer.slice(o, o + 4 * K));
-    this.F = F; this.K = K; this.labels = labels || null;
+    this.T = new Int8Array(buffer, o, F * W); o += F * W;
+    this.scale = new Float32Array(buffer.slice(o, o + 4 * W)); o += 4 * W;
+    this.bias = new Float32Array(buffer.slice(o, o + 4 * W)); o += 4 * W;
+    if (H) {
+      this.W2 = new Float32Array(buffer.slice(o, o + 4 * H * K)); o += 4 * H * K;
+      this.b2 = new Float32Array(buffer.slice(o, o + 4 * K));
+    }
+    // refuse what the C core and Python refuse: keys must be strictly increasing 22-bit ids, weights finite
+    for (let r = 0; r < F; r++) {
+      if (this.keys[r] > MASK || (r > 0 && this.keys[r] <= this.keys[r - 1])) throw new Error("corrupt table: keys");
+    }
+    const finite = (a) => { for (let i = 0; i < a.length; i++) if (!Number.isFinite(a[i])) return false; return true; };
+    const tailF = H ? null : new Float32Array(buffer.slice(o, o + 4 * K * K));
+    if (!finite(this.scale) || !finite(this.bias) || (H ? !finite(this.W2) || !finite(this.b2) : !finite(tailF))) {
+      throw new Error("corrupt table: non-finite weights");
+    }
+    this.F = F; this.K = K; this.H = H; this.W = W; this.labels = labels || null;
     // open-addressing index key -> row (as the C core does): one or two probes instead of a binary search
     let cap = 1; while (cap < 2 * F) cap <<= 1;
     this.cap = cap; this.slotKey = new Uint32Array(cap); this.slotRow = new Int32Array(cap);
@@ -112,7 +207,8 @@ class Table {
       while (this.slotKey[i] !== 0) i = (i + 1) & (cap - 1);
       this.slotKey[i] = this.keys[r] + 1; this.slotRow[i] = r;
     }
-    this.acc = new Int32Array(K);
+    this.acc = new Int32Array(W);
+    this.h = H ? new Float32Array(H) : null;
   }
 
   row(h) {
@@ -129,26 +225,155 @@ class Table {
   /** Scores every option. Returns {index, choice, confidence, probabilities}. */
   /** Scores every option. probabilities=false skips building the per-option array (the fast path). */
   decide(text, probabilities = true) {
-    const its = items(String(text)), K = this.K, acc = this.acc;
+    return this.decideItems(items(text instanceof Uint8Array ? text : String(text), this.textKind), probabilities);
+  }
+
+  /** Scores item ids computed elsewhere (an image's, see ImageFeaturizer): same result shape as decide(). */
+  decideItems(its, probabilities = true) {
+    if (!its.length) its = [EMPTY_ITEM];  // as the C core does: an empty input is the single 'e' item
+    const K = this.K, W = this.W, acc = this.acc;
     acc.fill(0);
     for (const h of its) {
       const r = this.row(h);
       if (r < 0) continue;
-      const base = r * K;
-      for (let j = 0; j < K; j++) acc[j] += this.T[base + j];
+      const base = r * W;
+      for (let j = 0; j < W; j++) acc[j] += this.T[base + j];
     }
     const n = its.length, z = this.z || (this.z = new Float64Array(K));
     let best = 0, mx = -Infinity;
+    if (this.H) {  // deep table: the same float32 steps as the C core
+      const H = this.H, hid = this.h, W2 = this.W2;
+      for (let j = 0; j < H; j++) {
+        const v = Math.fround(Math.fround(Math.fround(acc[j] * this.scale[j]) / n) + this.bias[j]);
+        hid[j] = v > 0 ? v : 0;
+      }
+      for (let k = 0; k < K; k++) z[k] = this.b2[k];
+      for (let j = 0; j < H; j++) {
+        const hj = hid[j];
+        if (hj === 0) continue;
+        const base = j * K;
+        for (let k = 0; k < K; k++) z[k] = Math.fround(z[k] + Math.fround(hj * W2[base + k]));
+      }
+      for (let k = 0; k < K; k++) {
+        z[k] = Math.fround(z[k] / this.temperature);
+        if (z[k] > mx) { mx = z[k]; best = k; }
+      }
+    } else
     for (let j = 0; j < K; j++) {
       z[j] = Math.fround((Math.fround(Math.fround(acc[j] * this.scale[j]) / n) + this.bias[j]) / this.temperature);
       if (z[j] > mx) { mx = z[j]; best = j; }
     }
     let s = 0;
-    for (let j = 0; j < K; j++) { z[j] = Math.exp(z[j] - mx); s += z[j]; }
+    // float32 like the C core and numpy, so a confidence of exactly 1.0 (a threshold of 1.0) certifies the same way
+    for (let j = 0; j < K; j++) { z[j] = Math.fround(Math.exp(z[j] - mx)); s = Math.fround(s + z[j]); }
     const choice = this.labels ? this.labels[best] : best;
-    if (!probabilities) return { index: best, choice, confidence: z[best] / s, p1: K > 1 ? z[1] / s : 0 };
-    const p = Array.from(z, (v) => v / s);
+    if (!probabilities) return { index: best, choice, confidence: Math.fround(z[best] / s), p1: K > 1 ? Math.fround(z[1] / s) : 0 };
+    const p = Array.from(z, (v) => Math.fround(v / s));
     return { index: best, choice, confidence: p[best], probabilities: p };
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Images: pixels -> item ids with no neural network, exactly as shad0w/vision.py and s0_image_items in reflex.c
+// (integer box-mean thumbnail, random pixel-comparison ferns, a coarse colour grid, a 64-bit dHash).
+
+class ImageFeaturizer {
+  /** spec: the bundle's manifest.meta.image ({kind: "ferns/1" | "ferns/2", size, channels, ferns, bits, ...}). */
+  constructor(spec) {
+    const kinds = { "ferns/1": 1, "ferns/2": 2 };
+    if (!(spec.kind in kinds)) throw new Error(`image featurizer ${spec.kind} is not supported`);
+    this.version = kinds[spec.kind];
+    for (const k of ["size", "channels", "ferns", "bits", "radius", "grid", "levels", "margin", "seed"]) this[k] = spec[k] | 0;
+    this.seed = spec.seed >>> 0;
+    this.dhash = !!spec.dhash;
+    const S = this.size, C = this.channels, r = this.radius, n = this.ferns * this.bits;
+    this.a = new Int32Array(n); this.b = new Int32Array(n);
+    let st = (Math.imul(this.seed, 0x9e3779b9) + 0x7f4a7c15) >>> 0;
+    const rnd = () => {
+      st = (st + 0x9e3779b9) >>> 0;
+      let z = st;
+      z = Math.imul(z ^ (z >>> 16), 0x85ebca6b) >>> 0;
+      z = Math.imul(z ^ (z >>> 13), 0xc2b2ae35) >>> 0;
+      return (z ^ (z >>> 16)) >>> 0;
+    };
+    const clamp = (v) => (v < 0 ? 0 : v > S - 1 ? S - 1 : v);
+    for (let i = 0; i < n; i++) {
+      const y1 = rnd() % S, x1 = rnd() % S;
+      const dy = (rnd() % (2 * r + 1)) - r, dx = (rnd() % (2 * r + 1)) - r;
+      const c1 = rnd() % C, c2 = rnd() % C;
+      this.a[i] = (y1 * S + x1) * C + c1;
+      this.b[i] = (clamp(y1 + dy) * S + clamp(x1 + dx)) * C + c2;
+    }
+    this.th = new Uint8Array(S * S * C);
+    this.nItems = this.ferns + this.grid * this.grid * C + (this.dhash ? 4 : 0);
+    this.out = new Uint32Array(this.nItems);
+  }
+
+  /** Item ids of one image: `px` holds h rows of w pixels with c interleaved uint8 channels (1, 3 or 4, e.g. the
+   *  RGBA of a canvas getImageData), rows `stride` bytes apart. Returns a reused Uint32Array (copy it to keep it). */
+  items(px, w, h, c, stride = w * c) {
+    const S = this.size, C = this.channels, th = this.th, SAMP = this.version >= 2 ? 2 : 4;
+    const ry0 = [], rsy = [], rny = [], cx0 = [], csx = [], cnx = [];
+    for (let i = 0; i < S; i++) {
+      let a0 = Math.floor((i * h) / S), a1 = Math.floor(((i + 1) * h) / S);
+      if (a1 <= a0) a1 = a0 + 1;
+      let s1 = Math.floor((a1 - a0) / SAMP); if (s1 < 1) s1 = 1;
+      ry0.push(a0); rsy.push(s1); let ny = Math.floor((a1 - a0 + s1 - 1) / s1); if (this.version >= 2 && ny > SAMP) ny = SAMP; rny.push(ny);
+      let b0 = Math.floor((i * w) / S), b1 = Math.floor(((i + 1) * w) / S);
+      if (b1 <= b0) b1 = b0 + 1;
+      let s2 = Math.floor((b1 - b0) / SAMP); if (s2 < 1) s2 = 1;
+      cx0.push(b0); csx.push(s2); let nx = Math.floor((b1 - b0 + s2 - 1) / s2); if (this.version >= 2 && nx > SAMP) nx = SAMP; cnx.push(nx);
+    }
+    const acc = [0, 0, 0];
+    for (let i = 0; i < S; i++) {
+      for (let j = 0; j < S; j++) {
+        acc[0] = acc[1] = acc[2] = 0;
+        for (let yy = 0, y = ry0[i]; yy < rny[i]; yy++, y += rsy[i]) {
+          for (let xx = 0, x = cx0[j]; xx < cnx[j]; xx++, x += csx[j]) {
+            const p = y * stride + x * c;
+            if (C === 1) acc[0] += c >= 3 ? (px[p] + 2 * px[p + 1] + px[p + 2]) >> 2 : px[p];
+            else for (let k = 0; k < 3; k++) acc[k] += c >= 3 ? px[p + k] : px[p];
+          }
+        }
+        const cnt = rny[i] * cnx[j], o = (i * S + j) * C;
+        for (let k = 0; k < C; k++) th[o + k] = Math.floor(acc[k] / cnt);
+      }
+    }
+    const out = this.out, B = this.bits, m = this.margin;
+    let n = 0;
+    for (let fe = 0; fe < this.ferns; fe++) {
+      let code = 0;
+      for (let k = 0; k < B; k++) if (th[this.a[fe * B + k]] > th[this.b[fe * B + k]] + m) code |= 1 << k;
+      out[n++] = mix((0xf0000000 ^ ((fe << B) | code)) >>> 0) & MASK;
+    }
+    const G = this.grid, L = this.levels;
+    for (let gi = 0; gi < G; gi++) for (let gj = 0; gj < G; gj++) {
+      const r0 = Math.floor((gi * S) / G), r1 = Math.floor(((gi + 1) * S) / G), q0 = Math.floor((gj * S) / G), q1 = Math.floor(((gj + 1) * S) / G);
+      for (let k = 0; k < C; k++) {
+        let s = 0, cnt = 0;
+        for (let y = r0; y < r1; y++) for (let x = q0; x < q1; x++) { s += th[(y * S + x) * C + k]; cnt++; }
+        const q = (Math.floor(s / cnt) * L) >> 8, jj = ((gi * G + gj) * C + k);
+        out[n++] = mix((0xe0000000 ^ (jj * L + q)) >>> 0) & MASK;
+      }
+    }
+    if (this.dhash) {
+      const g = new Uint32Array(72);
+      for (let r = 0; r < 8; r++) for (let cc = 0; cc < 9; cc++) {
+        const r0 = Math.floor((r * S) / 8), r1 = Math.floor(((r + 1) * S) / 8), c0 = Math.floor((cc * S) / 9), c1 = Math.floor(((cc + 1) * S) / 9);
+        let s = 0, cnt = 0;
+        for (let y = r0; y < r1; y++) for (let x = c0; x < c1; x++) {
+          const p = (y * S + x) * C;
+          s += C === 1 ? th[p] : (th[p] + 2 * th[p + 1] + th[p + 2]) >> 2; cnt++;
+        }
+        g[r * 9 + cc] = Math.floor(s / cnt);
+      }
+      for (let band = 0; band < 4; band++) {
+        let bits = 0;
+        for (let k = 0; k < 16; k++) { const r = band * 2 + (k >> 3), cc = k & 7; if (g[r * 9 + cc] > g[r * 9 + cc + 1]) bits |= 1 << k; }
+        out[n++] = mix((0xb0000000 ^ ((band << 16) | bits)) >>> 0) & MASK;
+      }
+    }
+    return out;
   }
 }
 
@@ -156,10 +381,13 @@ class Table {
 class Bundle {
   constructor(manifest, tables) {
     this.manifest = manifest;
+    const img = manifest.meta && manifest.meta.image;
+    this.image = img ? new ImageFeaturizer(img) : null;
+    this.textKind = checkKind(manifest.meta && manifest.meta.text_kind);  // absent = 1 (bundles made before text_kind)
     this.questions = {};
     for (const [name, q] of Object.entries(manifest.questions)) {
       if (!tables[name]) throw new Error(`missing table for question "${name}"`);
-      this.questions[name] = { spec: q, table: new Table(tables[name], q.options) };
+      this.questions[name] = { spec: q, table: new Table(tables[name], q.options, { textKind: this.textKind }) };
     }
   }
 
@@ -204,6 +432,24 @@ class Bundle {
         out.choice = d.choice;
         if (full) out.probabilities = Object.fromEntries(spec.options.map((o, i) => [o, d.probabilities[i]]));
       }
+      answers[name] = out;
+    }
+    return { answers };
+  }
+
+  /** decide() for an image bundle: pixels (w x h, c interleaved uint8 channels, e.g. canvas RGBA with c = 4). */
+  decideImage(px, w, h, c, opts = {}) {
+    if (!this.image) throw new Error("this bundle was trained on text, not images");
+    const its = this.image.items(px, w, h, c, opts.stride);
+    const answers = {};
+    for (const [name, { spec, table }] of Object.entries(this.questions)) {
+      if (opts.questions && !opts.questions.includes(name)) continue;
+      const full = opts.probabilities !== false;
+      const d = table.decideItems(its, full);
+      const thr = spec.threshold === null || spec.threshold === undefined ? Infinity : spec.threshold;
+      const flag = spec.calibrated === false ? "uncalibrated" : !(d.confidence >= thr) ? "low_confidence" : null;
+      const out = { confidence: d.confidence, certified: flag === null, flag, choice: d.choice };
+      if (full) out.probabilities = Object.fromEntries(spec.options.map((o, i) => [o, d.probabilities[i]]));
       answers[name] = out;
     }
     return { answers };
@@ -917,4 +1163,4 @@ function decisionModel(shadows, opts = {}) {
 }
 
 module.exports = { Table, Bundle, Shadow, openaiTeacher, systemoneTeacher, decisionsTeacher, decision, shad0wMiddleware, decisionModel,
-  configure, maskKey, explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION };
+  configure, maskKey, explainFlag, FLAG_WORDS, matchOption, PROVIDERS, items, words, TABLE_VERSION, TABLE_VERSION_DEEP, ImageFeaturizer, TEXT_KINDS };

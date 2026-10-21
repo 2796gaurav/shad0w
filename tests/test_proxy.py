@@ -272,3 +272,77 @@ def test_observability_endpoints(setup):
     assert 'shad0w_decisions_total{question="intent",source="table"}' in text and "shad0w_latency_seconds_bucket" in text
     st, h, b = call(base, "/")
     assert st == 200 and b"<title>shad0w" in b and h["content-type"].startswith("text/html")
+
+
+def test_image_decisions_go_upstream_and_are_never_logged(setup):
+    """The table only sees text: an image request with a certified prompt must not be answered from the prompt."""
+    base, mock, folder, srv = setup
+    log = folder / "intent" / "log.jsonl"
+    lines0 = len(log.read_text().splitlines()) if log.exists() else 0
+    n0, k0 = len(mock.requests), srv.gateway.metrics.non_text
+    msgs = [{"role": "user", "content": [{"type": "text", "text": "hi block my card thanks"},
+                                         {"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}}]}]
+    st, h, b = call(base, "/v1/chat/completions", {"model": "mock-1", "messages": msgs}, {"X-Shad0w-Question": "intent"})
+    assert st == 200 and "x-shad0w-source" not in h and len(mock.requests) == n0 + 1
+    assert srv.gateway.metrics.non_text == k0 + 1
+    assert (len(log.read_text().splitlines()) if log.exists() else 0) == lines0
+    # the same prompt without the image is still served by the table
+    st, h, _ = call(base, "/v1/chat/completions", chat("hi block my card thanks"), {"X-Shad0w-Question": "intent"})
+    assert h["x-shad0w-source"] == "table"
+
+
+def test_has_non_text():
+    from shad0w.wire import has_non_text
+    assert not has_non_text({"messages": [{"role": "user", "content": "hi"}]})
+    assert not has_non_text({"messages": [{"role": "user", "content": [{"type": "text", "text": "hi"}]}]})
+    assert has_non_text({"messages": [{"role": "user", "content": [{"type": "input_audio", "input_audio": {}}]}]})
+    assert has_non_text({"input": [{"role": "user", "content": [{"type": "input_text", "text": "x"},
+                                                                {"type": "input_image", "image_url": "u"}]}]})
+    # only the last user message counts (an earlier image in the history does not)
+    assert not has_non_text({"messages": [{"role": "user", "content": [{"type": "image_url"}]},
+                                          {"role": "user", "content": "now text only"}]})
+    assert not has_non_text({"input": "plain"}) and not has_non_text(None)
+
+
+def test_image_bundle_answers_inline_images(tmp_path):
+    """With an image bundle for the question, a marked request carrying one data: image is decided by the table."""
+    import base64
+    import io
+
+    pytest.importorskip("PIL")
+    from PIL import Image
+
+    from shad0w.vision import ImageSpec, image_items
+
+    from .test_vision import COLOURS, synth_images
+    imgs, labels = synth_images(1500, 0)
+    rows = [{"items": image_items(im).tolist(), "colour": y} for im, y in zip(imgs, labels)]
+    schema = {"colour": {"type": "choice", "criteria": {k: None for k in COLOURS}}}
+    m, cert = shadow_compile(schema, rows, alpha=0.05, image=ImageSpec().to_dict())
+    m.save(str(tmp_path / "colour" / "bundle"))
+    write_certificate(str(tmp_path / "colour" / "bundle"), cert)
+    mock = MockLLM()
+    base, srv = start(tmp_path, mock)
+    try:
+        test, truth = synth_images(40, 3, noise=0.0)
+        sources, wrong, n0 = [], 0, len(mock.requests)
+        for im, y in zip(test, truth):
+            buf = io.BytesIO()
+            Image.fromarray(im).save(buf, "PNG")
+            url = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+            msgs = [{"role": "user", "content": [{"type": "text", "text": "which colour?"},
+                                                 {"type": "image_url", "image_url": {"url": url}}]}]
+            st, h, b = call(base, "/v1/chat/completions", {"model": "mock-1", "messages": msgs}, {"X-Shad0w-Question": "colour"})
+            assert st == 200
+            sources.append(h.get("x-shad0w-source"))
+            if h.get("x-shad0w-source") == "table":
+                wrong += json.loads(b)["choices"][0]["message"]["content"] != y
+        assert sources.count("table") > 20 and len(mock.requests) - n0 == 40 - sources.count("table")
+        assert wrong <= 2  # the certificate bounds disagreement at alpha = 5%, not every single answer
+        # a remote URL is never fetched: forwarded as is
+        msgs = [{"role": "user", "content": [{"type": "image_url", "image_url": {"url": "https://example.com/a.png"}}]}]
+        st, h, _ = call(base, "/v1/chat/completions", {"model": "mock-1", "messages": msgs}, {"X-Shad0w-Question": "colour"})
+        assert "x-shad0w-source" not in h
+    finally:
+        srv.shutdown()
+        mock.close()

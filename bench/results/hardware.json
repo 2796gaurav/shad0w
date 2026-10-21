@@ -1,0 +1,12 @@
+{
+ "cpu": "Apple M5 Pro",
+ "cores": 15,
+ "performance_cores": "5",
+ "memory_gb": 24,
+ "os": "macOS-26.6.2-arm64-arm-64bit",
+ "python": "3.10.21",
+ "numpy": "2.2.6",
+ "dm_threads": 5,
+ "date": "2026-10-19",
+ "shad0w": "0.3.3"
+}

@@ -57,6 +57,13 @@ DEFAULTS: dict[str, Any] = {
     "on_new_option": "defer",   # your option list gained options the table never learned: "defer" everything to
                                 # your LLM until retrained (safe), or "serve" the options the table does know
     "max_mb": None,             # size budget per question's table in MB; keeps the most informative features (None = all)
+    "static": None,             # static word vectors as extra items: None, "potion-8M", or "auto" (kept only if it
+                                # certifies more); needs shad0wllm[static] to train, nothing to serve
+    "max_unseen": None,         # defer when more than this share of an input's items has no table row (0.0-1.0):
+                                # gibberish and injected junk look like that; None = off
+    "student": "auto",          # the table's shape: "linear" (additive, exact radius), "deep" (a hidden layer: learns
+                                # interactions between items, no radius) or "auto" (whichever certifies more)
+    "hidden": None,             # width of the deep student's hidden layer (None = 32-128 by the number of options)
     "rename": {},               # {"old_label": "new_label"}: rename options without retraining (logs follow at train)
     "llm": None,                # default "provider/model" for decision() when llm= is not passed
     "base_url": None,           # default base URL for that LLM (an OpenAI-compatible server)
@@ -88,6 +95,10 @@ HELP = {
     "timeout": "Proxy: upstream request timeout in seconds.",
     "on_new_option": "Options added after training: 'defer' asks your LLM until you retrain; 'serve' keeps serving known ones.",
     "max_mb": "Size budget for each table in MB. Many options or a huge vocabulary? Cap it; the certificate is computed on the capped table.",
+    "static": "Static word vectors (potion-8M) as extra table items; 'auto' keeps them only when they serve more. Helps paraphrases.",
+    "max_unseen": "Defer when more than this share of the input's words/n-grams was never seen in training (junk, gibberish). None = off.",
+    "student": "Table shape: 'linear' (additive, exact radius), 'deep' (hidden layer: sentiment, negation, word pairs; no radius), 'auto'.",
+    "hidden": "Width of the deep student's hidden layer (rows are this wide instead of one per option).",
     "rename": "Rename labels without retraining, e.g. {lost_card = \"card_lost\"}. Applied to the table and, at the next train, to the log.",
     "llm": "Default LLM for decision(), as \"provider/model\", e.g. \"openai/gpt-6-luna\".",
     "base_url": "Base URL of an OpenAI-compatible server for that LLM (default: the provider's).",
@@ -100,6 +111,7 @@ CONFIG_FILE = "shad0w.toml"
 MODES = ("serve", "shadow", "off")
 RETRAIN = ("gated", "always")
 ON_NEW_OPTION = ("defer", "serve")
+STUDENTS = ("auto", "linear", "deep")
 CAPTURE = ("header", "model", "tools", "json_schema", "decisions")
 
 
@@ -129,6 +141,10 @@ class Settings:
     timeout: float = 120.0
     on_new_option: str = "defer"
     max_mb: float | None = None
+    static: str | None = None
+    max_unseen: float | None = None
+    student: str = "auto"
+    hidden: int | None = None
     rename: tuple = ()  # ((old, new), ...): hashable form of the rename map
     llm: str | None = None
     base_url: str | None = None
@@ -231,10 +247,15 @@ def _validate(s: dict) -> None:
     between("min_confidence", 0.0, 1.0, allow_none=True)
     between("force_threshold", 0.0, 1.0, allow_none=True)
     between("max_mb", 0.01, 4096, allow_none=True)
+    between("max_unseen", 0.0, 1.0, allow_none=True)
     if s["mode"] not in MODES:
         raise ValueError(f"mode must be one of {MODES}, got {s['mode']!r}")
     if s["on_new_option"] not in ON_NEW_OPTION:
         raise ValueError(f"on_new_option must be one of {ON_NEW_OPTION}, got {s['on_new_option']!r}")
+    if s["student"] not in STUDENTS:
+        raise ValueError(f"student must be one of {STUDENTS}, got {s['student']!r}")
+    if s["hidden"] is not None and not (isinstance(s["hidden"], int) and 1 <= s["hidden"] <= 1024):
+        raise ValueError(f"hidden must be an integer between 1 and 1024, got {s['hidden']!r}")
     olds = [a for a, _ in s["rename"]]
     if len(set(olds)) != len(olds) or any(not a or not b or a == b for a, b in s["rename"]):
         raise ValueError(f"rename must map distinct non-empty labels to different non-empty labels, got {dict(s['rename'])}")

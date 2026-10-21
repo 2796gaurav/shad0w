@@ -35,7 +35,8 @@ from typing import Any
 from . import config as _config
 from .config import Secret, redact
 
-__all__ = ["llm_teacher", "LLMTeacher", "TeacherError", "PROVIDERS", "normalize_options", "match_option", "resolve_key"]
+__all__ = ["llm_teacher", "LLMTeacher", "TeacherError", "PROVIDERS", "normalize_options", "match_option", "resolve_key",
+           "option_orders", "majority"]
 
 # provider -> (base URL, environment variable holding the API key; None for local servers)
 PROVIDERS: dict[str, tuple[str, str | None]] = {
@@ -57,6 +58,28 @@ PROVIDERS: dict[str, tuple[str, str | None]] = {
     "systemone": ("", None),  # Jev / Kev / Laya / Ollaya / llama.cpp: POST /v1/systemone; needs base_url="http://host/v1"
 }
 DECISION_PROVIDERS = {"openai-decisions": "decisions", "systemone": "systemone"}
+
+
+def image_data_url(img, fmt: str = "PNG") -> str:
+    """An image (numpy array, PIL image, encoded bytes or a path) as a data: URL for a vision model."""
+    import base64
+    import io
+    if isinstance(img, str) and img.startswith("data:"):
+        return img
+    if isinstance(img, (bytes, bytearray)):
+        raw = bytes(img)
+    else:
+        from .vision import _open, pixels
+        try:
+            from PIL import Image
+        except ImportError as e:
+            raise ImportError('sending images to an LLM needs Pillow: pip install "shad0wllm[vision]"') from e
+        im = Image.fromarray(pixels(img)) if not isinstance(img, (str, os.PathLike)) else _open(img)
+        buf = io.BytesIO()
+        im.save(buf, fmt)
+        raw = buf.getvalue()
+    mime = "image/jpeg" if raw[:3] == b"\xff\xd8\xff" else "image/webp" if raw[8:12] == b"WEBP" else "image/png"
+    return f"data:{mime};base64," + base64.b64encode(raw).decode()
 
 
 class TeacherError(RuntimeError):
@@ -207,6 +230,33 @@ def _prompt(question: str, qtype: str, criteria: dict[str, str | None], instruct
     return "\n".join(lines)
 
 
+def option_orders(options: list[str], text, extra: int) -> list[list[str]]:
+    """The canonical option order followed by `extra` random permutations of it, seeded by the input text, so the
+    same input is always asked in the same orders (reproducible) while different inputs get different ones."""
+    import hashlib
+    import random
+    orders = [list(options)]
+    key = text if isinstance(text, str) else repr(text)
+    for i in range(1, extra + 1):
+        seed = int.from_bytes(hashlib.sha256(f"{i}\x00{key}".encode("utf-8", "replace")).digest()[:8], "big")
+        perm = list(options)
+        random.Random(seed).shuffle(perm)
+        orders.append(perm)
+    return orders
+
+
+def majority(answers: list, first_wins_ties: bool = True):
+    """The most frequent answer. Ties go to whichever tied answer came first in the list (the first asking)."""
+    counts: dict = {}
+    for a in answers:
+        counts[a] = counts.get(a, 0) + 1
+    best = max(counts.values())
+    for a in answers:  # list order = asking order: the earliest answer among the tied ones wins
+        if counts[a] == best:
+            return a
+    return answers[0]
+
+
 class LLMTeacher:
     """A callable teacher backed by an OpenAI-compatible chat completions endpoint. Thread-safe."""
 
@@ -214,10 +264,20 @@ class LLMTeacher:
                  base_url: str | None = None, api_key: Any = None, api_key_env: str | None = None, client: Any = None,
                  system: str | None = None, temperature: float = 0.0, timeout: float = 30.0, retries: int = 2,
                  headers: dict | None = None, structured: bool | None = None, max_tokens: int = 50,
-                 complete: Any = None, settings_key_env: str | None = None):
+                 complete: Any = None, settings_key_env: str | None = None, stabilise: int = 0):
+        """stabilise=n asks every input 1 + n times, each time with the options listed in a different random order
+        (in the prompt, the JSON-schema enum, the Decisions API choices or the System One criteria), and returns the
+        majority answer (ties: the first asking's). LLMs flip a sizeable share of their answers when the option order
+        changes (about half of a decision model's, arXiv:2610.00346); the vote removes most of that order noise, at
+        1 + n times the calls. answer_with_probabilities averages the probabilities over the askings. A custom
+        `system` prompt is sent as given (only the enum / choices are permuted then)."""
         self.question, self.qtype, self.criteria, instructions = normalize_options(options, question or "decision")
         self.instructions = instructions
         self.options = list(self.criteria)
+        if int(stabilise) < 0:
+            raise ValueError("stabilise must be 0 or a positive number of extra askings")
+        self.stabilise = int(stabilise)
+        self._custom_system = system is not None
         self._complete = complete
         if complete is not None:
             client, base_url = None, base_url or "-"
@@ -247,6 +307,8 @@ class LLMTeacher:
             self.name = f"complete:{getattr(complete, '__qualname__', None) or type(complete).__name__}"
         self.calls = 0
         self.failures = 0
+        import threading
+        self._tls = threading.local()  # per-thread probabilities of the last decision-model reply
 
     @property
     def api_key(self) -> Secret | None:
@@ -262,14 +324,43 @@ class LLMTeacher:
 
     @property
     def response_format(self) -> dict:
-        enum = ["yes", "no"] if self.qtype == "yesno" else self.options
+        return self.response_format_for(None)
+
+    def response_format_for(self, order: list[str] | None) -> dict:
+        """The structured-output schema, with the enum in `order` (None: canonical order)."""
+        enum = list(order) if order else (["yes", "no"] if self.qtype == "yesno" else self.options)
         return {"type": "json_schema", "json_schema": {
             "name": re.sub(r"[^a-zA-Z0-9_-]", "_", self.question)[:64] or "decision", "strict": True,
             "schema": {"type": "object", "properties": {"answer": {"type": "string", "enum": enum}},
                        "required": ["answer"], "additionalProperties": False}}}
 
-    def messages(self, text: str) -> list[dict]:
-        return [{"role": "system", "content": self.system}, {"role": "user", "content": text}]
+    @property
+    def info(self) -> dict:
+        """What a certificate can record about this teacher: its name and how its answers were stabilised."""
+        d = {"teacher": self.name}
+        if self.stabilise:
+            d["teacher_stabilised"] = self.stabilise
+        return d
+
+    def criteria_in(self, order: list[str] | None) -> dict[str, str | None]:
+        """The criteria dict in the given option order (canonical when None)."""
+        if not order:
+            return dict(self.criteria)
+        return {o: self.criteria[o] for o in order if o in self.criteria}
+
+    def system_for(self, order: list[str] | None) -> str:
+        if not order or self._custom_system or order == self.options:
+            return self.system
+        return _prompt(self.question, self.qtype, self.criteria_in(order), self.instructions)
+
+    def messages(self, text, order: list[str] | None = None) -> list[dict]:
+        system = self.system_for(order)
+        if isinstance(text, str):
+            return [{"role": "system", "content": system}, {"role": "user", "content": text}]
+        # an image (shad0w.vision): an OpenAI-style image part, which every built-in provider's endpoint accepts
+        return [{"role": "system", "content": system},
+                {"role": "user", "content": [{"type": "text", "text": "Decide for this image."},
+                                             {"type": "image_url", "image_url": {"url": image_data_url(text)}}]}]
 
     def parse(self, content: str):
         """The option for a raw reply (None when it matches nothing)."""
@@ -278,25 +369,88 @@ class LLMTeacher:
             return None
         return (opt == "yes") if self.qtype == "yesno" else opt
 
-    def __call__(self, text: str):
-        content = self.complete(text)
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        d.pop("_tls", None)  # thread-local scratch: not picklable, not state
+        return d
+
+    def __setstate__(self, d):
+        import threading
+        self.__dict__.update(d)
+        self.__dict__.setdefault("stabilise", 0)  # teachers pickled before stabilise existed
+        self.__dict__.setdefault("_custom_system", False)
+        self._tls = threading.local()
+
+    def generate(self, prompt: str, max_tokens: int = 1200, temperature: float = 0.9) -> str:
+        """Free text from the same model and endpoint (used to write synthetic training examples)."""
+        body = {"model": self.model, "messages": [{"role": "user", "content": prompt}], "temperature": temperature,
+                "max_tokens": max_tokens}
+        if self.dialect:
+            raise TeacherError(f"{self.name}: decision-model endpoints answer decisions only; they cannot write examples")
+        return self._send(body)
+
+    def answer_with_probabilities(self, text):
+        """(answer, {option: probability} or None): decision-model endpoints report probabilities, chat models do
+        not. Shadow logs them, and training fits on them (soft labels: more certified traffic for the same rows).
+        With stabilise=n the answer is the majority over the 1 + n option orders and the probabilities are their
+        average, keyed in the canonical option order."""
+        if not self.stabilise:
+            self._tls.probs = None
+            ans = self(text)
+            probs = self._tls.probs
+            return ans, (probs if probs else None)
+        ans, probs_list = self._vote(text)
+        probs_list = [p for p in probs_list if p]
+        if not probs_list:
+            return ans, None
+        keys = ["yes", "no"] if self.qtype == "yesno" else self.options
+        avg = {k: sum(p.get(k, 0.0) for p in probs_list) / len(probs_list) for k in keys}
+        return ans, avg
+
+    def _ask_once(self, text, order: list[str] | None):
+        """One asking in one option order: (answer, probabilities or None)."""
+        self._tls.probs = None
+        content = self.complete(text, order)
         ans = self.parse(content)
         if ans is None:
             self.failures += 1
             raise TeacherError(f"{self.name} replied {redact(content, self._key)[:200]!r}, which matches none of {self.options}")
-        return ans
+        return ans, self._tls.probs
 
-    def complete(self, text: str) -> str:
-        """Raw reply text for one input, with retries and the structured-output fallback."""
+    def _vote(self, text):
+        """Ask in 1 + stabilise option orders; (majority answer, per-asking probabilities). The first asking must
+        succeed; a failed extra asking is left out of the vote (the certificate still counts it as a failure)."""
+        orders = option_orders(["yes", "no"] if self.qtype == "yesno" else self.options, text, self.stabilise)
+        answers, probs = [], []
+        for i, order in enumerate(orders):
+            try:
+                a, p = self._ask_once(text, order)
+            except TeacherError:
+                if i == 0:
+                    raise
+                continue
+            answers.append(a)
+            probs.append(p)
+        return majority(answers), probs
+
+    def __call__(self, text: str):
+        if self.stabilise:
+            return self._vote(text)[0]
+        return self._ask_once(text, None)[0]
+
+    def complete(self, text: str, order: list[str] | None = None) -> str:
+        """Raw reply text for one input, with retries and the structured-output fallback. `order` lists the options
+        in the order they are presented for this asking (None: the canonical order)."""
         self.calls += 1
-        body = {"model": self.model, "messages": self.messages(text), "temperature": self.temperature,
+        self._tls.order = order
+        body = {"model": self.model, "messages": self.messages(text, order), "temperature": self.temperature,
                 "max_tokens": self.max_tokens}
         for k in self._dropped:
             body.pop(k, None)
         last, attempt, adjusted = None, 0, 0
         while True:
             if self._structured:
-                body["response_format"] = self.response_format
+                body["response_format"] = self.response_format_for(order)
             else:
                 body.pop("response_format", None)
             try:
@@ -343,10 +497,15 @@ class LLMTeacher:
         """Ask a decision-model endpoint (OpenAI Decisions API or System One) and return the answer as text."""
         from . import wire
         text = body["messages"][-1]["content"]
-        q = wire.WireQ(self.question, self.qtype, dict(self.criteria), self.instructions or self.system)
-        path, payload = wire.teacher_request(self.dialect, self.model, text, q)
+        if not isinstance(text, str):
+            raise TeacherError(f"{self.name}: decision-model endpoints take text only, not images")
+        order = getattr(self._tls, "order", None)  # this asking's option order (stabilise): the request lists
+        q = wire.WireQ(self.question, self.qtype, self.criteria_in(order), self.instructions or self.system)
+        path, payload = wire.teacher_request(self.dialect, self.model, text, q)  # ... criteria in that order
+        q = wire.WireQ(self.question, self.qtype, dict(self.criteria), q.instructions)  # parse in canonical order
         data = self._post(path, payload)
         ans = wire.teacher_answer(self.dialect, data, q)
+        self._tls.probs = wire.answer_probabilities(self.dialect, data, q)
         if ans is None:
             raise TeacherError(f"{self.name}: unexpected decision response {str(data)[:300]}")
         return ("yes" if ans else "no") if isinstance(ans, bool) else str(ans)

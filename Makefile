@@ -7,7 +7,7 @@ all: $(LIB)
 
 # the C core, in place, for a source checkout (pip wheels ship it prebuilt as shad0w._reflex)
 $(LIB): shad0w/_native/reflex.c
-	cc -O3 -Wall -shared -fPIC -o $@ $< -lm
+	cc -O3 -ffp-contract=off -Wall -shared -fPIC -o $@ $< -lm
 
 test: $(LIB)
 	$(PY) -m pytest -q tests

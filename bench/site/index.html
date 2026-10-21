@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decision Bench</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a lab report. One narrow reading column for prose; tables and the chart run full width beneath it. */
+:root {
+  --paper: #f5f6f3; --ink: #1d2320; --muted: #5d6762; --rule: #d6dbd6; --panel: #ffffff;
+  --shadow: #2b45c9;      /* shad0w */
+  --dm: #b8620b;          /* decision models */
+  --base: #4f7a64;        /* classic baselines */
+  --good: #2f7d4a; --warn: #a15c00;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #151917; --ink: #e5e9e6; --muted: #9aa49f; --rule: #2e3532; --panel: #1c211f;
+  --shadow: #8ea2ff; --dm: #f0a24f; --base: #84b89b; --good: #74c48f; --warn: #e3a14d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #151917; --ink: #e5e9e6; --muted: #9aa49f; --rule: #2e3532; --panel: #1c211f;
+  --shadow: #8ea2ff; --dm: #f0a24f; --base: #84b89b; --good: #74c48f; --warn: #e3a14d; color-scheme: dark }
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--body); margin: 0 }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px }
+.prose { max-width: 68ch; display: grid; gap: 12px }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.01em }
+h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 700; line-height: 1.02 }
+h2 { font-size: 26px; font-weight: 600 }
+h3 { font-size: 18px; font-weight: 600 }
+p { margin: 0 }
+.lede { font-size: 18px; color: var(--ink) }
+.muted { color: var(--muted) }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted) }
+.rig { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 13px/1.4 var(--mono); color: var(--muted) }
+.rig b { color: var(--ink); font-weight: 500 }
+code, .mono { font-family: var(--mono); font-size: 0.92em }
+.num { font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 13px; white-space: nowrap }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted) }
+.key { display: inline-flex; align-items: center; gap: 6px }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px }
+.tabs button { font: 500 13px var(--body); border: 1px solid var(--rule); background: var(--panel); color: var(--ink);
+  padding: 7px 12px; border-radius: 4px; cursor: pointer }
+.tabs button[aria-selected="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper) }
+.tabs button:focus-visible, a:focus-visible { outline: 2px solid var(--shadow); outline-offset: 2px }
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 14px; min-width: 0 }
+.chart { width: 100%; height: auto; display: block }
+.scroll { overflow-x: auto; min-width: 0 }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--ink); white-space: nowrap }
+th:first-child, td:first-child { text-align: left }
+td { padding: 8px 10px; border-bottom: 1px solid var(--rule); text-align: right; vertical-align: top }
+tr.fam-shad0w td:first-child { color: var(--shadow); font-weight: 600 }
+tr.fam-dm td:first-child { color: var(--dm); font-weight: 600 }
+tr.fam-base td:first-child { color: var(--base); font-weight: 600 }
+.pill { display: inline-block; font: 500 11px/1 var(--mono); padding: 3px 6px; border-radius: 3px; border: 1px solid var(--rule);
+  color: var(--muted); margin-left: 6px; vertical-align: 1px }
+.best { box-shadow: inset 0 -2px 0 var(--good) }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px }
+.tile { border-top: 2px solid var(--ink); padding-top: 10px; display: grid; gap: 4px; min-width: 0 }
+.tile .big { font: 600 28px/1.1 var(--display) }
+.tile .big small { font: 500 14px var(--mono); color: var(--muted) }
+ol, ul { margin: 0; padding-left: 20px; display: grid; gap: 6px }
+pre { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px; overflow-x: auto;
+  font: 13px/1.5 var(--mono); margin: 0 }
+a { color: var(--shadow) }
+@media (prefers-reduced-motion: no-preference) { .tabs button { transition: background .12s, color .12s } }
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header class="prose">
+    <span class="eyebrow">Benchmark · fixed-option decisions on a CPU</span>
+    <h1>Decision Bench</h1>
+    <p class="lede">Six public decision tasks. shad0w and the open decision models answer the same rows, one decision at a
+    time, on a CPU only, and every model's confidence goes through the same certifier. The decision models run zero-shot,
+    as shipped; shad0w learns from each task's training split.</p>
+    <div class="rig" id="rig"></div>
+  </header>
+
+  <section class="grid2" id="tiles" aria-label="Summary"></section>
+
+  <section class="panel" aria-labelledby="chart-h">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:baseline">
+      <h2 id="chart-h">Accuracy against time per decision</h2>
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--shadow)"></span>shad0w</span>
+        <span class="key" id="base-key" hidden><span class="dot" style="background:var(--base)"></span>classic baselines (learned)</span>
+        <span class="key"><span class="dot" style="background:var(--dm)"></span>decision models (zero-shot)</span>
+      </div>
+    </div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <p class="muted" id="task-note"></p>
+    <svg class="chart" id="chart" viewBox="0 0 960 420" role="img" aria-label="Scatter of accuracy against time per decision"></svg>
+    <div class="scroll"><table id="table"></table></div>
+    <div id="cascade"></div>
+  </section>
+
+  <section class="prose" aria-labelledby="how-h">
+    <h2 id="how-h">How it is measured</h2>
+    <ol>
+      <li><b>Decision models:</b> Julia-1, Laya and Kev-0.8B through llama.cpp (GGUF builds from ggml-org), Decider-0.8B and
+        GLiNER2.5-Decide through their own Python packages behind the same request shape. Every one runs on the CPU only.
+        Other small decision models found on Hugging Face (Laya-multilingual, Laya-typed-decisions, d1-omni-600M) did not
+        load in this llama.cpp build and are not included.</li>
+      <li><b>Same rows for everyone.</b> Each task's test rows are a fixed random sample (seed 0) of the dataset's test
+        split; calibration rows are a fixed sample of its train split, held out from training. The three largest decision
+        models are not part of this run. A decision model that takes over 1 s per decision on a task (Kev-0.8B and
+        Decider-0.8B everywhere, GLiNER2.5-Decide on CLINC150) answers the first 150 test rows and is certified on the first
+        150 calibration rows (marked <span class="pill">subset</span>);
+        shad0w's numbers next to them in the cascade table use the same 150 rows. Decider-0.8B ran on its package's
+        reference PyTorch kernels (the optimised ones are GPU-only), about 5 s per decision; its single-thread time was not
+        measured.</li>
+      <li><b>Accuracy</b> is against the dataset's true labels, with a 95% Wilson interval.</li>
+      <li><b>Time per decision</b> is the wall time of one call with one input, measured from Python after 20 warm-up calls.
+        In-process systems run on one thread. Decision models run in llama.cpp on the CPU only (<code>--device none</code>)
+        with the thread count shown above, over HTTP on localhost; their single-thread time is listed separately.</li>
+      <li><b>Certified coverage</b>: one certifier for every system. Learn-then-Test with a Clopper–Pearson bound picks a
+        confidence threshold on the calibration rows so that, with 90% confidence, the error among answers above it is at
+        most 5%. Coverage is the share of test rows above it; served error is the error on them.</li>
+      <li><b>Cascade</b>: shad0w (its default, <code>student="auto"</code>) answers what it certifies and the decision model
+        answers the rest. Accuracy and mean time are for the pair on the decision model's test rows.</li>
+      <li><b>Decision models are asked one neutral instruction</b> with each option's short description. It was chosen on
+        calibration rows before any test row was run (a task-specific question gave Julia-1 25% on SMS spam).</li>
+    </ol>
+    <h3>What this does not show</h3>
+    <ul>
+      <li>shad0w is trained on each task; the decision models are not. A decision model you fine-tune
+        on the task would do better than its zero-shot score here.</li>
+      <li>Here the "teacher" is the dataset's labels. In production shad0w learns from your LLM's answers, and its
+        certificate is against that LLM, not the truth.</li>
+      <li>One machine, one run. Latency depends on the CPU, the batch size (always 1 here) and HTTP for the decision models.</li>
+    </ul>
+    <h3>Check it yourself</h3>
+    <p>Every answer of every system is saved in <code>bench/results/preds/</code>. Re-score them without running any model,
+    or re-run everything:</p>
+    <pre># re-score the saved predictions (no model, no network)
+python bench/score.py
+# rebuild this page from results.json
+python bench/render.py
+# re-run every system (about two hours on a laptop CPU)
+python bench/run.py</pre>
+  </section>
+</main>
+
+<script>
+const DATA = {"benchmark":"shad0w decision bench","version":1,"alpha":0.05,"delta":0.1,"hardware":{"cpu":"Apple M5 Pro","cores":15,"performance_cores":"5","memory_gb":24,"os":"macOS-26.6.2-arm64-arm-64bit","python":"3.10.21","numpy":"2.2.6","dm_threads":5,"date":"2026-10-19","shad0w":"0.3.3"},"tasks":{"ag_news":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.8533,"accuracy_ci95":[0.7879,0.9011],"p50_us":3845415.58,"p99_us":4706961.71,"mean_us":3884588.23,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.732,"accuracy_ci95":[0.6915,0.7689],"p50_us":187327.83,"p99_us":238814.42,"mean_us":185533.35,"train_s":0.0,"size_mb":1855.69,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":136926.541},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.828,"accuracy_ci95":[0.7925,0.8585],"p50_us":50134.71,"p99_us":76033.88,"mean_us":49033.49,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":81560.75},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.88,"accuracy_ci95":[0.8183,0.9227],"p50_us":268869.19,"p99_us":394483.78,"mean_us":270243.23,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":673540.792},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.938,"accuracy_ci95":[0.9133,0.956],"p50_us":124374.46,"p99_us":208460.58,"mean_us":126591.86,"train_s":0.0,"size_mb":428.58,"certified_threshold":0.773482,"certified_coverage":0.872,"served_error":0.0344,"single_thread_p50_us":421118.375},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":32,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":30000,"subset":false,"accuracy":0.912,"accuracy_ci95":[0.8839,0.9338],"p50_us":10.08,"p99_us":17.58,"mean_us":10.1,"train_s":90.52,"size_mb":5.7,"c_core_p50_us":7.0,"c_core_mean_us":7.551,"certified_threshold":0.924368,"certified_coverage":0.66,"served_error":0.0182},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":32,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":30000,"subset":false,"accuracy":0.912,"accuracy_ci95":[0.8839,0.9338],"p50_us":21.9,"p99_us":90.56,"mean_us":24.42,"train_s":51.06,"size_mb":5.7,"c_core_p50_us":11.0,"c_core_mean_us":15.736,"certified_threshold":0.924368,"certified_coverage":0.66,"served_error":0.0182},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":30000,"subset":false,"accuracy":0.918,"accuracy_ci95":[0.8906,0.939],"p50_us":14.58,"p99_us":27.68,"mean_us":15.3,"train_s":164.18,"size_mb":1.27,"c_core_p50_us":9.0,"c_core_mean_us":11.448,"certified_threshold":0.939737,"certified_coverage":0.614,"served_error":0.0163}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.64,"accuracy":0.8667,"decision_model_alone_accuracy":0.8533,"mean_us":1415675.6,"decision_model_alone_mean_us":3884588.23,"speedup":2.7},"gliner2.5-decide":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.66,"accuracy":0.852,"decision_model_alone_accuracy":0.732,"mean_us":63115.4,"decision_model_alone_mean_us":185533.35,"speedup":2.9},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.66,"accuracy":0.87,"decision_model_alone_accuracy":0.828,"mean_us":16786.8,"decision_model_alone_mean_us":49033.49,"speedup":2.9},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.64,"accuracy":0.8867,"decision_model_alone_accuracy":0.88,"mean_us":97671.1,"decision_model_alone_mean_us":270243.23,"speedup":2.8},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.66,"accuracy":0.942,"decision_model_alone_accuracy":0.938,"mean_us":43080.6,"decision_model_alone_mean_us":126591.86,"speedup":2.9}}},"banking77":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.7667,"accuracy_ci95":[0.6928,0.8272],"p50_us":4429967.44,"p99_us":5086587.07,"mean_us":4441715.87,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.646,"accuracy_ci95":[0.6031,0.6867],"p50_us":1857139.29,"p99_us":2071085.31,"mean_us":1864524.93,"train_s":0.0,"size_mb":1855.69,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":2750742.917},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.628,"accuracy_ci95":[0.5848,0.6692],"p50_us":197084.65,"p99_us":313100.77,"mean_us":204377.45,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":347450.542},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.8333,"accuracy_ci95":[0.7655,0.8845],"p50_us":2619171.79,"p99_us":2728245.99,"mean_us":2624656.55,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":6533362.5},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.378,"accuracy_ci95":[0.3366,0.4213],"p50_us":621139.5,"p99_us":723845.6,"mean_us":615176.19,"train_s":0.0,"size_mb":428.58,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":1847648.5},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":128,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":9503,"subset":false,"accuracy":0.94,"accuracy_ci95":[0.9156,0.9577],"p50_us":5.96,"p99_us":17.88,"mean_us":6.79,"train_s":59.72,"size_mb":3.08,"c_core_p50_us":4.0,"c_core_mean_us":5.065,"certified_threshold":0.70116,"certified_coverage":0.888,"served_error":0.0203},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":128,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":9503,"subset":false,"accuracy":0.94,"accuracy_ci95":[0.9156,0.9577],"p50_us":6.27,"p99_us":18.84,"mean_us":7.19,"train_s":18.79,"size_mb":3.08,"c_core_p50_us":5.0,"c_core_mean_us":5.547,"certified_threshold":0.70116,"certified_coverage":0.888,"served_error":0.0203},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":9503,"subset":false,"accuracy":0.924,"accuracy_ci95":[0.8974,0.9441],"p50_us":4.0,"p99_us":13.89,"mean_us":4.62,"train_s":76.57,"size_mb":1.89,"c_core_p50_us":3.0,"c_core_mean_us":3.124,"certified_threshold":0.742072,"certified_coverage":0.874,"served_error":0.0206}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.8733,"accuracy":0.9,"decision_model_alone_accuracy":0.7667,"mean_us":558476.8,"decision_model_alone_mean_us":4441715.87,"speedup":8.0},"gliner2.5-decide":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.888,"accuracy":0.924,"decision_model_alone_accuracy":0.646,"mean_us":208712.5,"decision_model_alone_mean_us":1864524.93,"speedup":8.9},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.888,"accuracy":0.918,"decision_model_alone_accuracy":0.628,"mean_us":23540.8,"decision_model_alone_mean_us":204377.45,"speedup":8.7},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.8733,"accuracy":0.9133,"decision_model_alone_accuracy":0.8333,"mean_us":334538.0,"decision_model_alone_mean_us":2624656.55,"speedup":7.8},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.888,"accuracy":0.906,"decision_model_alone_accuracy":0.378,"mean_us":69024.3,"decision_model_alone_mean_us":615176.19,"speedup":8.9}}},"clinc150":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.8333,"accuracy_ci95":[0.7655,0.8845],"p50_us":5565211.27,"p99_us":6284611.34,"mean_us":5593389.38,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.5267,"accuracy_ci95":[0.4471,0.6049],"p50_us":2315877.42,"p99_us":2386157.93,"mean_us":2313331.97,"train_s":0.0,"size_mb":1855.69,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":3806715.25},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.274,"accuracy_ci95":[0.2367,0.3147],"p50_us":314149.43,"p99_us":464892.75,"mean_us":319626.68,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":697704.417},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.58,"accuracy_ci95":[0.5,0.656],"p50_us":3770632.4,"p99_us":3884014.09,"mean_us":3761250.93,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":9498138.25},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.406,"accuracy_ci95":[0.3638,0.4496],"p50_us":1096501.77,"p99_us":1138393.2,"mean_us":1093673.97,"train_s":0.0,"size_mb":428.58,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":3998542.084},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":128,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":14750,"subset":false,"accuracy":0.846,"accuracy_ci95":[0.8117,0.875],"p50_us":6.46,"p99_us":10.04,"mean_us":6.63,"train_s":82.91,"size_mb":4.57,"c_core_p50_us":5.0,"c_core_mean_us":5.014,"certified_threshold":0.586094,"certified_coverage":0.864,"served_error":0.0833},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":128,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":14750,"subset":false,"accuracy":0.846,"accuracy_ci95":[0.8117,0.875],"p50_us":7.94,"p99_us":14.0,"mean_us":8.15,"train_s":36.17,"size_mb":4.57,"c_core_p50_us":5.0,"c_core_mean_us":5.543,"certified_threshold":0.586094,"certified_coverage":0.864,"served_error":0.0833},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":14750,"subset":false,"accuracy":0.848,"accuracy_ci95":[0.8139,0.8768],"p50_us":7.29,"p99_us":14.43,"mean_us":7.6,"train_s":149.34,"size_mb":5.37,"c_core_p50_us":5.0,"c_core_mean_us":5.245,"certified_threshold":0.73891,"certified_coverage":0.78,"served_error":0.0513}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.8667,"accuracy":0.9133,"decision_model_alone_accuracy":0.8333,"mean_us":746893.8,"decision_model_alone_mean_us":5593389.38,"speedup":7.5},"gliner2.5-decide":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.8667,"accuracy":0.8267,"decision_model_alone_accuracy":0.5267,"mean_us":307554.7,"decision_model_alone_mean_us":2313331.97,"speedup":7.5},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.864,"accuracy":0.798,"decision_model_alone_accuracy":0.274,"mean_us":43211.7,"decision_model_alone_mean_us":319626.68,"speedup":7.4},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.8667,"accuracy":0.8267,"decision_model_alone_accuracy":0.58,"mean_us":505235.0,"decision_model_alone_mean_us":3761250.93,"speedup":7.4},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.864,"accuracy":0.804,"decision_model_alone_accuracy":0.406,"mean_us":149295.9,"decision_model_alone_mean_us":1093673.97,"speedup":7.3}}},"prompt_injection":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.8867,"accuracy_ci95":[0.826,0.928],"p50_us":3606514.94,"p99_us":4307069.35,"mean_us":3648511.58,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.946,"accuracy_ci95":[0.9226,0.9626],"p50_us":112644.9,"p99_us":749524.03,"mean_us":143364.29,"train_s":0.0,"size_mb":1855.69,"certified_threshold":0.633183,"certified_coverage":0.95,"served_error":0.0379,"single_thread_p50_us":114271.917},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.344,"accuracy_ci95":[0.3037,0.3867],"p50_us":14315.17,"p99_us":475427.07,"mean_us":44492.18,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":73385.125},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.8333,"accuracy_ci95":[0.7655,0.8845],"p50_us":199601.19,"p99_us":2345278.5,"mean_us":326161.65,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":494962.584},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.886,"accuracy_ci95":[0.8552,0.911],"p50_us":108943.62,"p99_us":2101826.27,"mean_us":211925.17,"train_s":0.0,"size_mb":428.58,"certified_threshold":0.90558,"certified_coverage":0.452,"served_error":0.0221,"single_thread_p50_us":342020.625},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":7736,"subset":false,"accuracy":0.988,"accuracy_ci95":[0.9741,0.9945],"p50_us":2.42,"p99_us":41.56,"mean_us":4.95,"train_s":44.63,"size_mb":0.4,"c_core_p50_us":1.0,"c_core_mean_us":3.524,"certified_threshold":0.524609,"certified_coverage":1.0,"served_error":0.012},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":32,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":7736,"subset":false,"accuracy":0.988,"accuracy_ci95":[0.9741,0.9945],"p50_us":5.54,"p99_us":136.93,"mean_us":12.58,"train_s":22.38,"size_mb":2.39,"c_core_p50_us":4.0,"c_core_mean_us":10.793,"certified_threshold":0.510969,"certified_coverage":0.998,"served_error":0.01},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":7736,"subset":false,"accuracy":0.988,"accuracy_ci95":[0.9741,0.9945],"p50_us":2.79,"p99_us":48.15,"mean_us":5.78,"train_s":38.17,"size_mb":0.4,"c_core_p50_us":1.0,"c_core_mean_us":3.967,"certified_threshold":0.524609,"certified_coverage":1.0,"served_error":0.012}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":1.0,"accuracy":0.9933,"decision_model_alone_accuracy":0.8867,"mean_us":4.8,"decision_model_alone_mean_us":3648511.58,"speedup":762245},"gliner2.5-decide":{"front":"shad0w-auto","n":500,"served_by_shad0w":1.0,"accuracy":0.988,"decision_model_alone_accuracy":0.946,"mean_us":4.9,"decision_model_alone_mean_us":143364.29,"speedup":28988},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":1.0,"accuracy":0.988,"decision_model_alone_accuracy":0.344,"mean_us":4.9,"decision_model_alone_mean_us":44492.18,"speedup":8996},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":1.0,"accuracy":0.9933,"decision_model_alone_accuracy":0.8333,"mean_us":4.8,"decision_model_alone_mean_us":326161.65,"speedup":68142},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":1.0,"accuracy":0.988,"decision_model_alone_accuracy":0.886,"mean_us":4.9,"decision_model_alone_mean_us":211925.17,"speedup":42852}}},"sms_spam":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.9533,"accuracy_ci95":[0.9068,0.9772],"p50_us":3557034.5,"p99_us":3747329.49,"mean_us":3556087.46,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.902,"accuracy_ci95":[0.8728,0.9251],"p50_us":147417.38,"p99_us":194647.67,"mean_us":150665.05,"train_s":0.0,"size_mb":1855.69,"certified_threshold":0.743163,"certified_coverage":0.492,"served_error":0.0285,"single_thread_p50_us":97632.708},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.664,"accuracy_ci95":[0.6215,0.704],"p50_us":15916.35,"p99_us":57627.36,"mean_us":23569.59,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":24650.708},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.9267,"accuracy_ci95":[0.8735,0.9586],"p50_us":130381.71,"p99_us":306962.23,"mean_us":152914.47,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":308536.5},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.884,"accuracy_ci95":[0.853,0.9092],"p50_us":55477.32,"p99_us":192888.11,"mean_us":72823.24,"train_s":0.0,"size_mb":428.58,"certified_threshold":0.925586,"certified_coverage":0.372,"served_error":0.0323,"single_thread_p50_us":169967.333},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":3680,"subset":false,"accuracy":0.978,"accuracy_ci95":[0.961,0.9877],"p50_us":1.92,"p99_us":4.59,"mean_us":2.15,"train_s":20.38,"size_mb":0.26,"c_core_p50_us":1.0,"c_core_mean_us":0.849,"certified_threshold":0.511739,"certified_coverage":0.998,"served_error":0.022},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":32,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":3680,"subset":false,"accuracy":0.978,"accuracy_ci95":[0.961,0.9877],"p50_us":3.46,"p99_us":10.78,"mean_us":4.27,"train_s":13.19,"size_mb":1.56,"c_core_p50_us":2.0,"c_core_mean_us":2.63,"certified_threshold":0.587713,"certified_coverage":0.998,"served_error":0.02},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":3680,"subset":false,"accuracy":0.978,"accuracy_ci95":[0.961,0.9877],"p50_us":5.92,"p99_us":14.23,"mean_us":6.79,"train_s":13.12,"size_mb":0.26,"c_core_p50_us":2.0,"c_core_mean_us":2.215,"certified_threshold":0.511739,"certified_coverage":0.998,"served_error":0.022}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":1.0,"accuracy":0.9733,"decision_model_alone_accuracy":0.9533,"mean_us":2.1,"decision_model_alone_mean_us":3556087.46,"speedup":1704195},"gliner2.5-decide":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.998,"accuracy":0.978,"decision_model_alone_accuracy":0.902,"mean_us":278.4,"decision_model_alone_mean_us":150665.05,"speedup":541},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.998,"accuracy":0.978,"decision_model_alone_accuracy":0.664,"mean_us":27.7,"decision_model_alone_mean_us":23569.59,"speedup":850},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":1.0,"accuracy":0.9733,"decision_model_alone_accuracy":0.9267,"mean_us":2.1,"decision_model_alone_mean_us":152914.47,"speedup":73282},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.998,"accuracy":0.976,"decision_model_alone_accuracy":0.884,"mean_us":94.3,"decision_model_alone_mean_us":72823.24,"speedup":773}}},"sst2":{"systems":{"decider-0.8b":{"system":"decider-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Decider 0.8B (Qwen3.5-0.8B-Base + decision head)","hf":"Mapika/decider-0.8b","threads":5,"runtime":"decider (Python package), CPU"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.9133,"accuracy_ci95":[0.8574,0.9487],"p50_us":3620033.44,"p99_us":5326544.32,"mean_us":3685535.98,"train_s":0.0,"size_mb":1435.12,"certified_threshold":null,"certified_coverage":0.0,"served_error":null},"gliner2.5-decide":{"system":"gliner2.5-decide","kind":"zero-shot","info":{"family":"decision model","model":"GLiNER2.5-Decide (encoder, 0.3B class)","hf":"fastino/GLiNER2.5-Decide","threads":5,"runtime":"gliner2 (Python package), CPU"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.908,"accuracy_ci95":[0.8795,0.9303],"p50_us":147513.62,"p99_us":170006.89,"mean_us":147782.3,"train_s":0.0,"size_mb":1855.69,"certified_threshold":0.750029,"certified_coverage":0.714,"served_error":0.0252,"single_thread_p50_us":98067.5},"julia-1":{"system":"julia-1","kind":"zero-shot","info":{"family":"decision model","model":"Julia-1 144M (mmBERT-small encoder)","gguf":"ggml-org/Julia-1-GGUF/Julia-1-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.768,"accuracy_ci95":[0.729,0.8029],"p50_us":15515.44,"p99_us":48770.68,"mean_us":16907.71,"train_s":0.0,"size_mb":160.38,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":26336.166},"kev-0.8b":{"system":"kev-0.8b","kind":"zero-shot","info":{"family":"decision model","model":"Kev 0.8B (Qwen3.5 + pointer head)","gguf":"ggml-org/Kev-0.8B-GGUF/Kev-0.8B-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":150,"n_cal":150,"n_train":0,"subset":true,"accuracy":0.9067,"accuracy_ci95":[0.8494,0.9436],"p50_us":132052.59,"p99_us":225601.71,"mean_us":138508.51,"train_s":0.0,"size_mb":774.77,"certified_threshold":null,"certified_coverage":0.0,"served_error":null,"single_thread_p50_us":326689.458},"laya":{"system":"laya","kind":"zero-shot","info":{"family":"decision model","model":"Laya 421M (ModernBERT-large encoder)","gguf":"ggml-org/Laya-GGUF/Laya-Q8_0.gguf","threads":5,"runtime":"llama.cpp llama-server, --device none","llama_cpp":"version: 0.6.0 (build 11429, commit d81235049)"},"n_test":500,"n_cal":500,"n_train":0,"subset":false,"accuracy":0.916,"accuracy_ci95":[0.8884,0.9373],"p50_us":49155.6,"p99_us":104410.26,"mean_us":55425.47,"train_s":0.0,"size_mb":428.58,"certified_threshold":0.953041,"certified_coverage":0.46,"served_error":0.0217,"single_thread_p50_us":173104.333},"shad0w-auto":{"system":"shad0w-auto","kind":"learned","info":{"family":"shad0w","student":"auto","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":66849,"subset":false,"accuracy":0.832,"accuracy_ci95":[0.7967,0.8622],"p50_us":3.0,"p99_us":5.21,"mean_us":3.09,"train_s":62.32,"size_mb":0.49,"c_core_p50_us":1.0,"c_core_mean_us":1.383,"certified_threshold":0.777621,"certified_coverage":0.62,"served_error":0.0581},"shad0w-deep":{"system":"shad0w-deep","kind":"learned","info":{"family":"shad0w","student":"deep","threads":1,"hidden":32,"chosen":"deep"},"n_test":500,"n_cal":500,"n_train":66849,"subset":false,"accuracy":0.846,"accuracy_ci95":[0.8117,0.875],"p50_us":5.25,"p99_us":9.67,"mean_us":5.36,"train_s":15.72,"size_mb":2.93,"c_core_p50_us":3.0,"c_core_mean_us":3.437,"certified_threshold":0.826613,"certified_coverage":0.508,"served_error":0.0394},"shad0w-linear":{"system":"shad0w-linear","kind":"learned","info":{"family":"shad0w","student":"linear","threads":1,"hidden":0,"chosen":"linear"},"n_test":500,"n_cal":500,"n_train":66849,"subset":false,"accuracy":0.832,"accuracy_ci95":[0.7967,0.8622],"p50_us":2.29,"p99_us":4.12,"mean_us":2.36,"train_s":45.47,"size_mb":0.49,"c_core_p50_us":1.0,"c_core_mean_us":0.95,"certified_threshold":0.777621,"certified_coverage":0.62,"served_error":0.0581}},"shad0w_auto":"shad0w-auto","cascades":{"decider-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.6,"accuracy":0.9067,"decision_model_alone_accuracy":0.9133,"mean_us":1487300.8,"decision_model_alone_mean_us":3685535.98,"speedup":2.5},"gliner2.5-decide":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.62,"accuracy":0.906,"decision_model_alone_accuracy":0.908,"mean_us":57118.1,"decision_model_alone_mean_us":147782.3,"speedup":2.6},"julia-1":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.62,"accuracy":0.836,"decision_model_alone_accuracy":0.768,"mean_us":6812.7,"decision_model_alone_mean_us":16907.71,"speedup":2.5},"kev-0.8b":{"front":"shad0w-auto","n":150,"served_by_shad0w":0.6,"accuracy":0.9,"decision_model_alone_accuracy":0.9067,"mean_us":58622.4,"decision_model_alone_mean_us":138508.51,"speedup":2.4},"laya":{"front":"shad0w-auto","n":500,"served_by_shad0w":0.62,"accuracy":0.924,"decision_model_alone_accuracy":0.916,"mean_us":22414.7,"decision_model_alone_mean_us":55425.47,"speedup":2.5}}}}};
+const FAM = s => s.info.family === "shad0w" ? "shadow" : s.kind === "zero-shot" ? "dm" : "base";
+const COLOR = {shadow: "var(--shadow)", dm: "var(--dm)", base: "var(--base)"};
+const NAME = {"shad0w-auto": "shad0w (default)", "shad0w-linear": "shad0w linear", "shad0w-deep": "shad0w deep",
+  "tfidf-logreg": "TF-IDF + logreg", "potion8m-logreg": "potion-8M + logreg", "minilm-logreg": "MiniLM-L6 + logreg",
+  "bge-small-logreg": "bge-small + logreg", "julia-1": "Julia-1", "laya": "Laya", "kev-0.8b": "Kev-0.8B",
+  "kev-4b": "Kev-4B", "lev": "Lev", "clef-flash": "Clef-flash", "decider-0.8b": "Decider-0.8B", "gliner2.5-decide": "GLiNER2.5-Decide"};
+const nm = k => NAME[k] || k;
+const fmtUs = u => u == null ? "–" : u < 1000 ? u.toFixed(u < 10 ? 1 : 0) + " µs" : u < 1e6 ? (u / 1000).toFixed(u < 1e4 ? 1 : 0) + " ms" : (u / 1e6).toFixed(1) + " s";
+const pct = v => v == null ? "–" : (100 * v).toFixed(1) + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const TASKS = Object.keys(DATA.tasks);
+const TITLES = {banking77: "BANKING77 · 77 intents", clinc150: "CLINC150 · 151 intents", sst2: "SST-2 · sentiment",
+  ag_news: "AG News · 4 topics", sms_spam: "SMS spam", prompt_injection: "Prompt injection"};
+
+const hw = DATA.hardware;
+if (TASKS.some(t => Object.values(DATA.tasks[t].systems).some(s => FAM(s) === "base"))) document.getElementById("base-key").hidden = false;
+document.getElementById("rig").innerHTML = [
+  ["CPU", hw.cpu], ["cores", hw.cores + (hw.performance_cores ? ` (${hw.performance_cores} performance)` : "")],
+  ["memory", hw.memory_gb ? hw.memory_gb + " GB" : "–"], ["decision-model threads", hw.dm_threads],
+  ["shad0w", hw.shad0w || "–"], ["run", hw.date]].map(([k, v]) => `<span>${k} <b>${esc(v)}</b></span>`).join("");
+
+// summary tiles: across tasks, shad0w's default vs the best zero-shot decision model
+(function tiles() {
+  let sp = [], acc = [], best = [], cov = [];
+  for (const t of TASKS) {
+    const S = DATA.tasks[t].systems, a = S["shad0w-auto"];
+    if (!a) continue;
+    const dms = Object.values(S).filter(s => s.kind === "zero-shot");
+    if (dms.length) {
+      const top = dms.reduce((x, y) => y.accuracy > x.accuracy ? y : x);
+      sp.push(top.p50_us / a.p50_us); acc.push(a.accuracy - top.accuracy); best.push(nm(top.system));
+    }
+    cov.push(a.certified_coverage);
+  }
+  const med = v => { const s = [...v].sort((p, q) => p - q); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  const el = document.getElementById("tiles");
+  const tile = (k, big, small, note) => `<div class="tile"><span class="eyebrow">${k}</span><span class="big">${big} <small>${small}</small></span><span class="muted">${note}</span></div>`;
+  el.innerHTML = [
+    tile("Speed vs the best decision model", sp.length ? Math.round(med(sp)).toLocaleString() + "×" : "–", "median over tasks",
+      "Time per decision, shad0w on one thread vs the decision model on " + hw.dm_threads + " threads."),
+    tile("Accuracy, shad0w minus that model", acc.length ? (med(acc) >= 0 ? "+" : "") + (100 * med(acc)).toFixed(1) : "–", "points, median",
+      "Trained on the task vs zero-shot: see what this does not show, below."),
+    tile("Served under the 5% certificate", cov.length ? pct(med(cov)) : "–", "of test traffic, median",
+      "The rest goes to the decision model or your LLM.")].join("");
+})();
+
+let current = TASKS[0];
+function renderTabs() {
+  document.getElementById("tabs").innerHTML = TASKS.map(t =>
+    `<button role="tab" id="tab-${t}" aria-selected="${t === current}" data-t="${t}">${esc(TITLES[t] || t)}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { current = b.dataset.t; try { localStorage.setItem("db-task", current) } catch (e) {} render(); });
+}
+function chart(S) {
+  const svg = document.getElementById("chart"), W = 960, H = 420, L = 64, R = 24, T = 18, B = 52;
+  const pts = Object.values(S);
+  const xs = pts.map(s => Math.log10(Math.max(s.p50_us, 0.5)));
+  let x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+  if (x1 === x0) x1 = x0 + 1;
+  const accs = pts.map(s => s.accuracy);
+  let y0 = Math.max(0, Math.floor(Math.min(...accs) * 10) / 10 - 0.05), y1 = 1;
+  const X = v => L + (Math.log10(Math.max(v, 0.5)) - x0) / (x1 - x0) * (W - L - R);
+  const Y = v => T + (y1 - v) / (y1 - y0) * (H - T - B);
+  let g = "";
+  for (let e = x0; e <= x1; e++) {
+    const x = L + (e - x0) / (x1 - x0) * (W - L - R);
+    g += `<line x1="${x}" x2="${x}" y1="${T}" y2="${H - B}" stroke="var(--rule)"/>` +
+         `<text x="${x}" y="${H - B + 20}" text-anchor="middle" fill="var(--muted)" font-family="var(--mono)" font-size="12">${fmtUs(Math.pow(10, e))}</text>`;
+  }
+  for (let v = Math.ceil(y0 * 10) / 10; v <= y1 + 1e-9; v += 0.1) {
+    const y = Y(v);
+    g += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" stroke="var(--rule)"/>` +
+         `<text x="${L - 8}" y="${y + 4}" text-anchor="end" fill="var(--muted)" font-family="var(--mono)" font-size="12">${Math.round(v * 100)}%</text>`;
+  }
+  g += `<text x="${(L + W - R) / 2}" y="${H - 10}" text-anchor="middle" fill="var(--muted)" font-size="12">time per decision (log scale; lower left is faster)</text>`;
+  g += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" fill="var(--muted)" font-size="12">accuracy on test rows</text>`;
+  // points first, then labels placed greedily where they overlap no other label and no point
+  const P = pts.sort((a, b) => a.p50_us - b.p50_us).map(s => ({s, x: X(s.p50_us), y: Y(s.accuracy), f: FAM(s)}));
+  for (const p of P) {
+    const lo = Y(p.s.accuracy_ci95[1]), hi = Y(p.s.accuracy_ci95[0]);
+    g += `<line x1="${p.x}" x2="${p.x}" y1="${lo}" y2="${hi}" stroke="${COLOR[p.f]}" stroke-width="1.5" opacity=".45"/>`;
+    g += `<circle cx="${p.x}" cy="${p.y}" r="${p.s.system === "shad0w-auto" ? 7 : 5}" fill="${COLOR[p.f]}" stroke="var(--panel)" stroke-width="1.5">` +
+         `<title>${esc(nm(p.s.system))}: ${pct(p.s.accuracy)}, ${fmtUs(p.s.p50_us)}</title></circle>`;
+  }
+  const boxes = P.map(p => ({x0: p.x - 7, x1: p.x + 7, y0: p.y - 7, y1: p.y + 7}));
+  const hit = b => boxes.some(o => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0);
+  for (const p of P) {
+    const text = nm(p.s.system) + (p.s.subset ? " (150 rows)" : ""), w = text.length * 6.6 + 4;
+    const cands = [];
+    for (const dy of [0, -16, 16, -32, 32, -48, 48]) for (const side of [1, -1]) cands.push([side, dy]);
+    let pick = null;
+    for (const [side, dy] of cands) {
+      const x0 = side > 0 ? p.x + 10 : p.x - 10 - w, b = {x0, x1: x0 + w, y0: p.y + dy - 9, y1: p.y + dy + 5};
+      if (b.x0 < L || b.x1 > W - R || b.y0 < T || b.y1 > H - B) continue;
+      if (!hit(b)) { pick = {side, dy, b}; break; }
+    }
+    if (!pick) { const x0 = p.x + 10; pick = {side: 1, dy: 0, b: {x0, x1: x0 + w, y0: p.y - 9, y1: p.y + 5}}; }
+    boxes.push(pick.b);
+    const tx = pick.side > 0 ? pick.b.x0 : pick.b.x1, anchor = pick.side > 0 ? "start" : "end";
+    if (pick.dy) g += `<line x1="${p.x}" y1="${p.y}" x2="${pick.side > 0 ? pick.b.x0 - 2 : pick.b.x1 + 2}" y2="${p.y + pick.dy - 4}" stroke="${COLOR[p.f]}" opacity=".5"/>`;
+    g += `<text x="${tx}" y="${p.y + pick.dy}" text-anchor="${anchor}" fill="${COLOR[p.f]}" font-size="12" font-weight="600">${esc(text)}</text>`;
+  }
+  svg.innerHTML = g;
+}
+function table(S, task) {
+  const rows = Object.values(S).sort((a, b) => (FAM(a) === "shadow" ? 0 : FAM(a) === "base" ? 1 : 2) - (FAM(b) === "shadow" ? 0 : FAM(b) === "base" ? 1 : 2) || b.accuracy - a.accuracy);
+  const bestAcc = Math.max(...rows.map(r => r.accuracy)), fastest = Math.min(...rows.map(r => r.p50_us));
+  const bestCov = Math.max(...rows.map(r => r.certified_coverage ?? -1));
+  const fam = {shadow: "fam-shad0w", dm: "fam-dm", base: "fam-base"};
+  let h = `<thead><tr><th>system</th><th>accuracy</th><th>95% CI</th><th>certified coverage</th><th>served error</th><th>p50 / decision</th><th>p99</th><th>1 thread</th><th>train</th><th>size</th></tr></thead><tbody>`;
+  for (const r of rows) {
+    const extra = r.c_core_p50_us != null ? ` <span class="muted">(C core ${fmtUs(r.c_core_p50_us)})</span>` : "";
+    const tag = (r.subset ? `<span class="pill">subset ${r.n_test}</span>` : "") + (r.info.chosen && r.system === "shad0w-auto" ? `<span class="pill">${esc(r.info.chosen)}</span>` : "") +
+      (r.info.errors ? `<span class="pill">${r.info.errors} errors</span>` : "");
+    h += `<tr class="${fam[FAM(r)]}"><td>${esc(nm(r.system))}${tag}</td>
+      <td class="num ${r.accuracy === bestAcc ? "best" : ""}">${pct(r.accuracy)}</td>
+      <td class="num muted">${pct(r.accuracy_ci95[0])}–${pct(r.accuracy_ci95[1])}</td>
+      <td class="num ${r.certified_coverage === bestCov && bestCov > 0 ? "best" : ""}">${r.certified_coverage == null ? "–" : pct(r.certified_coverage)}</td>
+      <td class="num">${r.served_error == null ? "–" : pct(r.served_error)}</td>
+      <td class="num ${r.p50_us === fastest ? "best" : ""}">${fmtUs(r.p50_us)}${extra}</td>
+      <td class="num">${fmtUs(r.p99_us)}</td>
+      <td class="num">${r.kind === "zero-shot" ? fmtUs(r.single_thread_p50_us) : fmtUs(r.p50_us)}</td>
+      <td class="num">${r.kind === "zero-shot" ? "none" : r.train_s < 1 ? "<1 s" : Math.round(r.train_s) + " s"}</td>
+      <td class="num">${r.size_mb.toFixed(1)} MB</td></tr>`;
+  }
+  document.getElementById("table").innerHTML = h + "</tbody>";
+  const C = DATA.tasks[task].cascades || {};
+  const keys = Object.keys(C);
+  document.getElementById("cascade").innerHTML = !keys.length ? "" :
+    `<h3 style="margin:8px 0">shad0w in front of each decision model</h3><div class="scroll"><table><thead><tr><th>decision model</th><th>shad0w answers</th><th>accuracy, pair</th><th>accuracy, model alone</th><th>mean time, pair</th><th>mean time, model alone</th><th>faster</th></tr></thead><tbody>` +
+    keys.map(k => { const c = C[k]; return `<tr class="fam-dm"><td>${esc(nm(k))}${c.n < 500 ? `<span class="pill">subset ${c.n}</span>` : ""}</td><td class="num">${pct(c.served_by_shad0w)}</td><td class="num">${pct(c.accuracy)}</td><td class="num">${pct(c.decision_model_alone_accuracy)}</td><td class="num">${fmtUs(c.mean_us)}</td><td class="num">${fmtUs(c.decision_model_alone_mean_us)}</td><td class="num">${c.speedup.toLocaleString()}×</td></tr>`; }).join("") +
+    `</tbody></table></div>`;
+}
+function render() {
+  renderTabs();
+  const T = DATA.tasks[current];
+  const any = T.systems["shad0w-auto"] || Object.values(T.systems)[0];
+  document.getElementById("task-note").textContent = `${TITLES[current] || current}: ${any.n_test} test rows, ${any.n_cal} calibration rows` +
+    (any.n_train ? `, ${any.n_train.toLocaleString()} training rows for learned systems.` : ".");
+  chart(T.systems); table(T.systems, current);
+}
+try { const s = localStorage.getItem("db-task"); if (s && DATA.tasks[s]) current = s; } catch (e) {}
+render();
+</script>
+
+</body>
+</html>

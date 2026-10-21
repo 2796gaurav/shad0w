@@ -6,9 +6,11 @@ export interface TableDecision {
   probabilities: number[];
 }
 export class Table {
-  constructor(buffer: ArrayBuffer | ArrayBufferView, labels?: string[]);
+  /** opts.textKind: the bundle's text featurizer, manifest.meta.text_kind (default 1) */
+  constructor(buffer: ArrayBuffer | ArrayBufferView, labels?: string[], opts?: { textKind?: TextKind });
   readonly F: number;
   readonly K: number;
+  readonly textKind: TextKind;
   decide(text: string, probabilities?: boolean): TableDecision;
 }
 
@@ -34,11 +36,18 @@ export class Bundle {
   /** Node: a directory path. Browsers and workers: a URL. */
   static load(base: string): Promise<Bundle>;
   readonly manifest: Manifest;
+  /** manifest.meta.text_kind, 1 when absent */
+  readonly textKind: TextKind;
   decide(text: string, opts?: { questions?: string[]; probabilities?: boolean }): { answers: Record<string, Answer> };
 }
-export function items(text: string): number[];
-export function words(text: string): Uint8Array[];
+/** 1: the featurizer of bundles made before text_kind; 2: script-aware (one word per Han/kana/Thai/... character,
+ *  Latin-1/Greek/Cyrillic case folding), identical to 1 on ASCII. */
+export type TextKind = 1 | 2;
+export const TEXT_KINDS: TextKind[];
+export function items(text: string | Uint8Array, kind?: TextKind): number[];
+export function words(text: string | Uint8Array, kind?: TextKind): Uint8Array[];
 export const TABLE_VERSION: number;
+export const TABLE_VERSION_DEEP: number;
 
 export type Flag = "no_bundle" | "low_confidence" | "low_radius" | "empty_input" | "drift" | "uncalibrated" | "min_confidence" | "manual_threshold"
   | "canary" | "never_serve" | "shadow" | "off" | "options_changed" | "option_removed" | "new_options_served" | null;
@@ -227,6 +236,6 @@ declare const shad0w: {
   systemoneTeacher: typeof systemoneTeacher; decisionsTeacher: typeof decisionsTeacher; decision: typeof decision;
   shad0wMiddleware: typeof shad0wMiddleware; decisionModel: typeof decisionModel; configure: typeof configure;
   maskKey: typeof maskKey; explainFlag: typeof explainFlag; FLAG_WORDS: typeof FLAG_WORDS; matchOption: typeof matchOption;
-  PROVIDERS: typeof PROVIDERS; items: typeof items; words: typeof words; TABLE_VERSION: typeof TABLE_VERSION;
+  PROVIDERS: typeof PROVIDERS; items: typeof items; words: typeof words; TEXT_KINDS: typeof TEXT_KINDS; TABLE_VERSION: typeof TABLE_VERSION; TABLE_VERSION_DEEP: typeof TABLE_VERSION_DEEP;
 };
 export default shad0w;

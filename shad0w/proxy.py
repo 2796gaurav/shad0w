@@ -79,7 +79,8 @@ class Gateway:
 
     def __init__(self, upstream: str, folder: str | None = None, model: str | None = None, api_key=None,
                  keep_text: bool = True, schema: dict | None = None, bundles: dict | None = None,
-                 config: str | None = None, **settings):
+                 config: str | None = None, images: bool = False, **settings):
+        self.images = images  # new questions whose requests carry an image become image decisions
         self.settings = _config.resolve(path=config, **settings)
         self._given = {k: v for k, v in settings.items() if v is not None}
         self._config_path = config
@@ -108,7 +109,7 @@ class Gateway:
         d = os.path.join(self.folder, q)
         return self.bundles.get(q, os.path.join(d, "bundle")), os.path.join(d, "log.jsonl")
 
-    def shadow(self, q: str, schema: dict | None = None) -> Shadow:
+    def shadow(self, q: str, schema: dict | None = None, image: bool = False) -> Shadow:
         with self._lock:
             sh = self._shadows.get(q)
             if sh is None:
@@ -117,8 +118,10 @@ class Gateway:
                 bundle, log_path = self.paths(q)
                 os.makedirs(os.path.dirname(log_path), exist_ok=True)
                 qs = _config.resolve(q, path=self._config_path, **self._given)
+                fresh = not os.path.exists(os.path.join(bundle, "manifest.json"))
                 sh = Shadow(bundle, teacher=None, question=q, log=log_path, schema=self.schema.get(q) or schema,
-                            metrics=self.metrics, trace=self._trace, settings=qs)
+                            metrics=self.metrics, trace=self._trace, settings=qs,
+                            image=True if (image and fresh) else None)  # an existing bundle brings its own featurizer
                 self._shadows[q] = sh
                 self._mtimes[q] = _mtime(bundle)
             elif schema is not None and _option_set(sh.schema) != _option_set(schema):
@@ -258,6 +261,36 @@ def options_of(req: dict, headers=None) -> list[str] | None:
         opts = [x.strip() for x in h.split(",") if x.strip()]
         return opts if len(opts) >= 2 else None
     return None
+
+
+NON_TEXT_KEYS = frozenset({"image", "images", "image_url", "input_image", "audio", "input_audio", "video", "file", "files",
+                           "input_file", "pdf", "screenshot", "frame", "frames", "pixels", "b64_json"})
+NON_TEXT_TYPES = frozenset({"image", "image_url", "input_image", "audio", "input_audio", "video", "file", "input_file"})
+
+
+def state_non_text(req) -> bool:
+    """True when a System One `state` is not plain text: a dict / list carrying an image, audio, video or file part
+    (by key or by a part's `type`), or a non-text data: URL. The table only sees text, so such requests always go
+    to the model, untouched (the same rule wire.has_non_text applies to chat / Decisions API messages)."""
+    if not isinstance(req, dict) or "state" not in req:
+        return False
+
+    def walk(v, depth=0):
+        if depth > 8:
+            return False
+        if isinstance(v, str):
+            return v.startswith("data:") and not v.startswith("data:text/")
+        if isinstance(v, dict):
+            if any(k in NON_TEXT_KEYS for k in v):
+                return True
+            t = v.get("type")
+            if isinstance(t, str) and t in NON_TEXT_TYPES:
+                return True
+            return any(walk(x, depth + 1) for x in v.values())
+        if isinstance(v, list):
+            return any(walk(x, depth + 1) for x in v)
+        return False
+    return walk(req["state"])
 
 
 def _answer_field(req: dict) -> str | None:
@@ -510,8 +543,16 @@ def make_handler(gw: Gateway):
                         req = json.loads(body or b"{}")
                     except ValueError:
                         req = None
-                    if isinstance(req, dict) and not req.get("stream"):
-                        return self._decisions(dialect, req)
+                    non_text = wire.has_non_text(req) or state_non_text(req)
+                    if isinstance(req, dict) and not req.get("stream") and not non_text:
+                        try:
+                            parsed = wire.parse(dialect, req)
+                        except (ValueError, TypeError, AttributeError, KeyError):
+                            parsed = None  # a question type or shape this proxy does not know (box, ...): the
+                        if parsed is not None:  # upstream model answers it, request and reply untouched
+                            return self._decisions(dialect, req, parsed)
+                    if non_text:
+                        gw.metrics.non_text += 1
                     gw.metrics.passthrough += 1
                     return self._forward(body)
                 req = None
@@ -524,6 +565,12 @@ def make_handler(gw: Gateway):
                     _shape(req)
                 q = question_of(req, self.headers, gw.capture) if isinstance(req, dict) else None
                 text = last_user_text(req) if q else None
+                if q and wire.has_non_text(req):  # an image (or audio, file): the table would only see the prompt
+                    img = self._image_input(q, req)
+                    if img is not None:
+                        return self._decide(q, req, img)
+                    gw.metrics.non_text += 1
+                    text = None
                 if not q or text is None:
                     gw.metrics.passthrough += 1
                     return self._forward(body)
@@ -533,6 +580,24 @@ def make_handler(gw: Gateway):
             except ValueError as e:  # malformed requests (shapes are checked up front, see _shape)
                 gw.metrics.errors += 1
                 self._json(400, {"error": {"message": str(e), "type": "invalid_request_error"}})
+
+        def _image_input(self, q, req):
+            """Decoded pixels when this image request can be decided by an image table, else None (forward it)."""
+            url = wire.single_image(req)
+            if url is None:
+                return None
+            bundle, _ = gw.paths(q)
+            if not gw.images and not os.path.exists(os.path.join(bundle, "manifest.json")):
+                return None
+            try:
+                sh = gw.shadow(q, image=gw.images)
+                if sh.image_spec is None:
+                    return None  # a text table cannot see images
+                from .vision import pixels
+                return pixels(url)
+            except Exception as e:  # undecodable image, no Pillow, ...: the model answers it
+                log.info("image request for %r forwarded: %s", q, e)
+                return None
 
         # -- chat completions marked as decisions ---------------------------------------------------------------
         def _decide(self, q, req, text):
@@ -620,10 +685,10 @@ def make_handler(gw: Gateway):
             self._send(200, body.encode(), "text/event-stream", hdr)
 
         # -- decision-model formats: no marking needed -----------------------------------------------------------
-        def _decisions(self, dialect, req):
+        def _decisions(self, dialect, req, parsed=None):
             t0 = time.perf_counter()
             try:
-                text, qs = wire.parse(dialect, req)
+                text, qs = parsed or wire.parse(dialect, req)
             except (TypeError, AttributeError, KeyError) as e:
                 raise ValueError(f"shad0w proxy: malformed {dialect} request: {e}") from None
             served: dict[str, object] = {}

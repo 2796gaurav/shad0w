@@ -121,3 +121,79 @@ const {decision, matchOption} = require(process.argv[1]);
         assert "response_format" in mock.requests[0]["body"]
     finally:
         mock.close()
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_image_items_and_decisions_match_python(tmp_path):
+    """ImageFeaturizer (js) == shad0w.vision (python) item for item, and Bundle.decideImage picks the same option."""
+    from shad0w.shadow import shadow_compile
+    from shad0w.vision import ImageSpec, image_items_py
+
+    from .test_vision import COLOURS, synth_images
+    rng = np.random.default_rng(0)
+    specs = [ImageSpec(), ImageSpec(version=1, dhash=False), ImageSpec(size=16, channels=1, ferns=64, bits=6, radius=3,
+                                                                    grid=2, levels=8, margin=0, seed=7)]
+    cases = []
+    for spec in specs:
+        for shape in [(32, 32, 3), (28, 28), (3, 500, 4), (224, 224, 4), (7, 5)]:
+            a = rng.integers(0, 256, shape, dtype=np.uint8)
+            cases.append({"spec": spec.to_dict(), "w": a.shape[1], "h": a.shape[0], "c": 1 if a.ndim == 2 else a.shape[2],
+                          "px": a.ravel().tolist(), "items": image_items_py(a, spec).tolist()})
+    imgs, labels = synth_images(700, 0)
+    m, _ = shadow_compile({"colour": {"type": "choice", "criteria": {k: None for k in COLOURS}}},
+                          [{"items": image_items_py(i, ImageSpec()).tolist(), "colour": y} for i, y in zip(imgs, labels)],
+                          image=ImageSpec().to_dict())
+    m.save(str(tmp_path / "b"))
+    q = m.questions["colour"]
+    probe = [{"w": i.shape[1], "h": i.shape[0], "px": i.ravel().tolist(),
+              "want": q.options[int(np.argmax(q.rx.logits(image_items_py(i, ImageSpec()))))]} for i in imgs[:60]]
+    (tmp_path / "cases.json").write_text(json.dumps({"cases": cases, "probe": probe}))
+    script = f"""
+const S0 = require({json.dumps(os.path.join(ROOT, "js", "index.js"))});
+const fs = require("fs");
+const {{cases, probe}} = JSON.parse(fs.readFileSync({json.dumps(str(tmp_path / "cases.json"))}, "utf8"));
+let ok = 0;
+for (const k of cases) {{ const f = new S0.ImageFeaturizer(k.spec);
+  if (JSON.stringify(Array.from(f.items(Uint8Array.from(k.px), k.w, k.h, k.c))) === JSON.stringify(k.items)) ok++; }}
+(async () => {{
+  const b = await S0.Bundle.load({json.dumps(str(tmp_path / "b"))});
+  let same = 0;
+  for (const p of probe) if (b.decideImage(Uint8Array.from(p.px), p.w, p.h, 3).answers.colour.choice === p.want) same++;
+  console.log(JSON.stringify({{items: ok + "/" + cases.length, decisions: same + "/" + probe.length}}));
+}})();
+"""
+    r = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip().splitlines()[-1])
+    assert out["items"] == f"{len(cases)}/{len(cases)}" and out["decisions"] == f"{len(probe)}/{len(probe)}", out
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_bundle_text_kind_2(tmp_path):
+    """A text_kind=2 bundle (manifest meta): Bundle.load reads the kind and makes Python's decisions on mixed scripts."""
+    from shad0w import load
+    from shad0w.shadow import shadow_compile
+
+    from .test_text2 import _multilingual_rows, corpus
+
+    schema = {"intent": {"type": "choice", "criteria": {"refund": None, "lost_card": None, "balance": None}}}
+    m, _ = shadow_compile(schema, _multilingual_rows(1500, 3), alpha=0.05, text_kind=2)
+    m.save(str(tmp_path / "b"))
+    probe = [r["text"] for r in _multilingual_rows(150, 4)] + corpus()[:120]
+    (tmp_path / "probe.json").write_text(json.dumps(probe, ensure_ascii=False), encoding="utf-8")
+    script = ("const {Bundle}=require(process.argv[1]);const fs=require('fs');(async()=>{const b=await Bundle.load(process.argv[2]);"
+              "const p=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));const d=(t)=>b.decide(t).answers.intent;"
+              "console.log(JSON.stringify({kind:b.textKind,a:p.map(t=>{const a=d(t);return [a.choice,a.certified,a.confidence]})}))})()")
+    r = subprocess.run(["node", "-e", script, os.path.join(ROOT, "js", "index.js"), str(tmp_path / "b"), str(tmp_path / "probe.json")],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout)
+    assert out["kind"] == 2
+    py = load(str(tmp_path / "b"), native=False)
+    thr = py.questions["intent"].threshold
+    for t, (choice, cert, conf) in zip(probe, out["a"]):
+        a = py.decide(t)["answers"]["intent"]
+        assert a["choice"] == choice and abs(a["confidence"] - conf) < 1e-5, t
+        # JS softmax is float64, Python's float32: a confidence within rounding of the threshold may land either side
+        assert a["certified"] == cert or abs(conf - thr) < 1e-6, t
+    assert any(c for _, c, _ in out["a"]), "some answers should be certified"

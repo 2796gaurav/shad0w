@@ -203,7 +203,7 @@ def _train(a):
     from . import config as _config
     rename = dict(x.split("=", 1) for x in (a.rename or []) if "=" in x) or None
     st = _config.resolve(a.question, path=a.config, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows, max_mb=a.max_mb,
-                         rename=rename)
+                         rename=rename, student=a.student, hidden=a.hidden)
     records = read_jsonl(log_path)
     names = [a.question] if a.question else sorted({k for r in records for k in r} - {"text", "source", "ts"})
     full = json.load(open(a.schema, encoding="utf-8")) if a.schema else {}
@@ -232,7 +232,11 @@ def _train(a):
     t = time.time()
     m, cert = shadow_compile(schema, fit_rows, alpha=st.alpha, delta=st.delta, teacher=a.teacher, cal_records=cal_rows,
                              cal_fraction=st.cal_fraction, max_cal=st.max_cal, drift_window=st.drift_window,
-                             drift_margin=st.drift_margin, max_mb=st.max_mb)
+                             drift_margin=st.drift_margin, max_mb=st.max_mb, student=st.student, hidden=st.hidden)
+    for q, s_ in cert["questions"].items():
+        if s_.get("student") == "deep":
+            print(f"{q}: deep table (hidden layer of {s_.get('hidden')}); it has no robustness radius, so exposed mode "
+                  "defers it. Set student = \"linear\" to keep the additive table.")
     if a.gate and os.path.exists(os.path.join(out, "certificate.json")):
         from .shadow import gate_reason, read_certificate
         old = read_certificate(out) or {}
@@ -448,7 +452,7 @@ def _import(a):
             ans = wire.answer_value(q, wire.parse_answers("decisions", resp).get(q.name, {})) if q and text else None
             if q is not None and options is None and q.qtype == "choice":
                 options = list(q.criteria)
-        if not text or ans is None:
+        if not text or ans is None or wire.has_non_text(req):  # the table cannot see an image: skip, never learn the prompt
             skipped += 1
             continue
         rows.append({"text": text, a.question: ans})
@@ -662,11 +666,121 @@ def _doctor(a):
         n = sum(1 for l in open(a.log, encoding="utf-8") if l.strip()) if os.path.exists(a.log) else 0
         st = _config.resolve(path=a.config)
         (ok if n >= st.min_rows else warn)("log", f"{n:,} rows ({'ready to train' if n >= st.min_rows else f'need {st.min_rows:,}'})")
+    if a.teacher_noise:
+        if not (a.log and llm):
+            fail("teacher self-agreement", "--teacher-noise needs --log and --llm (or llm in shad0w.toml)")
+        else:
+            from .audit import teacher_self_agreement
+            from .cascade import rows_for_training
+            from .llm import LLMTeacher
+            from .shadow import read_jsonl
+            recs = read_jsonl(a.log)
+            name = a.question or next((k for r in recs for k in r if k not in ("text", "items", "image", "source", "ts")),
+                                      "decision")
+            try:
+                trows, schema = rows_for_training(recs, name, None)
+                t = LLMTeacher({name: schema}, llm, question=name)
+                st = _config.resolve(name, path=a.config)
+                rep = teacher_self_agreement(t, trows, name, n=a.teacher_noise, alpha=st.alpha, delta=st.delta)
+                if not rep["asked"]:
+                    fail("teacher self-agreement", f"no answer from {llm} ({rep['failed']} calls failed)")
+                else:
+                    detail = (f"{rep['self_agreement']:.1%} of {rep['asked']} logged answers repeated; noise between "
+                              f"{rep['noise_lower']:.1%} and {rep['noise_upper']:.1%}")
+                    if rep["blocks_certificate"]:
+                        warn("teacher self-agreement", detail + f": above alpha={st.alpha}, so no table can certify "
+                             "it; raise alpha, sharpen the options/instructions, or use temperature 0")
+                    else:
+                        ok("teacher self-agreement", detail)
+            except Exception as e:
+                fail("teacher self-agreement", str(e))
     w = max(len(r[1]) for r in rows)
     for mark, label, detail in rows:
         print(f"[{mark}] {label:<{w}}  {detail}")
     print("\nall good" if not fails else f"\n{fails} problem(s); fix the [!!] lines")
     return 1 if fails else 0
+
+
+def _votes(a):
+    """Majority-of-k teacher answers for calibration rows, written as `source: "audit"` rows that `shad0w train`
+    certifies on (when 100+ audit rows are in the log, it fits on the rest and calibrates on them)."""
+    import os
+    import random
+
+    from . import config as _config
+    from .audit import majority_labels
+    from .cascade import rows_for_training
+    from .llm import LLMTeacher
+    from .shadow import read_jsonl
+    st = _config.resolve(a.question, path=a.config)
+    llm = a.llm or st.llm
+    if not llm:
+        print("give --llm provider/model (or set llm in shad0w.toml)", file=sys.stderr)
+        return 2
+    schema = None
+    if a.schema:
+        full = json.load(open(a.schema, encoding="utf-8"))
+        schema = full.get(a.question, full if "criteria" in full or full.get("type") else None)
+    elif a.options:
+        opts = [o.strip() for o in a.options.split(",") if o.strip()]
+        schema = {"type": "choice", "criteria": {o: None for o in opts}}
+    log_rows = read_jsonl(a.log) if a.log else []
+    if a.texts:
+        texts = [l.rstrip("\n") for l in open(a.texts, encoding="utf-8") if l.strip()]
+        sampled_ids = set()
+    elif a.log:
+        rows, schema = rows_for_training(log_rows, a.question, schema)
+        texts_all = [r["text"] for r in rows if isinstance(r.get("text"), str)]
+        seen, uniq = set(), []
+        for t in texts_all:
+            if t not in seen:
+                seen.add(t)
+                uniq.append(t)
+        texts = random.Random(a.seed).sample(uniq, min(a.n, len(uniq)))
+        sampled_ids = set(texts)
+    else:
+        print("give --texts FILE (fresh messages, one per line) or --log LOG to sample from", file=sys.stderr)
+        return 2
+    if schema is None:
+        print("options unknown: pass --schema, --options, or --log with answers for this question", file=sys.stderr)
+        return 2
+    texts = texts[:a.n]
+    teacher = LLMTeacher({a.question: schema}, llm, question=a.question, temperature=a.temperature, stabilise=a.stabilise)
+    t0 = time.time()
+    res = majority_labels(teacher, texts, a.votes, workers=a.workers)
+    out_rows = []
+    for text, m in zip(texts, res):
+        if m["answer"] is None:
+            continue
+        row = {"text": text, a.question: m["answer"], "source": "audit", "teacher_votes": m["votes"],
+               "vote_agreement": m["agreement"], "ts": time.time(), **{k: v for k, v in teacher.info.items() if k != "teacher"}}
+        out_rows.append(row)
+    os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
+    with open(a.out, "w", encoding="utf-8") as f:
+        f.write("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in out_rows))
+    if out_rows:
+        unanimous = sum(r["vote_agreement"] == 1.0 for r in out_rows) / len(out_rows)
+        print(f"{len(out_rows):,} majority-of-{a.votes} rows -> {a.out} ({teacher.calls:,} calls to {teacher.name}, "
+              f"{teacher.failures} failed, {time.time() - t0:.0f}s); unanimous on {unanimous:.1%}, mean agreement "
+              f"{sum(r['vote_agreement'] for r in out_rows) / len(out_rows):.1%}")
+    else:
+        print(f"no answers from {teacher.name} ({teacher.failures} calls failed)", file=sys.stderr)
+        return 1
+    if a.replace and a.log:
+        # the sampled texts must leave the fitting set, or the table would be certified on rows it was fitted on
+        kept = [r for r in log_rows if not (isinstance(r.get("text"), str) and r["text"] in sampled_ids and a.question in r)]
+        bak = a.log + ".bak"
+        os.replace(a.log, bak)
+        with open(a.log, "w", encoding="utf-8") as f:
+            f.write("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in kept + out_rows))
+        print(f"rewrote {a.log}: {len(log_rows) - len(kept):,} sampled rows replaced by their majority rows (backup {bak})")
+        print(f"next: shad0w train --log {a.log} --out <bundle>   # certifies on the {len(out_rows):,} audit rows")
+    elif a.log and not a.texts:
+        print("note: these texts are also in the log's fitting rows. Before training, take them out of the fitting set "
+              "(--replace does it, with a backup) so the certificate is not computed on rows the table was fitted on.")
+    else:
+        print(f"next: cat {a.out} >> <log.jsonl>; shad0w train --log <log.jsonl> --out <bundle>   # certifies on the audit rows")
+    return 0
 
 
 def _token(ap, a):
@@ -784,6 +898,33 @@ def _main(argv=None):
     ce.add_argument("--delta", type=float, default=0.1)
     ce.add_argument("--teacher")
     ce.add_argument("--force", action="store_true", help="certify even with fewer than 100 rows (usually stops serving)")
+    ce.add_argument("--sign", action="store_true", help="also write certificate.sig (HMAC-SHA256 with $SHAD0W_CERT_KEY)")
+
+    sg = sub.add_parser("sign", help="sign a bundle's certificate.json with $SHAD0W_CERT_KEY (HMAC-SHA256) -> certificate.sig")
+    sg.add_argument("--bundle", required=True)
+
+    vf = sub.add_parser("verify", help="check certificate.sig against certificate.json (and the teacher) with $SHAD0W_CERT_KEY")
+    vf.add_argument("--bundle", required=True)
+    vf.add_argument("--teacher", help="the teacher the certificate and the bundle's manifest must name")
+
+    vt = sub.add_parser("votes", help="majority-of-k teacher answers for calibration rows (written as audit rows that "
+                                      "`shad0w train` certifies on)")
+    vt.add_argument("--question", required=True)
+    vt.add_argument("--out", required=True, help="JSON Lines file receiving the majority rows (source: audit)")
+    vt.add_argument("--texts", help="fresh messages to label, one per line (preferred: they were never fitted on)")
+    vt.add_argument("--log", help="a decision log to sample texts from (see --replace)")
+    vt.add_argument("--llm", help="provider/model (default: the llm setting)")
+    vt.add_argument("--schema", help="schema.json naming the options (default: --options, or the log's answers)")
+    vt.add_argument("--options", help="comma-separated options")
+    vt.add_argument("--votes", "-k", type=int, default=3, help="askings per text (default 3)")
+    vt.add_argument("--n", type=int, default=300, help="how many texts (default 300)")
+    vt.add_argument("--temperature", type=float, default=0.0)
+    vt.add_argument("--stabilise", type=int, default=0, help="extra option-order permutations per asking (LLMTeacher)")
+    vt.add_argument("--workers", type=int, default=4)
+    vt.add_argument("--seed", type=int, default=0)
+    vt.add_argument("--replace", action="store_true",
+                    help="with --log: rewrite the log so the sampled rows are replaced by their majority rows (backup .bak)")
+    vt.add_argument("--config")
 
     rp = sub.add_parser("report", help="print the bundle's certificate")
     rp.add_argument("--bundle", required=True)
@@ -833,6 +974,9 @@ def _main(argv=None):
     px.add_argument("--token-env", metavar="NAME", help="environment variable holding an access token clients must send "
                                                         "(default: $SHAD0W_PROXY_TOKEN when set)")
     px.add_argument("--token-file", metavar="PATH", help="file holding the access token (re-read on every request)")
+    px.add_argument("--images", action="store_true",
+                    help="decide marked requests that carry one inline image (needs shad0wllm[vision]); image bundles "
+                         "are used whether or not this is set")
     px.add_argument("--insecure-open", action="store_true",
                     help="allow a non-local --host with the proxy's own key and no token (only on a network you trust)")
     px.add_argument("--audit-rate", type=float, help="share of decisions spot-checked against the LLM (default 0.01)")
@@ -866,6 +1010,9 @@ def _main(argv=None):
     tr.add_argument("--delta", type=float, help="certificate failure probability (default 0.1)")
     tr.add_argument("--min-rows", type=int, help="logged answers needed (default 1000; 100 is the hard minimum)")
     tr.add_argument("--max-mb", type=float, help="size budget per table in MB (keeps the most informative features)")
+    tr.add_argument("--student", choices=("auto", "linear", "deep"),
+                    help="table shape: linear (additive, exact radius), deep (hidden layer: negation, word pairs), auto (default)")
+    tr.add_argument("--hidden", type=int, help="width of the deep student's hidden layer (default 32-128 by option count)")
     tr.add_argument("--rename", action="append", metavar="OLD=NEW", help="rename a label in the log while training (repeatable)")
     tr.add_argument("--gate", action="store_true", help="keep the old bundle unless the new one certifies >= 80%% of its share")
     tr.add_argument("--config", help="path to a shad0w.toml")
@@ -881,6 +1028,9 @@ def _main(argv=None):
     dr.add_argument("--log")
     dr.add_argument("--upstream", help="an OpenAI-compatible base URL to probe")
     dr.add_argument("--llm", help="provider/model whose API key should be set")
+    dr.add_argument("--teacher-noise", type=int, default=0, metavar="N",
+                    help="re-ask the LLM on N logged rows (--log) and report how often it repeats itself")
+    dr.add_argument("--question", help="which decision in the log (default: the first one found)")
     dr.add_argument("--config")
 
     ty = sub.add_parser("try", help="type messages and see what the table answers, how fast, and why")
@@ -950,7 +1100,7 @@ def _main(argv=None):
                     auto_train=a.auto_train, alpha=a.alpha, delta=a.delta, min_rows=a.min_rows, mode=a.mode, canary=a.canary,
                     never_serve=never, min_confidence=a.min_confidence, capture=capture, timeout=a.timeout, trace=a.trace,
                     cost_per_call=a.cost_per_call, llm_latency_ms=a.llm_latency_ms, keep_text=not a.no_text, schema=schema,
-                    bundles=bundles, config=a.config)
+                    bundles=bundles, config=a.config, images=a.images)
         try:
             srv.serve_forever()
         except KeyboardInterrupt:
@@ -978,6 +1128,26 @@ def _main(argv=None):
             return 2
         cert = certify_bundle(a.bundle, rows, alpha=a.alpha, delta=a.delta, teacher=a.teacher)
         print(json.dumps(cert, indent=2))
+        if a.sign:
+            from .sign import SIG_FILE, sign_bundle
+            sig = sign_bundle(a.bundle)
+            print(f"signed -> {os.path.join(a.bundle, SIG_FILE)} (key {sig['key_id']})", file=sys.stderr)
+    elif a.cmd == "sign":
+        from .sign import SIG_FILE, sign_bundle
+        _need_bundle(a.bundle)
+        sig = sign_bundle(a.bundle)
+        print(json.dumps({**sig, "file": os.path.join(a.bundle, SIG_FILE)}, indent=2))
+    elif a.cmd == "verify":
+        from .sign import SignatureError, verify_bundle
+        try:
+            rep = verify_bundle(a.bundle, teacher=a.teacher)
+        except SignatureError as e:
+            print(f"shad0w verify: FAILED: {e}", file=sys.stderr)
+            return 1
+        print(f"ok: certificate.json in {a.bundle} is signed (key {rep['key_id']}, {rep['signed_utc']}); "
+              f"teacher {rep['teacher']!r}; sha256 {rep['certificate_sha256'][:16]}...")
+    elif a.cmd == "votes":
+        return _votes(a)
     elif a.cmd == "report":
         from .shadow import read_certificate
         _need_bundle(a.bundle)
