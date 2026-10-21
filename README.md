@@ -7,7 +7,7 @@
 <h1 align="center">shad0w</h1>
 
 <p align="center">
-  <b>Your app asks an LLM the same kinds of small questions all day.<br>
+  <b>Your app asks a model the same kinds of small questions all day: about text, images and video frames.<br>
   shad0w learns its answers and serves them in microseconds, with a written guarantee on how often it disagrees.</b>
 </p>
 
@@ -25,11 +25,21 @@
 
 <p align="center">
   <a href="https://2796gaurav.github.io/shad0w"><b>Website</b></a> ·
-  <a href="https://2796gaurav.github.io/shad0w/demo/"><b>Try it in your browser</b></a> ·
-  <a href="https://2796gaurav.github.io/shad0w/pong/"><b>Play Pong against it</b></a> ·
-  <a href="https://2796gaurav.github.io/shad0w/arena/"><b>Snake arena</b></a> ·
+  <a href="https://2796gaurav.github.io/shad0w/playground/"><b>Playground</b></a> ·
+  <a href="https://2796gaurav.github.io/shad0w/bench/"><b>Decision Bench</b></a> ·
   <a href="https://2796gaurav.github.io/shad0w/docs/"><b>Docs</b></a>
 </p>
+
+| | What it decides | Try it |
+|---|---|---|
+| **Text** | intents, routing, topics, spam, sentiment (deep table), 2–10 µs on one CPU thread | [type a message](https://2796gaurav.github.io/shad0w/demo/) · [a live minute of Polymarket](https://2796gaurav.github.io/shad0w/pulse/) |
+| **Images** | a label per image from pixels, no neural network, 4–7 µs in C | [Doodle Duel: draw, it guesses on every stroke](https://2796gaurav.github.io/shad0w/doodle/) |
+| **Guardrails** | blocks known prompt attacks before your LLM reads them; never allows on its own word | [prompt guard](https://2796gaurav.github.io/shad0w/guard/) |
+| **Video frames** | reuses a certified answer while the scene holds (experimental) | [docs](https://2796gaurav.github.io/shad0w/docs/experimental.html#video-frames) |
+| **Structured fields** | fills the fields it is sure of, asks your LLM for the rest (experimental) | [docs](https://2796gaurav.github.io/shad0w/docs/experimental.html#structured-extraction) |
+| **Against decision models** | six public tasks, CPU only: 2–10 µs against 14 ms–5.6 s, most accurate on 4 of 6 | [Decision Bench](https://2796gaurav.github.io/shad0w/bench/) |
+
+And for fun, at game speed: [a CS-style duel](https://2796gaurav.github.io/shad0w/duel/), [Doom](https://2796gaurav.github.io/shad0w/doom/), [Pong](https://2796gaurav.github.io/shad0w/pong/) and [a snake arena](https://2796gaurav.github.io/shad0w/arena/).
 
 ---
 
@@ -240,7 +250,8 @@ over-blocks 4.8% of safe ones. Use it as an early cut-off in front of a real gua
 
 **Doodle Duel** (`examples/doodle_live.py`): a sketch game where a table learned from gpt-4.1-mini guesses the doodle on every
 stroke, 25 µs per guess in the browser, certifying 41.5% of held-out doodles at 4.8% disagreement (every disagreement on
-those was the model's own mistake against the drawing's true word).
+those was the model's own mistake against the drawing's true word). A version you can play in the browser, learned from Quick, Draw!'s
+own labels instead of a model, is at [2796gaurav.github.io/shad0w/doodle](https://2796gaurav.github.io/shad0w/doodle/).
 
 ## Video streams, structured extraction, signed certificates (experimental)
 
