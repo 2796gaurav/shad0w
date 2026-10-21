@@ -97,6 +97,7 @@
 </tr>
 </tbody>
 </table></div>
+<p><strong>Try it:</strong> <a href="../doodle/">Doodle Duel</a> runs an image table in your browser and guesses your drawing on every stroke.</p>
 <p>Microseconds assume pixels already in memory: decoding a JPEG or PNG costs 0.3–3 ms. <code>pip install "shad0wllm[vision]"</code> for image files. C API: <code>s0_decide_image</code>.</p>
 <h2 id="guardrails">Guardrails<a class="headerlink" href="#guardrails" title="Link to this section">#</a></h2>
 <p><code>shad0w.guard.Guard</code> puts a learned table in front of your LLM as a prompt-injection gate that can <strong>block</strong> in microseconds but <strong>never allows</strong> on the table's word: anything it does not block goes to your model.</p>
@@ -138,6 +139,7 @@
 </tbody>
 </table></div>
 <p>It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own, which is why it never allows.</p>
+<p><strong>Try it:</strong> <a href="../guard/">the prompt guard</a> runs a guard table in your browser, block-only.</p>
 <p><strong>Streaming replies</strong> (<code>StreamGuard</code>) check a reply as it streams, at 16, 32, 64, 128, 256 words and then every 256, and block on the first certified prefix. Honest result on BeaverTails: a word table certifies nothing at α = 5%; at α = 10% it blocks 50% of unsafe replies after 47% of their words and over-blocks 4.8% of safe ones. Use it as an early cut-off in front of a real guard model.</p>
 <h2 id="video-frames">Video frames<a class="headerlink" href="#video-frames" title="Link to this section">#</a></h2>
 <p><code>shad0w.stream.Stream</code> reuses a certified answer across consecutive frames: a small yes/no table, scored on the change since the last keyframe, decides whether the answer still holds; otherwise the frame table or your vision model answers. The certificate counts one frame per block, because adjacent frames are not independent.</p>
@@ -177,7 +179,7 @@
     <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
   <div class="fcols">
     <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
-    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../doodle/">Doodle Duel</a><a href="../guard/">Prompt guard</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
     <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
     <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
   </div>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>&quot;shad0w 0.4: one reflex for text, images, prompt attacks and video frames&quot; · shad0w</title>
+<meta name="description" content="shad0w 0.4 takes the same idea, a small table that learns your model&#x27;s answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn&#x27;t, and what you can try in your browser.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="article"><meta property="og:title" content="&quot;shad0w 0.4: one reflex for text, images, prompt attacks and video frames&quot; · shad0w">
+<meta property="og:description" content="shad0w 0.4 takes the same idea, a small table that learns your model&#x27;s answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn&#x27;t, and what you can try in your browser."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="&quot;shad0w 0.4: one reflex for text, images, prompt attacks and video frames&quot; · shad0w">
+<meta name="twitter:description" content="shad0w 0.4 takes the same idea, a small table that learns your model&#x27;s answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn&#x27;t, and what you can try in your browser."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "\"shad0w 0.4: one reflex for text, images, prompt attacks and video frames\"", "description": "shad0w 0.4 takes the same idea, a small table that learns your model's answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn't, and what you can try in your browser.", "datePublished": "2026-10-21", "dateModified": "2026-10-21", "url": "https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html", "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "wordCount": 796, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "publisher": {"@type": "Person", "name": "Gaurav Chauhan"}, "mainEntityOfPage": "https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "shad0w", "item": "https://2796gaurav.github.io/shad0w/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://2796gaurav.github.io/shad0w/blog/"}, {"@type": "ListItem", "position": 3, "name": "\"shad0w 0.4: one reflex for text, images, prompt attacks and video frames\"", "item": "https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html"}]}</script><meta property="article:published_time" content="2026-10-21"><meta property="article:author" content="Gaurav Chauhan"><link rel="alternate" type="text/markdown" href="https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.md">
+</head>
+<body class="blogpage">
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../playground/">Playground</a>
+    <a href="../bench/">Bench</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/" class=active>Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap post">
+  <header class="post-head"><a class="kicker" href="./">← the shad0w blog</a>
+    <h1>&quot;shad0w 0.4: one reflex for text, images, prompt attacks and video frames&quot;</h1><p class="lead">shad0w 0.4 takes the same idea, a small table that learns your model&#x27;s answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn&#x27;t, and what you can try in your browser.</p>
+    <div class="post-meta"><span>Gaurav Chauhan</span><span>2026-10-21</span><span>4 min read</span><span class="tag">release</span><span class="tag">images</span><span class="tag">guardrails</span><span class="tag">benchmarks</span><span class="tag">multimodal</span></div></header>
+  <article class="prose"><p>Most AI calls in a product are small, fixed-choice decisions: which intent, which team, spam or not, which category is this photo, is this message an attack. They repeat. Until 0.3, shad0w handled that for text. In 0.4 the same loop runs on pixels, video frames and prompt-injection checks, and it gained a hidden layer that reads negation.</p>
+<p>Everything below was measured. Each section also says what didn't work.</p>
+<h2 id="text-a-table-that-reads-not-good">Text: a table that reads "not good"<a class="headerlink" href="#text-a-table-that-reads-not-good" title="Permanent link">#</a></h2>
+<p>A linear table adds one score per word, so "not good" can never mean the opposite of "good". The new <strong>deep table</strong> keeps the same lookups but runs them through one small hidden layer. Training builds both and keeps the deep one only when it certifies more held-out rows.</p>
+<ul>
+<li><strong>Sentiment (SST-2):</strong> 0% → <strong>74%</strong> of reviews answered with a certificate. Sentiment used to be the textbook "send it all to the LLM" case.</li>
+<li><strong>AG News topics:</strong> 81% → 83%.</li>
+<li><strong>BANKING77 intents:</strong> 81% → 87%.</li>
+<li><strong>Cost:</strong> about 1–6 µs in C. A deep table has no exact robustness radius, so the prompt guard never uses it to allow anything.</li>
+</ul>
+<h2 id="against-open-decision-models-on-a-cpu">Against open decision models, on a CPU<a class="headerlink" href="#against-open-decision-models-on-a-cpu" title="Permanent link">#</a></h2>
+<p>The <a href="../bench/">Decision Bench</a> puts shad0w next to five open decision models (Julia-1, Laya, Kev-0.8B, Decider-0.8B, GLiNER2.5-Decide) on six public tasks, with the same rows and the same 5% certifier for every system. On one CPU thread shad0w answers in 2–10 µs; the decision models take 14 ms to 5.6 s on the CPU. shad0w was the more accurate on 4 of 6 tasks. Laya won on news topics and sentiment, and put behind shad0w it got both faster and more accurate. The models answer zero-shot while shad0w learned each task, and on a GPU the models would be far faster. Every prediction is saved, so you can re-score it without running anything.</p>
+<h2 id="images-pixels-in-a-certified-label-out-no-neural-network">Images: pixels in, a certified label out, no neural network<a class="headerlink" href="#images-pixels-in-a-certified-label-out-no-neural-network" title="Permanent link">#</a></h2>
+<p>An image becomes items the way a sentence does. A 32×32 thumbnail, 256 random pixel comparisons, a coarse grid of where the ink is and a perceptual hash each give the table a word to read. In C that takes 4–7 µs per image.</p>
+<p><strong><a href="../doodle/">Doodle Duel</a></strong> lets you feel it. Draw, and the table guesses on every stroke in your browser. It learned from 72,000 Quick, Draw! doodles, finished and half-drawn.</p>
+<ul>
+<li><strong>Finished doodles it never saw:</strong> it named 87.9% correctly, certified 75.1%, and 97.6% of its certified answers were right.</li>
+<li><strong>"I know!" mid-drawing:</strong> right 88.3% of the time. That's lower than on finished drawings, because guessing after every stroke gives it more chances to be wrong. We say so on the page.</li>
+</ul>
+<p><strong>Where it doesn't work.</strong> On natural photos (CIFAR-10) the pixel table certifies nothing and passes everything to your vision model, as it should. An optional CLIP tier certified 73% there, at about 28 ms instead of a vision model's 2.6 s.</p>
+<h2 id="guardrails-block-in-microseconds-never-allow">Guardrails: block in microseconds, never allow<a class="headerlink" href="#guardrails-block-in-microseconds-never-allow" title="Permanent link">#</a></h2>
+<p>Many prompt-injection attempts are copies of copies. <strong><a href="../guard/">The prompt guard</a></strong> blocks the ones it recognises, with a certificate, in microseconds. Everything else goes to your model, including anything that merely <em>looks</em> safe.</p>
+<p><strong>On 2,060 held-out prompts from a public dataset:</strong> it blocked 97.4% of attacks and blocked 0.6% of safe prompts by mistake.</p>
+<p><strong>Why it never allows.</strong> Try the encoded and full-width examples on the page. The bare table reads them as safe, even certified. A guard that let traffic through on the table's word would wave them in. In the library, <code>Guard</code> also normalises the input first (zero-width characters, homoglyphs, leetspeak, base64), and anything it had to undo goes to your model. It catches repeats cheaply; it is not a defence against an adaptive attacker on its own.</p>
+<h2 id="video-frames-and-structured-fields-experimental">Video frames and structured fields (experimental)<a class="headerlink" href="#video-frames-and-structured-fields-experimental" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Video frames.</strong> Adjacent frames usually carry the same answer. A small table decides whether the answer still holds since the last keyframe. On one surveillance dataset that reuse answered about two thirds of frames at 2–4% disagreement. But only in 2 of 3 splits, and only at a block size chosen after the fact. The pre-registered setting certified nothing, mostly because the teacher model contradicts itself on identical frames. Measure your teacher's flicker first.</li>
+<li><strong>Structured fields.</strong> One certified table per field fills what it is sure of and asks your LLM for the rest. Per-field guarantees are not record-level, so a record-level option splits α across fields: 60% of records were served whole, with 5.2% having any wrong field.</li>
+</ul>
+<h2 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">#</a></h2>
+<p>Everything in the <a href="../playground/">playground</a> runs in your browser: the doodle game, the prompt guard, a live minute of Polymarket trades, the 77-intent message box, and the games.</p>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"shad0wllm[compile]"</span><span class="w">   </span><span class="c1"># or: npm i shad0wllm</span>
+</code></pre></div>
+
+<p>The <a href="../docs/changelog.html">changelog</a> has every change, and <a href="../docs/deep-table.html">the docs</a> explain the deep table and <a href="../docs/experimental.html">the experimental layers</a>.</p>
+    <div class="post-cta"><b>Try it on your own traffic.</b><span>One line in front of the LLM you already call, or zero code with the proxy.</span>
+      <code>pip install "shad0wllm[compile]"</code><a class="btn primary" href="../docs/">Start in 5 minutes →</a></div>
+  </article>
+  <aside class="post-more"><h3>Keep reading</h3><a class="post-card" href="decisions-api-proxy.html"><small>2026-10-09 · 5 min</small><b>Zero-code System Zero for the OpenAI Decisions API</b></a><a class="post-card" href="game-speed.html"><small>2026-10-09 · 3 min</small><b>Snake at 120 moves a second: System 0 vs System One models, at game speed</b></a><a class="post-card" href="honest-numbers.html"><small>2026-10-09 · 5 min</small><b>94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM</b></a></aside>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../doodle/">Doodle Duel</a><a href="../guard/">Prompt guard</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "Quick, Draw! labels",
+    "alpha": 0.05,
+    "delta": 0.1,
+    "image": {
+      "kind": "ferns/2",
+      "size": 32,
+      "channels": 1,
+      "ferns": 256,
+      "bits": 8,
+      "radius": 2,
+      "grid": 4,
+      "levels": 4,
+      "margin": 2,
+      "seed": 0,
+      "version": 2,
+      "dhash": true
+    },
+    "text_kind": 2
+  },
+  "questions": {
+    "word": {
+      "type": "choice",
+      "options": [
+        "cat",
+        "fish",
+        "house",
+        "tree",
+        "car",
+        "sun",
+        "star",
+        "apple",
+        "bicycle",
+        "umbrella",
+        "clock",
+        "airplane"
+      ],
+      "threshold": 0.7713690996170044,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.5550460815429688,
+        "base": 0.18533333333333335,
+        "window": 500,
+        "margin": 0.03,
+        "n_cal": 3000
+      },
+      "calibrated": true
+    }
+  }
+}

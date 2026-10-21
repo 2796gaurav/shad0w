@@ -25,6 +25,8 @@ photo.train()
 | natural photos (CIFAR-10), ferns | 0% (correctly defers everything) | — | 4–7 µs |
 | natural photos (CIFAR-10), ferns → CLIP B/32 table | **73%** | 5.5% (95% CI ≈ 3.6–8%) | ~28 ms instead of 2.6 s |
 
+**Try it:** [Doodle Duel](../doodle/) runs an image table in your browser and guesses your drawing on every stroke.
+
 Microseconds assume pixels already in memory: decoding a JPEG or PNG costs 0.3–3 ms. `pip install "shad0wllm[vision]"` for image files. C API: `s0_decide_image`.
 
 ## Guardrails
@@ -49,6 +51,8 @@ The input is normalised first (Unicode forms, zero-width, bidi and tag character
 | latency, normaliser + table (Python) | ~155 µs median, against ~1.1 s for the model |
 
 It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own, which is why it never allows.
+
+**Try it:** [the prompt guard](../guard/) runs a guard table in your browser, block-only.
 
 **Streaming replies** (`StreamGuard`) check a reply as it streams, at 16, 32, 64, 128, 256 words and then every 256, and block on the first certified prefix. Honest result on BeaverTails: a word table certifies nothing at α = 5%; at α = 10% it blocks 50% of unsafe replies after 47% of their words and over-blocks 4.8% of safe ones. Use it as an early cut-off in front of a real guard model.
 

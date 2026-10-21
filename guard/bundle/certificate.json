@@ -1,0 +1,47 @@
+{
+  "format": "shad0w-certificate/1",
+  "mode": "shadow",
+  "certified_against": "teacher",
+  "teacher": "dataset labels",
+  "alpha": 0.05,
+  "delta": 0.1,
+  "text_kind": 2,
+  "statement": "On inputs drawn like the calibration slice, among answers this bundle serves with certified=true, the rate of disagreement with the teacher is at most alpha with probability at least 1 - delta. The bound is against the teacher, not the truth, and does not survive a shift in the traffic mix without re-certification.",
+  "created_utc": "2026-10-21T07:04:28+00:00",
+  "questions": {
+    "verdict": {
+      "type": "choice",
+      "options": [
+        "safe",
+        "injection"
+      ],
+      "n_records": 8236,
+      "n_fit": 5766,
+      "n_fit_only": 0,
+      "data_sha256": "124e3e65f9b7e130941b1968f12f6f624cb94fae4e77486da6a1277b1aeaebb5",
+      "calibration": "held-out-split",
+      "n_calibration": 2470,
+      "agreement_with_teacher": 0.9882591093117409,
+      "threshold": 0.5144569873809814,
+      "certified_share_on_calibration": 1.0,
+      "disagreement_on_certified_calibration": 0.01174089068825911,
+      "procedure": "learn-then-test/clopper-pearson/auto (fixed-sequence)",
+      "static": null,
+      "student": "linear",
+      "student_choice": {
+        "deep": {
+          "agreement": 0.9928571428571429,
+          "coverage": 1.0,
+          "hidden": 32,
+          "epochs": 28
+        },
+        "linear": {
+          "agreement": 0.9904761904761905,
+          "coverage": 1.0,
+          "C": 10000.0
+        },
+        "chosen": "linear"
+      }
+    }
+  }
+}

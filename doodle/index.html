@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="color-scheme" content="dark">
+<title>Doodle Duel: draw, and a shad0w image table guesses on every stroke · shad0w</title>
+<meta name="description" content="A drawing game in your browser: a shad0w image table, with no neural network, names your doodle in microseconds on every stroke and says when it is certified.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gaurav Chauhan">
+<meta name="google-site-verification" content="mfq2FI9MuiRBnz4kS1oyPjAD9PX4jgoAjBSm7fXVhw4">
+<link rel="canonical" href="https://2796gaurav.github.io/shad0w/doodle/">
+<link rel="author" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://www.linkedin.com/in/gauravc2708/"><link rel="me" href="https://github.com/2796gaurav">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="shad0w blog" href="https://2796gaurav.github.io/shad0w/blog/feed.xml">
+<meta property="og:site_name" content="shad0w"><meta property="og:type" content="website"><meta property="og:title" content="Doodle Duel: draw, and a shad0w image table guesses on every stroke · shad0w">
+<meta property="og:description" content="A drawing game in your browser: a shad0w image table, with no neural network, names your doodle in microseconds on every stroke and says when it is certified."><meta property="og:url" content="https://2796gaurav.github.io/shad0w/doodle/">
+<meta property="og:image" content="https://2796gaurav.github.io/shad0w/assets/og-doodle.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="shad0w: your LLM's answers, served in microseconds">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Doodle Duel: draw, and a shad0w image table guesses on every stroke · shad0w">
+<meta name="twitter:description" content="A drawing game in your browser: a shad0w image table, with no neural network, names your doodle in microseconds on every stroke and says when it is certified."><meta name="twitter:image" content="https://2796gaurav.github.io/shad0w/assets/og-doodle.png">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "shad0w", "alternateName": "shad0wllm", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows, browsers, edge workers", "description": "Learns the fixed-choice decisions your LLM makes and answers the ones it is certified on in microseconds, from a small table on your CPU. Zero-code proxy for the OpenAI Decisions API, System One and chat models.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "creator": {"@type": "Person", "name": "Gaurav Chauhan", "url": "https://www.linkedin.com/in/gauravc2708/", "email": "mailto:gauravc2708@gmail.com", "sameAs": ["https://www.linkedin.com/in/gauravc2708/", "https://github.com/2796gaurav"]}, "sameAs": ["https://github.com/2796gaurav/shad0w", "https://pypi.org/project/shad0wllm/", "https://www.npmjs.com/package/shad0wllm"], "image": "https://2796gaurav.github.io/shad0w/assets/og.png", "screenshot": "https://2796gaurav.github.io/shad0w/assets/film-poster.jpg", "keywords": "LLM, System 0, System One, decision model, OpenAI Decisions API, intent classification, LLM routing, LLM latency, LLM cost, semantic cache alternative, certified, conformal, Python, JavaScript", "license": "https://www.apache.org/licenses/LICENSE-2.0", "url": "https://2796gaurav.github.io/shad0w/", "downloadUrl": "https://pypi.org/project/shad0wllm/", "codeRepository": "https://github.com/2796gaurav/shad0w", "programmingLanguage": ["Python", "JavaScript", "C"]}</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand wordmark" href="../" aria-label="shad0w home">shad<span class="o"></span>w</a>
+  <button class="icon-btn menu-btn" data-menu aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="links">
+    <a href="../#how">How it works</a>
+    <a href="../playground/" class=active>Playground</a>
+    <a href="../bench/">Bench</a>
+    <a href="../docs/">Docs</a>
+    <a href="../blog/">Blog</a>
+    <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
+  </div>
+</div></nav>
+<main class="wrap doodle" style="padding-top:56px;padding-bottom:100px">
+  <div class="section-head" style="max-width:900px;margin-bottom:22px">
+    <div class="kicker">playground · images · no neural network · runs in your browser</div>
+    <h1 class="arena-title">Doodle Duel.<br><span class="hl">Draw. It guesses on every stroke.</span></h1>
+    <p>A shad0w image table reads your drawing as pixels and names it in microseconds, right in this tab: no neural network, no server, no GPU. It learned from <span data-d="train">…</span> doodles people drew for Google's Quick, Draw! game, finished and half-drawn, and it says "I know!" only when its answer is certified.</p>
+  </div>
+
+  <section class="panel dd-run">
+    <div class="dd-top"><button class="btn primary" id="play" type="button">▶ Give me a word to draw</button><div class="dd-task" id="task">Or just draw any of the words below.</div><div class="dd-score muted" id="score"></div></div>
+    <div class="dd-grid">
+      <div class="dd-padwrap"><canvas id="pad" class="dd-pad" aria-label="Drawing pad: draw with your mouse, finger or pen"></canvas>
+        <div class="dd-tools"><button type="button" class="btn" id="undo">Undo stroke</button><button type="button" class="btn" id="clear">Clear</button></div></div>
+      <div class="dd-side">
+        <div class="pulse-h"><b>shad0w's guess</b><span>after every stroke</span></div>
+        <div id="guess"></div>
+        <div class="dd-result" id="result"></div>
+        <div class="pulse-h" style="margin-top:14px"><b>What the table sees</b><span>your drawing, scaled and centred</span></div>
+        <canvas id="thumb" class="dd-thumb" width="128" height="128" aria-label="Your drawing as the table sees it"></canvas>
+      </div>
+    </div>
+    <div class="dd-words" id="words"></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">measured</div><h2>On doodles it never saw.</h2>
+      <p><span data-d="test">…</span> held-out drawings from the same game, the same twelve words.</p></div>
+    <div class="pm-gets dd-nums" id="nums"></div>
+  </section>
+
+  <section class="arena-sec">
+    <div class="section-head"><div class="kicker">how</div><h2>Pixels to items to a certified answer.</h2>
+      <p>The same idea shad0w uses for text, applied to images. Your drawing is rendered to a small picture; 256 "ferns" compare pairs of nearby pixels, a coarse grid records where the ink is, and a perceptual hash catches near-duplicates. Those become item numbers, exactly like words in a sentence, and the table adds up what each item says about each word. No convolution, no model download beyond the table itself.</p></div>
+    <ul class="fine">
+      <li><b>Teacher.</b> Here, the word each player was asked to draw (the game's label). In your app the teacher is your vision model: shad0w learns its answers, and the certificate is against that model.</li>
+      <li><b>Certified</b> means confident enough to pass a test set in advance: on certified answers it disagrees with the teacher at most 5% of the time (90% confidence).</li>
+      <li><b>Where it works.</b> Drawings, icons, product photos, screens of a known app: images where the layout of light and dark tells the class. On natural photos (CIFAR-10) the pixel table certifies nothing and defers everything; there, an optional CLIP tier certified 73% at ~28 ms instead of a vision model's 2.6 s.</li>
+      <li><b>Data.</b> Google's <a href="https://quickdraw.withgoogle.com/data">Quick, Draw! dataset</a> (CC BY 4.0), the drawings the game itself recognised.</li>
+    </ul>
+<pre class="code"><code>from shad0w.vision import ImageSpec
+photo = shad0w.decision("category", options=[...], llm="openai/a hosted LLM", image=True)   # your vision model teaches
+photo(pixels)      # numpy array or PIL image: answered in microseconds once certified, else asked
+photo.train()</code></pre>
+    <p class="muted" style="font-size:13.5px"><a href="../docs/experimental.html#images">Images in the docs →</a></p>
+  </section>
+</main>
+<footer><div class="wrap">
+  <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
+    <p>System 0, the reflex below your LLM. Open source, Apache-2.0. Built by <a href="https://www.linkedin.com/in/gauravc2708/" rel="author">Gaurav Chauhan</a>.</p>
+    <p class="fsocial"><a href="https://www.linkedin.com/in/gauravc2708/" rel="me">LinkedIn</a> · <a href="https://github.com/2796gaurav" rel="me">GitHub</a> · <a href="mailto:gauravc2708@gmail.com">gauravc2708@gmail.com</a></p></div>
+  <div class="fcols">
+    <div><h6>Product</h6><a href="../docs/">Get started</a><a href="../playground/">Playground</a><a href="../bench/">Decision Bench</a><a href="../docs/benchmarks.html">Benchmarks</a><a href="../docs/compare.html">Compare</a></div>
+    <div><h6>Playground</h6><a href="../pulse/">Polymarket, live</a><a href="../doodle/">Doodle Duel</a><a href="../guard/">Prompt guard</a><a href="../demo/">Type a message</a><a href="../duel/">Duel vs shad0w</a><a href="../doom/">Doom</a><a href="../arena/">Snake arena</a><a href="../pong/">Pong</a></div>
+    <div><h6>Read</h6><a href="../blog/">Blog</a><a href="../blog/system-zero.html">System Zero</a><a href="../docs/guarantee.html">The guarantee</a><a href="../docs/limits.html">Limits</a></div>
+    <div><h6>Get it</h6><a href="https://pypi.org/project/shad0wllm/">PyPI</a><a href="https://www.npmjs.com/package/shad0wllm">npm</a><a href="https://github.com/2796gaurav/shad0w">GitHub</a><a href="../llms.txt">llms.txt</a></div>
+  </div>
+</div></footer>
+<script type="module" src="../assets/doodle.mjs"></script>
+</body>
+</html>

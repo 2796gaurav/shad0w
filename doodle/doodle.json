@@ -1,0 +1,52 @@
+{
+ "words": [
+  "cat",
+  "fish",
+  "house",
+  "tree",
+  "car",
+  "sun",
+  "star",
+  "apple",
+  "bicycle",
+  "umbrella",
+  "clock",
+  "airplane"
+ ],
+ "train": 72000,
+ "train_rows": 134624,
+ "test": 12000,
+ "alpha": 0.05,
+ "table_kb": 2595.1,
+ "train_s": 997.0,
+ "student": "deep",
+ "accuracy": 0.8794,
+ "certified_share": 0.7508,
+ "certified_accuracy": 0.9758,
+ "calibration": {
+  "agreement_with_teacher": 0.8146666666666667,
+  "certified_share_on_calibration": 0.6706666666666666,
+  "threshold": 0.7713690996170044
+ },
+ "early": {
+  "games": 2400,
+  "certified_at_some_stroke": 0.8771,
+  "median_share_of_strokes": 0.5,
+  "right_when_first_certified": 0.8827
+ },
+ "featurise_us_python": 577.9,
+ "spec": {
+  "kind": "ferns/2",
+  "size": 32,
+  "channels": 1,
+  "ferns": 256,
+  "bits": 8,
+  "radius": 2,
+  "grid": 4,
+  "levels": 4,
+  "margin": 2,
+  "seed": 0,
+  "version": 2,
+  "dhash": true
+ }
+}

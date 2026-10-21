@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "meta": {
+    "mode": "shadow",
+    "teacher": "dataset labels",
+    "alpha": 0.05,
+    "delta": 0.1,
+    "text_kind": 2
+  },
+  "questions": {
+    "verdict": {
+      "type": "choice",
+      "options": [
+        "safe",
+        "injection"
+      ],
+      "threshold": 0.5144569873809814,
+      "alpha": 0.05,
+      "r_min": 8.0,
+      "guard": {
+        "t": 0.7183012366294861,
+        "base": 0.01174089068825912,
+        "window": 500,
+        "margin": 0.03,
+        "n_cal": 2470
+      },
+      "calibrated": true
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+ "dataset": "xTRam1/safe-guard-prompt-injection",
+ "train": 8236,
+ "test": 2060,
+ "alpha": 0.05,
+ "table_kb": 316.4,
+ "train_s": 327.3,
+ "student": "linear",
+ "accuracy": 0.9874,
+ "attacks_blocked": 0.9738,
+ "safe_blocked": 0.0064,
+ "test_attacks": 650,
+ "test_safe": 1410
+}
