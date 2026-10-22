@@ -40,7 +40,7 @@ try { const h = location.hash.slice(1); if (R.tasks[h]) cur = h; } catch {}
 // ---------------------------------------------------------------- the chart: accuracy vs log time
 const tip = $("tip");
 function chart(t) {
-  const sys = Object.values(R.tasks[t].systems), box = $("chart"), W = Math.max(300, box.clientWidth), H = 380;
+  const sys = Object.values(R.tasks[t].systems), box = $("chart"), W = Math.max(300, box.clientWidth), H = 340;
   const m = { l: 48, r: 18, t: 16, b: 40 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
   const lo = Math.min(...sys.map((s) => s.accuracy_ci95?.[0] ?? s.accuracy)), yMin = Math.max(0, Math.floor((lo - 0.05) * 10) / 10);
   const x = (us) => m.l + (Math.log10(us) - 0) / 7 * iw, y = (a) => m.t + (1 - (a - yMin) / (1 - yMin)) * ih;
@@ -52,9 +52,9 @@ function chart(t) {
   // labels: try right, left, above, below; skip a label that would collide (the tooltip still names the point)
   const boxes = pts.map((s) => ({ x: x(s.p50_us) - 10, y: y(s.accuracy) - 10, w: 20, h: 20 })), placed = [];
   const hit = (b) => [...boxes, ...placed].some((o) => b.x < o.x + o.w && o.x < b.x + b.w && b.y < o.y + o.h && o.y < b.y + b.h);
-  const labelAt = (s, r) => { const cx = x(s.p50_us), cy = y(s.accuracy), name = NAME[s.system] ?? s.system, w = name.length * 7.7 + 6, h = 17;
+  const labelAt = (s, r) => { const cx = x(s.p50_us), cy = y(s.accuracy), name = NAME[s.system] ?? s.system, w = name.length * 6.6 + 4, h = 14;
     for (const [lx, ly, anchor] of [[cx + r + 5, cy + 4, "start"], [cx - r - 5, cy + 4, "end"], [cx, cy - r - 6, "middle"], [cx, cy + r + 15, "middle"]]) {
-      const bx = anchor === "start" ? lx : anchor === "end" ? lx - w : lx - w / 2, b = { x: bx, y: ly - 13, w, h };
+      const bx = anchor === "start" ? lx : anchor === "end" ? lx - w : lx - w / 2, b = { x: bx, y: ly - 11, w, h };
       if (bx < m.l || bx + w > W - 2 || hit(b)) continue;
       placed.push(b); return `<text x="${lx}" y="${ly}" text-anchor="${anchor}" class="bn-lab${isMe(s.system) ? " me" : ""}">${esc(name)}</text>`; }
     return ""; };
@@ -77,7 +77,7 @@ function chart(t) {
       <span>certified <b>${pct(s.certified_coverage, 0)}</b>${s.served_error != null ? ` · error on served ${pct(s.served_error)}` : ""}</span>
       <span>${s.size_mb >= 1 ? `${s.size_mb.toFixed(s.size_mb < 10 ? 1 : 0)} MB` : `${Math.round(s.size_mb * 1024)} KB`} · ${s.n_test} test rows</span>`;
     tip.hidden = false; const r = el.getBoundingClientRect();
-    tip.style.left = `${Math.min(innerWidth - 300, Math.max(8, r.left + scrollX + 14))}px`; tip.style.top = `${r.top + scrollY + 14}px`; };
+    tip.style.left = `${Math.min(innerWidth - 270, Math.max(8, r.left + scrollX + 14))}px`; tip.style.top = `${r.top + scrollY + 14}px`; };
   box.onmousemove = showTip; box.onclick = showTip; box.onmouseleave = () => { tip.hidden = true; };
 }
 

@@ -40,9 +40,10 @@
   </div>
 </div></nav>
 <main class="wrap bench" style="padding-top:56px;padding-bottom:100px">
-  <div class="section-head" style="max-width:860px;margin-bottom:30px">
-    <h1 class="arena-title">The Decision Bench</h1>
-    <p>shad0w against five open decision models on six public tasks. Same test rows, same 5% certificate, one laptop CPU. Every answer is saved so anyone can check the numbers.</p>
+  <div class="section-head" style="max-width:920px;margin-bottom:22px">
+    <div class="kicker">decision bench · six public tasks · CPU only · every prediction saved</div>
+    <h1 class="arena-title">Same rows. Same certifier.<br><span class="hl">Microseconds against seconds.</span></h1>
+    <p>Decision models answer "pick one of these options" for your app. We put shad0w next to five open ones (Julia-1, Laya, Kev-0.8B, Decider-0.8B and GLiNER2.5-Decide) on six public tasks, on a laptop CPU with no GPU. Every system answers the same test rows, one at a time, and every system's confidence goes through the same 5% certificate. Every answer is saved, so anyone can re-check the numbers without running a model.</p>
   </div>
 
   <div class="bn-heads" id="heads"></div>
@@ -67,29 +68,27 @@
   </section>
 
   <section class="arena-sec">
-    <div class="section-head"><h2>All six tasks at a glance</h2></div>
+    <div class="section-head"><div class="kicker">all six at a glance</div><h2>The summary.</h2></div>
     <div class="panel"><div class="table-wrap"><table class="arena-table" id="summary"></table></div></div>
   </section>
 
   <section class="arena-sec">
-    <div class="section-head"><h2>Read this before quoting a number</h2></div>
+    <div class="section-head"><div class="kicker">read this before quoting a number</div><h2>What it shows, and what it doesn't.</h2></div>
     <div class="pm-gets">
       <div class="panel"><i>≠</i><b>Different training</b><p>shad0w learns each task from its training split; the decision models answer zero-shot. A decision model fine-tuned on the task would score higher than here.</p></div>
       <div class="panel"><i>✓</i><b>Labels as the teacher</b><p>Here the teacher is the dataset's labels. In your app shad0w learns from your LLM's answers, and its certificate is against that LLM, not the truth.</p></div>
       <div class="panel"><i>1</i><b>One machine, batch size 1</b><p>Decision-model times include localhost HTTP and are on a CPU. They would be lower in-process, and much lower on a GPU (llama.cpp publishes 3–12 ms there).</p></div>
     </div>
-    <details class="bn-method"><summary>How it was measured</summary>
-    <ul class="fine">
+    <ul class="fine" style="margin-top:18px">
       <li><b>Rows.</b> 500 test rows per task, a fixed random sample of the test split; 500 calibration rows from the training split, held out from training. A model that takes over 1 s per decision answers the first 150 rows, marked "150 rows".</li>
       <li><b>Certified</b> uses Learn-then-Test with a Clopper–Pearson bound (α = 5%, δ = 10%) for every system: a confidence threshold picked on the calibration rows. Coverage is the share of test rows at or above it; served error is the error on those rows. A system whose confidence cannot separate right from wrong certifies 0%.</li>
       <li><b>Time</b> is the wall time of one call with one input, after 20 warm-up calls. shad0w runs in-process on one thread through the C core. Decision models run with <span id="threads">5</span> threads; their single-thread time is shown where it was measured.</li>
       <li><b>Left out:</b> Laya-multilingual, Laya-typed-decisions and d1-omni-600M did not load in this llama.cpp build. The 4B–9B models take seconds per decision on a CPU and are optional in the harness.</li>
     </ul>
-    </details>
   </section>
 
   <section class="arena-sec">
-    <div class="section-head"><h2>Check every number yourself</h2>
+    <div class="section-head"><div class="kicker">reproduce</div><h2>Check every number, with or without the models.</h2>
       <p>Every answer of every system is saved, one JSON line per row (<code>{"split": "test", "i": 17, "y": 3, "pred": 3, "conf": 0.9981, "us": 2.41}</code>). Re-scoring needs no model, no network and no GPU.</p></div>
 <pre class="code"><code>git clone https://github.com/2796gaurav/shad0w && cd shad0w
 pip install -e ".[compile]"
