@@ -71,7 +71,7 @@
   "price.jev_per_1k": "$0.0126",
   "price.gpt41mini_per_1k": "$0.520",
   "cert.violation": "0.0–8.1% of certificates exceeded α in simulation (δ allows 10%)",
-  "film.length_s": "85",
+  "film.length_s": "126",
   "fit.torch_s": "40 s",
   "fit.scipy_s": "217 s",
   "scale.hardware": "Measured on 12th Gen Intel(R) Core(TM) i7-1255U (12 threads), Linux-7.0.11-76070011-generic-x86_64-with-glibc2.39, 2026-10-08",
@@ -172,7 +172,7 @@
    0.0,
    0.081
   ],
-  "film.length_s": 85,
+  "film.length_s": 126,
   "fit.torch_s": 40.5,
   "fit.scipy_s": 216.8,
   "scale.p50_range": [

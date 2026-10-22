@@ -48,7 +48,7 @@
 - [How shad0w proves it agrees with your LLM](https://2796gaurav.github.io/shad0w/blog/how-the-certificate-works.html): The certificate behind shad0w, in plain words: a held-out test, a confidence line, an allowance for bad luck, and what the promise does and does not cover.
 
 ## Watch and play
-- [shad0w at work (film, 85 s)](https://2796gaurav.github.io/shad0w/#film): what it is, then four jobs: support routing, a prompt guard, live-stream labelling, a zero-code proxy. MP4 at https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4
+- [shad0w at work (film, 2 min)](https://2796gaurav.github.io/shad0w/#film): what it is, then five jobs: support routing, a prompt guard, product-photo sorting, live-stream labelling, a zero-code proxy; and how you start. MP4 at https://2796gaurav.github.io/shad0w/assets/shad0w-film.mp4
 - [Snake arena](https://2796gaurav.github.io/shad0w/arena/): shad0w, small decision models and a hosted LLM play the same snake games at game speed
 - [Can System 0 run Doom?](https://2796gaurav.github.io/shad0w/doom/): an LLM plays ViZDoom with the game paused; shad0w learns its choices and plays every tic in microseconds, against the LLM in real time (recorded, replayed)
 - [Decision Bench](https://2796gaurav.github.io/shad0w/bench/): shad0w against five open decision models on six public tasks, CPU only, same rows and same 5% certifier; every prediction saved
