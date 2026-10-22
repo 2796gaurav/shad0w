@@ -1,6 +1,6 @@
 ---
 title: How it compares
-description: shad0w next to semantic caches, embedding routers, small fine-tuned models, LLM-only, and decision models (OpenAI Decisions API, Jev, Kev, Laya), measured with the same certifier.
+description: shad0w next to semantic caches, embedding routers, fine-tuned heads and decision models, all held to the same certifier on the same LLM answers.
 ---
 # How it compares
 

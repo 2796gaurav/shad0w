@@ -1,6 +1,6 @@
 ---
 title: Reference
-description: Every public Python function and class in shad0w with exact signatures, parameters, return values and errors; the Decision fields and flags; every setting; the log, bundle, manifest and certificate file formats; the JavaScript exports; and the HTTP routes.
+description: Every public shad0w function and class in Python, with exact signatures, parameters, defaults and return values.
 ---
 # Reference
 

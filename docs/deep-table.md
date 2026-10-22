@@ -1,6 +1,6 @@
 ---
 title: The deep table
-description: Since 0.4 a shad0w table can model interactions between words (negation, word pairs) with one small hidden layer, at a few microseconds. When it is used, what it costs, and the related 0.4 additions.
+description: Since 0.4 a shad0w table can read word interactions such as negation, with one hidden layer and the same microsecond lookups. When it helps, and its costs.
 ---
 # The deep table
 

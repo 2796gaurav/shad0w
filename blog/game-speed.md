@@ -1,6 +1,6 @@
 ---
-title: Snake at 120 moves a second: System 0 vs System One models, at game speed
-description: shad0w learned snake and Pong from an LLM's answers. Then it raced three System One decision models on an Apple M5 Pro's GPU and a hosted LLM through the same games, with every decision timed. Here is what happened, and the Pong you can play.
+title: "Snake at 120 moves a second: System 0 vs System One"
+description: shad0w, three System One decision models and a hosted LLM play the same snake games at game speed. shad0w keeps scoring; the LLM falls behind its own moves.
 date: 2026-10-09
 tags: benchmarks, games, latency, system one
 ---

@@ -1,6 +1,6 @@
 ---
-title: "shad0w 0.4: one reflex for text, images, prompt attacks and video frames"
-description: shad0w 0.4 takes the same idea, a small table that learns your model's answers plus a certificate that says when to trust it, from text to pixels, prompt-injection guards, video frames and structured fields. What works, what doesn't, and what you can try in your browser.
+title: "shad0w 0.4: one reflex for text, images and guards"
+description: shad0w 0.4 takes its learned table and certificate from text to pixels, prompt-injection guards and video frames. What works, what doesn't, and what to try.
 date: 2026-10-21
 tags: release, images, guardrails, benchmarks, multimodal
 ---

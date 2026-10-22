@@ -1,6 +1,6 @@
 ---
-title: 94.3%, 51.3%, 0%: honest numbers from shadowing a hosted LLM
-description: We put shad0w in front of a hosted LLM through the official OpenAI client and measured how much shad0w answered, how often it agreed with the LLM, how fast, and where it answered nothing at all.
+title: 94.3%, 51.3%, 0%: honest numbers against a hosted LLM
+description: What shad0w answered, and missed, when it shadowed a hosted LLM through the official OpenAI client: wins, losses and the traffic where it should defer.
 date: 2026-10-09
 tags: benchmarks, evaluation, comparison, honesty
 ---

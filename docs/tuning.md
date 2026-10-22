@@ -1,6 +1,6 @@
 ---
 title: Tuning
-description: What each knob does in plain words (α, δ, min_rows, audit_rate, min_confidence, force_threshold, canary, never_serve), why the defaults tune themselves, and recipes for common goals.
+description: What each knob does in plain words: alpha, delta, min_rows, audit_rate, min_confidence and more, and when to change it.
 ---
 # Tuning
 

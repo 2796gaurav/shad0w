@@ -1,6 +1,6 @@
 ---
 title: Zero-code System Zero for the OpenAI Decisions API
-description: Put a certified reflex in front of client.decisions.create with three commands and no code change. Shadow mode first, the dashboard, the agreement check, the cost maths and the limits.
+description: Point the OpenAI Decisions API client at the shad0w proxy: certified questions come back from a table in microseconds, the rest go upstream. No code change.
 date: 2026-10-09
 tags: decisions api, proxy, zero code, llm cost
 ---

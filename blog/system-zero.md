@@ -1,6 +1,6 @@
 ---
 title: System Zero: the reflex layer below your LLM
-description: shad0w is the shadow of your LLM. It watches your LLM, learns to answer like it, and takes the repeat traffic, so the LLM only gets what shad0w is not sure about. What System Zero is, why a cache is not enough, and where shad0w stays silent.
+description: Below your LLM (System 2) and decision models (System 1) there is room for a reflex: System 0, a table that answers repeat decisions in microseconds.
 date: 2026-10-08
 updated: 2026-10-09
 tags: system zero, architecture, decision models, llm cost

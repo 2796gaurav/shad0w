@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: The real error messages shad0w prints, what each one means and how to fix it, plus what to do when the table answers nothing, drift fires or the proxy forwards everything.
+description: The real error messages shad0w prints, what each one means, and how to fix it: keys, upstreams, training, certificates and the proxy.
 ---
 # Troubleshooting
 

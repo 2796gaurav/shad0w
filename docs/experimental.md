@@ -1,6 +1,6 @@
 ---
 title: Experimental layers
-description: Images, a prompt-injection guard, streaming-reply checks, video frames, structured extraction, option-order voting and signed certificates. What each does, how to use it, and what it measured, including where it did not work.
+description: Images, a prompt-injection guard, video frames, structured extraction and signed certificates: how to use each, and what it measured, misses included.
 ---
 # Experimental layers
 
@@ -21,7 +21,7 @@ photo.train()
 
 | one CPU core, α = 5%, unseen images | answered locally | disagreement on those | cost per image |
 |---|---|---|---|
-| product photos (Fashion-MNIST), ferns | **64%** | 3.1% | **4–7 µs** (C) |
+| product photos (Fashion-MNIST), ferns | **70%** | 4.1% | **4–7 µs** (C; 9 µs on a 12th-gen Intel laptop) |
 | natural photos (CIFAR-10), ferns | 0% (correctly defers everything) | — | 4–7 µs |
 | natural photos (CIFAR-10), ferns → CLIP B/32 table | **73%** | 5.5% (95% CI ≈ 3.6–8%) | ~28 ms instead of 2.6 s |
 
