@@ -113,7 +113,7 @@
       <li>One synthetic shop is a small test. The LLM made no mistakes here, so this shows a table copying a reliable agent, not fixing a bad one.</li>
     </ul>
 <pre class="code"><code>import shad0w
-step = shad0w.decision("action", options=ACTIONS, llm="openai/gpt-4.1-mini",
+step = shad0w.decision("action", options=ACTIONS, llm="openai/a hosted LLM",
                        bundle="shop.bundle", log="shop.log.jsonl")
 # run your agent as usual: every step's page text goes through step(page_text);
 # the LLM answers and is logged until the table is trained

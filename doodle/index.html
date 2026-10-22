@@ -78,7 +78,7 @@
       <li><b>Data.</b> Google's <a href="https://quickdraw.withgoogle.com/data">Quick, Draw! dataset</a> (CC BY 4.0), the drawings the game itself recognised.</li>
     </ul>
 <pre class="code"><code>from shad0w.vision import ImageSpec
-photo = shad0w.decision("category", options=[...], llm="openai/gpt-4.1-mini", image=True)   # your vision model teaches
+photo = shad0w.decision("category", options=[...], llm="openai/a hosted LLM", image=True)   # your vision model teaches
 photo(pixels)      # numpy array or PIL image: answered in microseconds once certified, else asked
 photo.train()</code></pre>
     <p class="muted" style="font-size:13.5px"><a href="../docs/experimental.html#images">Images in the docs →</a></p>

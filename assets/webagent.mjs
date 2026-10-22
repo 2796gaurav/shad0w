@@ -88,8 +88,7 @@ $("wRun").onclick = runAll;
 $("wStep").onclick = async () => { if (!busy) { busy = true; await step(); busy = false; } };
 $("wNew").onclick = () => { stop = true; setTimeout(() => fresh(1 + Math.floor(Math.random() * 1e6)), busy ? 300 : 0); };
 for (const id of ["oShift", "oNovel", "oProg", "oRisky"]) $(id).addEventListener("change", () => { stop = true; setTimeout(() => fresh(ep.seed), busy ? 300 : 0); });
-const hashSeed = /seed=(\d+)/.exec(location.hash);   // #seed=58 opens a given errand (used by the blog video)
-fresh(hashSeed ? +hashSeed[1] : firstSeed());
+fresh(firstSeed());
 
 // ---------------------------------------------------------------- 100 errands
 function cfgText() {

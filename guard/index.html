@@ -68,7 +68,7 @@
       <li>It catches repeats of known attacks cheaply. It is not a defence against an adaptive attacker on its own: keep your model's own safeguards.</li>
     </ul>
 <pre class="code"><code>from shad0w.guard import Guard
-gate = Guard(shad0w.decision("injection", options={"attack": "...", "safe": "..."}, llm="openai/gpt-4.1-mini"))
+gate = Guard(shad0w.decision("injection", options={"attack": "...", "safe": "..."}, llm="openai/a hosted LLM"))
 gate.calibrate(fresh_texts, llm_answers)   # block-only certificate
 gate.check(text)                           # "block" or "ask_model", never "allow"</code></pre>
     <p class="muted" style="font-size:13.5px"><a href="../docs/experimental.html#guardrails">Guardrails in the docs →</a></p>

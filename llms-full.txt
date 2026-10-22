@@ -4040,7 +4040,7 @@ The OpenAI steps skip themselves when `OPENAI_API_KEY` is unset. `BENCHMARK.md` 
 | `e2e.n_log` | 4,999 | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `e2e.offload` | 51.3% | `results/b4_e2e_openai_gpt-4.1-mini_77.json` | BANKING77 fresh traffic | gpt-4.1-mini (OpenAI) | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-08 | new |
 | `e2e.run` | gpt-4.1-mini (OpenAI) · 77 intents | `results/b4_e2e_openai_gpt-4.1-mini_77.json` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
-| `film.length_s` | 42 | `launch-film/film-04.html (DURATION)` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-21 | new |
+| `film.length_s` | 120 | `launch-film/film-long.html (DURATION)` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |
 | `fit.scipy_s` | 217 s | `results/b2_fit_compare.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `fit.torch_s` | 40 s | `results/b2_fit_compare.json` | banking77 |  | Apple M5 Pro, 15 cores, 24.0 GB, macOS-26.6.2-arm64-arm-64bit | 2026-10-08 | new |
 | `headline.alpha_pct` | 5% | `default alpha` |  |  | Apple M5 Pro (15 cores, 24 GB), macOS | 2026-10-12 | new |

@@ -133,7 +133,7 @@ $("howList").innerHTML = [
   `<b>Race.</b> Every lane played the same seeds with the clock running. A lane's answer lands on the first tic after it arrives; until then the marine does nothing. Latency is measured on every real call.`,
 ].map((s) => `<li>${s}</li>`).join("");
 $("honest").innerHTML = `<b>What this does and doesn't show.</b> The table is only as good as the LLM's choices: with the game paused, the LLM is the teacher's true skill, and shad0w's edge is speed, not wisdom. ` +
-  `The LLM lanes are real calls to two hosted LLMs from this laptop, so their latency includes the network, as any hosted model's would. ` +
+  `The LLM lanes are real calls to a hosted a hosted LLM and gpt-4.1 from this laptop, so their latency includes the network, as any hosted model's would. ` +
   `The decision models ran on this laptop's CPU through llama.cpp's /v1/systemone (Julia-1 and Laya at Q8_0, Kev-4B at Q4_K_M), with the LLM's instructions as their question; on a data-centre GPU llama.cpp publishes medians of 3 to 12 ms for them, inside one tic, and their scores would then depend on their choices rather than their speed. Jev itself is hosted and was not measured here. ` +
   `One scenario (${D.scenario}). ${D.machine}.`;
 </script>

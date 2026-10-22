@@ -9,11 +9,6 @@ Computer-use agents are slow and expensive because every step is a big-model cal
 
 So we asked a narrow question: **if an agent only reads a page's HTML (no screenshots), can a shad0w table take over the steps it has seen many times, and hand the rest back?** We tested three things, and wrote down where each one broke. You can [run the first two in your browser](../webagent/).
 
-<figure class="post-video">
-<video controls playsinline preload="metadata" poster="../assets/webagent-demo-poster.jpg" src="../assets/webagent-demo.mp4" aria-label="Screen recording of the web agent playground: the table runs an errand, gets stuck when the site changes, and finishes once the novelty check is on"></video>
-<figcaption>71 seconds, recorded from the <a href="../webagent/">playground page</a>. The shop is on the left; on the right is the text the agent reads from the page's HTML. Orange steps are the table (certified, microseconds); blue steps are handed to the LLM. In the browser the LLM's turns are played by a script; the numbers below are from the real LLM.</figcaption>
-</figure>
-
 ## 1. A repeated errand on one site: it works
 
 We built a small shop website with the things that trip agents up, randomised on every visit:
