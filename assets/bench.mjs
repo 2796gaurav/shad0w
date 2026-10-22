@@ -86,9 +86,8 @@ function cascade(t) {
   const c = R.tasks[t].cascades || {};
   $("cascade").innerHTML = Object.entries(c).sort((a, b) => b[1].accuracy - a[1].accuracy).map(([dm, v]) => `
     <div class="bn-cas">
-      <div class="bn-cas-h"><b>shad0w → ${esc(NAME[dm] ?? dm)}</b><span><b class="o">${v.speedup.toLocaleString("en-US", { maximumFractionDigits: 1 })}× faster</b> · shad0w served ${pct(v.served_by_shad0w, 0)}</span></div>
-      <div class="bn-bar"><i style="width:${100 * v.decision_model_alone_accuracy}%"></i><em>${esc(NAME[dm] ?? dm)} alone</em><b>${pct(v.decision_model_alone_accuracy)}</b></div>
-      <div class="bn-bar me"><i style="width:${100 * v.accuracy}%"></i><em>with shad0w in front</em><b>${pct(v.accuracy)}</b></div>
+      <div class="bn-cas-h"><b>${esc(NAME[dm] ?? dm)}</b><span><b class="o">${v.speedup.toLocaleString("en-US", { maximumFractionDigits: 1 })}× faster</b> · shad0w served ${pct(v.served_by_shad0w, 0)}</span></div>
+      <div class="bn-bar2" title="accuracy: ${esc(NAME[dm] ?? dm)} alone, then with shad0w in front"><i style="width:${100 * Math.min(v.decision_model_alone_accuracy, v.accuracy)}%"></i><i class="me" style="left:${100 * Math.min(v.decision_model_alone_accuracy, v.accuracy)}%;width:${100 * Math.abs(v.accuracy - v.decision_model_alone_accuracy)}%"></i><em>${pct(v.decision_model_alone_accuracy)} alone → <b>${pct(v.accuracy)}</b> with shad0w</em></div>
     </div>`).join("") || `<p class="muted">No cascade for this task.</p>`;
 }
 
