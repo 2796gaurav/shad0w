@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-  <url><loc>https://2796gaurav.github.io/shad0w/</loc><lastmod>2026-10-21</lastmod><video:video><video:thumbnail_loc>https://2796gaurav.github.io/shad0w/assets/film04-poster.jpg</video:thumbnail_loc><video:title>shad0w in 42 seconds</video:title><video:description>shad0w learns your model's repeat decisions and answers them in microseconds with a certificate: text, images, prompt attacks, live data and the Decision Bench. Every number and guess on screen is real.</video:description><video:content_loc>https://2796gaurav.github.io/shad0w/assets/shad0w-0.4.mp4</video:content_loc><video:duration>42</video:duration><video:publication_date>2026-10-21T00:00:00+05:30</video:publication_date></video:video></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/</loc><lastmod>2026-10-22</lastmod><video:video><video:thumbnail_loc>https://2796gaurav.github.io/shad0w/assets/shad0w-pitch-poster.jpg</video:thumbnail_loc><video:title>shad0w in 110 seconds</video:title><video:description>shad0w learns your LLM's repeat decisions, proves where it agrees, and answers them in microseconds on a CPU: a support inbox, a prompt guard and a web agent. Every number on screen is measured.</video:description><video:content_loc>https://2796gaurav.github.io/shad0w/assets/shad0w-pitch.mp4</video:content_loc><video:duration>110</video:duration><video:publication_date>2026-10-22T00:00:00+05:30</video:publication_date></video:video></url>
   <url><loc>https://2796gaurav.github.io/shad0w/demo/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/pong/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/arena/</loc><lastmod>2026-10-09</lastmod></url>
-  <url><loc>https://2796gaurav.github.io/shad0w/playground/</loc><lastmod>2026-10-21</lastmod></url>
-  <url><loc>https://2796gaurav.github.io/shad0w/bench/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/playground/</loc><lastmod>2026-10-22</lastmod></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/bench/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/pulse/</loc><lastmod>2026-10-13</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/doodle/</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/guard/</loc><lastmod>2026-10-21</lastmod></url>
@@ -40,7 +40,7 @@
   <url><loc>https://2796gaurav.github.io/shad0w/docs/limits.html</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/faq.html</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/docs/reference.html</loc><lastmod>2026-10-09</lastmod></url>
-  <url><loc>https://2796gaurav.github.io/shad0w/docs/changelog.html</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://2796gaurav.github.io/shad0w/docs/changelog.html</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/one-reflex-every-input.html</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/table-drives-a-browser.html</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://2796gaurav.github.io/shad0w/blog/decisions-api-proxy.html</loc><lastmod>2026-10-09</lastmod></url>

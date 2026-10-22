@@ -1,0 +1,77 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.211
+Your product asks an LLM thousands of small questions, every hour.
+
+2
+00:00:05.400 --> 00:00:08.933
+Which intent is this? Is it an attack? Which button next?
+
+3
+00:00:09.100 --> 00:00:14.048
+Each call takes about 1.4 seconds, and is billed. Most are repeats.
+
+4
+00:00:14.600 --> 00:00:18.143
+shad0w is a learned shortcut for those repeat decisions.
+
+5
+00:00:18.500 --> 00:00:20.528
+It watches your LLM's answers.
+
+6
+00:00:21.000 --> 00:00:24.374
+It learns a small table. No GPU, no labels.
+
+7
+00:00:24.800 --> 00:00:32.514
+Then it proves, on answers it never saw, where it agrees. At most 5% disagreement, at 90% confidence.
+
+8
+00:00:33.000 --> 00:00:36.345
+There, shad0w answers in 2.4 microseconds.
+
+9
+00:00:36.600 --> 00:00:40.658
+Everything else goes to your LLM, and becomes new training data.
+
+10
+00:00:41.600 --> 00:00:47.032
+The same loop works on text, images, video frames, web pages and live streams.
+
+11
+00:00:52.600 --> 00:00:56.214
+A bank app routes "my card was stolen" in microseconds.
+
+12
+00:00:56.400 --> 00:01:04.697
+On eight support intents, it answered 94.3% of messages, agreeing 97.2% of the time.
+
+13
+00:01:05.200 --> 00:01:09.174
+Stores tag tickets and products. Safety teams filter spam.
+
+14
+00:01:09.600 --> 00:01:14.650
+AI apps block known prompt attacks. shad0w never allows anything on its own.
+
+15
+00:01:15.100 --> 00:01:19.397
+A web agent replays a repeat errand with zero LLM calls.
+
+16
+00:01:26.800 --> 00:01:32.121
+On three public datasets, it answered 61 to 86% of the traffic.
+
+17
+00:01:32.600 --> 00:01:36.595
+One line of Python. Or zero: change your base URL.
+
+18
+00:01:37.000 --> 00:01:40.847
+It doesn't write text, and it needs about a thousand answers first.
+
+19
+00:01:41.400 --> 00:01:45.072
+Your LLM for the new questions. shad0w for the repeats.

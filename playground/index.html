@@ -39,60 +39,74 @@
     <a class="gh" href="https://github.com/2796gaurav/shad0w">GitHub</a>
   </div>
 </div></nav>
-<main class="wrap" style="padding-top:56px;padding-bottom:100px">
-  <div class="section-head" style="max-width:860px;margin-bottom:28px">
-    <div class="kicker">playground · try shad0w yourself</div>
-    <h1 class="arena-title">Don't take our word for it. <span class="hl">Try it.</span></h1>
-    <p>Everything here runs in your browser or replays a real recording: a live feed of real money, a prompt guard, a web agent that reads raw HTML, a drawing game that reads pixels, a box you can type into, two games you can play and two races against LLMs and System One decision models. Each shows the same thing: decisions in microseconds, text or images, with a certificate that says when to trust them.</p>
+<style>
+/* playground: one even grid, no groups. Every card: picture, kind, title, one line, the action at the bottom. */
+.pgx { padding: 64px 0 110px; }
+.pgx-head { max-width: 760px; margin: 0 0 40px; }
+.pgx-head h1 { font: 700 clamp(36px, 4.4vw, 56px)/1.05 var(--display); letter-spacing: -.035em; margin: 0 0 14px; color: var(--text-strong); }
+.pgx-head p { margin: 0; font-size: 19px; color: var(--text-dim); }
+.pgx-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.pgx-card { display: flex; flex-direction: column; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--text); transition: border-color var(--t-base), transform var(--t-base) var(--e-out); }
+.pgx-card:hover { text-decoration: none; border-color: color-mix(in srgb, var(--orange) 65%, transparent); transform: translateY(-3px); }
+.pgx-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.pgx-pic { aspect-ratio: 16 / 9; background: #000; border-bottom: 1px solid var(--line); overflow: hidden; }
+.pgx-pic img, .pgx-pic svg { width: 100%; height: 100%; display: block; object-fit: cover; }
+.pgx-body { display: flex; flex-direction: column; flex: 1; padding: 20px 22px 22px; }
+.pgx-kind { font-size: 14px; font-weight: 600; color: var(--llm); margin-bottom: 6px; }
+.pgx-card h2 { font: 700 22px/1.2 var(--display); letter-spacing: -.02em; margin: 0 0 8px; color: var(--text-strong); }
+.pgx-card p { margin: 0 0 18px; font-size: 16.5px; line-height: 1.55; color: var(--text-dim); }
+.pgx-go { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15.5px; color: var(--orange); }
+.pgx-go svg { transition: transform var(--t-fast); }
+.pgx-card:hover .pgx-go svg { transform: translateX(3px); }
+.pgx-note { margin: 34px 0 0; font-size: 15.5px; color: var(--text-dim); }
+@media (max-width: 1000px) { .pgx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .pgx-grid { grid-template-columns: minmax(0, 1fr); } .pgx { padding-top: 40px; } }
+@media (prefers-reduced-motion: reduce) { .pgx-card, .pgx-go svg { transition: none; } .pgx-card:hover { transform: none; } }
+</style>
+<main class="wrap pgx">
+  <div class="pgx-head">
+    <h1>Try shad0w in your browser.</h1>
+    <p>Each demo runs a real shad0w table in this tab, or replays a real recording. Pick one.</p>
   </div>
-  <h2 class="pg-h">Text, live data and guardrails</h2>
-  <div class="games-grid">
-      <a class="game-card reveal" href="../pulse/">
-        <img src="../assets/pulse-thumb.jpg" alt="A treemap of Polymarket's live dollars by section and topic, next to a tape of labelled trades" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · live · real money</span><h3>One minute of Polymarket, read live</h3><p>Press start: your browser reads every Polymarket trade for 60 seconds, and shad0w files each one by section and topic in microseconds, checked live against Polymarket's own tags. Download the result.</p><b>Start the minute →</b></div>
-      </a>
-      <a class="game-card reveal" href="../demo/">
-        <img src="../assets/demo-thumb.jpg" alt="The intent playground: a support message typed in, and the table's answer with its confidence" width="640" height="360" loading="lazy">
-        <div><span class="kicker">type anything · in your browser</span><h3>Type a support message</h3><p>A 77-intent banking table answers as you type, in microseconds, and says when it would hand the message back to your LLM. Change α and watch what it certifies.</p><b>Try it →</b></div>
-      </a>
-      <a class="game-card reveal" href="../guard/">
-        <img src="../assets/guard-thumb.jpg" alt="The prompt guard blocking an injection attempt, with the time it took" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · guardrails · in your browser</span><h3>Prompt guard</h3><p>Type a message your app would send to its LLM. Known attacks are blocked in microseconds; everything else goes to the model. It never allows on its own word.</p><b>Try an attack →</b></div>
-      </a>
+  <div class="pgx-grid">
+    <a class="pgx-card" href="../demo/">
+      <div class="pgx-pic"><img src="../assets/demo-thumb.jpg" alt="A support message typed in, and the intent shad0w chose with its confidence" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Text</span><h2>Type a support message</h2><p>A 77-intent banking table answers as you type, and says when it would ask your LLM instead.</p><span class="pgx-go">Type a message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../guard/">
+      <div class="pgx-pic"><img src="../assets/guard-thumb.jpg" alt="The prompt guard blocking an injection attempt" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Guardrails</span><h2>Prompt guard</h2><p>Known prompt attacks are blocked in microseconds. Anything it is unsure of goes to your model.</p><span class="pgx-go">Try the guard <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../webagent/">
+      <div class="pgx-pic"><img src="../assets/webagent-thumb.jpg" alt="The web agent mid-errand on a shop page" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Agents</span><h2>Web agent</h2><p>An LLM agent's shopping errand, replayed by a table from the page's HTML. Change the site and watch it ask for help.</p><span class="pgx-go">Watch it shop <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../pulse/">
+      <div class="pgx-pic"><img src="../assets/pulse-thumb.jpg" alt="A treemap of Polymarket's live dollars by topic, next to a tape of labelled trades" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Live data</span><h2>One minute of Polymarket</h2><p>Every live trade for sixty seconds, filed by topic as it lands, with live spot checks.</p><span class="pgx-go">Start the minute <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../doodle/">
+      <div class="pgx-pic"><img src="../assets/doodle-thumb.jpg" alt="A drawing of a cat and shad0w's certified guess" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Images</span><h2>Doodle Duel</h2><p>Draw something. An image table names it on every stroke, and only says "I know!" when it is certified.</p><span class="pgx-go">Start drawing <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../duel/">
+      <div class="pgx-pic"><img src="../assets/duel-thumb.jpg" alt="First-person view of the duel: the shad0w bot peeking past a crate" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Game</span><h2>Duel: you against shad0w</h2><p>A first-person one-on-one. Its table learned tactics from an LLM and decides every frame.</p><span class="pgx-go">Play the duel <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../pong/">
+      <div class="pgx-pic"><svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" fill="#000"/><line x1="160" y1="10" x2="160" y2="170" stroke="#e5e5e5" stroke-opacity=".15" stroke-dasharray="6 9" stroke-width="2"/><rect x="18" y="58" width="7" height="44" rx="3" fill="#e5e5e5"/><rect x="295" y="84" width="7" height="44" rx="3" fill="#fca311"/><circle cx="214" cy="104" r="6" fill="#fff"/><text x="120" y="40" font-size="22" fill="#e5e5e5" fill-opacity=".5" font-family="monospace">3</text><text x="190" y="40" font-size="22" fill="#fca311" font-family="monospace">5</text></svg></div>
+      <div class="pgx-body"><span class="pgx-kind">Game</span><h2>Pong against shad0w</h2><p>It decides every frame in microseconds from a table that learned from an LLM.</p><span class="pgx-go">Play Pong <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../doom/">
+      <div class="pgx-pic"><img src="../assets/doom-thumb.jpg" alt="Doom in four lanes: shad0w fighting while the LLM lanes wait for answers" width="640" height="360" loading="lazy"></div>
+      <div class="pgx-body"><span class="pgx-kind">Recorded race</span><h2>Can System 0 run Doom?</h2><p>Hosted LLMs and open decision models play the same games in real time. shad0w answers before they do.</p><span class="pgx-go">Watch the race <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
+    <a class="pgx-card" href="../arena/">
+      <div class="pgx-pic"><svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" fill="#000"/><g fill="#fca311"><rect x="40" y="40" width="14" height="14" rx="2"/><rect x="56" y="40" width="14" height="14" rx="2" opacity=".85"/><rect x="72" y="40" width="14" height="14" rx="2" opacity=".7"/><rect x="72" y="56" width="14" height="14" rx="2" opacity=".55"/></g><g fill="#8fb3d9"><rect x="200" y="110" width="14" height="14" rx="2"/><rect x="216" y="110" width="14" height="14" rx="2" opacity=".8"/><rect x="232" y="110" width="14" height="14" rx="2" opacity=".6"/></g><circle cx="140" cy="90" r="6" fill="#fff"/></svg></div>
+      <div class="pgx-body"><span class="pgx-kind">Recorded race</span><h2>The snake arena</h2><p>shad0w, open decision models and a hosted LLM play the same snake games at up to 120 moves a second.</p><span class="pgx-go">Watch the arena <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </a>
   </div>
-  <h2 class="pg-h">Agents</h2>
-  <div class="games-grid">
-      <a class="game-card reveal" href="../webagent/">
-        <img src="../assets/webagent-thumb.jpg" alt="The web agent mid-errand: the shop page with the clicked button outlined, and the table's certified decision next to it" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · computer use · raw HTML</span><h3>Web agent: record once, replay at table speed</h3><p>An LLM agent shopped 300 times; the table learned its clicks from the HTML and replays new errands in microseconds a step. Change the site and watch it fail, then turn on the two checks that fix it.</p><b>Watch it shop →</b></div>
-      </a>
-  </div>
-  <h2 class="pg-h">Images</h2>
-  <div class="games-grid">
-      <a class="game-card reveal" href="../doodle/">
-        <img src="../assets/doodle-thumb.jpg" alt="Doodle Duel: a drawing of a cat and shad0w's certified guess" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · images · no neural network</span><h3>Doodle Duel</h3><p>Draw on the pad. A shad0w image table names your doodle on every stroke, in microseconds, in your tab, and says "I know!" only when it's certified.</p><b>Draw →</b></div>
-      </a>
-  </div>
-  <h2 class="pg-h">Games</h2>
-  <div class="games-grid">
-      <a class="game-card reveal" href="../duel/">
-        <img src="../assets/duel-thumb.jpg" alt="First-person view of the duel: the shad0w bot peeking past a crate" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · play it in your browser</span><h3>Duel: you vs shad0w, one rifle</h3><p>A first-person 1v1 on a small desert map. Its brain learned tactics from an LLM and decides move, stance and fire every frame in your tab. Crouch behind crates, jump to peek.</p><b>Play →</b></div>
-      </a>
-      <a class="game-card reveal" href="../doom/">
-        <img src="../assets/doom-thumb.jpg" alt="Doom, four lanes: shad0w fighting while the LLM lanes wait for their answers" width="640" height="360" loading="lazy">
-        <div><span class="kicker">new · recorded head to head</span><h3>Can System 0 run Doom?</h3><p>Six decision makers, the same games, all in real time: hosted LLMs and open System One models (Julia-1, Laya, Kev-4B) wait for their answers and die. Its shadow decides every tic in microseconds and keeps fighting.</p><b>Watch the race →</b></div>
-      </a>
-      <a class="game-card reveal" href="../pong/">
-        <svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" rx="10" fill="#000"/><line x1="160" y1="10" x2="160" y2="170" stroke="#e5e5e5" stroke-opacity=".15" stroke-dasharray="6 9" stroke-width="2"/><rect x="18" y="58" width="7" height="46" fill="#e5e5e5"/><rect x="299" y="83" width="7" height="46" fill="#14213d"/><rect x="295" y="79" width="7" height="46" fill="#fca311"/><circle cx="214" cy="70" r="5" fill="#fff"/><circle cx="118" cy="128" r="5" fill="#fff"/><circle cx="252" cy="118" r="5" fill="#fff" opacity=".6"/></svg>
-        <div><span class="kicker">live, in your browser</span><h3>Play Pong against shad0w</h3><p>It decides every frame in about 1.5 µs (Node, Apple M5 Pro; your browser is measured live) from a 6 KB table that agrees with its LLM on 99.8% of moves. Add up to six balls.</p><b>Play →</b></div>
-      </a>
-      <a class="game-card reveal" href="../arena/">
-        <svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" rx="10" fill="#000"/><g fill="#fca311"><rect x="40" y="40" width="14" height="14" rx="2"/><rect x="56" y="40" width="14" height="14" rx="2" opacity=".85"/><rect x="72" y="40" width="14" height="14" rx="2" opacity=".7"/><rect x="72" y="56" width="14" height="14" rx="2" opacity=".55"/></g><g fill="#8fb3d9"><rect x="200" y="110" width="14" height="14" rx="2"/><rect x="216" y="110" width="14" height="14" rx="2" opacity=".7"/></g><circle cx="110" cy="47" r="5" fill="#fff"/><text x="232" y="98" fill="#8fb3d9" font-family="monospace" font-size="12">thinking…</text></svg>
-        <div><span class="kicker">recorded head to head</span><h3>The snake arena</h3><p>shad0w, three System One models on an Apple M5 Pro's GPU, and a hosted LLM play the same games at up to 120 moves a second. shad0w scores 28.0 at every speed; the LLM drops from 25.9 to 0.1 at 10 moves a second.</p><b>See the race →</b></div>
-      </a>
-  </div>
+  <p class="pgx-note">New to shad0w? <a href="../#how">See how it works</a> or <a href="../docs/">start in 5 minutes</a>.</p>
 </main>
 <footer><div class="wrap">
   <div class="fbrand"><span class="wordmark">shad<span class="o"></span>w</span>
