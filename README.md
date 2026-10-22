@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://2796gaurav.github.io/shad0w/#film">▶ Watch how it works, in two minutes</a> · <a href="https://github.com/2796gaurav/shad0w/releases/latest">download the films (2 min and 30 s, 16:9 and 9:16)</a>
+  <a href="https://2796gaurav.github.io/shad0w/#film">▶ Watch shad0w at work, in 85 seconds</a> · <a href="https://github.com/2796gaurav/shad0w/releases/latest">download the films (2 min and 30 s, 16:9 and 9:16)</a>
 </p>
 
 <p align="center">
