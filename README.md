@@ -21,6 +21,7 @@
   <a href="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/2796gaurav/shad0w/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Python 3.10–3.14" src="https://img.shields.io/badge/python-3.10%E2%80%933.14-3776ab?logo=python&logoColor=white">
   <a href="https://github.com/2796gaurav/shad0w/blob/main/LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-2ea44f"></a>
+  <a href="https://doi.org/10.5281/zenodo.23598813"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.23598813.svg"></a>
 </p>
 
 <p align="center">
@@ -133,11 +134,21 @@ Try it on one of your decisions and [share your numbers](https://github.com/2796
 <details><summary>Cite</summary>
 
 ```bibtex
-@software{chauhan2026shad0w,
+@misc{chauhan2026certified,
   author = {Chauhan, Gaurav},
-  title  = {shad0w: certified microsecond decisions compiled from the model you already run},
+  title  = {Certified Microsecond Answers for an {LLM}'s Repeated Fixed-Choice Decisions},
   year   = {2026},
-  url    = {https://github.com/2796gaurav/shad0w}
+  doi    = {10.5281/zenodo.23599000},
+  note   = {Preprint}
+}
+
+@software{chauhan2026shad0w,
+  author  = {Chauhan, Gaurav},
+  title   = {shad0w: certified microsecond decisions compiled from the model you already run},
+  version = {0.4.0},
+  year    = {2026},
+  doi     = {10.5281/zenodo.23598814},
+  url     = {https://github.com/2796gaurav/shad0w}
 }
 ```
 </details>

@@ -6,7 +6,27 @@ authors:
     given-names: Gaurav
 version: 0.4.0
 date-released: 2026-10-21
+doi: 10.5281/zenodo.23598813
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23598813
+    description: "All versions (concept DOI)"
+  - type: doi
+    value: 10.5281/zenodo.23598814
+    description: "Version 0.4.0"
 license: Apache-2.0
 repository-code: "https://github.com/2796gaurav/shad0w"
 url: "https://2796gaurav.github.io/shad0w"
 keywords: [llm, distillation, classification, learn-then-test, conformal-prediction, cascade, edge-ai]
+preferred-citation:
+  type: article
+  title: "Certified Microsecond Answers for an LLM's Repeated Fixed-Choice Decisions"
+  authors:
+    - family-names: Chauhan
+      given-names: Gaurav
+      affiliation: "Independent Researcher"
+  year: 2026
+  month: 10
+  doi: 10.5281/zenodo.23599000
+  url: "https://doi.org/10.5281/zenodo.23599000"
+  notes: "Preprint"
